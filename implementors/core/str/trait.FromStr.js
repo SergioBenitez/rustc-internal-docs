@@ -8,6 +8,7 @@ implementors["rustc_driver"] = ["impl <a class=\"trait\" href=\"core/str/trait.F
 implementors["rustc_llvm"] = ["impl <a class=\"trait\" href=\"core/str/trait.FromStr.html\" title=\"trait core::str::FromStr\">FromStr</a> for <a class=\"enum\" href=\"rustc_llvm/enum.ArchiveKind.html\" title=\"enum rustc_llvm::ArchiveKind\">ArchiveKind</a>",];
 implementors["rustc_serialize"] = ["impl <a class=\"trait\" href=\"core/str/trait.FromStr.html\" title=\"trait core::str::FromStr\">FromStr</a> for <a class=\"enum\" href=\"rustc_serialize/json/enum.Json.html\" title=\"enum rustc_serialize::json::Json\">Json</a>",];
 implementors["serialize"] = ["impl <a class=\"trait\" href=\"core/str/trait.FromStr.html\" title=\"trait core::str::FromStr\">FromStr</a> for <a class=\"enum\" href=\"serialize/json/enum.Json.html\" title=\"enum serialize::json::Json\">Json</a>",];
+implementors["tendril"] = ["impl&lt;A&gt; <a class=\"trait\" href=\"core/str/trait.FromStr.html\" title=\"trait core::str::FromStr\">FromStr</a> for <a class=\"struct\" href=\"tendril/struct.Tendril.html\" title=\"struct tendril::Tendril\">Tendril</a>&lt;<a class=\"struct\" href=\"tendril/fmt/struct.UTF8.html\" title=\"struct tendril::fmt::UTF8\">UTF8</a>, A&gt; <span class=\"where fmt-newline\">where<br>&nbsp;&nbsp;&nbsp;&nbsp;A: <a class=\"trait\" href=\"tendril/trait.Atomicity.html\" title=\"trait tendril::Atomicity\">Atomicity</a>,&nbsp;</span>",];
 
             if (window.register_implementors) {
                 window.register_implementors(implementors);

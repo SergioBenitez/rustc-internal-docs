@@ -319,6 +319,7 @@
 <span id="274">274</span>
 <span id="275">275</span>
 <span id="276">276</span>
+<span id="277">277</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -332,7 +333,6 @@
 
 <span class="kw">use</span> <span class="ident">io</span>::{<span class="self">self</span>, <span class="ident">Error</span>, <span class="ident">ErrorKind</span>};
 <span class="kw">use</span> <span class="ident">libc</span>::{<span class="self">self</span>, <span class="ident">c_int</span>, <span class="ident">gid_t</span>, <span class="ident">pid_t</span>, <span class="ident">uid_t</span>};
-<span class="kw">use</span> <span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">ptr</span>;
 
 <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">cvt</span>;
@@ -506,7 +506,9 @@
         }
 
         <span class="comment">// NaCl has no signal support.</span>
-        <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;nacl&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>))) {
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;nacl&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>)))]</span>
+        {
+            <span class="kw">use</span> <span class="ident">mem</span>;
             <span class="comment">// Reset signal handling so the child process starts in a</span>
             <span class="comment">// standardized state. libstd ignores SIGPIPE, and signal-handling</span>
             <span class="comment">// libraries often set a mask. Child processes inherit ignored</span>

@@ -1691,7 +1691,7 @@
                     <span class="comment">// Stop going up the backtrace once include! is encountered</span>
                     <span class="kw">return</span> <span class="prelude-val">None</span>;
                 }
-                <span class="ident">ctxt</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">call_site</span>.<span class="ident">ctxt</span>;
+                <span class="ident">ctxt</span> <span class="op">=</span> <span class="ident">info</span>.<span class="ident">call_site</span>.<span class="ident">ctxt</span>();
                 <span class="ident">last_macro</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">info</span>.<span class="ident">call_site</span>);
                 <span class="prelude-val">Some</span>(())
             }).<span class="ident">is_none</span>() {
@@ -1797,7 +1797,7 @@
                               <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Spanned</span><span class="op">&lt;</span>(<span class="ident">Symbol</span>, <span class="ident">ast</span>::<span class="ident">StrStyle</span>)<span class="op">&gt;&gt;</span> {
     <span class="comment">// Update `expr.span`&#39;s ctxt now in case expr is an `include!` macro invocation.</span>
     <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">expr</span><span class="op">|</span> {
-        <span class="ident">expr</span>.<span class="ident">span</span>.<span class="ident">ctxt</span> <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">span</span>.<span class="ident">ctxt</span>.<span class="ident">apply_mark</span>(<span class="ident">cx</span>.<span class="ident">current_expansion</span>.<span class="ident">mark</span>);
+        <span class="ident">expr</span>.<span class="ident">span</span> <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">span</span>.<span class="ident">with_ctxt</span>(<span class="ident">expr</span>.<span class="ident">span</span>.<span class="ident">ctxt</span>().<span class="ident">apply_mark</span>(<span class="ident">cx</span>.<span class="ident">current_expansion</span>.<span class="ident">mark</span>));
         <span class="ident">expr</span>
     });
 

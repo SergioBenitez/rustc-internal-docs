@@ -6327,6 +6327,11 @@
 <span id="6282">6282</span>
 <span id="6283">6283</span>
 <span id="6284">6284</span>
+<span id="6285">6285</span>
+<span id="6286">6286</span>
+<span id="6287">6287</span>
+<span id="6288">6288</span>
+<span id="6289">6289</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -7120,9 +7125,8 @@
                 <span class="prelude-val">Ok</span>(())
             }
             <span class="ident">token</span>::<span class="ident">AndAnd</span> <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
-                <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">span</span>.<span class="ident">lo</span> <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>);
-                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">And</span>), <span class="ident">Span</span> { <span class="ident">lo</span>: <span class="ident">lo</span>, ..<span class="ident">span</span> }))
+                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">with_lo</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>() <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>));
+                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">And</span>), <span class="ident">span</span>))
             }
             _ <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">unexpected</span>()
         }
@@ -7154,9 +7158,8 @@
                 <span class="bool-val">true</span>
             }
             <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Shl</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
-                <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">span</span>.<span class="ident">lo</span> <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>);
-                <span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Lt</span>, <span class="ident">Span</span> { <span class="ident">lo</span>: <span class="ident">lo</span>, ..<span class="ident">span</span> });
+                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">with_lo</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>() <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>));
+                <span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Lt</span>, <span class="ident">span</span>);
                 <span class="bool-val">true</span>
             }
             _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
@@ -7182,19 +7185,16 @@
                 <span class="prelude-val">Ok</span>(())
             }
             <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Shr</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
-                <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">span</span>.<span class="ident">lo</span> <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>);
-                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Gt</span>, <span class="ident">Span</span> { <span class="ident">lo</span>: <span class="ident">lo</span>, ..<span class="ident">span</span> }))
+                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">with_lo</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>() <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>));
+                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Gt</span>, <span class="ident">span</span>))
             }
             <span class="ident">token</span>::<span class="ident">BinOpEq</span>(<span class="ident">token</span>::<span class="ident">Shr</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
-                <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">span</span>.<span class="ident">lo</span> <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>);
-                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Ge</span>, <span class="ident">Span</span> { <span class="ident">lo</span>: <span class="ident">lo</span>, ..<span class="ident">span</span> }))
+                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">with_lo</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>() <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>));
+                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Ge</span>, <span class="ident">span</span>))
             }
             <span class="ident">token</span>::<span class="ident">Ge</span> <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
-                <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">span</span>.<span class="ident">lo</span> <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>);
-                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Eq</span>, <span class="ident">Span</span> { <span class="ident">lo</span>: <span class="ident">lo</span>, ..<span class="ident">span</span> }))
+                <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">with_lo</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>() <span class="op">+</span> <span class="ident">BytePos</span>(<span class="number">1</span>));
+                <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">bump_with</span>(<span class="ident">token</span>::<span class="ident">Eq</span>, <span class="ident">span</span>))
             }
             _ <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">unexpected</span>()
         }
@@ -7424,7 +7424,7 @@
     <span class="doccomment">/// Advance the parser using provided token as a next one. Use this when</span>
     <span class="doccomment">/// consuming a part of a token. For example a single `&lt;` from `&lt;&lt;`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bump_with</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">next</span>: <span class="ident">token</span>::<span class="ident">Token</span>, <span class="ident">span</span>: <span class="ident">Span</span>) {
-        <span class="self">self</span>.<span class="ident">prev_span</span> <span class="op">=</span> <span class="ident">Span</span> { <span class="ident">hi</span>: <span class="ident">span</span>.<span class="ident">lo</span>, ..<span class="self">self</span>.<span class="ident">span</span> };
+        <span class="self">self</span>.<span class="ident">prev_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">with_hi</span>(<span class="ident">span</span>.<span class="ident">lo</span>());
         <span class="comment">// It would be incorrect to record the kind of the current token, but</span>
         <span class="comment">// fortunately for tokens currently using `bump_with`, the</span>
         <span class="comment">// prev_token_kind will be of no use anyway.</span>
@@ -7686,7 +7686,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">RArrow</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">FunctionRetTy</span>::<span class="ident">Ty</span>(<span class="self">self</span>.<span class="ident">parse_ty_no_plus</span>()<span class="question-mark">?</span>))
         } <span class="kw">else</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">FunctionRetTy</span>::<span class="ident">Default</span>(<span class="ident">Span</span> { <span class="ident">hi</span>: <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>, ..<span class="self">self</span>.<span class="ident">span</span> }))
+            <span class="prelude-val">Ok</span>(<span class="ident">FunctionRetTy</span>::<span class="ident">Default</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">with_hi</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>())))
         }
     }
 
@@ -8862,7 +8862,7 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">process_potential_macro_variable</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">token</span> {
-            <span class="ident">token</span>::<span class="ident">Dollar</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">ctxt</span> <span class="op">!=</span> <span class="ident">syntax_pos</span>::<span class="ident">hygiene</span>::<span class="ident">SyntaxContext</span>::<span class="ident">empty</span>() <span class="op">&amp;&amp;</span>
+            <span class="ident">token</span>::<span class="ident">Dollar</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">span</span>.<span class="ident">ctxt</span>() <span class="op">!=</span> <span class="ident">syntax_pos</span>::<span class="ident">hygiene</span>::<span class="ident">SyntaxContext</span>::<span class="ident">empty</span>() <span class="op">&amp;&amp;</span>
                              <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_ident</span>()) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">bump</span>();
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">token</span> { <span class="ident">token</span>::<span class="ident">Ident</span>(<span class="ident">ident</span>) <span class="op">=&gt;</span> <span class="ident">ident</span>, _ <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>() };
@@ -9064,8 +9064,8 @@
                         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="self">self</span>.<span class="ident">span</span>,
                                        <span class="string">&quot;expecting a type here because of type ascription&quot;</span>);
                         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>();
-                        <span class="kw">let</span> <span class="ident">cur_pos</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_char_pos</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>);
-                        <span class="kw">let</span> <span class="ident">op_pos</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_char_pos</span>(<span class="ident">cur_op_span</span>.<span class="ident">hi</span>);
+                        <span class="kw">let</span> <span class="ident">cur_pos</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_char_pos</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">lo</span>());
+                        <span class="kw">let</span> <span class="ident">op_pos</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_char_pos</span>(<span class="ident">cur_op_span</span>.<span class="ident">hi</span>());
                         <span class="kw">if</span> <span class="ident">cur_pos</span>.<span class="ident">line</span> <span class="op">!=</span> <span class="ident">op_pos</span>.<span class="ident">line</span> {
                             <span class="ident">err</span>.<span class="ident">span_suggestion_short</span>(<span class="ident">cur_op_span</span>,
                                                       <span class="string">&quot;did you mean to use `;` here?&quot;</span>,
@@ -9360,7 +9360,10 @@
         <span class="kw">let</span> <span class="ident">decl</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_fn_block_decl</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">decl_hi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
         <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">decl</span>.<span class="ident">output</span> {
-            <span class="ident">FunctionRetTy</span>::<span class="ident">Default</span>(_) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">parse_expr</span>()<span class="question-mark">?</span>,
+            <span class="ident">FunctionRetTy</span>::<span class="ident">Default</span>(_) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">restrictions</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">RESTRICTION_STMT_EXPR</span>;
+                <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">restrictions</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>
+            },
             _ <span class="op">=&gt;</span> {
                 <span class="comment">// If an explicit return type is given, require a</span>
                 <span class="comment">// block to appear (RFC 968).</span>
@@ -9487,6 +9490,12 @@
         <span class="macro">maybe_whole</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">NtArm</span>, <span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>);
 
         <span class="kw">let</span> <span class="ident">attrs</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_outer_attributes</span>()<span class="question-mark">?</span>;
+        <span class="comment">// Allow a &#39;|&#39; before the pats (RFC 1925)</span>
+        <span class="kw">let</span> <span class="ident">beginning_vert</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Or</span>)) {
+            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">prev_span</span>)
+        } <span class="kw">else</span> {
+            <span class="prelude-val">None</span>
+        };
         <span class="kw">let</span> <span class="ident">pats</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pats</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">If</span>) {
             <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">parse_expr</span>()<span class="question-mark">?</span>)
@@ -9510,6 +9519,7 @@
             <span class="ident">pats</span>,
             <span class="ident">guard</span>,
             <span class="ident">body</span>: <span class="ident">expr</span>,
+            <span class="ident">beginning_vert</span>,
         })
     }
 
@@ -10114,9 +10124,9 @@
         <span class="ident">is_defaultness</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">eat_macro_def</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">attrs</span>: <span class="kw-2">&amp;</span>[<span class="ident">Attribute</span>], <span class="ident">vis</span>: <span class="kw-2">&amp;</span><span class="ident">Visibility</span>)
+    <span class="kw">fn</span> <span class="ident">eat_macro_def</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">attrs</span>: <span class="kw-2">&amp;</span>[<span class="ident">Attribute</span>], <span class="ident">vis</span>: <span class="kw-2">&amp;</span><span class="ident">Visibility</span>, <span class="ident">lo</span>: <span class="ident">Span</span>)
                      <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
+        <span class="kw">let</span> <span class="ident">token_lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
         <span class="kw">let</span> (<span class="ident">ident</span>, <span class="ident">def</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">token</span> {
             <span class="ident">token</span>::<span class="ident">Ident</span>(<span class="ident">ident</span>) <span class="kw">if</span> <span class="ident">ident</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Macro</span>.<span class="ident">name</span>() <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">bump</span>();
@@ -10136,7 +10146,7 @@
                     };
                     <span class="ident">TokenStream</span>::<span class="ident">concat</span>(<span class="macro">vec</span><span class="macro">!</span>[
                         <span class="ident">args</span>.<span class="ident">into</span>(),
-                        <span class="ident">TokenTree</span>::<span class="ident">Token</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>), <span class="ident">token</span>::<span class="ident">FatArrow</span>).<span class="ident">into</span>(),
+                        <span class="ident">TokenTree</span>::<span class="ident">Token</span>(<span class="ident">token_lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>), <span class="ident">token</span>::<span class="ident">FatArrow</span>).<span class="ident">into</span>(),
                         <span class="ident">body</span>.<span class="ident">into</span>(),
                     ])
                 } <span class="kw">else</span> {
@@ -10186,7 +10196,7 @@
                 <span class="ident">node</span>: <span class="ident">StmtKind</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">parse_local</span>(<span class="ident">attrs</span>.<span class="ident">into</span>())<span class="question-mark">?</span>),
                 <span class="ident">span</span>: <span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>),
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">macro_def</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">eat_macro_def</span>(<span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="ident">Visibility</span>::<span class="ident">Inherited</span>)<span class="question-mark">?</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">macro_def</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">eat_macro_def</span>(<span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="ident">Visibility</span>::<span class="ident">Inherited</span>, <span class="ident">lo</span>)<span class="question-mark">?</span> {
             <span class="ident">Stmt</span> {
                 <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>,
                 <span class="ident">node</span>: <span class="ident">StmtKind</span>::<span class="ident">Item</span>(<span class="ident">macro_def</span>),
@@ -10386,7 +10396,7 @@
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">stmt_span</span> <span class="op">=</span> <span class="ident">stmt</span>.<span class="ident">span</span>;
                     <span class="comment">// expand the span to include the semicolon, if it exists</span>
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Semi</span>) {
-                        <span class="ident">stmt_span</span>.<span class="ident">hi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>.<span class="ident">hi</span>;
+                        <span class="ident">stmt_span</span> <span class="op">=</span> <span class="ident">stmt_span</span>.<span class="ident">with_hi</span>(<span class="self">self</span>.<span class="ident">prev_span</span>.<span class="ident">hi</span>());
                     }
                     <span class="kw">let</span> <span class="ident">sugg</span> <span class="op">=</span> <span class="ident">pprust</span>::<span class="ident">to_string</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
                         <span class="kw">use</span> <span class="ident">print</span>::<span class="ident">pprust</span>::{<span class="ident">PrintState</span>, <span class="ident">INDENT_UNIT</span>};
@@ -10478,7 +10488,7 @@
             <span class="ident">stmt</span> <span class="op">=</span> <span class="ident">stmt</span>.<span class="ident">add_trailing_semicolon</span>();
         }
 
-        <span class="ident">stmt</span>.<span class="ident">span</span>.<span class="ident">hi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>.<span class="ident">hi</span>;
+        <span class="ident">stmt</span>.<span class="ident">span</span> <span class="op">=</span> <span class="ident">stmt</span>.<span class="ident">span</span>.<span class="ident">with_hi</span>(<span class="self">self</span>.<span class="ident">prev_span</span>.<span class="ident">hi</span>());
         <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">stmt</span>))
     }
 
@@ -11024,7 +11034,7 @@
                     <span class="ident">SeqSep</span>::<span class="ident">trailing_allowed</span>(<span class="ident">token</span>::<span class="ident">Comma</span>),
                     <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">parse_fn_block_arg</span>()
                 );
-                <span class="self">self</span>.<span class="ident">bump</span>();
+                <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Or</span>))<span class="question-mark">?</span>;
                 <span class="ident">args</span>
             }
         };
@@ -12336,7 +12346,7 @@
                                     <span class="ident">maybe_append</span>(<span class="ident">attrs</span>, <span class="ident">extra_attrs</span>));
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">item</span>));
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">macro_def</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">eat_macro_def</span>(<span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="ident">visibility</span>)<span class="question-mark">?</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">macro_def</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">eat_macro_def</span>(<span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="kw-2">&amp;</span><span class="ident">visibility</span>, <span class="ident">lo</span>)<span class="question-mark">?</span> {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">macro_def</span>));
         }
 

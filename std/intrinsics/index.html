@@ -134,6 +134,16 @@ primitives via the <code>overflowing_add</code> method. For example,
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
+                           <td><a class="fn" href="fn.align_offset.html"
+                                  title='fn std::intrinsics::align_offset'>align_offset</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>Computes the byte offset that needs to be applied to <code>ptr</code> in order to
+make it aligned to <code>align</code>.
+If it is not possible to align <code>ptr</code>, the implementation returns
+<code>usize::max_value()</code>.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
                            <td><a class="fn" href="fn.arith_offset.html"
                                   title='fn std::intrinsics::arith_offset'>arith_offset</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>

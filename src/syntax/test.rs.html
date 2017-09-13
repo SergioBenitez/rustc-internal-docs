@@ -764,8 +764,8 @@
 
 <span class="comment">// Code that generates a test runner to run all the tests in a crate</span>
 
-<span class="attribute">#<span class="op">!</span>[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
-<span class="attribute">#<span class="op">!</span>[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">HasTestSignature</span>::<span class="kw-2">*</span>;
 
@@ -1060,7 +1060,7 @@
 <span class="doccomment">/// call to codemap&#39;s `is_internal` check.</span>
 <span class="doccomment">/// The expanded code calls some unstable functions in the test crate.</span>
 <span class="kw">fn</span> <span class="ident">ignored_span</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">TestCtxt</span>, <span class="ident">sp</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">Span</span> {
-    <span class="ident">Span</span> { <span class="ident">ctxt</span>: <span class="ident">cx</span>.<span class="ident">ctxt</span>, ..<span class="ident">sp</span> }
+    <span class="ident">sp</span>.<span class="ident">with_ctxt</span>(<span class="ident">cx</span>.<span class="ident">ctxt</span>)
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>)]</span>

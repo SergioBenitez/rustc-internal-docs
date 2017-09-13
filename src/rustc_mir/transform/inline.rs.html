@@ -775,6 +775,7 @@
 <span id="730">730</span>
 <span id="731">731</span>
 <span id="732">732</span>
+<span id="733">733</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -866,12 +867,14 @@
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TerminatorKind</span>::<span class="ident">Call</span> {
                     <span class="ident">func</span>: <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw-2">ref</span> <span class="ident">f</span>), .. } <span class="op">=</span> <span class="ident">terminator</span>.<span class="ident">kind</span> {
                     <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyFnDef</span>(<span class="ident">callee_def_id</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ty</span>.<span class="ident">sty</span> {
-                        <span class="ident">callsites</span>.<span class="ident">push_back</span>(<span class="ident">CallSite</span> {
-                            <span class="ident">callee</span>: <span class="ident">callee_def_id</span>,
-                            <span class="ident">substs</span>,
-                            <span class="ident">bb</span>,
-                            <span class="ident">location</span>: <span class="ident">terminator</span>.<span class="ident">source_info</span>
-                        });
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">trait_of_item</span>(<span class="ident">callee_def_id</span>).<span class="ident">is_none</span>() {
+                            <span class="ident">callsites</span>.<span class="ident">push_back</span>(<span class="ident">CallSite</span> {
+                                <span class="ident">callee</span>: <span class="ident">callee_def_id</span>,
+                                <span class="ident">substs</span>,
+                                <span class="ident">bb</span>,
+                                <span class="ident">location</span>: <span class="ident">terminator</span>.<span class="ident">source_info</span>
+                            });
+                        }
                     }
                 }
             }
@@ -1116,7 +1119,7 @@
             <span class="ident">TerminatorKind</span>::<span class="ident">Call</span> { <span class="ident">args</span>, <span class="ident">destination</span>: <span class="prelude-val">Some</span>(<span class="ident">destination</span>), <span class="ident">cleanup</span>, .. } <span class="op">=&gt;</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Inlined {:?} into {:?}&quot;</span>, <span class="ident">callsite</span>.<span class="ident">callee</span>, <span class="self">self</span>.<span class="ident">source</span>);
 
-                <span class="kw">let</span> <span class="ident">is_box_free</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">callsite</span>.<span class="ident">callee</span>) <span class="op">==</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">box_free_fn</span>();
+                <span class="kw">let</span> <span class="ident">is_box_free</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">callsite</span>.<span class="ident">callee</span>) <span class="op">==</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">box_free_fn</span>();
 
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">local_map</span> <span class="op">=</span> <span class="ident">IndexVec</span>::<span class="ident">with_capacity</span>(<span class="ident">callee_mir</span>.<span class="ident">local_decls</span>.<span class="ident">len</span>());
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">scope_map</span> <span class="op">=</span> <span class="ident">IndexVec</span>::<span class="ident">with_capacity</span>(<span class="ident">callee_mir</span>.<span class="ident">visibility_scopes</span>.<span class="ident">len</span>());
@@ -1367,16 +1370,6 @@
         <span class="ident">new</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">update_local</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">local</span>: <span class="ident">Local</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Local</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">local</span>.<span class="ident">index</span>();
-        <span class="kw">if</span> <span class="ident">idx</span> <span class="op">&lt;</span> (<span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>) {
-            <span class="kw">return</span> <span class="prelude-val">None</span>;
-        }
-        <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">idx</span> <span class="op">-</span> (<span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>);
-        <span class="kw">let</span> <span class="ident">local</span> <span class="op">=</span> <span class="ident">Local</span>::<span class="ident">new</span>(<span class="ident">idx</span>);
-        <span class="self">self</span>.<span class="ident">local_map</span>.<span class="ident">get</span>(<span class="ident">local</span>).<span class="ident">cloned</span>()
-    }
-
     <span class="kw">fn</span> <span class="ident">arg_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">arg</span>: <span class="ident">Local</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">index</span>();
         <span class="kw">if</span> <span class="ident">idx</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">idx</span> <span class="op">&lt;=</span> <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>() {
@@ -1388,32 +1381,41 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MutVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Integrator</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                   <span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Local</span>,
+                   <span class="ident">_ctxt</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                   <span class="ident">_location</span>: <span class="ident">Location</span>) {
+        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">local</span> <span class="op">==</span> <span class="ident">RETURN_POINTER</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">destination</span> {
+                <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">l</span>) <span class="op">=&gt;</span> {
+                    <span class="kw-2">*</span><span class="ident">local</span> <span class="op">=</span> <span class="ident">l</span>;
+                    <span class="kw">return</span>;
+                },
+                <span class="kw-2">ref</span> <span class="ident">lval</span> <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Return lvalue is {:?}, not local&quot;</span>, <span class="ident">lval</span>)
+            }
+        }
+        <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">local</span>.<span class="ident">index</span>() <span class="op">-</span> <span class="number">1</span>;
+        <span class="kw">if</span> <span class="ident">idx</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>() {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">args</span>[<span class="ident">idx</span>] {
+                <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">l</span>)) <span class="op">=&gt;</span> {
+                    <span class="kw-2">*</span><span class="ident">local</span> <span class="op">=</span> <span class="ident">l</span>;
+                    <span class="kw">return</span>;
+                },
+                <span class="kw-2">ref</span> <span class="ident">op</span> <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Arg operand `{:?}` is {:?}, not local&quot;</span>, <span class="ident">idx</span>, <span class="ident">op</span>)
+            }
+        }
+        <span class="kw-2">*</span><span class="ident">local</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">local_map</span>[<span class="ident">Local</span>::<span class="ident">new</span>(<span class="ident">idx</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>())];
+    }
+
     <span class="kw">fn</span> <span class="ident">visit_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                     <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">_ctxt</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">_location</span>: <span class="ident">Location</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">l</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">update_local</span>(<span class="kw-2">*</span><span class="ident">local</span>) {
-                <span class="comment">// Temp or Var; update the local reference</span>
-                <span class="kw-2">*</span><span class="ident">local</span> <span class="op">=</span> <span class="ident">l</span>;
-                <span class="kw">return</span>;
-            }
-        }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-            <span class="kw">if</span> <span class="ident">local</span> <span class="op">==</span> <span class="ident">RETURN_POINTER</span> {
-                <span class="comment">// Return pointer; update the lvalue itself</span>
-                <span class="kw-2">*</span><span class="ident">lvalue</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">destination</span>.<span class="ident">clone</span>();
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">local</span>.<span class="ident">index</span>() <span class="op">&lt;</span> (<span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>) {
-                <span class="comment">// Argument, once again update the the lvalue itself</span>
-                <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="ident">local</span>.<span class="ident">index</span>() <span class="op">-</span> <span class="number">1</span>;
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">lval</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">args</span>[<span class="ident">idx</span>] {
-                    <span class="kw-2">*</span><span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">lval</span>.<span class="ident">clone</span>();
-                } <span class="kw">else</span> {
-                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Arg operand `{:?}` is not an Lvalue use.&quot;</span>, <span class="ident">idx</span>)
-                }
-            }
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">RETURN_POINTER</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
+            <span class="comment">// Return pointer; update the lvalue itself</span>
+            <span class="kw-2">*</span><span class="ident">lvalue</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">destination</span>.<span class="ident">clone</span>();
         } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">super_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">_ctxt</span>, <span class="ident">_location</span>)
+            <span class="self">self</span>.<span class="ident">super_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">_ctxt</span>, <span class="ident">_location</span>);
         }
     }
 

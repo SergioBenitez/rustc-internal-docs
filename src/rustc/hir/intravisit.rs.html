@@ -1830,8 +1830,8 @@
         <span class="ident">PatKind</span>::<span class="ident">Ref</span>(<span class="kw-2">ref</span> <span class="ident">subpattern</span>, _) <span class="op">=&gt;</span> {
             <span class="ident">visitor</span>.<span class="ident">visit_pat</span>(<span class="ident">subpattern</span>)
         }
-        <span class="ident">PatKind</span>::<span class="ident">Binding</span>(_, <span class="ident">def_id</span>, <span class="kw-2">ref</span> <span class="ident">pth1</span>, <span class="kw-2">ref</span> <span class="ident">optional_subpattern</span>) <span class="op">=&gt;</span> {
-            <span class="ident">visitor</span>.<span class="ident">visit_def_mention</span>(<span class="ident">Def</span>::<span class="ident">Local</span>(<span class="ident">def_id</span>));
+        <span class="ident">PatKind</span>::<span class="ident">Binding</span>(_, <span class="ident">canonical_id</span>, <span class="kw-2">ref</span> <span class="ident">pth1</span>, <span class="kw-2">ref</span> <span class="ident">optional_subpattern</span>) <span class="op">=&gt;</span> {
+            <span class="ident">visitor</span>.<span class="ident">visit_def_mention</span>(<span class="ident">Def</span>::<span class="ident">Local</span>(<span class="ident">canonical_id</span>));
             <span class="ident">visitor</span>.<span class="ident">visit_name</span>(<span class="ident">pth1</span>.<span class="ident">span</span>, <span class="ident">pth1</span>.<span class="ident">node</span>);
             <span class="macro">walk_list</span><span class="macro">!</span>(<span class="ident">visitor</span>, <span class="ident">visit_pat</span>, <span class="ident">optional_subpattern</span>);
         }

@@ -1018,28 +1018,6 @@
 <span id="973">973</span>
 <span id="974">974</span>
 <span id="975">975</span>
-<span id="976">976</span>
-<span id="977">977</span>
-<span id="978">978</span>
-<span id="979">979</span>
-<span id="980">980</span>
-<span id="981">981</span>
-<span id="982">982</span>
-<span id="983">983</span>
-<span id="984">984</span>
-<span id="985">985</span>
-<span id="986">986</span>
-<span id="987">987</span>
-<span id="988">988</span>
-<span id="989">989</span>
-<span id="990">990</span>
-<span id="991">991</span>
-<span id="992">992</span>
-<span id="993">993</span>
-<span id="994">994</span>
-<span id="995">995</span>
-<span id="996">996</span>
-<span id="997">997</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1051,7 +1029,7 @@
 <span class="comment">// option. This file may not be copied, modified, or distributed</span>
 <span class="comment">// except according to those terms.</span>
 
-<span class="attribute">#<span class="op">!</span>[<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_snake_case</span>)]</span>
 
 <span class="macro">register_long_diagnostics</span><span class="macro">!</span> {
 
@@ -1472,29 +1450,6 @@ static B: &amp;&#39;static NotThreadSafe&lt;usize&gt; = &amp;A; // ok!
 
 Remember this solution is unsafe! You will have to ensure that accesses to the
 cell are synchronized.
-&quot;##</span>,
-
-<span class="ident">E0493</span>: <span class="string">r##&quot;
-A type with a destructor was assigned to an invalid type of variable. Erroneous
-code example:
-
-```compile_fail,E0493
-struct Foo {
-    a: u32
-}
-
-impl Drop for Foo {
-    fn drop(&amp;mut self) {}
-}
-
-const F : Foo = Foo { a : 0 };
-// error: constants are not allowed to have destructors
-static S : Foo = Foo { a : 0 };
-// error: destructors in statics are an unstable feature
-```
-
-To solve this issue, please use a type which does allow the usage of type with
-destructors.
 &quot;##</span>,
 
 <span class="ident">E0494</span>: <span class="string">r##&quot;
@@ -2034,6 +1989,7 @@ fn print_fancy_ref(fancy_ref: &amp;FancyNum){
 }
 
 <span class="macro">register_diagnostics</span><span class="macro">!</span> {
+    <span class="ident">E0493</span>, <span class="comment">// destructors cannot be evaluated at compile-time</span>
     <span class="ident">E0524</span>, <span class="comment">// two closures require unique access to `..` at the same time</span>
     <span class="ident">E0526</span>, <span class="comment">// shuffle indices are not constant</span>
     <span class="ident">E0625</span>, <span class="comment">// thread-local statics cannot be accessed at compile-time</span>

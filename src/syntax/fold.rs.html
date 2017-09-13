@@ -1477,6 +1477,8 @@
 <span id="1432">1432</span>
 <span id="1433">1433</span>
 <span id="1434">1434</span>
+<span id="1435">1435</span>
+<span id="1436">1436</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1824,12 +1826,14 @@
     <span class="ident">fold_attrs</span>(<span class="ident">attrs</span>.<span class="ident">into</span>(), <span class="ident">fld</span>).<span class="ident">into</span>()
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">noop_fold_arm</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Folder</span><span class="op">&gt;</span>(<span class="ident">Arm</span> {<span class="ident">attrs</span>, <span class="ident">pats</span>, <span class="ident">guard</span>, <span class="ident">body</span>}: <span class="ident">Arm</span>, <span class="ident">fld</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Arm</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">noop_fold_arm</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Folder</span><span class="op">&gt;</span>(<span class="ident">Arm</span> {<span class="ident">attrs</span>, <span class="ident">pats</span>, <span class="ident">guard</span>, <span class="ident">body</span>, <span class="ident">beginning_vert</span>}: <span class="ident">Arm</span>,
+    <span class="ident">fld</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Arm</span> {
     <span class="ident">Arm</span> {
         <span class="ident">attrs</span>: <span class="ident">fold_attrs</span>(<span class="ident">attrs</span>, <span class="ident">fld</span>),
         <span class="ident">pats</span>: <span class="ident">pats</span>.<span class="ident">move_map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">fld</span>.<span class="ident">fold_pat</span>(<span class="ident">x</span>)),
         <span class="ident">guard</span>: <span class="ident">guard</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">fld</span>.<span class="ident">fold_expr</span>(<span class="ident">x</span>)),
         <span class="ident">body</span>: <span class="ident">fld</span>.<span class="ident">fold_expr</span>(<span class="ident">body</span>),
+        <span class="ident">beginning_vert</span>,
     }
 }
 

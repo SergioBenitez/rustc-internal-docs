@@ -821,11 +821,11 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::{<span class="self">self</span>, <span class="ident">BufWriter</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">process</span>::<span class="ident">Command</span>;
 
 <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">SharedCrateContext</span>;
 
 <span class="kw">use</span> <span class="ident">back</span>::<span class="ident">archive</span>;
+<span class="kw">use</span> <span class="ident">back</span>::<span class="ident">command</span>::<span class="ident">Command</span>;
 <span class="kw">use</span> <span class="ident">back</span>::<span class="ident">symbol_export</span>::<span class="ident">ExportedSymbols</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">dependency_format</span>::<span class="ident">Linkage</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">LOCAL_CRATE</span>, <span class="ident">CrateNum</span>};

@@ -473,7 +473,7 @@
                 }))
             },
             <span class="ident">TyArray</span>(<span class="ident">ty</span>, <span class="ident">len</span>) <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="ident">len</span> <span class="op">==</span> <span class="number">0</span> {
+                <span class="kw">if</span> <span class="ident">len</span>.<span class="ident">val</span>.<span class="ident">to_const_int</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">to_u64</span>()) <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="number">0</span>) {
                     <span class="ident">DefIdForest</span>::<span class="ident">empty</span>()
                 } <span class="kw">else</span> {
                     <span class="ident">ty</span>.<span class="ident">uninhabited_from</span>(<span class="ident">visited</span>, <span class="ident">tcx</span>)

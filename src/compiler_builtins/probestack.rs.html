@@ -203,7 +203,7 @@
 <span class="doccomment">//! probes on any other architecture like ARM or PowerPC64. LLVM I&#39;m sure would</span>
 <span class="doccomment">//! be more than welcome to accept such a change!</span>
 
-<span class="attribute">#<span class="op">!</span>[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">windows</span>))]</span> <span class="comment">// Windows already has builtins to do this</span>
+<span class="attribute">#![<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">windows</span>))]</span> <span class="comment">// Windows already has builtins to do this</span>
 
 <span class="attribute">#[<span class="ident">naked</span>]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;mangled-names&quot;</span>), <span class="ident">no_mangle</span>)]</span>

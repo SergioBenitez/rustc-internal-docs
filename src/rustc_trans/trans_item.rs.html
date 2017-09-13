@@ -634,6 +634,7 @@
 <span id="589">589</span>
 <span id="590">590</span>
 <span id="591">591</span>
+<span id="592">592</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1083,7 +1084,8 @@
             <span class="ident">ty</span>::<span class="ident">TyArray</span>(<span class="ident">inner_type</span>, <span class="ident">len</span>) <span class="op">=&gt;</span> {
                 <span class="ident">output</span>.<span class="ident">push</span>(<span class="string">&#39;[&#39;</span>);
                 <span class="self">self</span>.<span class="ident">push_type_name</span>(<span class="ident">inner_type</span>, <span class="ident">output</span>);
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">output</span>, <span class="string">&quot;; {}&quot;</span>, <span class="ident">len</span>).<span class="ident">unwrap</span>();
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">output</span>, <span class="string">&quot;; {}&quot;</span>,
+                    <span class="ident">len</span>.<span class="ident">val</span>.<span class="ident">to_const_int</span>().<span class="ident">unwrap</span>().<span class="ident">to_u64</span>().<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
                 <span class="ident">output</span>.<span class="ident">push</span>(<span class="string">&#39;]&#39;</span>);
             },
             <span class="ident">ty</span>::<span class="ident">TySlice</span>(<span class="ident">inner_type</span>) <span class="op">=&gt;</span> {

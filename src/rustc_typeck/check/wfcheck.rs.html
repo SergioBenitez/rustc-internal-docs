@@ -1275,7 +1275,7 @@
     {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="ident">error_392</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">span</span>, <span class="ident">param_name</span>);
 
-        <span class="kw">let</span> <span class="ident">suggested_marker_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">phantom_data</span>();
+        <span class="kw">let</span> <span class="ident">suggested_marker_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">phantom_data</span>();
         <span class="kw">match</span> <span class="ident">suggested_marker_id</span> {
             <span class="prelude-val">Some</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> {
                 <span class="ident">err</span>.<span class="ident">help</span>(

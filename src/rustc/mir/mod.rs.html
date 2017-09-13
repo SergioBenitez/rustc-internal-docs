@@ -2053,12 +2053,6 @@
 <span id="2008">2008</span>
 <span id="2009">2009</span>
 <span id="2010">2010</span>
-<span id="2011">2011</span>
-<span id="2012">2012</span>
-<span id="2013">2013</span>
-<span id="2014">2014</span>
-<span id="2015">2015</span>
-<span id="2016">2016</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2074,7 +2068,7 @@
 
 <span class="kw">use</span> <span class="ident">graphviz</span>::<span class="ident">IntoCow</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
-<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>::<span class="ident">CodeExtent</span>;
+<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
 <span class="kw">use</span> <span class="ident">rustc_const_math</span>::{<span class="ident">ConstUsize</span>, <span class="ident">ConstInt</span>, <span class="ident">ConstMathErr</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::{<span class="ident">IndexVec</span>, <span class="ident">Idx</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">control_flow_graph</span>::<span class="ident">dominators</span>::{<span class="ident">Dominators</span>, <span class="ident">dominators</span>};
@@ -2963,10 +2957,10 @@
     <span class="ident">SetDiscriminant</span> { <span class="ident">lvalue</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">variant_index</span>: <span class="ident">usize</span> },
 
     <span class="doccomment">/// Start a live range for the storage of the local.</span>
-    <span class="ident">StorageLive</span>(<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
+    <span class="ident">StorageLive</span>(<span class="ident">Local</span>),
 
     <span class="doccomment">/// End the current live range for the storage of the local.</span>
-    <span class="ident">StorageDead</span>(<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
+    <span class="ident">StorageDead</span>(<span class="ident">Local</span>),
 
     <span class="doccomment">/// Execute a piece of inline Assembly.</span>
     <span class="ident">InlineAsm</span> {
@@ -2980,9 +2974,9 @@
     <span class="doccomment">/// See &lt;https://internals.rust-lang.org/t/types-as-contracts/5562/73&gt; for more details.</span>
     <span class="ident">Validate</span>(<span class="ident">ValidationOp</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ValidationOperand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>),
 
-    <span class="doccomment">/// Mark one terminating point of an extent (i.e. static region).</span>
+    <span class="doccomment">/// Mark one terminating point of a region scope (i.e. static region).</span>
     <span class="doccomment">/// (The starting point(s) arise implicitly from borrows.)</span>
-    <span class="ident">EndRegion</span>(<span class="ident">CodeExtent</span>),
+    <span class="ident">EndRegion</span>(<span class="ident">region</span>::<span class="ident">Scope</span>),
 
     <span class="doccomment">/// No-op. Useful for deleting instructions without affecting statement indices.</span>
     <span class="ident">Nop</span>,
@@ -3001,7 +2995,7 @@
     <span class="ident">Release</span>,
     <span class="doccomment">/// Recursive traverse the *mutable* part of the type and relinquish all exclusive</span>
     <span class="doccomment">/// access *until* the given region ends.  Then, access will be recovered.</span>
-    <span class="ident">Suspend</span>(<span class="ident">CodeExtent</span>),
+    <span class="ident">Suspend</span>(<span class="ident">region</span>::<span class="ident">Scope</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ValidationOp</span> {
@@ -3021,7 +3015,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ValidationOperand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="ident">lval</span>: <span class="ident">T</span>,
     <span class="kw">pub</span> <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">re</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">CodeExtent</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">re</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">region</span>::<span class="ident">Scope</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">Mutability</span>,
 }
 
@@ -3139,12 +3133,12 @@
 }
 
 <span class="doccomment">/// Alias for projections as they appear in lvalues, where the base is an lvalue</span>
-<span class="doccomment">/// and the index is an operand.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LvalueProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Projection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>;
+<span class="doccomment">/// and the index is a local.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LvalueProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Projection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">Local</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>;
 
 <span class="doccomment">/// Alias for projections as they appear in lvalues, where the base is an lvalue</span>
-<span class="doccomment">/// and the index is an operand.</span>
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ProjectionElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>;
+<span class="doccomment">/// and the index is a local.</span>
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ProjectionElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Local</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>;
 
 <span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">Field</span>, <span class="string">&quot;field&quot;</span>);
 
@@ -3161,7 +3155,7 @@
         <span class="self">self</span>.<span class="ident">elem</span>(<span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(<span class="ident">adt_def</span>, <span class="ident">variant_index</span>))
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index</span>(<span class="self">self</span>, <span class="ident">index</span>: <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">index</span>(<span class="self">self</span>, <span class="ident">index</span>: <span class="ident">Local</span>) <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">elem</span>(<span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(<span class="ident">index</span>))
     }
 
@@ -3249,10 +3243,16 @@
         <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">span</span>: <span class="ident">Span</span>,
     ) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">type_of</span>(<span class="ident">def_id</span>).<span class="ident">subst</span>(<span class="ident">tcx</span>, <span class="ident">substs</span>);
         <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">Constant</span> {
             <span class="ident">span</span>,
-            <span class="ident">ty</span>: <span class="ident">tcx</span>.<span class="ident">type_of</span>(<span class="ident">def_id</span>).<span class="ident">subst</span>(<span class="ident">tcx</span>, <span class="ident">substs</span>),
-            <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> { <span class="ident">value</span>: <span class="ident">ConstVal</span>::<span class="ident">Function</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>) },
+            <span class="ident">ty</span>,
+            <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> {
+                <span class="ident">value</span>: <span class="ident">tcx</span>.<span class="ident">mk_const</span>(<span class="ident">ty</span>::<span class="ident">Const</span> {
+                    <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Function</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>),
+                    <span class="ident">ty</span>
+                })
+            },
         })
     }
 
@@ -3478,10 +3478,8 @@
 
                             <span class="ident">tcx</span>.<span class="ident">with_freevars</span>(<span class="ident">node_id</span>, <span class="op">|</span><span class="ident">freevars</span><span class="op">|</span> {
                                 <span class="kw">for</span> (<span class="ident">freevar</span>, <span class="ident">lv</span>) <span class="kw">in</span> <span class="ident">freevars</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">lvs</span>) {
-                                    <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">freevar</span>.<span class="ident">def</span>.<span class="ident">def_id</span>();
-                                    <span class="kw">let</span> <span class="ident">var_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
-                                    <span class="kw">let</span> <span class="ident">var_name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">local_var_name_str</span>(<span class="ident">var_id</span>);
-                                    <span class="ident">struct_fmt</span>.<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="ident">var_name</span>, <span class="ident">lv</span>);
+                                    <span class="kw">let</span> <span class="ident">var_name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">freevar</span>.<span class="ident">var_id</span>());
+                                    <span class="ident">struct_fmt</span>.<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="ident">var_name</span>.<span class="ident">as_str</span>(), <span class="ident">lv</span>);
                                 }
                             });
 
@@ -3498,10 +3496,8 @@
 
                             <span class="ident">tcx</span>.<span class="ident">with_freevars</span>(<span class="ident">node_id</span>, <span class="op">|</span><span class="ident">freevars</span><span class="op">|</span> {
                                 <span class="kw">for</span> (<span class="ident">freevar</span>, <span class="ident">lv</span>) <span class="kw">in</span> <span class="ident">freevars</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">lvs</span>) {
-                                    <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">freevar</span>.<span class="ident">def</span>.<span class="ident">def_id</span>();
-                                    <span class="kw">let</span> <span class="ident">var_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
-                                    <span class="kw">let</span> <span class="ident">var_name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">local_var_name_str</span>(<span class="ident">var_id</span>);
-                                    <span class="ident">struct_fmt</span>.<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="ident">var_name</span>, <span class="ident">lv</span>);
+                                    <span class="kw">let</span> <span class="ident">var_name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">freevar</span>.<span class="ident">var_id</span>());
+                                    <span class="ident">struct_fmt</span>.<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="ident">var_name</span>.<span class="ident">as_str</span>(), <span class="ident">lv</span>);
                                 }
                                 <span class="ident">struct_fmt</span>.<span class="ident">field</span>(<span class="string">&quot;$state&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">lvs</span>[<span class="ident">freevars</span>.<span class="ident">len</span>()]);
                                 <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> (<span class="ident">freevars</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>)..<span class="ident">lvs</span>.<span class="ident">len</span>() {
@@ -3539,12 +3535,8 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Literal</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="ident">Item</span> {
-        <span class="ident">def_id</span>: <span class="ident">DefId</span>,
-        <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-    },
     <span class="ident">Value</span> {
-        <span class="ident">value</span>: <span class="ident">ConstVal</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">Const</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     },
     <span class="ident">Promoted</span> {
         <span class="comment">// Index into the `promoted` vector of `Mir`.</span>
@@ -3562,12 +3554,9 @@
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">use</span> <span class="self">self</span>::<span class="ident">Literal</span>::<span class="kw-2">*</span>;
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Item</span> { <span class="ident">def_id</span>, <span class="ident">substs</span> } <span class="op">=&gt;</span> {
-                <span class="ident">ppaux</span>::<span class="ident">parameterized</span>(<span class="ident">fmt</span>, <span class="ident">substs</span>, <span class="ident">def_id</span>, <span class="kw-2">&amp;</span>[])
-            }
-            <span class="ident">Value</span> { <span class="kw-2">ref</span> <span class="ident">value</span> } <span class="op">=&gt;</span> {
+            <span class="ident">Value</span> { <span class="ident">value</span> } <span class="op">=&gt;</span> {
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;const &quot;</span>)<span class="question-mark">?</span>;
-                <span class="ident">fmt_const_val</span>(<span class="ident">fmt</span>, <span class="ident">value</span>)
+                <span class="ident">fmt_const_val</span>(<span class="ident">fmt</span>, <span class="kw-2">&amp;</span><span class="ident">value</span>.<span class="ident">val</span>)
             }
             <span class="ident">Promoted</span> { <span class="ident">index</span> } <span class="op">=&gt;</span> {
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">index</span>)
@@ -3582,9 +3571,9 @@
     <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">const_val</span> {
         <span class="ident">Float</span>(<span class="ident">f</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">f</span>),
         <span class="ident">Integral</span>(<span class="ident">n</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">n</span>),
-        <span class="ident">Str</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">s</span>),
-        <span class="ident">ByteStr</span>(<span class="kw-2">ref</span> <span class="ident">bytes</span>) <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="ident">escaped</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">bytes</span>
+        <span class="ident">Str</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">s</span>),
+        <span class="ident">ByteStr</span>(<span class="ident">bytes</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="ident">escaped</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">data</span>
                 .<span class="ident">iter</span>()
                 .<span class="ident">flat_map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">ch</span><span class="op">|</span> <span class="ident">ascii</span>::<span class="ident">escape_default</span>(<span class="ident">ch</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span> <span class="kw">as</span> <span class="ident">char</span>))
                 .<span class="ident">collect</span>();
@@ -3594,8 +3583,8 @@
         <span class="ident">Char</span>(<span class="ident">c</span>) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">c</span>),
         <span class="ident">Variant</span>(<span class="ident">def_id</span>) <span class="op">|</span>
         <span class="ident">Function</span>(<span class="ident">def_id</span>, _) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">item_path_str</span>(<span class="ident">def_id</span>)),
-        <span class="ident">Struct</span>(_) <span class="op">|</span> <span class="ident">Tuple</span>(_) <span class="op">|</span> <span class="ident">Array</span>(_) <span class="op">|</span> <span class="ident">Repeat</span>(..) <span class="op">=&gt;</span>
-            <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;ConstVal `{:?}` should not be in MIR&quot;</span>, <span class="ident">const_val</span>),
+        <span class="ident">Aggregate</span>(_) <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;`ConstVal::{:?}` should not be in MIR&quot;</span>, <span class="ident">const_val</span>),
+        <span class="ident">Unevaluated</span>(..) <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">const_val</span>)
     }
 }
 
@@ -3763,19 +3752,19 @@
                 <span class="ident">lvalue</span>: <span class="ident">lvalue</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
                 <span class="ident">variant_index</span>,
             },
-            <span class="ident">StorageLive</span>(<span class="kw-2">ref</span> <span class="ident">lval</span>) <span class="op">=&gt;</span> <span class="ident">StorageLive</span>(<span class="ident">lval</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
-            <span class="ident">StorageDead</span>(<span class="kw-2">ref</span> <span class="ident">lval</span>) <span class="op">=&gt;</span> <span class="ident">StorageDead</span>(<span class="ident">lval</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
+            <span class="ident">StorageLive</span>(<span class="kw-2">ref</span> <span class="ident">local</span>) <span class="op">=&gt;</span> <span class="ident">StorageLive</span>(<span class="ident">local</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
+            <span class="ident">StorageDead</span>(<span class="kw-2">ref</span> <span class="ident">local</span>) <span class="op">=&gt;</span> <span class="ident">StorageDead</span>(<span class="ident">local</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
             <span class="ident">InlineAsm</span> { <span class="kw-2">ref</span> <span class="ident">asm</span>, <span class="kw-2">ref</span> <span class="ident">outputs</span>, <span class="kw-2">ref</span> <span class="ident">inputs</span> } <span class="op">=&gt;</span> <span class="ident">InlineAsm</span> {
                 <span class="ident">asm</span>: <span class="ident">asm</span>.<span class="ident">clone</span>(),
                 <span class="ident">outputs</span>: <span class="ident">outputs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
                 <span class="ident">inputs</span>: <span class="ident">inputs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)
             },
 
-            <span class="comment">// Note for future: If we want to expose the extents</span>
+            <span class="comment">// Note for future: If we want to expose the region scopes</span>
             <span class="comment">// during the fold, we need to either generalize EndRegion</span>
             <span class="comment">// to carry `[ty::Region]`, or extend the `TypeFolder`</span>
-            <span class="comment">// trait with a `fn fold_extent`.</span>
-            <span class="ident">EndRegion</span>(<span class="kw-2">ref</span> <span class="ident">extent</span>) <span class="op">=&gt;</span> <span class="ident">EndRegion</span>(<span class="ident">extent</span>.<span class="ident">clone</span>()),
+            <span class="comment">// trait with a `fn fold_scope`.</span>
+            <span class="ident">EndRegion</span>(<span class="kw-2">ref</span> <span class="ident">region_scope</span>) <span class="op">=&gt;</span> <span class="ident">EndRegion</span>(<span class="ident">region_scope</span>.<span class="ident">clone</span>()),
 
             <span class="ident">Validate</span>(<span class="kw-2">ref</span> <span class="ident">op</span>, <span class="kw-2">ref</span> <span class="ident">lvals</span>) <span class="op">=&gt;</span>
                 <span class="ident">Validate</span>(<span class="ident">op</span>.<span class="ident">clone</span>(),
@@ -3794,17 +3783,17 @@
 
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">kind</span> {
             <span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">lval</span>, <span class="kw-2">ref</span> <span class="ident">rval</span>) <span class="op">=&gt;</span> { <span class="ident">lval</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span> <span class="ident">rval</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) }
-            <span class="ident">SetDiscriminant</span> { <span class="kw-2">ref</span> <span class="ident">lvalue</span>, .. } <span class="op">|</span>
-            <span class="ident">StorageLive</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">|</span>
-            <span class="ident">StorageDead</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> <span class="ident">lvalue</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
+            <span class="ident">SetDiscriminant</span> { <span class="kw-2">ref</span> <span class="ident">lvalue</span>, .. } <span class="op">=&gt;</span> <span class="ident">lvalue</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
+            <span class="ident">StorageLive</span>(<span class="kw-2">ref</span> <span class="ident">local</span>) <span class="op">|</span>
+            <span class="ident">StorageDead</span>(<span class="kw-2">ref</span> <span class="ident">local</span>) <span class="op">=&gt;</span> <span class="ident">local</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
             <span class="ident">InlineAsm</span> { <span class="kw-2">ref</span> <span class="ident">outputs</span>, <span class="kw-2">ref</span> <span class="ident">inputs</span>, .. } <span class="op">=&gt;</span>
                 <span class="ident">outputs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span> <span class="ident">inputs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
 
-            <span class="comment">// Note for future: If we want to expose the extents</span>
+            <span class="comment">// Note for future: If we want to expose the region scopes</span>
             <span class="comment">// during the visit, we need to either generalize EndRegion</span>
             <span class="comment">// to carry `[ty::Region]`, or extend the `TypeVisitor`</span>
-            <span class="comment">// trait with a `fn visit_extent`.</span>
-            <span class="ident">EndRegion</span>(<span class="kw-2">ref</span> <span class="ident">_extent</span>) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="comment">// trait with a `fn visit_scope`.</span>
+            <span class="ident">EndRegion</span>(<span class="kw-2">ref</span> <span class="ident">_scope</span>) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
 
             <span class="ident">Validate</span>(<span class="kw-2">ref</span> <span class="ident">_op</span>, <span class="kw-2">ref</span> <span class="ident">lvalues</span>) <span class="op">=&gt;</span>
                 <span class="ident">lvalues</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">ty_and_lvalue</span><span class="op">|</span> <span class="ident">ty_and_lvalue</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)),
@@ -4062,17 +4051,16 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Literal</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Literal</span>::<span class="ident">Item</span> { <span class="ident">def_id</span>, <span class="ident">substs</span> } <span class="op">=&gt;</span> <span class="ident">Literal</span>::<span class="ident">Item</span> {
-                <span class="ident">def_id</span>,
-                <span class="ident">substs</span>: <span class="ident">substs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)
+            <span class="ident">Literal</span>::<span class="ident">Value</span> { <span class="ident">value</span> } <span class="op">=&gt;</span> <span class="ident">Literal</span>::<span class="ident">Value</span> {
+                <span class="ident">value</span>: <span class="ident">value</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)
             },
-            _ <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">clone</span>()
+            <span class="ident">Literal</span>::<span class="ident">Promoted</span> { <span class="ident">index</span> } <span class="op">=&gt;</span> <span class="ident">Literal</span>::<span class="ident">Promoted</span> { <span class="ident">index</span> }
         }
     }
     <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Literal</span>::<span class="ident">Item</span> { <span class="ident">substs</span>, .. } <span class="op">=&gt;</span> <span class="ident">substs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
-            _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
+            <span class="ident">Literal</span>::<span class="ident">Value</span> { <span class="ident">value</span> } <span class="op">=&gt;</span> <span class="ident">value</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
+            <span class="ident">Literal</span>::<span class="ident">Promoted</span> { .. } <span class="op">=&gt;</span> <span class="bool-val">false</span>
         }
     }
 }

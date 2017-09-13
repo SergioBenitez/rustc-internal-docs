@@ -1563,9 +1563,6 @@
 <span id="1518">1518</span>
 <span id="1519">1519</span>
 <span id="1520">1520</span>
-<span id="1521">1521</span>
-<span id="1522">1522</span>
-<span id="1523">1523</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1627,7 +1624,7 @@
 <span class="doccomment">//! result of `*x&#39;`, effectively, where `x&#39;` is a `Categorization::Upvar` reference</span>
 <span class="doccomment">//! tied to `x`. The type of `x&#39;` will be a borrowed pointer.</span>
 
-<span class="attribute">#<span class="op">!</span>[<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">PointerKind</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">InteriorKind</span>::<span class="kw-2">*</span>;
@@ -1638,7 +1635,7 @@
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">Aliasability</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>::<span class="ident">RegionMaps</span>;
+<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">DefIndex</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span> <span class="kw">as</span> <span class="ident">hir_map</span>;
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
@@ -1852,7 +1849,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MemCategorizationContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;a</span><span class="op">+</span><span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">region_maps</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RegionMaps</span>,
+    <span class="kw">pub</span> <span class="ident">region_scope_tree</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">region</span>::<span class="ident">ScopeTree</span>,
     <span class="kw">pub</span> <span class="ident">tables</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ty</span>::<span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">infcx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 }
@@ -1960,21 +1957,21 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MemCategorizationContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-               <span class="ident">region_maps</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RegionMaps</span>,
+               <span class="ident">region_scope_tree</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">region</span>::<span class="ident">ScopeTree</span>,
                <span class="ident">tables</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ty</span>::<span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                <span class="op">-&gt;</span> <span class="ident">MemCategorizationContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="ident">MemCategorizationContext</span> { <span class="ident">tcx</span>, <span class="ident">region_maps</span>, <span class="ident">tables</span>, <span class="ident">infcx</span>: <span class="prelude-val">None</span> }
+        <span class="ident">MemCategorizationContext</span> { <span class="ident">tcx</span>, <span class="ident">region_scope_tree</span>, <span class="ident">tables</span>, <span class="ident">infcx</span>: <span class="prelude-val">None</span> }
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MemCategorizationContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_infer</span>(<span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                      <span class="ident">region_maps</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RegionMaps</span>,
+                      <span class="ident">region_scope_tree</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">region</span>::<span class="ident">ScopeTree</span>,
                       <span class="ident">tables</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ty</span>::<span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                       <span class="op">-&gt;</span> <span class="ident">MemCategorizationContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="ident">MemCategorizationContext</span> {
             <span class="ident">tcx</span>: <span class="ident">infcx</span>.<span class="ident">tcx</span>,
-            <span class="ident">region_maps</span>,
+            <span class="ident">region_scope_tree</span>,
             <span class="ident">tables</span>,
             <span class="ident">infcx</span>: <span class="prelude-val">Some</span>(<span class="ident">infcx</span>),
         }
@@ -2239,13 +2236,11 @@
               }))
           }
 
-          <span class="ident">Def</span>::<span class="ident">Upvar</span>(<span class="ident">def_id</span>, _, <span class="ident">fn_node_id</span>) <span class="op">=&gt;</span> {
-              <span class="kw">let</span> <span class="ident">var_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
+          <span class="ident">Def</span>::<span class="ident">Upvar</span>(<span class="ident">var_id</span>, _, <span class="ident">fn_node_id</span>) <span class="op">=&gt;</span> {
               <span class="self">self</span>.<span class="ident">cat_upvar</span>(<span class="ident">id</span>, <span class="ident">span</span>, <span class="ident">var_id</span>, <span class="ident">fn_node_id</span>)
           }
 
-          <span class="ident">Def</span>::<span class="ident">Local</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="ident">vid</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
+          <span class="ident">Def</span>::<span class="ident">Local</span>(<span class="ident">vid</span>) <span class="op">=&gt;</span> {
             <span class="prelude-val">Ok</span>(<span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">cmt_</span> {
                 <span class="ident">id</span>,
                 <span class="ident">span</span>,
@@ -2305,13 +2300,12 @@
         };
 
         <span class="kw">let</span> <span class="ident">closure_expr_def_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">fn_node_id</span>).<span class="ident">index</span>;
-        <span class="kw">let</span> <span class="ident">var_def_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">var_id</span>).<span class="ident">index</span>;
-
+        <span class="kw">let</span> <span class="ident">var_hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">var_id</span>);
         <span class="kw">let</span> <span class="ident">upvar_id</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">UpvarId</span> {
-            <span class="ident">var_id</span>: <span class="ident">var_def_index</span>,
+            <span class="ident">var_id</span>: <span class="ident">var_hir_id</span>,
             <span class="ident">closure_expr_id</span>: <span class="ident">closure_expr_def_index</span>
         };
-        <span class="kw">let</span> <span class="ident">var_hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">var_id</span>);
+
         <span class="kw">let</span> <span class="ident">var_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">node_ty</span>(<span class="ident">var_hir_id</span>)<span class="question-mark">?</span>;
 
         <span class="comment">// Mutability of original variable itself</span>
@@ -2430,9 +2424,8 @@
 
     <span class="doccomment">/// Returns the lifetime of a temporary created by expr with id `id`.</span>
     <span class="doccomment">/// This could be `&#39;static` if `id` is part of a constant expression.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">temporary_scope</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
-    {
-        <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">region_maps</span>.<span class="ident">temporary_scope</span>(<span class="ident">id</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">temporary_scope</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">hir</span>::<span class="ident">ItemLocalId</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">region_scope_tree</span>.<span class="ident">temporary_scope</span>(<span class="ident">id</span>);
         <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">mk_region</span>(<span class="kw">match</span> <span class="ident">scope</span> {
             <span class="prelude-val">Some</span>(<span class="ident">scope</span>) <span class="op">=&gt;</span> <span class="ident">ty</span>::<span class="ident">ReScope</span>(<span class="ident">scope</span>),
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">ty</span>::<span class="ident">ReStatic</span>
@@ -2449,7 +2442,8 @@
 
         <span class="comment">// Always promote `[T; 0]` (even when e.g. borrowed mutably).</span>
         <span class="kw">let</span> <span class="ident">promotable</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">expr_ty</span>.<span class="ident">sty</span> {
-            <span class="ident">ty</span>::<span class="ident">TyArray</span>(_, <span class="number">0</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">ty</span>::<span class="ident">TyArray</span>(_, <span class="ident">len</span>) <span class="kw">if</span>
+                <span class="ident">len</span>.<span class="ident">val</span>.<span class="ident">to_const_int</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">to_u64</span>()) <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="number">0</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             _ <span class="op">=&gt;</span> <span class="ident">promotable</span>,
         };
 
@@ -2459,7 +2453,7 @@
         <span class="kw">let</span> <span class="ident">re</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">promotable</span> {
             <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_static</span>
         } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">temporary_scope</span>(<span class="ident">id</span>)
+            <span class="self">self</span>.<span class="ident">temporary_scope</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">id</span>).<span class="ident">local_id</span>)
         };
         <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cat_rvalue</span>(<span class="ident">id</span>, <span class="ident">span</span>, <span class="ident">re</span>, <span class="ident">expr_ty</span>);
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;cat_rvalue_node ret {:?}&quot;</span>, <span class="ident">ret</span>);
@@ -3011,7 +3005,7 @@
             <span class="ident">Categorization</span>::<span class="ident">StaticItem</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;static&quot;</span>),
             <span class="ident">Categorization</span>::<span class="ident">Rvalue</span>(<span class="ident">r</span>) <span class="op">=&gt;</span> { <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;rvalue({:?})&quot;</span>, <span class="ident">r</span>) }
             <span class="ident">Categorization</span>::<span class="ident">Local</span>(<span class="ident">id</span>) <span class="op">=&gt;</span> {
-               <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">tcx</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">local_var_name_str</span>(<span class="ident">id</span>));
+               <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">tcx</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">id</span>));
                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;local({})&quot;</span>, <span class="ident">name</span>)
             }
             <span class="ident">Categorization</span>::<span class="ident">Upvar</span>(<span class="ident">upvar</span>) <span class="op">=&gt;</span> {

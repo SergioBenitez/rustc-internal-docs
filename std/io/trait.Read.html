@@ -335,7 +335,7 @@ be avoided if this is not desired.</p>
 <p><a href="../fs/struct.File.html"><code>File</code></a>s implement <code>Read</code>:</p>
 
 <pre class="rust rust-example-rendered">
-<span class="attribute">#<span class="op">!</span>[<span class="ident">feature</span>(<span class="ident">io</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">io</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
@@ -414,7 +414,6 @@ calls to <a href="trait.Read.html#tymethod.read"><code>read()</code></a> may suc
 <li><code>impl Read for <a class="struct" href="../../std/process/struct.ChildStderr.html" title="struct std::process::ChildStderr">ChildStderr</a></code></li>
 <li><code>impl Read for <a class="struct" href="../../std/os/unix/net/struct.UnixStream.html" title="struct std::os::unix::net::UnixStream">UnixStream</a></code></li>
 <li><code>impl&lt;'a&gt; Read for &amp;'a <a class="struct" href="../../std/os/unix/net/struct.UnixStream.html" title="struct std::os::unix::net::UnixStream">UnixStream</a></code></li>
-<li><code>impl&lt;'a&gt; Read for &amp;'a FileDesc</code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/std/io/trait.Read.js">
                  </script></section>

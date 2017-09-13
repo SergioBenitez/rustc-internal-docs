@@ -678,6 +678,10 @@
 <span id="633">633</span>
 <span id="634">634</span>
 <span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -710,7 +714,6 @@
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">u32</span>;
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ElaborateDrops</span>;
 
@@ -1202,7 +1205,12 @@
         <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">Constant</span> {
             <span class="ident">span</span>,
             <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>,
-            <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> { <span class="ident">value</span>: <span class="ident">ConstVal</span>::<span class="ident">Bool</span>(<span class="ident">val</span>) }
+            <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> {
+                <span class="ident">value</span>: <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">mk_const</span>(<span class="ident">ty</span>::<span class="ident">Const</span> {
+                    <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Bool</span>(<span class="ident">val</span>),
+                    <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>
+                })
+            }
         })))
     }
 

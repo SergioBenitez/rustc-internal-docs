@@ -1215,6 +1215,9 @@
 <span id="1170">1170</span>
 <span id="1171">1171</span>
 <span id="1172">1172</span>
+<span id="1173">1173</span>
+<span id="1174">1174</span>
+<span id="1175">1175</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1233,8 +1236,11 @@
     <span class="ident">Obligation</span>,
     <span class="ident">ObligationCause</span>,
     <span class="ident">ObligationCauseCode</span>,
+    <span class="ident">OnUnimplementedDirective</span>,
+    <span class="ident">OnUnimplementedNote</span>,
     <span class="ident">OutputTypeParameterMismatch</span>,
     <span class="ident">TraitNotObjectSafe</span>,
+    <span class="ident">ConstEvalFailure</span>,
     <span class="ident">PredicateObligation</span>,
     <span class="ident">Reveal</span>,
     <span class="ident">SelectionContext</span>,
@@ -1243,11 +1249,11 @@
 };
 
 <span class="kw">use</span> <span class="ident">errors</span>::<span class="ident">DiagnosticBuilder</span>;
-<span class="kw">use</span> <span class="ident">fmt_macros</span>::{<span class="ident">Parser</span>, <span class="ident">Piece</span>, <span class="ident">Position</span>};
 <span class="kw">use</span> <span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">infer</span>::{<span class="self">self</span>, <span class="ident">InferCtxt</span>};
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">type_variable</span>::<span class="ident">TypeVariableOrigin</span>;
+<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">EXTRA_REQUIREMENT_IN_IMPL</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
@@ -1534,77 +1540,56 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">on_unimplemented_note</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                             <span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                             <span class="ident">obligation</span>: <span class="kw-2">&amp;</span><span class="ident">PredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">on_unimplemented_note</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">obligation</span>: <span class="kw-2">&amp;</span><span class="ident">PredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span>
+        <span class="ident">OnUnimplementedNote</span>
+    {
         <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">impl_similar_to</span>(<span class="ident">trait_ref</span>, <span class="ident">obligation</span>)
             .<span class="ident">unwrap_or</span>(<span class="ident">trait_ref</span>.<span class="ident">def_id</span>());
-        <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="ident">trait_ref</span>.<span class="ident">skip_binder</span>();
+        <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">trait_ref</span>.<span class="ident">skip_binder</span>();
 
-        <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">span</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">report</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">item</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>
-            .<span class="ident">get_attrs</span>(<span class="ident">def_id</span>)
-            .<span class="ident">into_iter</span>()
-            .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">check_name</span>(<span class="string">&quot;rustc_on_unimplemented&quot;</span>))
-            .<span class="ident">next</span>()
-        {
-            <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">item_name</span>(<span class="ident">def_id</span>).<span class="ident">as_str</span>();
-            <span class="kw">let</span> <span class="ident">err_sp</span> <span class="op">=</span> <span class="ident">item</span>.<span class="ident">span</span>.<span class="ident">substitute_dummy</span>(<span class="ident">span</span>);
-            <span class="kw">let</span> <span class="ident">trait_str</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">trait_ref</span>.<span class="ident">def_id</span>);
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">istring</span>) <span class="op">=</span> <span class="ident">item</span>.<span class="ident">value_str</span>() {
-                <span class="kw">let</span> <span class="ident">istring</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">istring</span>.<span class="ident">as_str</span>();
-                <span class="kw">let</span> <span class="ident">generics</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">generics_of</span>(<span class="ident">trait_ref</span>.<span class="ident">def_id</span>);
-                <span class="kw">let</span> <span class="ident">generic_map</span> <span class="op">=</span> <span class="ident">generics</span>.<span class="ident">types</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> {
-                    (<span class="ident">param</span>.<span class="ident">name</span>.<span class="ident">as_str</span>().<span class="ident">to_string</span>(),
-                        <span class="ident">trait_ref</span>.<span class="ident">substs</span>.<span class="ident">type_for_def</span>(<span class="ident">param</span>).<span class="ident">to_string</span>())
-                }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">String</span><span class="op">&gt;&gt;</span>();
-                <span class="kw">let</span> <span class="ident">parser</span> <span class="op">=</span> <span class="ident">Parser</span>::<span class="ident">new</span>(<span class="ident">istring</span>);
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">errored</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                <span class="kw">let</span> <span class="ident">err</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">parser</span>.<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> {
-                    <span class="kw">match</span> <span class="ident">p</span> {
-                        <span class="ident">Piece</span>::<span class="ident">String</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">s</span>),
-                        <span class="ident">Piece</span>::<span class="ident">NextArgument</span>(<span class="ident">a</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">a</span>.<span class="ident">position</span> {
-                            <span class="ident">Position</span>::<span class="ident">ArgumentNamed</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">generic_map</span>.<span class="ident">get</span>(<span class="ident">s</span>) {
-                                <span class="prelude-val">Some</span>(<span class="ident">val</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">val</span>),
-                                <span class="prelude-val">None</span> <span class="kw">if</span> <span class="ident">s</span> <span class="op">==</span> <span class="ident">name</span> <span class="op">=&gt;</span> {
-                                    <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">trait_str</span>)
-                                }
-                                <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
-                                    <span class="macro">span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">err_sp</span>, <span class="ident">E0272</span>,
-                                              <span class="string">&quot;the #[rustc_on_unimplemented] attribute on trait \
-                                               definition for {} refers to non-existent type \
-                                               parameter {}&quot;</span>,
-                                              <span class="ident">trait_str</span>, <span class="ident">s</span>);
-                                    <span class="ident">errored</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                                    <span class="prelude-val">None</span>
-                                }
-                            },
-                            _ <span class="op">=&gt;</span> {
-                                <span class="macro">span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">err_sp</span>, <span class="ident">E0273</span>,
-                                          <span class="string">&quot;the #[rustc_on_unimplemented] attribute on trait \
-                                           definition for {} must have named format arguments, eg \
-                                           `#[rustc_on_unimplemented = \&quot;foo {{T}}\&quot;]`&quot;</span>,
-                                          <span class="ident">trait_str</span>);
-                                <span class="ident">errored</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                                <span class="prelude-val">None</span>
-                            }
-                        }
-                    }
-                }).<span class="ident">collect</span>();
-                <span class="comment">// Report only if the format string checks out</span>
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">errored</span> {
-                    <span class="ident">report</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>);
-                }
-            } <span class="kw">else</span> {
-                <span class="macro">span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">err_sp</span>, <span class="ident">E0274</span>,
-                                        <span class="string">&quot;the #[rustc_on_unimplemented] attribute on \
-                                                    trait definition for {} must have a value, \
-                                                    eg `#[rustc_on_unimplemented = \&quot;foo\&quot;]`&quot;</span>,
-                                                    <span class="ident">trait_str</span>);
+        <span class="kw">let</span> <span class="ident">desugaring</span>;
+        <span class="kw">let</span> <span class="ident">method</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">flags</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+        <span class="kw">let</span> <span class="ident">direct</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">code</span> {
+            <span class="ident">ObligationCauseCode</span>::<span class="ident">BuiltinDerivedObligation</span>(..) <span class="op">|</span>
+            <span class="ident">ObligationCauseCode</span>::<span class="ident">ImplDerivedObligation</span>(..) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            _ <span class="op">=&gt;</span> <span class="bool-val">true</span>
+        };
+        <span class="kw">if</span> <span class="ident">direct</span> {
+            <span class="comment">// this is a &quot;direct&quot;, user-specified, rather than derived,</span>
+            <span class="comment">// obligation.</span>
+            <span class="ident">flags</span>.<span class="ident">push</span>((<span class="string">&quot;direct&quot;</span>, <span class="prelude-val">None</span>));
+        }
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ObligationCauseCode</span>::<span class="ident">ItemObligation</span>(<span class="ident">item</span>) <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">code</span> {
+            <span class="comment">// FIXME: maybe also have some way of handling methods</span>
+            <span class="comment">// from other traits? That would require name resolution,</span>
+            <span class="comment">// which we might want to be some sort of hygienic.</span>
+            <span class="comment">//</span>
+            <span class="comment">// Currently I&#39;m leaving it for what I need for `try`.</span>
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">trait_of_item</span>(<span class="ident">item</span>) <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">trait_ref</span>.<span class="ident">def_id</span>) {
+                <span class="ident">method</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">item_name</span>(<span class="ident">item</span>);
+                <span class="ident">flags</span>.<span class="ident">push</span>((<span class="string">&quot;from_method&quot;</span>, <span class="prelude-val">None</span>));
+                <span class="ident">flags</span>.<span class="ident">push</span>((<span class="string">&quot;from_method&quot;</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">method</span>)));
             }
         }
-        <span class="ident">report</span>
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">k</span>) <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">span</span>.<span class="ident">compiler_desugaring_kind</span>() {
+            <span class="ident">desugaring</span> <span class="op">=</span> <span class="ident">k</span>.<span class="ident">as_symbol</span>().<span class="ident">as_str</span>();
+            <span class="ident">flags</span>.<span class="ident">push</span>((<span class="string">&quot;from_desugaring&quot;</span>, <span class="prelude-val">None</span>));
+            <span class="ident">flags</span>.<span class="ident">push</span>((<span class="string">&quot;from_desugaring&quot;</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">desugaring</span>)));
+        }
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">command</span>)) <span class="op">=</span> <span class="ident">OnUnimplementedDirective</span>::<span class="ident">of_item</span>(
+            <span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">trait_ref</span>.<span class="ident">def_id</span>, <span class="ident">def_id</span>
+        ) {
+            <span class="ident">command</span>.<span class="ident">evaluate</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="kw-2">&amp;</span><span class="ident">flags</span>)
+        } <span class="kw">else</span> {
+            <span class="ident">OnUnimplementedNote</span>::<span class="ident">empty</span>()
+        }
     }
 
     <span class="kw">fn</span> <span class="ident">find_similar_impl_candidates</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -1795,17 +1780,23 @@
                         <span class="kw">let</span> (<span class="ident">post_message</span>, <span class="ident">pre_message</span>) <span class="op">=</span>
                             <span class="self">self</span>.<span class="ident">get_parent_trait_ref</span>(<span class="kw-2">&amp;</span><span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">code</span>)
                                 .<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> (<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot; in `{}`&quot;</span>, <span class="ident">t</span>), <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;within `{}`, &quot;</span>, <span class="ident">t</span>)))
-                                .<span class="ident">unwrap_or</span>((<span class="ident">String</span>::<span class="ident">new</span>(), <span class="ident">String</span>::<span class="ident">new</span>()));
+                            .<span class="ident">unwrap_or</span>((<span class="ident">String</span>::<span class="ident">new</span>(), <span class="ident">String</span>::<span class="ident">new</span>()));
+
+                        <span class="kw">let</span> <span class="ident">OnUnimplementedNote</span> { <span class="ident">message</span>, <span class="ident">label</span> }
+                            <span class="op">=</span> <span class="self">self</span>.<span class="ident">on_unimplemented_note</span>(<span class="ident">trait_ref</span>, <span class="ident">obligation</span>);
+                        <span class="kw">let</span> <span class="ident">have_alt_message</span> <span class="op">=</span> <span class="ident">message</span>.<span class="ident">is_some</span>() <span class="op">||</span> <span class="ident">label</span>.<span class="ident">is_some</span>();
+
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(
                             <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>,
                             <span class="ident">span</span>,
                             <span class="ident">E0277</span>,
-                            <span class="string">&quot;the trait bound `{}` is not satisfied{}&quot;</span>,
-                            <span class="ident">trait_ref</span>.<span class="ident">to_predicate</span>(),
-                            <span class="ident">post_message</span>);
+                            <span class="string">&quot;{}&quot;</span>,
+                            <span class="ident">message</span>.<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
+                                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the trait bound `{}` is not satisfied{}&quot;</span>,
+                                         <span class="ident">trait_ref</span>.<span class="ident">to_predicate</span>(), <span class="ident">post_message</span>)
+                            }));
 
-                        <span class="kw">let</span> <span class="ident">unimplemented_note</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">on_unimplemented_note</span>(<span class="ident">trait_ref</span>, <span class="ident">obligation</span>);
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span> <span class="ident">unimplemented_note</span> {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span> <span class="ident">label</span> {
                             <span class="comment">// If it has a custom &quot;#[rustc_on_unimplemented]&quot;</span>
                             <span class="comment">// error message, let&#39;s display it as the label!</span>
                             <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="ident">s</span>.<span class="ident">as_str</span>());
@@ -1833,7 +1824,7 @@
                             <span class="comment">// which is somewhat confusing.</span>
                             <span class="ident">err</span>.<span class="ident">help</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;consider adding a `where {}` bound&quot;</span>,
                                                 <span class="ident">trait_ref</span>.<span class="ident">to_predicate</span>()));
-                        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">unimplemented_note</span>.<span class="ident">is_none</span>() {
+                        } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">have_alt_message</span> {
                             <span class="comment">// Can&#39;t show anything else useful, try to find similar impls.</span>
                             <span class="kw">let</span> <span class="ident">impl_candidates</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">find_similar_impl_candidates</span>(<span class="ident">trait_ref</span>);
                             <span class="self">self</span>.<span class="ident">report_similar_impl_candidates</span>(<span class="ident">impl_candidates</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">err</span>);
@@ -1930,6 +1921,14 @@
                         <span class="comment">// (which may fail).</span>
                         <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">span</span>, <span class="string">&quot;WF predicate not satisfied for {:?}&quot;</span>, <span class="ident">ty</span>);
                     }
+
+                    <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ConstEvaluatable</span>(..) <span class="op">=&gt;</span> {
+                        <span class="comment">// Errors for `ConstEvaluatable` predicates show up as</span>
+                        <span class="comment">// `SelectionError::ConstEvalFailure`,</span>
+                        <span class="comment">// not `Unimplemented`.</span>
+                        <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">span</span>,
+                            <span class="string">&quot;const-evaluatable requirement gave wrong error: `{:?}`&quot;</span>, <span class="ident">obligation</span>)
+                    }
                 }
             }
 
@@ -1993,6 +1992,13 @@
                 <span class="kw">let</span> <span class="ident">violations</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">object_safety_violations</span>(<span class="ident">did</span>);
                 <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">report_object_safety_error</span>(<span class="ident">span</span>, <span class="ident">did</span>,
                                                     <span class="ident">violations</span>)
+            }
+
+            <span class="ident">ConstEvalFailure</span>(<span class="kw-2">ref</span> <span class="ident">err</span>) <span class="op">=&gt;</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">const_val</span>::<span class="ident">ErrKind</span>::<span class="ident">TypeckError</span> <span class="op">=</span> <span class="ident">err</span>.<span class="ident">kind</span> {
+                    <span class="kw">return</span>;
+                }
+                <span class="ident">err</span>.<span class="ident">struct_error</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">span</span>, <span class="string">&quot;constant expression&quot;</span>)
             }
         };
         <span class="self">self</span>.<span class="ident">note_obligation_cause</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">err</span>, <span class="ident">obligation</span>);
@@ -2151,7 +2157,7 @@
                 <span class="comment">// anyway. In that case, why inundate the user.</span>
                 <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">has_errors</span>() {
                     <span class="kw">if</span>
-                        <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">sized_trait</span>()
+                        <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">sized_trait</span>()
                         .<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">sized_id</span><span class="op">|</span> <span class="ident">sized_id</span> <span class="op">==</span> <span class="ident">trait_ref</span>.<span class="ident">def_id</span>())
                     {
                         <span class="self">self</span>.<span class="ident">need_type_info</span>(<span class="ident">body_id</span>, <span class="ident">span</span>, <span class="ident">self_ty</span>);

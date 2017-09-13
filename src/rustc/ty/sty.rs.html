@@ -1515,7 +1515,6 @@
 <span id="1470">1470</span>
 <span id="1471">1471</span>
 <span id="1472">1472</span>
-<span id="1473">1473</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1531,6 +1530,7 @@
 
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 
+<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Substs</span>, <span class="ident">Subst</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">AdtDef</span>, <span class="ident">TypeFlags</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFoldable</span>};
@@ -1628,7 +1628,7 @@
     <span class="ident">TyStr</span>,
 
     <span class="doccomment">/// An array with the given length. Written as `[T; n]`.</span>
-    <span class="ident">TyArray</span>(<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">usize</span>),
+    <span class="ident">TyArray</span>(<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">Const</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
 
     <span class="doccomment">/// The pointee of an array slice.  Written as `[T]`.</span>
     <span class="ident">TySlice</span>(<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
@@ -1732,8 +1732,8 @@
 <span class="doccomment">/// as extra type parameters? The reason for this design is that the</span>
 <span class="doccomment">/// upvar types can reference lifetimes that are internal to the</span>
 <span class="doccomment">/// creating function. In my example above, for example, the lifetime</span>
-<span class="doccomment">/// `&#39;b` represents the extent of the closure itself; this is some</span>
-<span class="doccomment">/// subset of `foo`, probably just the extent of the call to the to</span>
+<span class="doccomment">/// `&#39;b` represents the scope of the closure itself; this is some</span>
+<span class="doccomment">/// subset of `foo`, probably just the scope of the call to the to</span>
 <span class="doccomment">/// `do()`. If we just had the lifetime/type parameters from the</span>
 <span class="doccomment">/// enclosing function, we couldn&#39;t name this lifetime `&#39;b`. Note that</span>
 <span class="doccomment">/// there can also be lifetimes in the types of the upvars themselves,</span>
@@ -2364,10 +2364,10 @@
     <span class="doccomment">/// region parameters.</span>
     <span class="ident">ReFree</span>(<span class="ident">FreeRegion</span>),
 
-    <span class="doccomment">/// A concrete region naming some statically determined extent</span>
+    <span class="doccomment">/// A concrete region naming some statically determined scope</span>
     <span class="doccomment">/// (e.g. an expression or sequence of statements) within the</span>
     <span class="doccomment">/// current function.</span>
-    <span class="ident">ReScope</span>(<span class="ident">region</span>::<span class="ident">CodeExtent</span>),
+    <span class="ident">ReScope</span>(<span class="ident">region</span>::<span class="ident">Scope</span>),
 
     <span class="doccomment">/// Static data that has an &quot;infinite&quot; lifetime. Top in the region lattice.</span>
     <span class="ident">ReStatic</span>,
@@ -2559,19 +2559,6 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;type_flags({:?}) = {:?}&quot;</span>, <span class="self">self</span>, <span class="ident">flags</span>);
 
         <span class="ident">flags</span>
-    }
-
-    <span class="comment">// This method returns whether the given Region is Named</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_named_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">ty</span>::<span class="ident">ReFree</span>(<span class="kw-2">ref</span> <span class="ident">free_region</span>) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="ident">free_region</span>.<span class="ident">bound_region</span> {
-                    <span class="ident">ty</span>::<span class="ident">BrNamed</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-                    _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-                }
-            }
-            _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-        }
     }
 }
 
@@ -2990,6 +2977,17 @@
         }
     }
 }
+
+<span class="doccomment">/// Typed constant value.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Const</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+
+    <span class="comment">// FIXME(eddyb) Replace this with a miri value.</span>
+    <span class="kw">pub</span> <span class="ident">val</span>: <span class="ident">ConstVal</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">serialize</span>::<span class="ident">UseSpecializedDecodable</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Const</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {}
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

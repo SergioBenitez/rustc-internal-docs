@@ -549,10 +549,6 @@
 <span id="504">504</span>
 <span id="505">505</span>
 <span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
-<span id="509">509</span>
-<span id="510">510</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -795,8 +791,8 @@
             <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
                 <span class="ident">lvalue</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             }
-            <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">EndRegion</span>(<span class="kw-2">ref</span> <span class="ident">extent</span>) <span class="op">=&gt;</span> {
-                <span class="ident">extent</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
+            <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">EndRegion</span>(<span class="kw-2">ref</span> <span class="ident">region_scope</span>) <span class="op">=&gt;</span> {
+                <span class="ident">region_scope</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             }
             <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">Validate</span>(<span class="kw-2">ref</span> <span class="ident">op</span>, <span class="kw-2">ref</span> <span class="ident">lvalues</span>) <span class="op">=&gt;</span> {
                 <span class="ident">op</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
@@ -827,7 +823,7 @@
     }
 }
 
-<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> <span class="ident">mir</span>::<span class="ident">ValidationOp</span> { <span class="ident">Acquire</span>, <span class="ident">Release</span>, <span class="ident">Suspend</span>(<span class="ident">extent</span>) });
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> <span class="ident">mir</span>::<span class="ident">ValidationOp</span> { <span class="ident">Acquire</span>, <span class="ident">Release</span>, <span class="ident">Suspend</span>(<span class="ident">region_scope</span>) });
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">mir</span>::<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -1049,10 +1045,6 @@
                                           <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
         <span class="ident">mem</span>::<span class="ident">discriminant</span>(<span class="self">self</span>).<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">mir</span>::<span class="ident">Literal</span>::<span class="ident">Item</span> { <span class="ident">def_id</span>, <span class="ident">substs</span> } <span class="op">=&gt;</span> {
-                <span class="ident">def_id</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-                <span class="ident">substs</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-            }
             <span class="ident">mir</span>::<span class="ident">Literal</span>::<span class="ident">Value</span> { <span class="kw-2">ref</span> <span class="ident">value</span> } <span class="op">=&gt;</span> {
                 <span class="ident">value</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             }

@@ -883,7 +883,7 @@
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;tok lit: {}&quot;</span>, <span class="ident">s</span>);
                 <span class="ident">literals</span>.<span class="ident">push</span>(<span class="ident">Literal</span> {
                     <span class="ident">lit</span>: <span class="ident">s</span>.<span class="ident">to_string</span>(),
-                    <span class="ident">pos</span>: <span class="ident">sp</span>.<span class="ident">lo</span>,
+                    <span class="ident">pos</span>: <span class="ident">sp</span>.<span class="ident">lo</span>(),
                 });
             })
         } <span class="kw">else</span> {

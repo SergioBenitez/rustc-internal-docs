@@ -63,10 +63,10 @@ is for use by <code>rustc</code> itself.</p>
 <code>#[plugin_registrar]</code> function:</p>
 
 <pre class="rust rust-example-rendered">
-<span class="attribute">#<span class="op">!</span>[<span class="ident">crate_name</span> <span class="op">=</span> <span class="string">&quot;myplugin&quot;</span>]</span>
-<span class="attribute">#<span class="op">!</span>[<span class="ident">crate_type</span> <span class="op">=</span> <span class="string">&quot;dylib&quot;</span>]</span>
-<span class="attribute">#<span class="op">!</span>[<span class="ident">feature</span>(<span class="ident">plugin_registrar</span>)]</span>
-<span class="attribute">#<span class="op">!</span>[<span class="ident">feature</span>(<span class="ident">rustc_private</span>)]</span>
+<span class="attribute">#![<span class="ident">crate_name</span> <span class="op">=</span> <span class="string">&quot;myplugin&quot;</span>]</span>
+<span class="attribute">#![<span class="ident">crate_type</span> <span class="op">=</span> <span class="string">&quot;dylib&quot;</span>]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">plugin_registrar</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">rustc_private</span>)]</span>
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_plugin</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">syntax</span>;
@@ -93,8 +93,8 @@ has the appropriate type!</p>
 <p>To use a plugin while compiling another crate:</p>
 
 <pre class="rust rust-example-rendered">
-<span class="attribute">#<span class="op">!</span>[<span class="ident">feature</span>(<span class="ident">plugin</span>)]</span>
-<span class="attribute">#<span class="op">!</span>[<span class="ident">plugin</span>(<span class="ident">myplugin</span>)]</span></pre>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">plugin</span>)]</span>
+<span class="attribute">#![<span class="ident">plugin</span>(<span class="ident">myplugin</span>)]</span></pre>
 
 <p>See the <a href="../../unstable-book/language-features/plugin.html"><code>plugin</code> feature</a> of
 the Unstable Book for more examples.</p>

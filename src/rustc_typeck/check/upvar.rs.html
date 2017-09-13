@@ -635,7 +635,6 @@
 <span id="590">590</span>
 <span id="591">591</span>
 <span id="592">592</span>
-<span id="593">593</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -765,9 +764,8 @@
 
         <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">with_freevars</span>(<span class="ident">closure_node_id</span>, <span class="op">|</span><span class="ident">freevars</span><span class="op">|</span> {
             <span class="kw">for</span> <span class="ident">freevar</span> <span class="kw">in</span> <span class="ident">freevars</span> {
-                <span class="kw">let</span> <span class="ident">var_def_id</span> <span class="op">=</span> <span class="ident">freevar</span>.<span class="ident">def</span>.<span class="ident">def_id</span>();
                 <span class="kw">let</span> <span class="ident">upvar_id</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">UpvarId</span> {
-                    <span class="ident">var_id</span>: <span class="ident">var_def_id</span>.<span class="ident">index</span>,
+                    <span class="ident">var_id</span>: <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">freevar</span>.<span class="ident">var_id</span>()),
                     <span class="ident">closure_expr_id</span>: <span class="ident">closure_def_id</span>.<span class="ident">index</span>,
                 };
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;seed upvar_id {:?}&quot;</span>, <span class="ident">upvar_id</span>);
@@ -791,7 +789,7 @@
 
         {
             <span class="kw">let</span> <span class="ident">body_owner_def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">body_owner_def_id</span>(<span class="ident">body</span>.<span class="ident">id</span>());
-            <span class="kw">let</span> <span class="ident">region_maps</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">region_maps</span>(<span class="ident">body_owner_def_id</span>);
+            <span class="kw">let</span> <span class="ident">region_scope_tree</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">region_scope_tree</span>(<span class="ident">body_owner_def_id</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">delegate</span> <span class="op">=</span> <span class="ident">InferBorrowKind</span> {
                 <span class="ident">fcx</span>: <span class="self">self</span>,
                 <span class="ident">adjust_closure_kinds</span>: <span class="ident">FxHashMap</span>(),
@@ -800,7 +798,7 @@
             <span class="ident">euv</span>::<span class="ident">ExprUseVisitor</span>::<span class="ident">with_infer</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">delegate</span>,
                                             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">infcx</span>,
                                             <span class="self">self</span>.<span class="ident">param_env</span>,
-                                            <span class="ident">region_maps</span>,
+                                            <span class="ident">region_scope_tree</span>,
                                             <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tables</span>.<span class="ident">borrow</span>())
                 .<span class="ident">consume_body</span>(<span class="ident">body</span>);
 
@@ -875,11 +873,11 @@
 
         <span class="ident">tcx</span>.<span class="ident">with_freevars</span>(<span class="ident">closure_id</span>, <span class="op">|</span><span class="ident">freevars</span><span class="op">|</span> {
             <span class="ident">freevars</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">freevar</span><span class="op">|</span> {
-                <span class="kw">let</span> <span class="ident">var_def_id</span> <span class="op">=</span> <span class="ident">freevar</span>.<span class="ident">def</span>.<span class="ident">def_id</span>();
-                <span class="kw">let</span> <span class="ident">var_node_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">var_def_id</span>).<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="ident">freevar_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">node_ty</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">var_node_id</span>));
+                <span class="kw">let</span> <span class="ident">var_node_id</span> <span class="op">=</span> <span class="ident">freevar</span>.<span class="ident">var_id</span>();
+                <span class="kw">let</span> <span class="ident">var_hir_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">var_node_id</span>);
+                <span class="kw">let</span> <span class="ident">freevar_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">node_ty</span>(<span class="ident">var_hir_id</span>);
                 <span class="kw">let</span> <span class="ident">upvar_id</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">UpvarId</span> {
-                    <span class="ident">var_id</span>: <span class="ident">var_def_id</span>.<span class="ident">index</span>,
+                    <span class="ident">var_id</span>: <span class="ident">var_hir_id</span>,
                     <span class="ident">closure_expr_id</span>: <span class="ident">closure_def_index</span>,
                 };
                 <span class="kw">let</span> <span class="ident">capture</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tables</span>.<span class="ident">borrow</span>().<span class="ident">upvar_capture</span>(<span class="ident">upvar_id</span>);
@@ -1226,8 +1224,8 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">var_name</span>(<span class="ident">tcx</span>: <span class="ident">ty</span>::<span class="ident">TyCtxt</span>, <span class="ident">var_def_index</span>: <span class="ident">DefIndex</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">Name</span> {
-    <span class="kw">let</span> <span class="ident">var_node_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">def_index_to_node_id</span>(<span class="ident">var_def_index</span>);
+<span class="kw">fn</span> <span class="ident">var_name</span>(<span class="ident">tcx</span>: <span class="ident">ty</span>::<span class="ident">TyCtxt</span>, <span class="ident">var_hir_id</span>: <span class="ident">hir</span>::<span class="ident">HirId</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">Name</span> {
+    <span class="kw">let</span> <span class="ident">var_node_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">hir_to_node_id</span>(<span class="ident">var_hir_id</span>);
     <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">var_node_id</span>)
 }
 </pre>

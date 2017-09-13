@@ -957,7 +957,7 @@
                 <span class="self">self</span>.<span class="ident">demand_eqtype</span>(<span class="ident">pat</span>.<span class="ident">span</span>, <span class="ident">expected</span>, <span class="ident">rhs_ty</span>);
                 <span class="ident">common_type</span>
             }
-            <span class="ident">PatKind</span>::<span class="ident">Binding</span>(<span class="ident">ba</span>, <span class="ident">def_id</span>, _, <span class="kw-2">ref</span> <span class="ident">sub</span>) <span class="op">=&gt;</span> {
+            <span class="ident">PatKind</span>::<span class="ident">Binding</span>(<span class="ident">ba</span>, <span class="ident">var_id</span>, _, <span class="kw-2">ref</span> <span class="ident">sub</span>) <span class="op">=&gt;</span> {
                 <span class="comment">// Note the binding mode in the typeck tables. For now, what we store is always</span>
                 <span class="comment">// identical to what could be scraped from the HIR, but this will change with</span>
                 <span class="comment">// default binding modes (#42640).</span>
@@ -993,7 +993,6 @@
 
                 <span class="comment">// if there are multiple arms, make sure they all agree on</span>
                 <span class="comment">// what the type of the binding `x` ought to be</span>
-                <span class="kw">let</span> <span class="ident">var_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
                 <span class="kw">if</span> <span class="ident">var_id</span> <span class="op">!=</span> <span class="ident">pat</span>.<span class="ident">id</span> {
                     <span class="kw">let</span> <span class="ident">vt</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">local_ty</span>(<span class="ident">pat</span>.<span class="ident">span</span>, <span class="ident">var_id</span>);
                     <span class="self">self</span>.<span class="ident">demand_eqtype</span>(<span class="ident">pat</span>.<span class="ident">span</span>, <span class="ident">vt</span>, <span class="ident">typ</span>);
@@ -1109,7 +1108,8 @@
                 <span class="kw">let</span> <span class="ident">expected_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">structurally_resolved_type</span>(<span class="ident">pat</span>.<span class="ident">span</span>, <span class="ident">expected</span>);
                 <span class="kw">let</span> (<span class="ident">inner_ty</span>, <span class="ident">slice_ty</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">expected_ty</span>.<span class="ident">sty</span> {
                     <span class="ident">ty</span>::<span class="ident">TyArray</span>(<span class="ident">inner_ty</span>, <span class="ident">size</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">min_len</span> <span class="op">=</span> <span class="ident">before</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">after</span>.<span class="ident">len</span>();
+                        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">size</span>.<span class="ident">val</span>.<span class="ident">to_const_int</span>().<span class="ident">unwrap</span>().<span class="ident">to_u64</span>().<span class="ident">unwrap</span>();
+                        <span class="kw">let</span> <span class="ident">min_len</span> <span class="op">=</span> <span class="ident">before</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u64</span> <span class="op">+</span> <span class="ident">after</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u64</span>;
                         <span class="kw">if</span> <span class="ident">slice</span>.<span class="ident">is_none</span>() {
                             <span class="kw">if</span> <span class="ident">min_len</span> <span class="op">!=</span> <span class="ident">size</span> {
                                 <span class="macro">struct_span_err</span><span class="macro">!</span>(

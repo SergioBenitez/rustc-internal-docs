@@ -662,6 +662,9 @@
 <span id="617">617</span>
 <span id="618">618</span>
 <span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -837,6 +840,9 @@
             }
             <span class="kw">super</span>::<span class="ident">TraitNotObjectSafe</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> {
                 <span class="prelude-val">Some</span>(<span class="kw">super</span>::<span class="ident">TraitNotObjectSafe</span>(<span class="ident">def_id</span>))
+            }
+            <span class="kw">super</span>::<span class="ident">ConstEvalFailure</span>(<span class="kw-2">ref</span> <span class="ident">err</span>) <span class="op">=&gt;</span> {
+                <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="ident">err</span>).<span class="ident">map</span>(<span class="kw">super</span>::<span class="ident">ConstEvalFailure</span>)
             }
         }
     }

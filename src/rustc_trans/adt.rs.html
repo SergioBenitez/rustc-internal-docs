@@ -940,11 +940,11 @@
     <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">l</span> {
         <span class="ident">layout</span>::<span class="ident">CEnum</span>{ <span class="ident">discr</span>, <span class="ident">min</span>, <span class="ident">max</span>, .. } <span class="op">=&gt;</span> {
             <span class="ident">assert_discr_in_range</span>(<span class="ident">min</span>, <span class="ident">max</span>, <span class="ident">to</span>);
-            <span class="ident">bcx</span>.<span class="ident">store</span>(<span class="ident">C_integral</span>(<span class="ident">Type</span>::<span class="ident">from_integer</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">discr</span>), <span class="ident">to</span>, <span class="bool-val">true</span>),
+            <span class="ident">bcx</span>.<span class="ident">store</span>(<span class="ident">C_int</span>(<span class="ident">Type</span>::<span class="ident">from_integer</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">discr</span>), <span class="ident">to</span> <span class="kw">as</span> <span class="ident">i64</span>),
                   <span class="ident">val</span>, <span class="prelude-val">None</span>);
         }
         <span class="ident">layout</span>::<span class="ident">General</span>{ <span class="ident">discr</span>, .. } <span class="op">=&gt;</span> {
-            <span class="ident">bcx</span>.<span class="ident">store</span>(<span class="ident">C_integral</span>(<span class="ident">Type</span>::<span class="ident">from_integer</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">discr</span>), <span class="ident">to</span>, <span class="bool-val">true</span>),
+            <span class="ident">bcx</span>.<span class="ident">store</span>(<span class="ident">C_int</span>(<span class="ident">Type</span>::<span class="ident">from_integer</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">discr</span>), <span class="ident">to</span> <span class="kw">as</span> <span class="ident">i64</span>),
                   <span class="ident">bcx</span>.<span class="ident">struct_gep</span>(<span class="ident">val</span>, <span class="number">0</span>), <span class="prelude-val">None</span>);
         }
         <span class="ident">layout</span>::<span class="ident">Univariant</span> { .. }
@@ -966,7 +966,7 @@
                     <span class="comment">// than storing null to single target field.</span>
                     <span class="kw">let</span> <span class="ident">llptr</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">val</span>, <span class="ident">Type</span>::<span class="ident">i8</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>).<span class="ident">ptr_to</span>());
                     <span class="kw">let</span> <span class="ident">fill_byte</span> <span class="op">=</span> <span class="ident">C_u8</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="number">0</span>);
-                    <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">C_uint</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">nonnull</span>.<span class="ident">stride</span>().<span class="ident">bytes</span>());
+                    <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">C_usize</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">nonnull</span>.<span class="ident">stride</span>().<span class="ident">bytes</span>());
                     <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="ident">C_i32</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">nonnull</span>.<span class="ident">align</span>.<span class="ident">abi</span>() <span class="kw">as</span> <span class="ident">i32</span>);
                     <span class="ident">base</span>::<span class="ident">call_memset</span>(<span class="ident">bcx</span>, <span class="ident">llptr</span>, <span class="ident">fill_byte</span>, <span class="ident">size</span>, <span class="ident">align</span>, <span class="bool-val">false</span>);
                 } <span class="kw">else</span> {

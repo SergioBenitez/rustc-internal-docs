@@ -2632,31 +2632,6 @@
 <span id="2587">2587</span>
 <span id="2588">2588</span>
 <span id="2589">2589</span>
-<span id="2590">2590</span>
-<span id="2591">2591</span>
-<span id="2592">2592</span>
-<span id="2593">2593</span>
-<span id="2594">2594</span>
-<span id="2595">2595</span>
-<span id="2596">2596</span>
-<span id="2597">2597</span>
-<span id="2598">2598</span>
-<span id="2599">2599</span>
-<span id="2600">2600</span>
-<span id="2601">2601</span>
-<span id="2602">2602</span>
-<span id="2603">2603</span>
-<span id="2604">2604</span>
-<span id="2605">2605</span>
-<span id="2606">2606</span>
-<span id="2607">2607</span>
-<span id="2608">2608</span>
-<span id="2609">2609</span>
-<span id="2610">2610</span>
-<span id="2611">2611</span>
-<span id="2612">2612</span>
-<span id="2613">2613</span>
-<span id="2614">2614</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2683,7 +2658,6 @@
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">lang_items</span>::{<span class="ident">FnTraitLangItem</span>, <span class="ident">FnMutTraitLangItem</span>, <span class="ident">FnOnceTraitLangItem</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">privacy</span>::<span class="ident">AccessLevels</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">resolve_lifetime</span>::<span class="ident">ObjectLifetimeDefault</span>;
-<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>::<span class="ident">CodeExtent</span>;
 <span class="kw">use</span> <span class="ident">mir</span>::<span class="ident">Mir</span>;
 <span class="kw">use</span> <span class="ident">mir</span>::<span class="ident">GeneratorLayout</span>;
 <span class="kw">use</span> <span class="ident">traits</span>;
@@ -2725,7 +2699,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::{<span class="ident">ClosureSubsts</span>, <span class="ident">GeneratorInterior</span>, <span class="ident">TypeAndMut</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::{<span class="ident">TraitRef</span>, <span class="ident">TypeVariants</span>, <span class="ident">PolyTraitRef</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::{<span class="ident">ExistentialTraitRef</span>, <span class="ident">PolyExistentialTraitRef</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::{<span class="ident">ExistentialProjection</span>, <span class="ident">PolyExistentialProjection</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::{<span class="ident">ExistentialProjection</span>, <span class="ident">PolyExistentialProjection</span>, <span class="ident">Const</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::{<span class="ident">BoundRegion</span>, <span class="ident">EarlyBoundRegion</span>, <span class="ident">FreeRegion</span>, <span class="ident">Region</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::<span class="ident">RegionKind</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sty</span>::{<span class="ident">TyVid</span>, <span class="ident">IntVid</span>, <span class="ident">FloatVid</span>, <span class="ident">RegionVid</span>, <span class="ident">SkolemizedRegionVid</span>};
@@ -3236,7 +3210,7 @@
 <span class="doccomment">/// by the upvar) and the id of the closure expression.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UpvarId</span> {
-    <span class="kw">pub</span> <span class="ident">var_id</span>: <span class="ident">DefIndex</span>,
+    <span class="kw">pub</span> <span class="ident">var_id</span>: <span class="ident">hir</span>::<span class="ident">HirId</span>,
     <span class="kw">pub</span> <span class="ident">closure_expr_id</span>: <span class="ident">DefIndex</span>,
 }
 
@@ -3507,6 +3481,9 @@
 
     <span class="doccomment">/// `T1 &lt;: T2`</span>
     <span class="ident">Subtype</span>(<span class="ident">PolySubtypePredicate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
+
+    <span class="doccomment">/// Constant initializer must evaluate successfully.</span>
+    <span class="ident">ConstEvaluatable</span>(<span class="ident">DefId</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Predicate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -3599,6 +3576,8 @@
                 <span class="ident">Predicate</span>::<span class="ident">ObjectSafe</span>(<span class="ident">trait_def_id</span>),
             <span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span>
                 <span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>),
+            <span class="ident">Predicate</span>::<span class="ident">ConstEvaluatable</span>(<span class="ident">def_id</span>, <span class="ident">const_substs</span>) <span class="op">=&gt;</span>
+                <span class="ident">Predicate</span>::<span class="ident">ConstEvaluatable</span>(<span class="ident">def_id</span>, <span class="ident">const_substs</span>.<span class="ident">subst</span>(<span class="ident">tcx</span>, <span class="ident">substs</span>)),
         }
     }
 }
@@ -3677,6 +3656,10 @@
         <span class="comment">// return value, so we are preserving the number of binding</span>
         <span class="comment">// levels.</span>
         <span class="ident">ty</span>::<span class="ident">Binder</span>(<span class="self">self</span>.<span class="number">0</span>.<span class="ident">projection_ty</span>.<span class="ident">trait_ref</span>(<span class="ident">tcx</span>))
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Binder</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+        <span class="ident">Binder</span>(<span class="self">self</span>.<span class="ident">skip_binder</span>().<span class="ident">ty</span>) <span class="comment">// preserves binding levels</span>
     }
 }
 
@@ -3777,6 +3760,9 @@
             <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">_closure_def_id</span>, <span class="ident">_kind</span>) <span class="op">=&gt;</span> {
                 <span class="macro">vec</span><span class="macro">!</span>[]
             }
+            <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ConstEvaluatable</span>(_, <span class="ident">substs</span>) <span class="op">=&gt;</span> {
+                <span class="ident">substs</span>.<span class="ident">types</span>().<span class="ident">collect</span>()
+            }
         };
 
         <span class="comment">// The only reason to collect into a vector here is that I was</span>
@@ -3799,7 +3785,8 @@
             <span class="ident">Predicate</span>::<span class="ident">WellFormed</span>(..) <span class="op">|</span>
             <span class="ident">Predicate</span>::<span class="ident">ObjectSafe</span>(..) <span class="op">|</span>
             <span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(..) <span class="op">|</span>
-            <span class="ident">Predicate</span>::<span class="ident">TypeOutlives</span>(..) <span class="op">=&gt;</span> {
+            <span class="ident">Predicate</span>::<span class="ident">TypeOutlives</span>(..) <span class="op">|</span>
+            <span class="ident">Predicate</span>::<span class="ident">ConstEvaluatable</span>(..) <span class="op">=&gt;</span> {
                 <span class="prelude-val">None</span>
             }
         }
@@ -4108,10 +4095,10 @@
         <span class="kw">if</span> <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="string">&quot;fundamental&quot;</span>) {
             <span class="ident">flags</span> <span class="op">=</span> <span class="ident">flags</span> <span class="op">|</span> <span class="ident">AdtFlags</span>::<span class="ident">IS_FUNDAMENTAL</span>;
         }
-        <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">did</span>) <span class="op">==</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">phantom_data</span>() {
+        <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">did</span>) <span class="op">==</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">phantom_data</span>() {
             <span class="ident">flags</span> <span class="op">=</span> <span class="ident">flags</span> <span class="op">|</span> <span class="ident">AdtFlags</span>::<span class="ident">IS_PHANTOM_DATA</span>;
         }
-        <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">did</span>) <span class="op">==</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">owned_box</span>() {
+        <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">did</span>) <span class="op">==</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">owned_box</span>() {
             <span class="ident">flags</span> <span class="op">=</span> <span class="ident">flags</span> <span class="op">|</span> <span class="ident">AdtFlags</span>::<span class="ident">IS_BOX</span>;
         }
         <span class="kw">match</span> <span class="ident">kind</span> {
@@ -4258,7 +4245,7 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">VariantDiscr</span>::<span class="ident">Explicit</span>(<span class="ident">expr_did</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">discr</span> {
                 <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(), <span class="ident">expr_did</span>);
                 <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">const_eval</span>(<span class="ident">param_env</span>.<span class="ident">and</span>((<span class="ident">expr_did</span>, <span class="ident">substs</span>))) {
-                    <span class="prelude-val">Ok</span>(<span class="ident">ConstVal</span>::<span class="ident">Integral</span>(<span class="ident">v</span>)) <span class="op">=&gt;</span> {
+                    <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">Const</span> { <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Integral</span>(<span class="ident">v</span>), .. }) <span class="op">=&gt;</span> {
                         <span class="ident">discr</span> <span class="op">=</span> <span class="ident">v</span>;
                     }
                     <span class="ident">err</span> <span class="op">=&gt;</span> {
@@ -4298,7 +4285,7 @@
                 <span class="ident">ty</span>::<span class="ident">VariantDiscr</span>::<span class="ident">Explicit</span>(<span class="ident">expr_did</span>) <span class="op">=&gt;</span> {
                     <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(), <span class="ident">expr_did</span>);
                     <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">const_eval</span>(<span class="ident">param_env</span>.<span class="ident">and</span>((<span class="ident">expr_did</span>, <span class="ident">substs</span>))) {
-                        <span class="prelude-val">Ok</span>(<span class="ident">ConstVal</span>::<span class="ident">Integral</span>(<span class="ident">v</span>)) <span class="op">=&gt;</span> {
+                        <span class="prelude-val">Ok</span>(<span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">Const</span> { <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Integral</span>(<span class="ident">v</span>), .. }) <span class="op">=&gt;</span> {
                             <span class="ident">explicit_value</span> <span class="op">=</span> <span class="ident">v</span>;
                             <span class="kw">break</span>;
                         }
@@ -4322,11 +4309,11 @@
         <span class="kw">match</span> <span class="ident">repr_type</span> {
             <span class="ident">attr</span>::<span class="ident">UnsignedInt</span>(<span class="ident">ty</span>) <span class="op">=&gt;</span> {
                 <span class="ident">ConstInt</span>::<span class="ident">new_unsigned_truncating</span>(<span class="ident">discr</span>, <span class="ident">ty</span>,
-                                                  <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">uint_type</span>)
+                                                  <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">usize_ty</span>)
             }
             <span class="ident">attr</span>::<span class="ident">SignedInt</span>(<span class="ident">ty</span>) <span class="op">=&gt;</span> {
                 <span class="ident">ConstInt</span>::<span class="ident">new_signed_truncating</span>(<span class="ident">discr</span> <span class="kw">as</span> <span class="ident">i128</span>, <span class="ident">ty</span>,
-                                                <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">int_type</span>)
+                                                <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">isize_ty</span>)
             }
         }
     }
@@ -4407,7 +4394,7 @@
                 <span class="comment">// we know that `T` is Sized and do not need to check</span>
                 <span class="comment">// it on the impl.</span>
 
-                <span class="kw">let</span> <span class="ident">sized_trait</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">sized_trait</span>() {
+                <span class="kw">let</span> <span class="ident">sized_trait</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">sized_trait</span>() {
                     <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
                     _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>]
                 };
@@ -4636,25 +4623,6 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var_name_str</span>(<span class="self">self</span>, <span class="ident">id</span>: <span class="ident">NodeId</span>) <span class="op">-&gt;</span> <span class="ident">InternedString</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">find</span>(<span class="ident">id</span>) {
-            <span class="prelude-val">Some</span>(<span class="ident">hir_map</span>::<span class="ident">NodeBinding</span>(<span class="ident">pat</span>)) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="ident">pat</span>.<span class="ident">node</span> {
-                    <span class="ident">hir</span>::<span class="ident">PatKind</span>::<span class="ident">Binding</span>(_, _, <span class="kw-2">ref</span> <span class="ident">path1</span>, _) <span class="op">=&gt;</span> <span class="ident">path1</span>.<span class="ident">node</span>.<span class="ident">as_str</span>(),
-                    _ <span class="op">=&gt;</span> {
-                        <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Variable id {} maps to {:?}, not local&quot;</span>, <span class="ident">id</span>, <span class="ident">pat</span>);
-                    },
-                }
-            },
-            <span class="ident">r</span> <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Variable id {} maps to {:?}, not local&quot;</span>, <span class="ident">id</span>, <span class="ident">r</span>),
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_var_name_str_def_index</span>(<span class="self">self</span>, <span class="ident">def_index</span>: <span class="ident">DefIndex</span>) <span class="op">-&gt;</span> <span class="ident">InternedString</span> {
-        <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">DefId</span>::<span class="ident">local</span>(<span class="ident">def_index</span>)).<span class="ident">unwrap</span>();
-        <span class="self">self</span>.<span class="ident">local_var_name_str</span>(<span class="ident">node_id</span>)
-    }
-
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expr_is_lval</span>(<span class="self">self</span>, <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
          <span class="kw">match</span> <span class="ident">expr</span>.<span class="ident">node</span> {
             <span class="ident">hir</span>::<span class="ident">ExprPath</span>(<span class="ident">hir</span>::<span class="ident">QPath</span>::<span class="ident">Resolved</span>(_, <span class="kw-2">ref</span> <span class="ident">path</span>)) <span class="op">=&gt;</span> {
@@ -4837,43 +4805,13 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">def_key</span>(<span class="self">self</span>, <span class="ident">id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">hir_map</span>::<span class="ident">DefKey</span> {
-        <span class="kw">if</span> <span class="ident">id</span>.<span class="ident">is_local</span>() {
-            <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">def_key</span>(<span class="ident">id</span>)
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">cstore</span>.<span class="ident">def_key</span>(<span class="ident">id</span>)
-        }
-    }
-
-    <span class="doccomment">/// Convert a `DefId` into its fully expanded `DefPath` (every</span>
-    <span class="doccomment">/// `DefId` is really just an interned def-path).</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that if `id` is not local to this crate, the result will</span>
-    <span class="doccomment">///  be a non-local `DefPath`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">def_path</span>(<span class="self">self</span>, <span class="ident">id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">hir_map</span>::<span class="ident">DefPath</span> {
-        <span class="kw">if</span> <span class="ident">id</span>.<span class="ident">is_local</span>() {
-            <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">def_path</span>(<span class="ident">id</span>)
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">cstore</span>.<span class="ident">def_path</span>(<span class="ident">id</span>)
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">def_path_hash</span>(<span class="self">self</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">hir_map</span>::<span class="ident">DefPathHash</span> {
-        <span class="kw">if</span> <span class="ident">def_id</span>.<span class="ident">is_local</span>() {
-            <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">definitions</span>().<span class="ident">def_path_hash</span>(<span class="ident">def_id</span>.<span class="ident">index</span>)
-        } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">cstore</span>.<span class="ident">def_path_hash</span>(<span class="ident">def_id</span>)
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">item_name</span>(<span class="self">self</span>, <span class="ident">id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">Name</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">item_name</span>(<span class="self">self</span>, <span class="ident">id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">InternedString</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">id</span>) {
-            <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">id</span>)
+            <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">id</span>).<span class="ident">as_str</span>()
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">id</span>.<span class="ident">index</span> <span class="op">==</span> <span class="ident">CRATE_DEF_INDEX</span> {
-            <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">cstore</span>.<span class="ident">original_crate_name</span>(<span class="ident">id</span>.<span class="ident">krate</span>)
+            <span class="self">self</span>.<span class="ident">original_crate_name</span>(<span class="ident">id</span>.<span class="ident">krate</span>).<span class="ident">as_str</span>()
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">def_key</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">cstore</span>.<span class="ident">def_key</span>(<span class="ident">id</span>);
+            <span class="kw">let</span> <span class="ident">def_key</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def_key</span>(<span class="ident">id</span>);
             <span class="comment">// The name of a StructCtor is that of its struct parent.</span>
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir_map</span>::<span class="ident">DefPathData</span>::<span class="ident">StructCtor</span> <span class="op">=</span> <span class="ident">def_key</span>.<span class="ident">disambiguated_data</span>.<span class="ident">data</span> {
                 <span class="self">self</span>.<span class="ident">item_name</span>(<span class="ident">DefId</span> {
@@ -4969,10 +4907,6 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">node_scope_region</span>(<span class="self">self</span>, <span class="ident">id</span>: <span class="ident">NodeId</span>) <span class="op">-&gt;</span> <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">mk_region</span>(<span class="ident">ty</span>::<span class="ident">ReScope</span>(<span class="ident">CodeExtent</span>::<span class="ident">Misc</span>(<span class="ident">id</span>)))
-    }
-
     <span class="doccomment">/// Looks up the span of `impl_did` if the impl is local; otherwise returns `Err`</span>
     <span class="doccomment">/// with the name of the crate containing the impl.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">span_of_impl</span>(<span class="self">self</span>, <span class="ident">impl_did</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Span</span>, <span class="ident">Symbol</span><span class="op">&gt;</span> {
@@ -4980,7 +4914,7 @@
             <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">impl_did</span>).<span class="ident">unwrap</span>();
             <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">span</span>(<span class="ident">node_id</span>))
         } <span class="kw">else</span> {
-            <span class="prelude-val">Err</span>(<span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">cstore</span>.<span class="ident">crate_name</span>(<span class="ident">impl_did</span>.<span class="ident">krate</span>))
+            <span class="prelude-val">Err</span>(<span class="self">self</span>.<span class="ident">crate_name</span>(<span class="ident">impl_did</span>.<span class="ident">krate</span>))
         }
     }
 
@@ -5005,9 +4939,10 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_freevars</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">fid</span>: <span class="ident">NodeId</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">T</span> <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span>[<span class="ident">hir</span>::<span class="ident">Freevar</span>]) <span class="op">-&gt;</span> <span class="ident">T</span>,
     {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">freevars</span>.<span class="ident">borrow</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">fid</span>) {
+        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">fid</span>);
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">freevars</span>(<span class="ident">def_id</span>) {
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="kw-2">&amp;</span>[]),
-            <span class="prelude-val">Some</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="kw-2">&amp;</span><span class="ident">d</span>[..])
+            <span class="prelude-val">Some</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="kw-2">&amp;</span><span class="ident">d</span>),
         }
     }
 }
@@ -5175,8 +5110,21 @@
     <span class="ident">traits</span>::<span class="ident">normalize_param_env_or_error</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>, <span class="ident">unnormalized_env</span>, <span class="ident">cause</span>)
 }
 
+<span class="kw">fn</span> <span class="ident">crate_disambiguator</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                 <span class="ident">crate_num</span>: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Symbol</span> {
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">crate_num</span>, <span class="ident">LOCAL_CRATE</span>);
+    <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">local_crate_disambiguator</span>()
+}
+
+<span class="kw">fn</span> <span class="ident">original_crate_name</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                 <span class="ident">crate_num</span>: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Symbol</span> {
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">crate_num</span>, <span class="ident">LOCAL_CRATE</span>);
+    <span class="ident">tcx</span>.<span class="ident">crate_name</span>.<span class="ident">clone</span>()
+}
+
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">provide</span>(<span class="ident">providers</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span>) {
     <span class="ident">util</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
+    <span class="ident">context</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
     <span class="kw-2">*</span><span class="ident">providers</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span> {
         <span class="ident">associated_item</span>,
         <span class="ident">associated_item_def_ids</span>,
@@ -5185,6 +5133,8 @@
         <span class="ident">def_span</span>,
         <span class="ident">param_env</span>,
         <span class="ident">trait_of_item</span>,
+        <span class="ident">crate_disambiguator</span>,
+        <span class="ident">original_crate_name</span>,
         <span class="ident">trait_impls_of</span>: <span class="ident">trait_def</span>::<span class="ident">trait_impls_of_provider</span>,
         ..<span class="kw-2">*</span><span class="ident">providers</span>
     };

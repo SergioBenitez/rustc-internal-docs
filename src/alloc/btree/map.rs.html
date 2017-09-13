@@ -2503,6 +2503,33 @@
 <span id="2458">2458</span>
 <span id="2459">2459</span>
 <span id="2460">2460</span>
+<span id="2461">2461</span>
+<span id="2462">2462</span>
+<span id="2463">2463</span>
+<span id="2464">2464</span>
+<span id="2465">2465</span>
+<span id="2466">2466</span>
+<span id="2467">2467</span>
+<span id="2468">2468</span>
+<span id="2469">2469</span>
+<span id="2470">2470</span>
+<span id="2471">2471</span>
+<span id="2472">2472</span>
+<span id="2473">2473</span>
+<span id="2474">2474</span>
+<span id="2475">2475</span>
+<span id="2476">2476</span>
+<span id="2477">2477</span>
+<span id="2478">2478</span>
+<span id="2479">2479</span>
+<span id="2480">2480</span>
+<span id="2481">2481</span>
+<span id="2482">2482</span>
+<span id="2483">2483</span>
+<span id="2484">2484</span>
+<span id="2485">2485</span>
+<span id="2486">2486</span>
+<span id="2487">2487</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4608,6 +4635,33 @@
             <span class="ident">Vacant</span>(<span class="kw-2">ref</span> <span class="ident">entry</span>) <span class="op">=&gt;</span> <span class="ident">entry</span>.<span class="ident">key</span>(),
         }
     }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">K</span>: <span class="ident">Ord</span>, <span class="ident">V</span>: <span class="ident">Default</span><span class="op">&gt;</span> <span class="ident">Entry</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;entry_or_default&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;44324&quot;</span>)]</span>
+    <span class="doccomment">/// Ensures a value is in the entry by inserting the default value if empty,</span>
+    <span class="doccomment">/// and returns a mutable reference to the value in the entry.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// #![feature(entry_or_default)]</span>
+    <span class="doccomment">/// # fn main() {</span>
+    <span class="doccomment">/// use std::collections::BTreeMap;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let mut map: BTreeMap&lt;&amp;str, Option&lt;usize&gt;&gt; = BTreeMap::new();</span>
+    <span class="doccomment">/// map.entry(&quot;poneyland&quot;).or_default();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(map[&quot;poneyland&quot;], None);</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">or_default</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">V</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Occupied</span>(<span class="ident">entry</span>) <span class="op">=&gt;</span> <span class="ident">entry</span>.<span class="ident">into_mut</span>(),
+            <span class="ident">Vacant</span>(<span class="ident">entry</span>) <span class="op">=&gt;</span> <span class="ident">entry</span>.<span class="ident">insert</span>(<span class="ident">Default</span>::<span class="ident">default</span>()),
+        }
+    }
+
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">K</span>: <span class="ident">Ord</span>, <span class="ident">V</span><span class="op">&gt;</span> <span class="ident">VacantEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">K</span>, <span class="ident">V</span><span class="op">&gt;</span> {

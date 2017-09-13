@@ -55,11 +55,11 @@
 types, initializing and manipulating memory.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
-                       <tr class='unstable module-item'>
+                       <tr class=' module-item'>
                            <td><a class="struct" href="struct.Discriminant.html"
                                   title='struct std::mem::Discriminant'>Discriminant</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] <p>Opaque type representing the discriminant of an enum.</p>
+                                <p>Opaque type representing the discriminant of an enum.</p>
                            </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
@@ -75,6 +75,13 @@ types, initializing and manipulating memory.</p>
                                   title='fn std::mem::align_of_val'>align_of_val</a></td>
                            <td class='docblock-short'>
                                 <p>Returns the <a href="https://en.wikipedia.org/wiki/Application_binary_interface">ABI</a>-required minimum alignment of the type of the value that <code>val</code> points to.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.discriminant.html"
+                                  title='fn std::mem::discriminant'>discriminant</a></td>
+                           <td class='docblock-short'>
+                                <p>Returns a value uniquely identifying the enum variant in <code>v</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -163,13 +170,6 @@ produce a value of type <code>T</code>, while doing nothing at all.</p>
                                   title='fn std::mem::zeroed'>zeroed</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Creates a value whose bytes are all zero.</p>
-                           </td>
-                       </tr>
-                       <tr class='unstable module-item'>
-                           <td><a class="fn" href="fn.discriminant.html"
-                                  title='fn std::mem::discriminant'>discriminant</a></td>
-                           <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] <p>Returns a value uniquely identifying the enum variant in <code>v</code>.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>

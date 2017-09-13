@@ -196,7 +196,7 @@
         <span class="comment">// Load the data pointer from the object.</span>
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;get_int({:?}, {:?})&quot;</span>, <span class="ident">Value</span>(<span class="ident">llvtable</span>), <span class="self">self</span>);
 
-        <span class="kw">let</span> <span class="ident">llvtable</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">llvtable</span>, <span class="ident">Type</span>::<span class="ident">int</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>).<span class="ident">ptr_to</span>());
+        <span class="kw">let</span> <span class="ident">llvtable</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">llvtable</span>, <span class="ident">Type</span>::<span class="ident">isize</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>).<span class="ident">ptr_to</span>());
         <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">load</span>(<span class="ident">bcx</span>.<span class="ident">gepi</span>(<span class="ident">llvtable</span>, <span class="kw-2">&amp;</span>[<span class="self">self</span>.<span class="number">0</span>]), <span class="prelude-val">None</span>);
         <span class="comment">// Vtable loads are invariant</span>
         <span class="ident">bcx</span>.<span class="ident">set_invariant_load</span>(<span class="ident">ptr</span>);
@@ -231,8 +231,8 @@
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">components</span>: <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> [
         <span class="ident">callee</span>::<span class="ident">get_fn</span>(<span class="ident">ccx</span>, <span class="ident">monomorphize</span>::<span class="ident">resolve_drop_in_place</span>(<span class="ident">ccx</span>.<span class="ident">shared</span>(), <span class="ident">ty</span>)),
-        <span class="ident">C_uint</span>(<span class="ident">ccx</span>, <span class="ident">ccx</span>.<span class="ident">size_of</span>(<span class="ident">ty</span>)),
-        <span class="ident">C_uint</span>(<span class="ident">ccx</span>, <span class="ident">ccx</span>.<span class="ident">align_of</span>(<span class="ident">ty</span>))
+        <span class="ident">C_usize</span>(<span class="ident">ccx</span>, <span class="ident">ccx</span>.<span class="ident">size_of</span>(<span class="ident">ty</span>)),
+        <span class="ident">C_usize</span>(<span class="ident">ccx</span>, <span class="ident">ccx</span>.<span class="ident">align_of</span>(<span class="ident">ty</span>) <span class="kw">as</span> <span class="ident">u64</span>)
     ].<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>();
 
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">trait_ref</span>) <span class="op">=</span> <span class="ident">trait_ref</span> {

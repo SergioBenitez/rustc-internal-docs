@@ -904,6 +904,22 @@
 <span id="859">859</span>
 <span id="860">860</span>
 <span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -954,7 +970,7 @@
             <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;item {:?} passed to make_shim&quot;</span>, <span class="ident">instance</span>),
         <span class="ident">ty</span>::<span class="ident">InstanceDef</span>::<span class="ident">FnPtrShim</span>(<span class="ident">def_id</span>, <span class="ident">ty</span>) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="ident">trait_</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">trait_of_item</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="ident">adjustment</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">fn_trait_kind</span>(<span class="ident">trait_</span>) {
+            <span class="kw">let</span> <span class="ident">adjustment</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">fn_trait_kind</span>(<span class="ident">trait_</span>) {
                 <span class="prelude-val">Some</span>(<span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">FnOnce</span>) <span class="op">=&gt;</span> <span class="ident">Adjustment</span>::<span class="ident">Identity</span>,
                 <span class="prelude-val">Some</span>(<span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">FnMut</span>) <span class="op">|</span>
                 <span class="prelude-val">Some</span>(<span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">Fn</span>) <span class="op">=&gt;</span> <span class="ident">Adjustment</span>::<span class="ident">Deref</span>,
@@ -989,7 +1005,7 @@
             )
         }
         <span class="ident">ty</span>::<span class="ident">InstanceDef</span>::<span class="ident">ClosureOnceShim</span> { <span class="ident">call_once</span> } <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="ident">fn_mut</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>.<span class="ident">fn_mut_trait</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="ident">fn_mut</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">fn_mut_trait</span>().<span class="ident">unwrap</span>();
             <span class="kw">let</span> <span class="ident">call_mut</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">global_tcx</span>()
                 .<span class="ident">associated_items</span>(<span class="ident">fn_mut</span>)
                 .<span class="ident">find</span>(<span class="op">|</span><span class="ident">it</span><span class="op">|</span> <span class="ident">it</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Method</span>)
@@ -1007,7 +1023,7 @@
             <span class="ident">build_drop_shim</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>, <span class="ident">ty</span>)
         }
         <span class="ident">ty</span>::<span class="ident">InstanceDef</span>::<span class="ident">CloneShim</span>(<span class="ident">def_id</span>, <span class="ident">ty</span>) <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">item_name</span>(<span class="ident">def_id</span>).<span class="ident">as_str</span>();
+            <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">item_name</span>(<span class="ident">def_id</span>);
             <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="string">&quot;clone&quot;</span> {
                 <span class="ident">build_clone_shim</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>, <span class="ident">ty</span>)
             } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="string">&quot;clone_from&quot;</span> {
@@ -1199,7 +1215,10 @@
 
     <span class="kw">match</span> <span class="ident">self_ty</span>.<span class="ident">sty</span> {
         _ <span class="kw">if</span> <span class="ident">is_copy</span> <span class="op">=&gt;</span> <span class="ident">builder</span>.<span class="ident">copy_shim</span>(),
-        <span class="ident">ty</span>::<span class="ident">TyArray</span>(<span class="ident">ty</span>, <span class="ident">len</span>) <span class="op">=&gt;</span> <span class="ident">builder</span>.<span class="ident">array_shim</span>(<span class="ident">ty</span>, <span class="ident">len</span>),
+        <span class="ident">ty</span>::<span class="ident">TyArray</span>(<span class="ident">ty</span>, <span class="ident">len</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">len</span>.<span class="ident">val</span>.<span class="ident">to_const_int</span>().<span class="ident">unwrap</span>().<span class="ident">to_u64</span>().<span class="ident">unwrap</span>();
+            <span class="ident">builder</span>.<span class="ident">array_shim</span>(<span class="ident">ty</span>, <span class="ident">len</span>)
+        }
         <span class="ident">ty</span>::<span class="ident">TyTuple</span>(<span class="ident">tys</span>, _) <span class="op">=&gt;</span> <span class="ident">builder</span>.<span class="ident">tuple_shim</span>(<span class="ident">tys</span>),
         _ <span class="op">=&gt;</span> {
             <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;clone shim for `{:?}` which is not `Copy` and is not an aggregate&quot;</span>, <span class="ident">self_ty</span>);
@@ -1310,11 +1329,15 @@
         );
 
         <span class="comment">// `func == Clone::clone(&amp;ty) -&gt; ty`</span>
+        <span class="kw">let</span> <span class="ident">func_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_fn_def</span>(<span class="self">self</span>.<span class="ident">def_id</span>, <span class="ident">substs</span>);
         <span class="kw">let</span> <span class="ident">func</span> <span class="op">=</span> <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">Constant</span> {
             <span class="ident">span</span>: <span class="self">self</span>.<span class="ident">span</span>,
-            <span class="ident">ty</span>: <span class="ident">tcx</span>.<span class="ident">mk_fn_def</span>(<span class="self">self</span>.<span class="ident">def_id</span>, <span class="ident">substs</span>),
+            <span class="ident">ty</span>: <span class="ident">func_ty</span>,
             <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> {
-                <span class="ident">value</span>: <span class="ident">ConstVal</span>::<span class="ident">Function</span>(<span class="self">self</span>.<span class="ident">def_id</span>, <span class="ident">substs</span>),
+                <span class="ident">value</span>: <span class="ident">tcx</span>.<span class="ident">mk_const</span>(<span class="ident">ty</span>::<span class="ident">Const</span> {
+                    <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Function</span>(<span class="self">self</span>.<span class="ident">def_id</span>, <span class="ident">substs</span>),
+                    <span class="ident">ty</span>: <span class="ident">func_ty</span>
+                }),
             },
         });
 
@@ -1373,22 +1396,26 @@
         );
     }
 
-    <span class="kw">fn</span> <span class="ident">make_usize</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Constant</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">ConstUsize</span>::<span class="ident">new</span>(<span class="ident">value</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">uint_type</span>).<span class="ident">unwrap</span>();
+    <span class="kw">fn</span> <span class="ident">make_usize</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Constant</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">ConstUsize</span>::<span class="ident">new</span>(<span class="ident">value</span>, <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">usize_ty</span>).<span class="ident">unwrap</span>();
         <span class="kw">box</span> <span class="ident">Constant</span> {
             <span class="ident">span</span>: <span class="self">self</span>.<span class="ident">span</span>,
             <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>,
             <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> {
-                <span class="ident">value</span>: <span class="ident">ConstVal</span>::<span class="ident">Integral</span>(<span class="ident">ConstInt</span>::<span class="ident">Usize</span>(<span class="ident">value</span>))
+                <span class="ident">value</span>: <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">mk_const</span>(<span class="ident">ty</span>::<span class="ident">Const</span> {
+                    <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Integral</span>(<span class="ident">ConstInt</span>::<span class="ident">Usize</span>(<span class="ident">value</span>)),
+                    <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>,
+                })
             }
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">array_shim</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">len</span>: <span class="ident">usize</span>) {
+    <span class="kw">fn</span> <span class="ident">array_shim</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">len</span>: <span class="ident">u64</span>) {
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
+        <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
         <span class="kw">let</span> <span class="ident">rcvr</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">Local</span>::<span class="ident">new</span>(<span class="number">1</span><span class="op">+</span><span class="number">0</span>)).<span class="ident">deref</span>();
 
-        <span class="kw">let</span> <span class="ident">beg</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_lvalue</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>);
+        <span class="kw">let</span> <span class="ident">beg</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">local_decls</span>.<span class="ident">push</span>(<span class="ident">temp_decl</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>, <span class="ident">span</span>));
         <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_lvalue</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>);
         <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_lvalue</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>, <span class="ident">tcx</span>.<span class="ident">mk_array</span>(<span class="ident">ty</span>, <span class="ident">len</span>));
 
@@ -1399,7 +1426,7 @@
         <span class="kw">let</span> <span class="ident">inits</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
             <span class="self">self</span>.<span class="ident">make_statement</span>(
                 <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                    <span class="ident">beg</span>.<span class="ident">clone</span>(),
+                    <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>),
                     <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="self">self</span>.<span class="ident">make_usize</span>(<span class="number">0</span>)))
                 )
             ),
@@ -1417,19 +1444,19 @@
         <span class="comment">//     BB #3;</span>
         <span class="comment">// }</span>
         <span class="comment">// BB #4;</span>
-        <span class="self">self</span>.<span class="ident">loop_header</span>(<span class="ident">beg</span>.<span class="ident">clone</span>(), <span class="ident">end</span>, <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">2</span>), <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">4</span>), <span class="bool-val">false</span>);
+        <span class="self">self</span>.<span class="ident">loop_header</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>), <span class="ident">end</span>, <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">2</span>), <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">4</span>), <span class="bool-val">false</span>);
 
         <span class="comment">// BB #2</span>
         <span class="comment">// `let cloned = Clone::clone(rcvr[beg])`;</span>
         <span class="comment">// Goto #3 if ok, #5 if unwinding happens.</span>
-        <span class="kw">let</span> <span class="ident">rcvr_field</span> <span class="op">=</span> <span class="ident">rcvr</span>.<span class="ident">clone</span>().<span class="ident">index</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">beg</span>.<span class="ident">clone</span>()));
+        <span class="kw">let</span> <span class="ident">rcvr_field</span> <span class="op">=</span> <span class="ident">rcvr</span>.<span class="ident">clone</span>().<span class="ident">index</span>(<span class="ident">beg</span>);
         <span class="kw">let</span> <span class="ident">cloned</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_clone_call</span>(<span class="ident">ty</span>, <span class="ident">rcvr_field</span>, <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">3</span>), <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">5</span>));
 
         <span class="comment">// BB #3</span>
         <span class="comment">// `ret[beg] = cloned;`</span>
         <span class="comment">// `beg = beg + 1;`</span>
         <span class="comment">// `goto #1`;</span>
-        <span class="kw">let</span> <span class="ident">ret_field</span> <span class="op">=</span> <span class="ident">ret</span>.<span class="ident">clone</span>().<span class="ident">index</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">beg</span>.<span class="ident">clone</span>()));
+        <span class="kw">let</span> <span class="ident">ret_field</span> <span class="op">=</span> <span class="ident">ret</span>.<span class="ident">clone</span>().<span class="ident">index</span>(<span class="ident">beg</span>);
         <span class="kw">let</span> <span class="ident">statements</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
             <span class="self">self</span>.<span class="ident">make_statement</span>(
                 <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
@@ -1439,10 +1466,10 @@
             ),
             <span class="self">self</span>.<span class="ident">make_statement</span>(
                 <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                    <span class="ident">beg</span>.<span class="ident">clone</span>(),
+                    <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>),
                     <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(
                         <span class="ident">BinOp</span>::<span class="ident">Add</span>,
-                        <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">beg</span>.<span class="ident">clone</span>()),
+                        <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>)),
                         <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="self">self</span>.<span class="ident">make_usize</span>(<span class="number">1</span>))
                     )
                 )
@@ -1465,10 +1492,10 @@
         <span class="comment">// `let mut beg = 0;`</span>
         <span class="comment">// goto #6;</span>
         <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="ident">beg</span>;
-        <span class="kw">let</span> <span class="ident">beg</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_lvalue</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>);
+        <span class="kw">let</span> <span class="ident">beg</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">local_decls</span>.<span class="ident">push</span>(<span class="ident">temp_decl</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>, <span class="ident">span</span>));
         <span class="kw">let</span> <span class="ident">init</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_statement</span>(
             <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                <span class="ident">beg</span>.<span class="ident">clone</span>(),
+                <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>),
                 <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="self">self</span>.<span class="ident">make_usize</span>(<span class="number">0</span>)))
             )
         );
@@ -1479,12 +1506,13 @@
         <span class="comment">//     BB #8;</span>
         <span class="comment">// }</span>
         <span class="comment">// BB #9;</span>
-        <span class="self">self</span>.<span class="ident">loop_header</span>(<span class="ident">beg</span>.<span class="ident">clone</span>(), <span class="ident">end</span>, <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">7</span>), <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">9</span>), <span class="bool-val">true</span>);
+        <span class="self">self</span>.<span class="ident">loop_header</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>), <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">end</span>),
+                         <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">7</span>), <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">9</span>), <span class="bool-val">true</span>);
 
         <span class="comment">// BB #7 (cleanup)</span>
         <span class="comment">// `drop(ret[beg])`;</span>
         <span class="self">self</span>.<span class="ident">block</span>(<span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> {
-            <span class="ident">location</span>: <span class="ident">ret</span>.<span class="ident">index</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">beg</span>.<span class="ident">clone</span>())),
+            <span class="ident">location</span>: <span class="ident">ret</span>.<span class="ident">index</span>(<span class="ident">beg</span>),
             <span class="ident">target</span>: <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">8</span>),
             <span class="ident">unwind</span>: <span class="prelude-val">None</span>,
         }, <span class="bool-val">true</span>);
@@ -1494,10 +1522,10 @@
         <span class="comment">// `goto #6;`</span>
         <span class="kw">let</span> <span class="ident">statement</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_statement</span>(
             <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                <span class="ident">beg</span>.<span class="ident">clone</span>(),
+                <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>),
                 <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(
                     <span class="ident">BinOp</span>::<span class="ident">Add</span>,
-                    <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">beg</span>.<span class="ident">clone</span>()),
+                    <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">beg</span>)),
                     <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="self">self</span>.<span class="ident">make_usize</span>(<span class="number">1</span>))
                 )
             )
@@ -1611,17 +1639,21 @@
 
     <span class="kw">let</span> (<span class="ident">callee</span>, <span class="kw-2">mut</span> <span class="ident">args</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">call_kind</span> {
         <span class="ident">CallKind</span>::<span class="ident">Indirect</span> <span class="op">=&gt;</span> (<span class="ident">rcvr</span>, <span class="macro">vec</span><span class="macro">!</span>[]),
-        <span class="ident">CallKind</span>::<span class="ident">Direct</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> (
-            <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">Constant</span> {
+        <span class="ident">CallKind</span>::<span class="ident">Direct</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> {
+            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">type_of</span>(<span class="ident">def_id</span>);
+            (<span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">Constant</span> {
                 <span class="ident">span</span>,
-                <span class="ident">ty</span>: <span class="ident">tcx</span>.<span class="ident">type_of</span>(<span class="ident">def_id</span>),
+                <span class="ident">ty</span>,
                 <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> {
-                    <span class="ident">value</span>: <span class="ident">ConstVal</span>::<span class="ident">Function</span>(<span class="ident">def_id</span>,
-                        <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>)),
+                    <span class="ident">value</span>: <span class="ident">tcx</span>.<span class="ident">mk_const</span>(<span class="ident">ty</span>::<span class="ident">Const</span> {
+                        <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Function</span>(<span class="ident">def_id</span>,
+                            <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>)),
+                        <span class="ident">ty</span>
+                    }),
                 },
-            }),
-            <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">rcvr</span>]
-        )
+             }),
+             <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">rcvr</span>])
+        }
     };
 
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">untuple_args</span>) <span class="op">=</span> <span class="ident">untuple_args</span> {

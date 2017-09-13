@@ -239,6 +239,32 @@
 <span id="194">194</span>
 <span id="195">195</span>
 <span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -260,15 +286,19 @@
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">or_false</span> {
      (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">v</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
-          <span class="kw">match</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">v</span> {
-               <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">v</span>,
-               <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
-          }
+         <span class="kw">match</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">v</span> {
+             <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">v</span>,
+             <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;or_false failed: {}&quot;</span>, <span class="macro">stringify</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">v</span>));
+                 <span class="kw">return</span> <span class="bool-val">false</span>;
+             }
+         }
      }
 }
 
 <span class="comment">// The struct contains the information about the anonymous region</span>
 <span class="comment">// we are searching for.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AnonymousArgInfo</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="comment">// the argument corresponding to the anonymous region</span>
     <span class="kw">pub</span> <span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Arg</span>,
@@ -283,6 +313,7 @@
 
 <span class="comment">// This struct contains information regarding the</span>
 <span class="comment">// Refree((FreeRegion) corresponding to lifetime conflict</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FreeRegionInfo</span> {
     <span class="comment">// def id corresponding to FreeRegion</span>
     <span class="kw">pub</span> <span class="ident">def_id</span>: <span class="ident">DefId</span>,
@@ -304,47 +335,54 @@
     <span class="comment">// i32, which is the type of y but with the anonymous region replaced</span>
     <span class="comment">// with &#39;a, the corresponding bound region and is_first which is true if</span>
     <span class="comment">// the hir::Arg is the first argument in the function declaration.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_arg_with_anonymous_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                                          <span class="ident">anon_region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                          <span class="ident">replace_region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                                          <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AnonymousArgInfo</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find_arg_with_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                <span class="ident">anon_region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                <span class="ident">replace_region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                                <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AnonymousArgInfo</span><span class="op">&gt;</span> {
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">ReFree</span>(<span class="kw-2">ref</span> <span class="ident">free_region</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">anon_region</span> {
-            <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">free_region</span>.<span class="ident">scope</span>;
-            <span class="kw">let</span> <span class="ident">hir</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>;
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node_id</span>) <span class="op">=</span> <span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">id</span>) {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">body_id</span>) <span class="op">=</span> <span class="ident">hir</span>.<span class="ident">maybe_body_owned_by</span>(<span class="ident">node_id</span>) {
-                    <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">hir</span>.<span class="ident">body</span>(<span class="ident">body_id</span>);
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tables</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_progress_tables</span> {
-                        <span class="ident">body</span>.<span class="ident">arguments</span>
-                            .<span class="ident">iter</span>()
-                            .<span class="ident">enumerate</span>()
-                            .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">index</span>, <span class="ident">arg</span>)<span class="op">|</span> {
-                                <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">tables</span>.<span class="ident">borrow</span>().<span class="ident">node_id_to_type</span>(<span class="ident">arg</span>.<span class="ident">hir_id</span>);
-                                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">found_anon_region</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                                <span class="kw">let</span> <span class="ident">new_arg_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>
-                                    .<span class="ident">fold_regions</span>(<span class="kw-2">&amp;</span><span class="ident">ty</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="bool-val">false</span>, <span class="op">|</span><span class="ident">r</span>, _<span class="op">|</span> <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">r</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">anon_region</span> {
-                                        <span class="ident">found_anon_region</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                                        <span class="ident">replace_region</span>
-                                    } <span class="kw">else</span> {
-                                        <span class="ident">r</span>
-                                    });
-                                <span class="kw">if</span> <span class="ident">found_anon_region</span> {
-                                    <span class="kw">let</span> <span class="ident">is_first</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">==</span> <span class="number">0</span>;
-                                    <span class="prelude-val">Some</span>(<span class="ident">AnonymousArgInfo</span> {
-                                             <span class="ident">arg</span>: <span class="ident">arg</span>,
-                                             <span class="ident">arg_ty</span>: <span class="ident">new_arg_ty</span>,
-                                             <span class="ident">bound_region</span>: <span class="ident">free_region</span>.<span class="ident">bound_region</span>,
-                                             <span class="ident">is_first</span>: <span class="ident">is_first</span>,
-                                         })
+        <span class="kw">let</span> (<span class="ident">id</span>, <span class="ident">bound_region</span>) <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">anon_region</span> {
+            <span class="ident">ty</span>::<span class="ident">ReFree</span>(<span class="kw-2">ref</span> <span class="ident">free_region</span>) <span class="op">=&gt;</span> (<span class="ident">free_region</span>.<span class="ident">scope</span>, <span class="ident">free_region</span>.<span class="ident">bound_region</span>),
+            <span class="ident">ty</span>::<span class="ident">ReEarlyBound</span>(<span class="kw-2">ref</span> <span class="ident">ebr</span>) <span class="op">=&gt;</span> {
+                (<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">parent_def_id</span>(<span class="ident">ebr</span>.<span class="ident">def_id</span>).<span class="ident">unwrap</span>(),
+                 <span class="ident">ty</span>::<span class="ident">BoundRegion</span>::<span class="ident">BrNamed</span>(<span class="ident">ebr</span>.<span class="ident">def_id</span>, <span class="ident">ebr</span>.<span class="ident">name</span>))
+            }
+            _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>, <span class="comment">// not a free region</span>
+        };
+
+        <span class="kw">let</span> <span class="ident">hir</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>;
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node_id</span>) <span class="op">=</span> <span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">id</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">body_id</span>) <span class="op">=</span> <span class="ident">hir</span>.<span class="ident">maybe_body_owned_by</span>(<span class="ident">node_id</span>) {
+                <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">hir</span>.<span class="ident">body</span>(<span class="ident">body_id</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tables</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_progress_tables</span> {
+                    <span class="ident">body</span>.<span class="ident">arguments</span>
+                        .<span class="ident">iter</span>()
+                        .<span class="ident">enumerate</span>()
+                        .<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">index</span>, <span class="ident">arg</span>)<span class="op">|</span> {
+                            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">tables</span>.<span class="ident">borrow</span>().<span class="ident">node_id_to_type_opt</span>(<span class="ident">arg</span>.<span class="ident">hir_id</span>) {
+                                <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">v</span>,
+                                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>, <span class="comment">// sometimes the tables are not yet populated</span>
+                            };
+                            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">found_anon_region</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                            <span class="kw">let</span> <span class="ident">new_arg_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>
+                                .<span class="ident">fold_regions</span>(<span class="kw-2">&amp;</span><span class="ident">ty</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="bool-val">false</span>, <span class="op">|</span><span class="ident">r</span>, _<span class="op">|</span> <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">r</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">anon_region</span> {
+                                    <span class="ident">found_anon_region</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                                    <span class="ident">replace_region</span>
                                 } <span class="kw">else</span> {
-                                    <span class="prelude-val">None</span>
-                                }
-                            })
-                            .<span class="ident">next</span>()
-                    } <span class="kw">else</span> {
-                        <span class="prelude-val">None</span>
-                    }
+                                    <span class="ident">r</span>
+                                });
+                            <span class="kw">if</span> <span class="ident">found_anon_region</span> {
+                                <span class="kw">let</span> <span class="ident">is_first</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">==</span> <span class="number">0</span>;
+                                <span class="prelude-val">Some</span>(<span class="ident">AnonymousArgInfo</span> {
+                                         <span class="ident">arg</span>: <span class="ident">arg</span>,
+                                         <span class="ident">arg_ty</span>: <span class="ident">new_arg_ty</span>,
+                                         <span class="ident">bound_region</span>: <span class="ident">bound_region</span>,
+                                         <span class="ident">is_first</span>: <span class="ident">is_first</span>,
+                                     })
+                            } <span class="kw">else</span> {
+                                <span class="prelude-val">None</span>
+                            }
+                        })
+                        .<span class="ident">next</span>()
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }
@@ -356,37 +394,38 @@
         }
     }
 
-    <span class="comment">// This method returns whether the given Region is Anonymous</span>
-    <span class="comment">// and returns the DefId and the BoundRegion corresponding to the given region.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_suitable_anonymous_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">FreeRegionInfo</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">ReFree</span>(<span class="kw-2">ref</span> <span class="ident">free_region</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">region</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">BrAnon</span>(..) <span class="op">=</span> <span class="ident">free_region</span>.<span class="ident">bound_region</span> {
-                <span class="kw">let</span> <span class="ident">anonymous_region_binding_scope</span> <span class="op">=</span> <span class="ident">free_region</span>.<span class="ident">scope</span>;
-                <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>
-                    .<span class="ident">hir</span>
-                    .<span class="ident">as_local_node_id</span>(<span class="ident">anonymous_region_binding_scope</span>)
-                    .<span class="ident">unwrap</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">is_impl_item</span> <span class="op">=</span> <span class="bool-val">false</span>;
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">find</span>(<span class="ident">node_id</span>) {
+    <span class="comment">// This method returns the DefId and the BoundRegion corresponding to the given region.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_suitable_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">FreeRegionInfo</span><span class="op">&gt;</span> {
 
-                    <span class="prelude-val">Some</span>(<span class="ident">hir_map</span>::<span class="ident">NodeItem</span>(..)) <span class="op">|</span>
-                    <span class="prelude-val">Some</span>(<span class="ident">hir_map</span>::<span class="ident">NodeTraitItem</span>(..)) <span class="op">=&gt;</span> {
-                        <span class="comment">// Success -- proceed to return Some below</span>
-                    }
-                    <span class="prelude-val">Some</span>(<span class="ident">hir_map</span>::<span class="ident">NodeImplItem</span>(..)) <span class="op">=&gt;</span> {
-                        <span class="ident">is_impl_item</span> <span class="op">=</span>
-                            <span class="self">self</span>.<span class="ident">is_bound_region_in_impl_item</span>(<span class="ident">anonymous_region_binding_scope</span>);
-                    }
-                    _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-                }
-                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">FreeRegionInfo</span> {
-                                <span class="ident">def_id</span>: <span class="ident">anonymous_region_binding_scope</span>,
-                                <span class="ident">boundregion</span>: <span class="ident">free_region</span>.<span class="ident">bound_region</span>,
-                                <span class="ident">is_impl_item</span>: <span class="ident">is_impl_item</span>,
-                            });
+        <span class="kw">let</span> (<span class="ident">suitable_region_binding_scope</span>, <span class="ident">bound_region</span>) <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">region</span> {
+            <span class="ident">ty</span>::<span class="ident">ReFree</span>(<span class="kw-2">ref</span> <span class="ident">free_region</span>) <span class="op">=&gt;</span> (<span class="ident">free_region</span>.<span class="ident">scope</span>, <span class="ident">free_region</span>.<span class="ident">bound_region</span>),
+            <span class="ident">ty</span>::<span class="ident">ReEarlyBound</span>(<span class="kw-2">ref</span> <span class="ident">ebr</span>) <span class="op">=&gt;</span> {
+                (<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">parent_def_id</span>(<span class="ident">ebr</span>.<span class="ident">def_id</span>).<span class="ident">unwrap</span>(),
+                 <span class="ident">ty</span>::<span class="ident">BoundRegion</span>::<span class="ident">BrNamed</span>(<span class="ident">ebr</span>.<span class="ident">def_id</span>, <span class="ident">ebr</span>.<span class="ident">name</span>))
             }
-        }
-        <span class="prelude-val">None</span>
+            _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>, <span class="comment">// not a free region</span>
+        };
+
+        <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>
+            .<span class="ident">hir</span>
+            .<span class="ident">as_local_node_id</span>(<span class="ident">suitable_region_binding_scope</span>)
+            .<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">is_impl_item</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">find</span>(<span class="ident">node_id</span>) {
+
+            <span class="prelude-val">Some</span>(<span class="ident">hir_map</span>::<span class="ident">NodeItem</span>(..)) <span class="op">|</span>
+            <span class="prelude-val">Some</span>(<span class="ident">hir_map</span>::<span class="ident">NodeTraitItem</span>(..)) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="prelude-val">Some</span>(<span class="ident">hir_map</span>::<span class="ident">NodeImplItem</span>(..)) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">is_bound_region_in_impl_item</span>(<span class="ident">suitable_region_binding_scope</span>)
+            }
+            _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
+        };
+
+        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">FreeRegionInfo</span> {
+                        <span class="ident">def_id</span>: <span class="ident">suitable_region_binding_scope</span>,
+                        <span class="ident">boundregion</span>: <span class="ident">bound_region</span>,
+                        <span class="ident">is_impl_item</span>: <span class="ident">is_impl_item</span>,
+                    });
+
     }
 
     <span class="comment">// Here, we check for the case where the anonymous region</span>
@@ -419,9 +458,9 @@
     }
 
     <span class="comment">// Here we check if the bound region is in Impl Item.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_bound_region_in_impl_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">anonymous_region_binding_scope</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_bound_region_in_impl_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">suitable_region_binding_scope</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="ident">container_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>
-            .<span class="ident">associated_item</span>(<span class="ident">anonymous_region_binding_scope</span>)
+            .<span class="ident">associated_item</span>(<span class="ident">suitable_region_binding_scope</span>)
             .<span class="ident">container</span>
             .<span class="ident">id</span>();
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">impl_trait_ref</span>(<span class="ident">container_id</span>).<span class="ident">is_some</span>() {
@@ -434,6 +473,19 @@
             <span class="kw">return</span> <span class="bool-val">true</span>;
         }
         <span class="bool-val">false</span>
+    }
+
+    <span class="comment">// This method returns whether the given Region is Named</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_named_region</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">region</span> {
+            <span class="ident">ty</span>::<span class="ident">ReFree</span>(<span class="kw-2">ref</span> <span class="ident">free_region</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="ident">free_region</span>.<span class="ident">bound_region</span> {
+                    <span class="ident">ty</span>::<span class="ident">BrNamed</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                }
+            }
+            _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        }
     }
 }
 </pre>

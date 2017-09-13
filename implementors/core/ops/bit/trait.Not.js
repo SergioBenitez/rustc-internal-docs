@@ -5,7 +5,6 @@ implementors["rustc_apfloat"] = ["impl <a class=\"trait\" href=\"core/ops/bit/tr
 implementors["rustc_const_math"] = ["impl <a class=\"trait\" href=\"core/ops/bit/trait.Not.html\" title=\"trait core::ops::bit::Not\">Not</a> for <a class=\"enum\" href=\"rustc_const_math/enum.ConstInt.html\" title=\"enum rustc_const_math::ConstInt\">ConstInt</a>",];
 implementors["rustc_llvm"] = ["impl <a class=\"trait\" href=\"core/ops/bit/trait.Not.html\" title=\"trait core::ops::bit::Not\">Not</a> for <a class=\"struct\" href=\"rustc_llvm/debuginfo/struct.DIFlags.html\" title=\"struct rustc_llvm::debuginfo::DIFlags\">DIFlags</a>",];
 implementors["rustc_mir"] = ["impl <a class=\"trait\" href=\"core/ops/bit/trait.Not.html\" title=\"trait core::ops::bit::Not\">Not</a> for <a class=\"struct\" href=\"rustc_mir/transform/qualify_consts/struct.Qualif.html\" title=\"struct rustc_mir::transform::qualify_consts::Qualif\">Qualif</a>",];
-implementors["rustdoc"] = ["impl <a class=\"trait\" href=\"core/ops/bit/trait.Not.html\" title=\"trait core::ops::bit::Not\">Not</a> for <a class=\"enum\" href=\"rustdoc/clean/cfg/enum.Cfg.html\" title=\"enum rustdoc::clean::cfg::Cfg\">Cfg</a>",];
 implementors["syntax"] = ["impl <a class=\"trait\" href=\"core/ops/bit/trait.Not.html\" title=\"trait core::ops::bit::Not\">Not</a> for <a class=\"struct\" href=\"syntax/parse/parser/struct.Restrictions.html\" title=\"struct syntax::parse::parser::Restrictions\">Restrictions</a>",];
 
             if (window.register_implementors) {

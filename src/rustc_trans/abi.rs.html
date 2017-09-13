@@ -1055,7 +1055,7 @@
 <span class="kw">use</span> <span class="ident">llvm</span>::{<span class="self">self</span>, <span class="ident">ValueRef</span>, <span class="ident">AttributePlace</span>};
 <span class="kw">use</span> <span class="ident">base</span>;
 <span class="kw">use</span> <span class="ident">builder</span>::<span class="ident">Builder</span>;
-<span class="kw">use</span> <span class="ident">common</span>::{<span class="ident">instance_ty</span>, <span class="ident">ty_fn_sig</span>, <span class="ident">type_is_fat_ptr</span>, <span class="ident">C_uint</span>};
+<span class="kw">use</span> <span class="ident">common</span>::{<span class="ident">instance_ty</span>, <span class="ident">ty_fn_sig</span>, <span class="ident">type_is_fat_ptr</span>, <span class="ident">C_usize</span>};
 <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">CrateContext</span>;
 <span class="kw">use</span> <span class="ident">cabi_x86</span>;
 <span class="kw">use</span> <span class="ident">cabi_x86_64</span>;
@@ -1571,7 +1571,7 @@
         }
         <span class="kw">let</span> <span class="ident">ccx</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">ccx</span>;
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_indirect</span>() {
-            <span class="kw">let</span> <span class="ident">llsz</span> <span class="op">=</span> <span class="ident">C_uint</span>(<span class="ident">ccx</span>, <span class="self">self</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>());
+            <span class="kw">let</span> <span class="ident">llsz</span> <span class="op">=</span> <span class="ident">C_usize</span>(<span class="ident">ccx</span>, <span class="self">self</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>());
             <span class="kw">let</span> <span class="ident">llalign</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">layout</span>.<span class="ident">align</span>(<span class="ident">ccx</span>).<span class="ident">abi</span>();
             <span class="ident">base</span>::<span class="ident">call_memcpy</span>(<span class="ident">bcx</span>, <span class="ident">dst</span>, <span class="ident">val</span>, <span class="ident">llsz</span>, <span class="ident">llalign</span> <span class="kw">as</span> <span class="ident">u32</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ty</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">cast</span> {
@@ -1608,7 +1608,7 @@
                 <span class="ident">base</span>::<span class="ident">call_memcpy</span>(<span class="ident">bcx</span>,
                                   <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">dst</span>, <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">ccx</span>)),
                                   <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">llscratch</span>, <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">ccx</span>)),
-                                  <span class="ident">C_uint</span>(<span class="ident">ccx</span>, <span class="self">self</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>()),
+                                  <span class="ident">C_usize</span>(<span class="ident">ccx</span>, <span class="self">self</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>()),
                                   <span class="ident">cmp</span>::<span class="ident">min</span>(<span class="self">self</span>.<span class="ident">layout</span>.<span class="ident">align</span>(<span class="ident">ccx</span>).<span class="ident">abi</span>() <span class="kw">as</span> <span class="ident">u32</span>,
                                            <span class="ident">llalign_of_min</span>(<span class="ident">ccx</span>, <span class="ident">ty</span>)));
 
