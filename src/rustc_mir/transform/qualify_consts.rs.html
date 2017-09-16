@@ -1088,6 +1088,22 @@
 <span id="1043">1043</span>
 <span id="1044">1044</span>
 <span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1121,6 +1137,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">Visitor</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">lang_items</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">abi</span>::<span class="ident">Abi</span>;
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">attr</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">feature_gate</span>::<span class="ident">UnstableFeatures</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
 
@@ -1804,14 +1821,14 @@
             <span class="self">self</span>.<span class="ident">visit_operand</span>(<span class="ident">func</span>, <span class="ident">location</span>);
 
             <span class="kw">let</span> <span class="ident">fn_ty</span> <span class="op">=</span> <span class="ident">func</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>);
-            <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">is_shuffle</span>, <span class="kw-2">mut</span> <span class="ident">is_const_fn</span>) <span class="op">=</span> (<span class="bool-val">false</span>, <span class="bool-val">false</span>);
+            <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">is_shuffle</span>, <span class="kw-2">mut</span> <span class="ident">is_const_fn</span>) <span class="op">=</span> (<span class="bool-val">false</span>, <span class="prelude-val">None</span>);
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyFnDef</span>(<span class="ident">def_id</span>, _) <span class="op">=</span> <span class="ident">fn_ty</span>.<span class="ident">sty</span> {
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">fn_sig</span>(<span class="ident">def_id</span>).<span class="ident">abi</span>() {
                     <span class="ident">Abi</span>::<span class="ident">RustIntrinsic</span> <span class="op">|</span>
                     <span class="ident">Abi</span>::<span class="ident">PlatformIntrinsic</span> <span class="op">=&gt;</span> {
                         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_const_fn</span>(<span class="ident">def_id</span>));
                         <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">item_name</span>(<span class="ident">def_id</span>)[..] {
-                            <span class="string">&quot;size_of&quot;</span> <span class="op">|</span> <span class="string">&quot;min_align_of&quot;</span> <span class="op">=&gt;</span> <span class="ident">is_const_fn</span> <span class="op">=</span> <span class="bool-val">true</span>,
+                            <span class="string">&quot;size_of&quot;</span> <span class="op">|</span> <span class="string">&quot;min_align_of&quot;</span> <span class="op">=&gt;</span> <span class="ident">is_const_fn</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">def_id</span>),
 
                             <span class="ident">name</span> <span class="kw">if</span> <span class="ident">name</span>.<span class="ident">starts_with</span>(<span class="string">&quot;simd_shuffle&quot;</span>) <span class="op">=&gt;</span> {
                                 <span class="ident">is_shuffle</span> <span class="op">=</span> <span class="bool-val">true</span>;
@@ -1821,7 +1838,9 @@
                         }
                     }
                     _ <span class="op">=&gt;</span> {
-                        <span class="ident">is_const_fn</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_const_fn</span>(<span class="ident">def_id</span>);
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_const_fn</span>(<span class="ident">def_id</span>) {
+                            <span class="ident">is_const_fn</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">def_id</span>);
+                        }
                     }
                 }
             }
@@ -1842,25 +1861,38 @@
             }
 
             <span class="comment">// Const fn calls.</span>
-            <span class="kw">if</span> <span class="ident">is_const_fn</span> {
-                <span class="comment">// We are in a const or static initializer,</span>
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mode</span> <span class="op">!=</span> <span class="ident">Mode</span>::<span class="ident">Fn</span> <span class="op">&amp;&amp;</span>
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">def_id</span>) <span class="op">=</span> <span class="ident">is_const_fn</span> {
+                <span class="comment">// find corresponding rustc_const_unstable feature</span>
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">attr</span>::<span class="ident">Stability</span> {
+                    <span class="ident">rustc_const_unstable</span>: <span class="prelude-val">Some</span>(<span class="ident">attr</span>::<span class="ident">RustcConstUnstable</span> {
+                        <span class="ident">feature</span>: <span class="kw-2">ref</span> <span class="ident">feature_name</span>
+                    }),
+                .. }) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lookup_stability</span>(<span class="ident">def_id</span>) {
 
-                    <span class="comment">// feature-gate is not enabled,</span>
-                    <span class="op">!</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">features</span>.<span class="ident">borrow</span>().<span class="ident">const_fn</span> <span class="op">&amp;&amp;</span>
+                    <span class="comment">// We are in a const or static initializer,</span>
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mode</span> <span class="op">!=</span> <span class="ident">Mode</span>::<span class="ident">Fn</span> <span class="op">&amp;&amp;</span>
 
-                    <span class="comment">// this doesn&#39;t come from a crate with the feature-gate enabled,</span>
-                    <span class="self">self</span>.<span class="ident">def_id</span>.<span class="ident">is_local</span>() <span class="op">&amp;&amp;</span>
+                        <span class="comment">// feature-gate is not enabled,</span>
+                        <span class="op">!</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">features</span>.<span class="ident">borrow</span>()
+                            .<span class="ident">declared_lib_features</span>
+                            .<span class="ident">iter</span>()
+                            .<span class="ident">any</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">sym</span>, _)<span class="op">|</span> <span class="ident">sym</span> <span class="op">==</span> <span class="ident">feature_name</span>) <span class="op">&amp;&amp;</span>
 
-                    <span class="comment">// this doesn&#39;t come from a macro that has #[allow_internal_unstable]</span>
-                    <span class="op">!</span><span class="self">self</span>.<span class="ident">span</span>.<span class="ident">allows_unstable</span>()
-                {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">struct_span_err</span>(<span class="self">self</span>.<span class="ident">span</span>,
-                        <span class="string">&quot;const fns are an unstable feature&quot;</span>);
-                    <span class="macro">help</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">err</span>,
-                          <span class="string">&quot;in Nightly builds, add `#![feature(const_fn)]` \
-                           to the crate attributes to enable&quot;</span>);
-                    <span class="ident">err</span>.<span class="ident">emit</span>();
+                        <span class="comment">// this doesn&#39;t come from a crate with the feature-gate enabled,</span>
+                        <span class="self">self</span>.<span class="ident">def_id</span>.<span class="ident">is_local</span>() <span class="op">&amp;&amp;</span>
+
+                        <span class="comment">// this doesn&#39;t come from a macro that has #[allow_internal_unstable]</span>
+                        <span class="op">!</span><span class="self">self</span>.<span class="ident">span</span>.<span class="ident">allows_unstable</span>()
+                    {
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">struct_span_err</span>(<span class="self">self</span>.<span class="ident">span</span>,
+                            <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;`{}` is not yet stable as a const fn&quot;</span>,
+                                     <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>)));
+                        <span class="macro">help</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">err</span>,
+                              <span class="string">&quot;in Nightly builds, add `#![feature({})]` \
+                               to the crate attributes to enable&quot;</span>,
+                              <span class="ident">feature_name</span>);
+                        <span class="ident">err</span>.<span class="ident">emit</span>();
+                    }
                 }
             } <span class="kw">else</span> {
                 <span class="self">self</span>.<span class="ident">qualif</span> <span class="op">=</span> <span class="ident">Qualif</span>::<span class="ident">NOT_CONST</span>;

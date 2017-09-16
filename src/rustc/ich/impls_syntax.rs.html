@@ -430,6 +430,12 @@
 <span id="385">385</span>
 <span id="386">386</span>
 <span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -514,7 +520,12 @@
 });
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> ::<span class="ident">syntax</span>::<span class="ident">attr</span>::<span class="ident">Deprecation</span> { <span class="ident">since</span>, <span class="ident">note</span> });
-<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> ::<span class="ident">syntax</span>::<span class="ident">attr</span>::<span class="ident">Stability</span> { <span class="ident">level</span>, <span class="ident">feature</span>, <span class="ident">rustc_depr</span> });
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> ::<span class="ident">syntax</span>::<span class="ident">attr</span>::<span class="ident">Stability</span> {
+    <span class="ident">level</span>,
+    <span class="ident">feature</span>,
+    <span class="ident">rustc_depr</span>,
+    <span class="ident">rustc_const_unstable</span>
+});
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
 <span class="kw">for</span> ::<span class="ident">syntax</span>::<span class="ident">attr</span>::<span class="ident">StabilityLevel</span> {
@@ -535,6 +546,7 @@
 }
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> ::<span class="ident">syntax</span>::<span class="ident">attr</span>::<span class="ident">RustcDeprecation</span> { <span class="ident">since</span>, <span class="ident">reason</span> });
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> ::<span class="ident">syntax</span>::<span class="ident">attr</span>::<span class="ident">RustcConstUnstable</span> { <span class="ident">feature</span> });
 
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> ::<span class="ident">syntax</span>::<span class="ident">attr</span>::<span class="ident">IntType</span> {

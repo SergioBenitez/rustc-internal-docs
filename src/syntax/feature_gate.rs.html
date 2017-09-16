@@ -1756,6 +1756,12 @@
 <span id="1711">1711</span>
 <span id="1712">1712</span>
 <span id="1713">1713</span>
+<span id="1714">1714</span>
+<span id="1715">1715</span>
+<span id="1716">1716</span>
+<span id="1717">1717</span>
+<span id="1718">1718</span>
+<span id="1719">1719</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1896,6 +1902,7 @@
 
     <span class="comment">// rustc internal</span>
     (<span class="ident">active</span>, <span class="ident">rustc_diagnostic_macros</span>, <span class="string">&quot;1.0.0&quot;</span>, <span class="prelude-val">None</span>),
+    (<span class="ident">active</span>, <span class="ident">rustc_const_unstable</span>, <span class="string">&quot;1.0.0&quot;</span>, <span class="prelude-val">None</span>),
     (<span class="ident">active</span>, <span class="ident">advanced_slice_patterns</span>, <span class="string">&quot;1.0.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">23121</span>)),
     (<span class="ident">active</span>, <span class="ident">box_syntax</span>, <span class="string">&quot;1.0.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">27779</span>)),
     (<span class="ident">active</span>, <span class="ident">placement_in_syntax</span>, <span class="string">&quot;1.0.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">27779</span>)),
@@ -2381,6 +2388,11 @@
                                              <span class="string">&quot;the `#[rustc_on_unimplemented]` attribute \
                                               is an experimental feature&quot;</span>,
                                              <span class="macro">cfg_fn</span><span class="macro">!</span>(<span class="ident">on_unimplemented</span>))),
+    (<span class="string">&quot;rustc_const_unstable&quot;</span>, <span class="ident">Normal</span>, <span class="ident">Gated</span>(<span class="ident">Stability</span>::<span class="ident">Unstable</span>,
+                                             <span class="string">&quot;rustc_const_unstable&quot;</span>,
+                                             <span class="string">&quot;the `#[rustc_const_unstable]` attribute \
+                                              is an internal feature&quot;</span>,
+                                             <span class="macro">cfg_fn</span><span class="macro">!</span>(<span class="ident">rustc_const_unstable</span>))),
     (<span class="string">&quot;global_allocator&quot;</span>, <span class="ident">Normal</span>, <span class="ident">Gated</span>(<span class="ident">Stability</span>::<span class="ident">Unstable</span>,
                                        <span class="string">&quot;global_allocator&quot;</span>,
                                        <span class="string">&quot;the `#[global_allocator]` attribute is \

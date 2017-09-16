@@ -560,6 +560,7 @@
 <span id="515">515</span>
 <span id="516">516</span>
 <span id="517">517</span>
+<span id="518">518</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -719,6 +720,7 @@
 <span class="kw">impl</span> <span class="ident">Once</span> {
     <span class="doccomment">/// Creates a new `Once` value.</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;once_new&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.2.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_once_new&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Once</span> {
         <span class="ident">Once</span> {
             <span class="ident">state</span>: <span class="ident">AtomicUsize</span>::<span class="ident">new</span>(<span class="ident">INCOMPLETE</span>),

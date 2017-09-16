@@ -549,6 +549,18 @@
 <span id="504">504</span>
 <span id="505">505</span>
 <span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -844,6 +856,7 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">raw</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">repr_simd</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">rustc_attrs</span>)]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">rustc_const_unstable</span>))]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">shared</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">sip_hash_13</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">slice_bytes</span>)]</span>
@@ -866,6 +879,17 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">vec_push_all</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">doc_cfg</span>)]</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">test</span>, <span class="ident">feature</span>(<span class="ident">update_panic_count</span>))]</span>
+
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_max_value</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_atomic_bool_new</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_atomic_isize_new</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_atomic_usize_new</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">windows</span>), <span class="ident">feature</span>(<span class="ident">const_atomic_ptr_new</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_unsafe_cell_new</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_cell_new</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_once_new</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_ptr_null</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_ptr_null_mut</span>))]</span>
 
 <span class="attribute">#![<span class="ident">default_lib_allocator</span>]</span>
 
