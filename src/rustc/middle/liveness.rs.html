@@ -3059,12 +3059,12 @@
                     <span class="self">self</span>.<span class="ident">ir</span>.<span class="ident">tcx</span>.<span class="ident">lint_node_note</span>(<span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">UNUSED_VARIABLES</span>, <span class="ident">id</span>, <span class="ident">sp</span>,
                         <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;variable `{}` is assigned to, but never used&quot;</span>,
                                  <span class="ident">name</span>),
-                        <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;to disable this warning, consider using `_{}` instead&quot;</span>,
+                        <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;to avoid this warning, consider using `_{}` instead&quot;</span>,
                                  <span class="ident">name</span>));
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">name</span> <span class="op">!=</span> <span class="string">&quot;self&quot;</span> {
                     <span class="self">self</span>.<span class="ident">ir</span>.<span class="ident">tcx</span>.<span class="ident">lint_node_note</span>(<span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">UNUSED_VARIABLES</span>, <span class="ident">id</span>, <span class="ident">sp</span>,
                         <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;unused variable: `{}`&quot;</span>, <span class="ident">name</span>),
-                        <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;to disable this warning, consider using `_{}` instead&quot;</span>,
+                        <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;to avoid this warning, consider using `_{}` instead&quot;</span>,
                                  <span class="ident">name</span>));
                 }
             }

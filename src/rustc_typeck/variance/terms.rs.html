@@ -231,15 +231,6 @@
 <span id="186">186</span>
 <span id="187">187</span>
 <span id="188">188</span>
-<span id="189">189</span>
-<span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
-<span id="193">193</span>
-<span id="194">194</span>
-<span id="195">195</span>
-<span id="196">196</span>
-<span id="197">197</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -341,15 +332,6 @@
     <span class="kw">let</span> <span class="ident">all</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
         (<span class="ident">lang_items</span>.<span class="ident">phantom_data</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Covariant</span>]),
         (<span class="ident">lang_items</span>.<span class="ident">unsafe_cell_type</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Invariant</span>]),
-
-        <span class="comment">// Deprecated:</span>
-        (<span class="ident">lang_items</span>.<span class="ident">covariant_type</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Covariant</span>]),
-        (<span class="ident">lang_items</span>.<span class="ident">contravariant_type</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Contravariant</span>]),
-        (<span class="ident">lang_items</span>.<span class="ident">invariant_type</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Invariant</span>]),
-        (<span class="ident">lang_items</span>.<span class="ident">covariant_lifetime</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Covariant</span>]),
-        (<span class="ident">lang_items</span>.<span class="ident">contravariant_lifetime</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Contravariant</span>]),
-        (<span class="ident">lang_items</span>.<span class="ident">invariant_lifetime</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>::<span class="ident">Invariant</span>]),
-
         ];
 
     <span class="ident">all</span>.<span class="ident">into_iter</span>() <span class="comment">// iterating over (Option&lt;DefId&gt;, Variance)</span>

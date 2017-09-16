@@ -2317,12 +2317,12 @@
     <span class="doccomment">/// // The no-copy, unsafe way, still using transmute, but not UB.</span>
     <span class="doccomment">/// // This is equivalent to the original, but safer, and reuses the</span>
     <span class="doccomment">/// // same Vec internals. Therefore the new inner type must have the</span>
-    <span class="doccomment">/// // exact same size, and the same or lesser alignment, as the old</span>
-    <span class="doccomment">/// // type. The same caveats exist for this method as transmute, for</span>
+    <span class="doccomment">/// // exact same size, and the same alignment, as the old type.</span>
+    <span class="doccomment">/// // The same caveats exist for this method as transmute, for</span>
     <span class="doccomment">/// // the original inner type (`&amp;i32`) to the converted inner type</span>
     <span class="doccomment">/// // (`Option&lt;&amp;i32&gt;`), so read the nomicon pages linked above.</span>
     <span class="doccomment">/// let v_from_raw = unsafe {</span>
-    <span class="doccomment">///     Vec::from_raw_parts(v_orig.as_mut_ptr(),</span>
+    <span class="doccomment">///     Vec::from_raw_parts(v_orig.as_mut_ptr() as *mut Option&lt;&amp;i32&gt;,</span>
     <span class="doccomment">///                         v_orig.len(),</span>
     <span class="doccomment">///                         v_orig.capacity())</span>
     <span class="doccomment">/// };</span>

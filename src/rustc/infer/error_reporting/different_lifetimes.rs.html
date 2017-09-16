@@ -383,6 +383,23 @@
 <span id="338">338</span>
 <span id="339">339</span>
 <span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -559,6 +576,7 @@
             <span class="ident">hir_map</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>,
             <span class="ident">bound_region</span>: <span class="kw-2">*</span><span class="ident">br</span>,
             <span class="ident">found_type</span>: <span class="prelude-val">None</span>,
+            <span class="ident">depth</span>: <span class="number">1</span>,
         };
         <span class="ident">nested_visitor</span>.<span class="ident">visit_ty</span>(<span class="ident">arg</span>);
         <span class="ident">nested_visitor</span>.<span class="ident">found_type</span>
@@ -581,6 +599,7 @@
     <span class="comment">// The type where the anonymous lifetime appears</span>
     <span class="comment">// for e.g. Vec&lt;`&amp;u8`&gt; and &lt;`&amp;u8`&gt;</span>
     <span class="ident">found_type</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span><span class="op">&gt;</span>,
+    <span class="ident">depth</span>: <span class="ident">u32</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Visitor</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FindNestedTypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -590,6 +609,21 @@
 
     <span class="kw">fn</span> <span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span>) {
         <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">node</span> {
+            <span class="ident">hir</span>::<span class="ident">TyBareFn</span>(_) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">depth</span> <span class="op">+=</span> <span class="number">1</span>;
+                <span class="ident">intravisit</span>::<span class="ident">walk_ty</span>(<span class="self">self</span>, <span class="ident">arg</span>);
+                <span class="self">self</span>.<span class="ident">depth</span> <span class="op">-=</span> <span class="number">1</span>;
+                <span class="kw">return</span>;
+            }
+
+            <span class="ident">hir</span>::<span class="ident">TyTraitObject</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>, _) <span class="op">=&gt;</span> {
+                <span class="kw">for</span> <span class="ident">bound</span> <span class="kw">in</span> <span class="ident">bounds</span> {
+                    <span class="self">self</span>.<span class="ident">depth</span> <span class="op">+=</span> <span class="number">1</span>;
+                    <span class="self">self</span>.<span class="ident">visit_poly_trait_ref</span>(<span class="ident">bound</span>, <span class="ident">hir</span>::<span class="ident">TraitBoundModifier</span>::<span class="prelude-val">None</span>);
+                    <span class="self">self</span>.<span class="ident">depth</span> <span class="op">-=</span> <span class="number">1</span>;
+                }
+            }
+
             <span class="ident">hir</span>::<span class="ident">TyRptr</span>(<span class="kw-2">ref</span> <span class="ident">lifetime</span>, _) <span class="op">=&gt;</span> {
                 <span class="comment">// the lifetime of the TyRptr</span>
                 <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">lifetime</span>.<span class="ident">id</span>);
@@ -603,7 +637,7 @@
                                <span class="ident">debruijn_index</span>.<span class="ident">depth</span>,
                                <span class="ident">anon_index</span>,
                                <span class="ident">br_index</span>);
-                        <span class="kw">if</span> <span class="ident">debruijn_index</span>.<span class="ident">depth</span> <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">anon_index</span> <span class="op">==</span> <span class="ident">br_index</span> {
+                        <span class="kw">if</span> <span class="ident">debruijn_index</span>.<span class="ident">depth</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">depth</span> <span class="op">&amp;&amp;</span> <span class="ident">anon_index</span> <span class="op">==</span> <span class="ident">br_index</span> {
                             <span class="self">self</span>.<span class="ident">found_type</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">arg</span>);
                             <span class="kw">return</span>; <span class="comment">// we can stop visiting now</span>
                         }
@@ -632,7 +666,7 @@
                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;self.infcx.tcx.hir.local_def_id(id)={:?}&quot;</span>,
                                <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">id</span>));
                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;def_id={:?}&quot;</span>, <span class="ident">def_id</span>);
-                        <span class="kw">if</span> <span class="ident">debruijn_index</span>.<span class="ident">depth</span> <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span>
+                        <span class="kw">if</span> <span class="ident">debruijn_index</span>.<span class="ident">depth</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">depth</span> <span class="op">&amp;&amp;</span>
                            <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">id</span>) <span class="op">==</span> <span class="ident">def_id</span> {
                             <span class="self">self</span>.<span class="ident">found_type</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">arg</span>);
                             <span class="kw">return</span>; <span class="comment">// we can stop visiting now</span>

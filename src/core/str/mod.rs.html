@@ -2529,6 +2529,50 @@
 <span id="2484">2484</span>
 <span id="2485">2485</span>
 <span id="2486">2486</span>
+<span id="2487">2487</span>
+<span id="2488">2488</span>
+<span id="2489">2489</span>
+<span id="2490">2490</span>
+<span id="2491">2491</span>
+<span id="2492">2492</span>
+<span id="2493">2493</span>
+<span id="2494">2494</span>
+<span id="2495">2495</span>
+<span id="2496">2496</span>
+<span id="2497">2497</span>
+<span id="2498">2498</span>
+<span id="2499">2499</span>
+<span id="2500">2500</span>
+<span id="2501">2501</span>
+<span id="2502">2502</span>
+<span id="2503">2503</span>
+<span id="2504">2504</span>
+<span id="2505">2505</span>
+<span id="2506">2506</span>
+<span id="2507">2507</span>
+<span id="2508">2508</span>
+<span id="2509">2509</span>
+<span id="2510">2510</span>
+<span id="2511">2511</span>
+<span id="2512">2512</span>
+<span id="2513">2513</span>
+<span id="2514">2514</span>
+<span id="2515">2515</span>
+<span id="2516">2516</span>
+<span id="2517">2517</span>
+<span id="2518">2518</span>
+<span id="2519">2519</span>
+<span id="2520">2520</span>
+<span id="2521">2521</span>
+<span id="2522">2522</span>
+<span id="2523">2523</span>
+<span id="2524">2524</span>
+<span id="2525">2525</span>
+<span id="2526">2526</span>
+<span id="2527">2527</span>
+<span id="2528">2528</span>
+<span id="2529">2529</span>
+<span id="2530">2530</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2834,6 +2878,37 @@ Section: Creating a string
 }
 
 <span class="doccomment">/// Converts a mutable slice of bytes to a mutable string slice.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Basic usage:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use std::str;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // &quot;Hello, Rust!&quot; as a mutable vector</span>
+<span class="doccomment">/// let mut hellorust = vec![72, 101, 108, 108, 111, 44, 32, 82, 117, 115, 116, 33];</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // As we know these bytes are valid, we can use `unwrap()`</span>
+<span class="doccomment">/// let outstr = str::from_utf8_mut(&amp;mut hellorust).unwrap();</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(&quot;Hello, Rust!&quot;, outstr);</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Incorrect bytes:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use std::str;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // Some invalid bytes in a mutable vector</span>
+<span class="doccomment">/// let mut invalid = vec![128, 223];</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert!(str::from_utf8_mut(&amp;mut invalid).is_err());</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// See the docs for [`Utf8Error`][error] for more details on the kinds of</span>
+<span class="doccomment">/// errors that can be returned.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [error]: struct.Utf8Error.html</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;str_mut_extras&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.20.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_utf8_mut</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">str</span>, <span class="ident">Utf8Error</span><span class="op">&gt;</span> {
     <span class="ident">run_utf8_validation</span>(<span class="ident">v</span>)<span class="question-mark">?</span>;
@@ -2914,6 +2989,19 @@ Section: Creating a string
 <span class="doccomment">/// See the immutable version, [`from_utf8_unchecked()`][fromutf8], for more information.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [fromutf8]: fn.from_utf8_unchecked.html</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Basic usage:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use std::str;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let mut heart = vec![240, 159, 146, 150];</span>
+<span class="doccomment">/// let heart = unsafe { str::from_utf8_unchecked_mut(&amp;mut heart) };</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(&quot;💖&quot;, heart);</span>
+<span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;str_mut_extras&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.20.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_utf8_unchecked_mut</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">str</span> {

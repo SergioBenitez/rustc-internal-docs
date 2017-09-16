@@ -2760,6 +2760,10 @@
 <span id="2715">2715</span>
 <span id="2716">2716</span>
 <span id="2717">2717</span>
+<span id="2718">2718</span>
+<span id="2719">2719</span>
+<span id="2720">2720</span>
+<span id="2721">2721</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3133,6 +3137,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// * `ptr` needs to have been previously allocated via [`String`]/`Vec&lt;T&gt;`</span>
     <span class="doccomment">///   (at least, it&#39;s highly likely to be incorrect if it wasn&#39;t).</span>
+    <span class="doccomment">/// * `ptr`&#39;s `T` needs to have the same size and alignment as it was allocated with.</span>
     <span class="doccomment">/// * `length` needs to be less than or equal to `capacity`.</span>
     <span class="doccomment">/// * `capacity` needs to be the capacity that the pointer was allocated with.</span>
     <span class="doccomment">///</span>
@@ -4732,16 +4737,19 @@
     <span class="doccomment">/// Using this method is equivalent to the following code:</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # let some_predicate = |x: &amp;mut i32| { *x == 2 };</span>
-    <span class="doccomment">/// # let mut vec = vec![1, 2, 3, 4, 5];</span>
+    <span class="doccomment">/// # let some_predicate = |x: &amp;mut i32| { *x == 2 || *x == 3 || *x == 6 };</span>
+    <span class="doccomment">/// # let mut vec = vec![1, 2, 3, 4, 5, 6];</span>
     <span class="doccomment">/// let mut i = 0;</span>
     <span class="doccomment">/// while i != vec.len() {</span>
     <span class="doccomment">///     if some_predicate(&amp;mut vec[i]) {</span>
     <span class="doccomment">///         let val = vec.remove(i);</span>
     <span class="doccomment">///         // your code here</span>
+    <span class="doccomment">///     } else {</span>
+    <span class="doccomment">///         i += 1;</span>
     <span class="doccomment">///     }</span>
-    <span class="doccomment">///     i += 1;</span>
     <span class="doccomment">/// }</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # assert_eq!(vec, vec![1, 4, 5]);</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// But `drain_filter` is easier to use. `drain_filter` is also more efficient,</span>

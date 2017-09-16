@@ -946,6 +946,8 @@
 <span id="901">901</span>
 <span id="902">902</span>
 <span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1301,6 +1303,8 @@ should go to.
         }
         <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">scopes</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">scope</span>.<span class="ident">region_scope</span>, <span class="ident">region_scope</span>.<span class="number">0</span>);
+
+        <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>(), <span class="ident">block</span>, <span class="ident">region_scope</span>.<span class="number">1</span>, <span class="ident">scope</span>.<span class="ident">region_scope</span>);
         <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="ident">build_scope_drops</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">cfg</span>,
                                           <span class="kw-2">&amp;</span><span class="ident">scope</span>,
                                           <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">scopes</span>,
@@ -1308,7 +1312,6 @@ should go to.
                                           <span class="self">self</span>.<span class="ident">arg_count</span>,
                                           <span class="bool-val">false</span>));
 
-        <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>(), <span class="ident">block</span>, <span class="ident">region_scope</span>.<span class="number">1</span>, <span class="ident">scope</span>.<span class="ident">region_scope</span>);
         <span class="ident">block</span>.<span class="ident">unit</span>()
     }
 
@@ -1355,15 +1358,16 @@ should go to.
                 <span class="ident">scope</span>.<span class="ident">cached_exits</span>.<span class="ident">insert</span>((<span class="ident">target</span>, <span class="ident">region_scope</span>.<span class="number">0</span>), <span class="ident">b</span>);
                 <span class="ident">b</span>
             };
+
+            <span class="comment">// End all regions for scopes out of which we are breaking.</span>
+            <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>(), <span class="ident">block</span>, <span class="ident">region_scope</span>.<span class="number">1</span>, <span class="ident">scope</span>.<span class="ident">region_scope</span>);
+
             <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="ident">build_scope_drops</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">cfg</span>,
                                               <span class="ident">scope</span>,
                                               <span class="ident">rest</span>,
                                               <span class="ident">block</span>,
                                               <span class="self">self</span>.<span class="ident">arg_count</span>,
                                               <span class="bool-val">false</span>));
-
-            <span class="comment">// End all regions for scopes out of which we are breaking.</span>
-            <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>(), <span class="ident">block</span>, <span class="ident">region_scope</span>.<span class="number">1</span>, <span class="ident">scope</span>.<span class="ident">region_scope</span>);
         }
         }
         <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">scopes</span>[<span class="ident">len</span> <span class="op">-</span> <span class="ident">scope_count</span>];

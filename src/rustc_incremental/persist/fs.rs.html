@@ -1100,6 +1100,19 @@
 <span id="1055">1055</span>
 <span id="1056">1056</span>
 <span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1217,7 +1230,7 @@
 <span class="doccomment">//! unsupported file system and emit a warning in that case. This is not yet</span>
 <span class="doccomment">//! implemented.</span>
 
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">LOCAL_CRATE</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">CrateNum</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">svh</span>::<span class="ident">Svh</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">Session</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">TyCtxt</span>;
@@ -1296,13 +1309,21 @@
 <span class="doccomment">/// a dep-graph and work products from a previous session.</span>
 <span class="doccomment">/// If the call fails, the fn may leave behind an invalid session directory.</span>
 <span class="doccomment">/// The garbage collection will take care of it.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_session_directory</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span>, ()<span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_session_directory</span>(<span class="ident">sess</span>: <span class="kw-2">&amp;</span><span class="ident">Session</span>,
+                                 <span class="ident">crate_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+                                 <span class="ident">crate_disambiguator</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+    <span class="kw">if</span> <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">incremental</span>.<span class="ident">is_none</span>() {
+        <span class="kw">return</span>
+    }
+
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;prepare_session_directory&quot;</span>);
 
     <span class="comment">// {incr-comp-dir}/{crate-name-and-disambiguator}</span>
-    <span class="kw">let</span> <span class="ident">crate_dir</span> <span class="op">=</span> <span class="ident">crate_path_tcx</span>(<span class="ident">tcx</span>, <span class="ident">LOCAL_CRATE</span>);
+    <span class="kw">let</span> <span class="ident">crate_dir</span> <span class="op">=</span> <span class="ident">crate_path</span>(<span class="ident">sess</span>, <span class="ident">crate_name</span>, <span class="ident">crate_disambiguator</span>);
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;crate-dir: {}&quot;</span>, <span class="ident">crate_dir</span>.<span class="ident">display</span>());
-    <span class="macro">try</span><span class="macro">!</span>(<span class="ident">create_dir</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">crate_dir</span>, <span class="string">&quot;crate&quot;</span>));
+    <span class="kw">if</span> <span class="ident">create_dir</span>(<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">crate_dir</span>, <span class="string">&quot;crate&quot;</span>).<span class="ident">is_err</span>() {
+        <span class="kw">return</span>
+    }
 
     <span class="comment">// Hack: canonicalize the path *after creating the directory*</span>
     <span class="comment">// because, on windows, long paths can cause problems;</span>
@@ -1311,9 +1332,9 @@
     <span class="kw">let</span> <span class="ident">crate_dir</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">crate_dir</span>.<span class="ident">canonicalize</span>() {
         <span class="prelude-val">Ok</span>(<span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">v</span>,
         <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> {
-            <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;incremental compilation: error canonicalizing path `{}`: {}&quot;</span>,
-                                  <span class="ident">crate_dir</span>.<span class="ident">display</span>(), <span class="ident">err</span>));
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(());
+            <span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;incremental compilation: error canonicalizing path `{}`: {}&quot;</span>,
+                              <span class="ident">crate_dir</span>.<span class="ident">display</span>(), <span class="ident">err</span>));
+            <span class="kw">return</span>
         }
     };
 
@@ -1328,11 +1349,16 @@
 
         <span class="comment">// Lock the new session directory. If this fails, return an</span>
         <span class="comment">// error without retrying</span>
-        <span class="kw">let</span> (<span class="ident">directory_lock</span>, <span class="ident">lock_file_path</span>) <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">lock_directory</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">session_dir</span>));
+        <span class="kw">let</span> (<span class="ident">directory_lock</span>, <span class="ident">lock_file_path</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">lock_directory</span>(<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">session_dir</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="ident">e</span>,
+            <span class="prelude-val">Err</span>(_) <span class="op">=&gt;</span> <span class="kw">return</span>,
+        };
 
         <span class="comment">// Now that we have the lock, we can actually create the session</span>
         <span class="comment">// directory</span>
-        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">create_dir</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">session_dir</span>, <span class="string">&quot;session&quot;</span>));
+        <span class="kw">if</span> <span class="ident">create_dir</span>(<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">session_dir</span>, <span class="string">&quot;session&quot;</span>).<span class="ident">is_err</span>() {
+            <span class="kw">return</span>
+        }
 
         <span class="comment">// Find a suitable source directory to copy from. Ignore those that we</span>
         <span class="comment">// have already tried before.</span>
@@ -1346,14 +1372,14 @@
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;no source directory found. Continuing with empty session \
                     directory.&quot;</span>);
 
-            <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">init_incr_comp_session</span>(<span class="ident">session_dir</span>, <span class="ident">directory_lock</span>);
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+            <span class="ident">sess</span>.<span class="ident">init_incr_comp_session</span>(<span class="ident">session_dir</span>, <span class="ident">directory_lock</span>, <span class="bool-val">false</span>);
+            <span class="kw">return</span>
         };
 
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;attempting to copy data from source: {}&quot;</span>,
                <span class="ident">source_directory</span>.<span class="ident">display</span>());
 
-        <span class="kw">let</span> <span class="ident">print_file_copy_stats</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental_info</span>;
+        <span class="kw">let</span> <span class="ident">print_file_copy_stats</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental_info</span>;
 
         <span class="comment">// Try copying over all files from the source directory</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">allows_links</span>) <span class="op">=</span> <span class="ident">copy_files</span>(<span class="kw-2">&amp;</span><span class="ident">session_dir</span>, <span class="kw-2">&amp;</span><span class="ident">source_directory</span>,
@@ -1362,7 +1388,7 @@
                    <span class="ident">source_directory</span>.<span class="ident">display</span>());
 
             <span class="kw">if</span> <span class="op">!</span><span class="ident">allows_links</span> {
-                <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">warn</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Hard linking files in the incremental \
+                <span class="ident">sess</span>.<span class="ident">warn</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Hard linking files in the incremental \
                                         compilation cache failed. Copying files \
                                         instead. Consider moving the cache \
                                         directory to a file system which supports \
@@ -1371,8 +1397,8 @@
                     );
             }
 
-            <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">init_incr_comp_session</span>(<span class="ident">session_dir</span>, <span class="ident">directory_lock</span>);
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
+            <span class="ident">sess</span>.<span class="ident">init_incr_comp_session</span>(<span class="ident">session_dir</span>, <span class="ident">directory_lock</span>, <span class="bool-val">true</span>);
+            <span class="kw">return</span>
         } <span class="kw">else</span> {
              <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;copying failed - trying next directory&quot;</span>);
 
@@ -1383,13 +1409,13 @@
             <span class="comment">// Try to remove the session directory we just allocated. We don&#39;t</span>
             <span class="comment">// know if there&#39;s any garbage in it from the failed copy action.</span>
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">safe_remove_dir_all</span>(<span class="kw-2">&amp;</span><span class="ident">session_dir</span>) {
-                <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">warn</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Failed to delete partly initialized \
-                                        session dir `{}`: {}&quot;</span>,
-                                       <span class="ident">session_dir</span>.<span class="ident">display</span>(),
-                                       <span class="ident">err</span>));
+                <span class="ident">sess</span>.<span class="ident">warn</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Failed to delete partly initialized \
+                                    session dir `{}`: {}&quot;</span>,
+                                   <span class="ident">session_dir</span>.<span class="ident">display</span>(),
+                                   <span class="ident">err</span>));
             }
 
-            <span class="ident">delete_session_dir_lock_file</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">lock_file_path</span>);
+            <span class="ident">delete_session_dir_lock_file</span>(<span class="ident">sess</span>, <span class="kw-2">&amp;</span><span class="ident">lock_file_path</span>);
             <span class="ident">mem</span>::<span class="ident">drop</span>(<span class="ident">directory_lock</span>);
         }
     }

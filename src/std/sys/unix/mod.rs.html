@@ -200,6 +200,12 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -231,6 +237,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">dox</span>), <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;solaris&quot;</span>))]</span>   <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">solaris</span> <span class="kw">as</span> <span class="ident">platform</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">dox</span>), <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>))]</span> <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">emscripten</span> <span class="kw">as</span> <span class="ident">platform</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">dox</span>), <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>))]</span>   <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">fuchsia</span> <span class="kw">as</span> <span class="ident">platform</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">dox</span>), <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;l4re&quot;</span>))]</span>      <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">linux</span> <span class="kw">as</span> <span class="ident">platform</span>;
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">weak</span>;
@@ -247,7 +254,12 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fs</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">memchr</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">mutex</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;l4re&quot;</span>))]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">net</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;l4re&quot;</span>)]</span>
+<span class="kw">mod</span> <span class="ident">l4re</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;l4re&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">l4re</span>::<span class="ident">net</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">os</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">os_str</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">path</span>;

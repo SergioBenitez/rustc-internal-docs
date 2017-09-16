@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rustc_mir/transform/generator.rs.html#11-807' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/rustc_mir/transform/generator.rs.html#11-838' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, and unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>This is the implementation of the pass which transforms generators into state machines.</p>
 
@@ -81,7 +81,8 @@ struct which looks like this:
 <p>This pass computes the meaning of the state field and the MIR locals which are live
 across a suspension point. There are however two hardcoded generator states:
     0 - Generator have not been resumed yet
-    1 - Generator has been poisoned</p>
+    1 - Generator has returned / is completed
+    2 - Generator has been poisoned</p>
 
 <p>It also rewrites <code>return x</code> and <code>yield y</code> as setting a new generator state and returning
 GeneratorState::Complete(x) and GeneratorState::Yielded(y) respectively.
@@ -92,15 +93,13 @@ with references to them being updated with references to the generator struct.</
 the action to take.</p>
 
 <p>One of them is the implementation of Generator::resume.
-For generators which have already returned it panics.
 For generators with state 0 (unresumed) it starts the execution of the generator.
-For generators with state 1 (poisoned) it panics.
+For generators with state 1 (returned) and state 2 (poisoned) it panics.
 Otherwise it continues the execution from the last suspension point.</p>
 
 <p>The other function is the drop glue for the generator.
-For generators which have already returned it does nothing.
 For generators with state 0 (unresumed) it drops the upvars of the generator.
-For generators with state 1 (poisoned) it does nothing.
+For generators with state 1 (returned) and state 2 (poisoned) it does nothing.
 Otherwise it drops all the values in scope at the last suspension point.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>

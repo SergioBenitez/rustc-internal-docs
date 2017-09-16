@@ -482,26 +482,6 @@
 <span id="437">437</span>
 <span id="438">438</span>
 <span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
-<span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -547,30 +527,10 @@
 <span class="doccomment">/// more general overview.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_dep_graph</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                 <span class="ident">incremental_hashes_map</span>: <span class="kw-2">&amp;</span><span class="ident">IncrementalHashesMap</span>) {
-    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">incremental</span>.<span class="ident">is_none</span>() {
-        <span class="kw">return</span>;
+    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">incr_session_load_dep_graph</span>() {
+        <span class="kw">let</span> <span class="ident">_ignore</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">in_ignore</span>();
+        <span class="ident">load_dep_graph_if_exists</span>(<span class="ident">tcx</span>, <span class="ident">incremental_hashes_map</span>);
     }
-
-    <span class="kw">match</span> <span class="ident">prepare_session_directory</span>(<span class="ident">tcx</span>) {
-        <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>) <span class="op">=&gt;</span> {
-            <span class="comment">// We successfully allocated a session directory and there is</span>
-            <span class="comment">// something in it to load, so continue</span>
-        }
-        <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) <span class="op">=&gt;</span> {
-            <span class="comment">// We successfully allocated a session directory, but there is no</span>
-            <span class="comment">// dep-graph data in it to load (because this is the first</span>
-            <span class="comment">// compilation session with this incr. comp. dir.)</span>
-            <span class="kw">return</span>
-        }
-        <span class="prelude-val">Err</span>(()) <span class="op">=&gt;</span> {
-            <span class="comment">// Something went wrong while trying to allocate the session</span>
-            <span class="comment">// directory. Don&#39;t try to use it any further.</span>
-            <span class="kw">return</span>
-        }
-    }
-
-    <span class="kw">let</span> <span class="ident">_ignore</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">in_ignore</span>();
-    <span class="ident">load_dep_graph_if_exists</span>(<span class="ident">tcx</span>, <span class="ident">incremental_hashes_map</span>);
 }
 
 <span class="kw">fn</span> <span class="ident">load_dep_graph_if_exists</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,

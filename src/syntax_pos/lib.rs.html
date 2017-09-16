@@ -1051,6 +1051,12 @@
 <span id="1006">1006</span>
 <span id="1007">1007</span>
 <span id="1008">1008</span>
+<span id="1009">1009</span>
+<span id="1010">1010</span>
+<span id="1011">1011</span>
+<span id="1012">1012</span>
+<span id="1013">1013</span>
+<span id="1014">1014</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1485,6 +1491,12 @@
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">MultiSpan</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">span</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">MultiSpan</span> {
         <span class="ident">MultiSpan</span>::<span class="ident">from_span</span>(<span class="ident">span</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">MultiSpan</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">spans</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">MultiSpan</span> {
+        <span class="ident">MultiSpan</span>::<span class="ident">from_spans</span>(<span class="ident">spans</span>)
     }
 }
 

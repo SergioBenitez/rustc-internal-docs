@@ -850,6 +850,37 @@
 <span id="805">805</span>
 <span id="806">806</span>
 <span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -891,7 +922,8 @@
 <span class="doccomment">//! This pass computes the meaning of the state field and the MIR locals which are live</span>
 <span class="doccomment">//! across a suspension point. There are however two hardcoded generator states:</span>
 <span class="doccomment">//!     0 - Generator have not been resumed yet</span>
-<span class="doccomment">//!     1 - Generator has been poisoned</span>
+<span class="doccomment">//!     1 - Generator has returned / is completed</span>
+<span class="doccomment">//!     2 - Generator has been poisoned</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! It also rewrites `return x` and `yield y` as setting a new generator state and returning</span>
 <span class="doccomment">//! GeneratorState::Complete(x) and GeneratorState::Yielded(y) respectively.</span>
@@ -902,15 +934,13 @@
 <span class="doccomment">//! the action to take.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! One of them is the implementation of Generator::resume.</span>
-<span class="doccomment">//! For generators which have already returned it panics.</span>
 <span class="doccomment">//! For generators with state 0 (unresumed) it starts the execution of the generator.</span>
-<span class="doccomment">//! For generators with state 1 (poisoned) it panics.</span>
+<span class="doccomment">//! For generators with state 1 (returned) and state 2 (poisoned) it panics.</span>
 <span class="doccomment">//! Otherwise it continues the execution from the last suspension point.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The other function is the drop glue for the generator.</span>
-<span class="doccomment">//! For generators which have already returned it does nothing.</span>
 <span class="doccomment">//! For generators with state 0 (unresumed) it drops the upvars of the generator.</span>
-<span class="doccomment">//! For generators with state 1 (poisoned) it does nothing.</span>
+<span class="doccomment">//! For generators with state 1 (returned) and state 2 (poisoned) it does nothing.</span>
 <span class="doccomment">//! Otherwise it drops all the values in scope at the last suspension point.</span>
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
@@ -918,19 +948,21 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">MutVisitor</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">Visitor</span>, <span class="ident">MutVisitor</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>, <span class="ident">AdtDef</span>, <span class="ident">Ty</span>, <span class="ident">GeneratorInterior</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Kind</span>, <span class="ident">Substs</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">dump_mir</span>;
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">liveness</span>;
 <span class="kw">use</span> <span class="ident">rustc_const_math</span>::<span class="ident">ConstInt</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
+<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_set</span>::<span class="ident">IdxSetBuf</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">borrow</span>::<span class="ident">Cow</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>::<span class="ident">once</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">simplify</span>;
 <span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">no_landing_pads</span>::<span class="ident">no_landing_pads</span>;
+<span class="kw">use</span> <span class="ident">dataflow</span>::{<span class="self">self</span>, <span class="ident">MaybeStorageLive</span>, <span class="ident">state_for_location</span>};
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StateTransform</span>;
 
@@ -979,6 +1011,13 @@
     <span class="ident">Local</span>::<span class="ident">new</span>(<span class="number">1</span>)
 }
 
+<span class="kw">struct</span> <span class="ident">SuspensionPoint</span> {
+    <span class="ident">state</span>: <span class="ident">u32</span>,
+    <span class="ident">resume</span>: <span class="ident">BasicBlock</span>,
+    <span class="ident">drop</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
+    <span class="ident">storage_liveness</span>: <span class="ident">liveness</span>::<span class="ident">LocalSet</span>,
+}
+
 <span class="kw">struct</span> <span class="ident">TransformVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">state_adt_ref</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">AdtDef</span>,
@@ -990,18 +1029,14 @@
     <span class="comment">// Mapping from Local to (type of local, generator struct index)</span>
     <span class="ident">remap</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">Local</span>, (<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>,
 
-    <span class="comment">// The number of generator states. 0 is unresumed, 1 is poisoned. So this is initialized to 2</span>
-    <span class="ident">bb_target_count</span>: <span class="ident">u32</span>,
+    <span class="comment">// A map from a suspension point in a block to the locals which have live storage at that point</span>
+    <span class="ident">storage_liveness</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">BasicBlock</span>, <span class="ident">liveness</span>::<span class="ident">LocalSet</span><span class="op">&gt;</span>,
 
-    <span class="comment">// Map from a (which block to resume execution at, which block to use to drop the generator)</span>
-    <span class="comment">// to a generator state</span>
-    <span class="ident">bb_targets</span>: <span class="ident">HashMap</span><span class="op">&lt;</span>(<span class="ident">BasicBlock</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>), <span class="ident">u32</span><span class="op">&gt;</span>,
+    <span class="comment">// A list of suspension points, generated during the transform</span>
+    <span class="ident">suspension_points</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SuspensionPoint</span><span class="op">&gt;</span>,
 
     <span class="comment">// The original RETURN_POINTER local</span>
     <span class="ident">new_ret_local</span>: <span class="ident">Local</span>,
-
-    <span class="comment">// The block to resume execution when for Return</span>
-    <span class="ident">return_block</span>: <span class="ident">BasicBlock</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TransformVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -1078,33 +1113,39 @@
 
         <span class="kw">let</span> <span class="ident">ret_val</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">data</span>.<span class="ident">terminator</span>().<span class="ident">kind</span> {
             <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>((<span class="number">1</span>,
-                <span class="self">self</span>.<span class="ident">return_block</span>,
+                <span class="prelude-val">None</span>,
                 <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_ret_local</span>)),
                 <span class="prelude-val">None</span>)),
             <span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { <span class="kw-2">ref</span> <span class="ident">value</span>, <span class="ident">resume</span>, <span class="ident">drop</span> } <span class="op">=&gt;</span> <span class="prelude-val">Some</span>((<span class="number">0</span>,
-                <span class="ident">resume</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">resume</span>),
                 <span class="ident">value</span>.<span class="ident">clone</span>(),
                 <span class="ident">drop</span>)),
             _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>
         };
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">state_idx</span>, <span class="ident">resume</span>, <span class="ident">v</span>, <span class="ident">drop</span>)) <span class="op">=</span> <span class="ident">ret_val</span> {
-            <span class="kw">let</span> <span class="ident">bb_idx</span> <span class="op">=</span> {
-                <span class="kw">let</span> <span class="ident">bb_targets</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">bb_targets</span>;
-                <span class="kw">let</span> <span class="ident">bb_target</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">bb_target_count</span>;
-                <span class="kw-2">*</span><span class="ident">bb_targets</span>.<span class="ident">entry</span>((<span class="ident">resume</span>, <span class="ident">drop</span>)).<span class="ident">or_insert_with</span>(<span class="op">||</span> {
-                    <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">bb_target</span>;
-                    <span class="kw-2">*</span><span class="ident">bb_target</span> <span class="op">=</span> <span class="ident">target</span>.<span class="ident">checked_add</span>(<span class="number">1</span>).<span class="ident">unwrap</span>();
-                    <span class="ident">target</span>
-                })
-            };
             <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">terminator</span>().<span class="ident">source_info</span>;
-            <span class="ident">data</span>.<span class="ident">statements</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">set_state</span>(<span class="ident">bb_idx</span>, <span class="ident">source_info</span>));
+            <span class="comment">// We must assign the value first in case it gets declared dead below</span>
             <span class="ident">data</span>.<span class="ident">statements</span>.<span class="ident">push</span>(<span class="ident">Statement</span> {
                 <span class="ident">source_info</span>,
                 <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">RETURN_POINTER</span>),
                     <span class="self">self</span>.<span class="ident">make_state</span>(<span class="ident">state_idx</span>, <span class="ident">v</span>)),
             });
+            <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">resume</span>) <span class="op">=</span> <span class="ident">resume</span> { <span class="comment">// Yield</span>
+                <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="number">3</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">suspension_points</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+
+                <span class="self">self</span>.<span class="ident">suspension_points</span>.<span class="ident">push</span>(<span class="ident">SuspensionPoint</span> {
+                    <span class="ident">state</span>,
+                    <span class="ident">resume</span>,
+                    <span class="ident">drop</span>,
+                    <span class="ident">storage_liveness</span>: <span class="self">self</span>.<span class="ident">storage_liveness</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">block</span>).<span class="ident">unwrap</span>().<span class="ident">clone</span>(),
+                });
+
+                <span class="ident">state</span>
+            } <span class="kw">else</span> { <span class="comment">// Return</span>
+                 <span class="number">1</span> <span class="comment">// state for returned</span>
+            };
+            <span class="ident">data</span>.<span class="ident">statements</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">set_state</span>(<span class="ident">state</span>, <span class="ident">source_info</span>));
             <span class="ident">data</span>.<span class="ident">terminator</span>.<span class="ident">as_mut</span>().<span class="ident">unwrap</span>().<span class="ident">kind</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Return</span>;
         }
 
@@ -1139,16 +1180,11 @@
 
 <span class="kw">fn</span> <span class="ident">replace_result_variable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ret_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Local</span> {
-    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">SourceInfo</span> {
-        <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
-        <span class="ident">scope</span>: <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span>,
-    };
-
     <span class="kw">let</span> <span class="ident">new_ret</span> <span class="op">=</span> <span class="ident">LocalDecl</span> {
         <span class="ident">mutability</span>: <span class="ident">Mutability</span>::<span class="ident">Mut</span>,
         <span class="ident">ty</span>: <span class="ident">ret_ty</span>,
         <span class="ident">name</span>: <span class="prelude-val">None</span>,
-        <span class="ident">source_info</span>,
+        <span class="ident">source_info</span>: <span class="ident">source_info</span>(<span class="ident">mir</span>),
         <span class="ident">internal</span>: <span class="bool-val">false</span>,
         <span class="ident">is_user_variable</span>: <span class="bool-val">false</span>,
     };
@@ -1164,33 +1200,84 @@
     <span class="ident">new_ret_local</span>
 }
 
+<span class="kw">struct</span> <span class="ident">StorageIgnored</span>(<span class="ident">liveness</span>::<span class="ident">LocalSet</span>);
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Visitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StorageIgnored</span> {
+    <span class="kw">fn</span> <span class="ident">visit_statement</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                       <span class="ident">_block</span>: <span class="ident">BasicBlock</span>,
+                       <span class="ident">statement</span>: <span class="kw-2">&amp;</span><span class="ident">Statement</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                       <span class="ident">_location</span>: <span class="ident">Location</span>) {
+        <span class="kw">match</span> <span class="ident">statement</span>.<span class="ident">kind</span> {
+            <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(<span class="ident">l</span>) <span class="op">|</span>
+            <span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(<span class="ident">l</span>) <span class="op">=&gt;</span> { <span class="self">self</span>.<span class="number">0</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">l</span>); }
+            _ <span class="op">=&gt;</span> (),
+        }
+    }
+}
+
 <span class="kw">fn</span> <span class="ident">locals_live_across_suspend_points</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                                <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                               <span class="ident">source</span>: <span class="ident">MirSource</span>) <span class="op">-&gt;</span> <span class="ident">liveness</span>::<span class="ident">LocalSet</span> {
+                                               <span class="ident">source</span>: <span class="ident">MirSource</span>) <span class="op">-&gt;</span>
+                                               (<span class="ident">liveness</span>::<span class="ident">LocalSet</span>,
+                                                <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">BasicBlock</span>, <span class="ident">liveness</span>::<span class="ident">LocalSet</span><span class="op">&gt;</span>) {
+    <span class="kw">let</span> <span class="ident">dead_unwinds</span> <span class="op">=</span> <span class="ident">IdxSetBuf</span>::<span class="ident">new_empty</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
+    <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">source</span>.<span class="ident">item_id</span>();
+    <span class="kw">let</span> <span class="ident">analysis</span> <span class="op">=</span> <span class="ident">MaybeStorageLive</span>::<span class="ident">new</span>(<span class="ident">mir</span>);
+    <span class="kw">let</span> <span class="ident">storage_live</span> <span class="op">=</span>
+        <span class="ident">dataflow</span>::<span class="ident">do_dataflow</span>(<span class="ident">tcx</span>, <span class="ident">mir</span>, <span class="ident">node_id</span>, <span class="kw-2">&amp;</span>[], <span class="kw-2">&amp;</span><span class="ident">dead_unwinds</span>, <span class="ident">analysis</span>,
+                              <span class="op">|</span><span class="ident">bd</span>, <span class="ident">p</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">bd</span>.<span class="ident">mir</span>().<span class="ident">local_decls</span>[<span class="ident">p</span>]);
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ignored</span> <span class="op">=</span> <span class="ident">StorageIgnored</span>(<span class="ident">IdxSetBuf</span>::<span class="ident">new_filled</span>(<span class="ident">mir</span>.<span class="ident">local_decls</span>.<span class="ident">len</span>()));
+    <span class="ident">ignored</span>.<span class="ident">visit_mir</span>(<span class="ident">mir</span>);
+
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">set</span> <span class="op">=</span> <span class="ident">liveness</span>::<span class="ident">LocalSet</span>::<span class="ident">new_empty</span>(<span class="ident">mir</span>.<span class="ident">local_decls</span>.<span class="ident">len</span>());
-    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">liveness</span>::<span class="ident">liveness_of_locals</span>(<span class="ident">mir</span>);
-    <span class="ident">liveness</span>::<span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="string">&quot;generator_liveness&quot;</span>, <span class="ident">source</span>, <span class="ident">mir</span>, <span class="kw-2">&amp;</span><span class="ident">result</span>);
+    <span class="kw">let</span> <span class="ident">liveness</span> <span class="op">=</span> <span class="ident">liveness</span>::<span class="ident">liveness_of_locals</span>(<span class="ident">mir</span>);
+    <span class="ident">liveness</span>::<span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="string">&quot;generator_liveness&quot;</span>, <span class="ident">source</span>, <span class="ident">mir</span>, <span class="kw-2">&amp;</span><span class="ident">liveness</span>);
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">storage_liveness_map</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="ident">new</span>();
 
     <span class="kw">for</span> (<span class="ident">block</span>, <span class="ident">data</span>) <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">iter_enumerated</span>() {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. } <span class="op">=</span> <span class="ident">data</span>.<span class="ident">terminator</span>().<span class="ident">kind</span> {
-            <span class="ident">set</span>.<span class="ident">union</span>(<span class="kw-2">&amp;</span><span class="ident">result</span>.<span class="ident">outs</span>[<span class="ident">block</span>]);
+            <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">Location</span> {
+                <span class="ident">block</span>: <span class="ident">block</span>,
+                <span class="ident">statement_index</span>: <span class="ident">data</span>.<span class="ident">statements</span>.<span class="ident">len</span>(),
+            };
+
+            <span class="kw">let</span> <span class="ident">storage_liveness</span> <span class="op">=</span> <span class="ident">state_for_location</span>(<span class="ident">loc</span>, <span class="kw-2">&amp;</span><span class="ident">analysis</span>, <span class="kw-2">&amp;</span><span class="ident">storage_live</span>);
+
+            <span class="ident">storage_liveness_map</span>.<span class="ident">insert</span>(<span class="ident">block</span>, <span class="ident">storage_liveness</span>.<span class="ident">clone</span>());
+
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">live_locals</span> <span class="op">=</span> <span class="ident">storage_liveness</span>;
+
+            <span class="comment">// Mark locals without storage statements as always having live storage</span>
+            <span class="ident">live_locals</span>.<span class="ident">union</span>(<span class="kw-2">&amp;</span><span class="ident">ignored</span>.<span class="number">0</span>);
+
+            <span class="comment">// Locals live are live at this point only if they are used across suspension points</span>
+            <span class="comment">// and their storage is live</span>
+            <span class="ident">live_locals</span>.<span class="ident">intersect</span>(<span class="kw-2">&amp;</span><span class="ident">liveness</span>.<span class="ident">outs</span>[<span class="ident">block</span>]);
+
+            <span class="comment">// Add the locals life at this suspension point to the set of locals which live across</span>
+            <span class="comment">// any suspension points</span>
+            <span class="ident">set</span>.<span class="ident">union</span>(<span class="kw-2">&amp;</span><span class="ident">live_locals</span>);
         }
     }
 
     <span class="comment">// The generator argument is ignored</span>
     <span class="ident">set</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">self_arg</span>());
 
-    <span class="ident">set</span>
+    (<span class="ident">set</span>, <span class="ident">storage_liveness_map</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">compute_layout</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">source</span>: <span class="ident">MirSource</span>,
                             <span class="ident">interior</span>: <span class="ident">GeneratorInterior</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-    <span class="op">-&gt;</span> (<span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">Local</span>, (<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>, <span class="ident">GeneratorLayout</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+    <span class="op">-&gt;</span> (<span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">Local</span>, (<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>,
+        <span class="ident">GeneratorLayout</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">BasicBlock</span>, <span class="ident">liveness</span>::<span class="ident">LocalSet</span><span class="op">&gt;</span>)
 {
     <span class="comment">// Use a liveness analysis to compute locals which are live across a suspension point</span>
-    <span class="kw">let</span> <span class="ident">live_locals</span> <span class="op">=</span> <span class="ident">locals_live_across_suspend_points</span>(<span class="ident">tcx</span>, <span class="ident">mir</span>, <span class="ident">source</span>);
+    <span class="kw">let</span> (<span class="ident">live_locals</span>, <span class="ident">storage_liveness</span>) <span class="op">=</span> <span class="ident">locals_live_across_suspend_points</span>(<span class="ident">tcx</span>, <span class="ident">mir</span>, <span class="ident">source</span>);
 
     <span class="comment">// Erase regions from the types passed in from typeck so we can compare them with</span>
     <span class="comment">// MIR types</span>
@@ -1234,12 +1321,31 @@
         <span class="ident">fields</span>: <span class="ident">vars</span>
     };
 
-    (<span class="ident">remap</span>, <span class="ident">layout</span>)
+    (<span class="ident">remap</span>, <span class="ident">layout</span>, <span class="ident">storage_liveness</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">insert_entry_point</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                            <span class="ident">block</span>: <span class="ident">BasicBlockData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
-    <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">raw</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="ident">block</span>);
+<span class="kw">fn</span> <span class="ident">insert_switch</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                           <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                           <span class="ident">cases</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">BasicBlock</span>)<span class="op">&gt;</span>,
+                           <span class="ident">transform</span>: <span class="kw-2">&amp;</span><span class="ident">TransformVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+    <span class="kw">let</span> <span class="ident">return_block</span> <span class="op">=</span> <span class="ident">insert_return_block</span>(<span class="ident">mir</span>);
+
+    <span class="kw">let</span> <span class="ident">switch</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">SwitchInt</span> {
+        <span class="ident">discr</span>: <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">transform</span>.<span class="ident">make_field</span>(<span class="ident">transform</span>.<span class="ident">state_field</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>)),
+        <span class="ident">switch_ty</span>: <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>,
+        <span class="ident">values</span>: <span class="ident">Cow</span>::<span class="ident">from</span>(<span class="ident">cases</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">i</span>, _)<span class="op">|</span> <span class="ident">ConstInt</span>::<span class="ident">U32</span>(<span class="ident">i</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()),
+        <span class="ident">targets</span>: <span class="ident">cases</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(_, <span class="ident">d</span>)<span class="op">|</span> <span class="ident">d</span>).<span class="ident">chain</span>(<span class="ident">once</span>(<span class="ident">return_block</span>)).<span class="ident">collect</span>(),
+    };
+
+    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">source_info</span>(<span class="ident">mir</span>);
+    <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">raw</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="ident">BasicBlockData</span> {
+        <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
+        <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
+            <span class="ident">source_info</span>,
+            <span class="ident">kind</span>: <span class="ident">switch</span>,
+        }),
+        <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
+    });
 
     <span class="kw">let</span> <span class="ident">blocks</span> <span class="op">=</span> <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">iter_mut</span>();
 
@@ -1311,46 +1417,16 @@
                 <span class="ident">drop_clean</span>: <span class="ident">BasicBlock</span>) <span class="op">-&gt;</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mir</span> <span class="op">=</span> <span class="ident">mir</span>.<span class="ident">clone</span>();
 
-    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">SourceInfo</span> {
-        <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
-        <span class="ident">scope</span>: <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span>,
-    };
+    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">source_info</span>(<span class="kw-2">&amp;</span><span class="ident">mir</span>);
 
-    <span class="kw">let</span> <span class="ident">return_block</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
-    <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">push</span>(<span class="ident">BasicBlockData</span> {
-        <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
-            <span class="ident">source_info</span>,
-            <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">Return</span>,
-        }),
-        <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
-    });
-
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cases</span>: <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">transform</span>.<span class="ident">bb_targets</span>.<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="kw-2">&amp;</span>(_, <span class="ident">u</span>), <span class="kw-2">&amp;</span><span class="ident">s</span>)<span class="op">|</span> {
-        <span class="ident">u</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> (<span class="ident">s</span>, <span class="ident">d</span>))
-    }).<span class="ident">collect</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cases</span> <span class="op">=</span> <span class="ident">create_cases</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">mir</span>, <span class="ident">transform</span>, <span class="op">|</span><span class="ident">point</span><span class="op">|</span> <span class="ident">point</span>.<span class="ident">drop</span>);
 
     <span class="ident">cases</span>.<span class="ident">insert</span>(<span class="number">0</span>, (<span class="number">0</span>, <span class="ident">drop_clean</span>));
 
-    <span class="comment">// The poisoned state 1 falls through to the default case which is just to return</span>
+    <span class="comment">// The returned state (1) and the poisoned state (2) falls through to</span>
+    <span class="comment">// the default case which is just to return</span>
 
-    <span class="kw">let</span> <span class="ident">switch</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">SwitchInt</span> {
-        <span class="ident">discr</span>: <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">transform</span>.<span class="ident">make_field</span>(<span class="ident">transform</span>.<span class="ident">state_field</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>)),
-        <span class="ident">switch_ty</span>: <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>,
-        <span class="ident">values</span>: <span class="ident">Cow</span>::<span class="ident">from</span>(<span class="ident">cases</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">i</span>, _)<span class="op">|</span> {
-                <span class="ident">ConstInt</span>::<span class="ident">U32</span>(<span class="ident">i</span>)
-            }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()),
-        <span class="ident">targets</span>: <span class="ident">cases</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(_, <span class="ident">d</span>)<span class="op">|</span> <span class="ident">d</span>).<span class="ident">chain</span>(<span class="ident">once</span>(<span class="ident">return_block</span>)).<span class="ident">collect</span>(),
-    };
-
-    <span class="ident">insert_entry_point</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">mir</span>, <span class="ident">BasicBlockData</span> {
-        <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
-            <span class="ident">source_info</span>,
-            <span class="ident">kind</span>: <span class="ident">switch</span>,
-        }),
-        <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
-    });
+    <span class="ident">insert_switch</span>(<span class="ident">tcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">mir</span>, <span class="ident">cases</span>, <span class="kw-2">&amp;</span><span class="ident">transform</span>);
 
     <span class="kw">for</span> <span class="ident">block</span> <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>() {
         <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">block</span>.<span class="ident">terminator_mut</span>().<span class="ident">kind</span>;
@@ -1360,11 +1436,6 @@
     }
 
     <span class="comment">// Replace the return variable</span>
-    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">SourceInfo</span> {
-        <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
-        <span class="ident">scope</span>: <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span>,
-    };
-
     <span class="ident">mir</span>.<span class="ident">return_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_nil</span>();
     <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">RETURN_POINTER</span>] <span class="op">=</span> <span class="ident">LocalDecl</span> {
         <span class="ident">mutability</span>: <span class="ident">Mutability</span>::<span class="ident">Mut</span>,
@@ -1401,8 +1472,23 @@
     <span class="ident">mir</span>
 }
 
-<span class="kw">fn</span> <span class="ident">insert_panic_on_resume_after_return</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                        <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+<span class="kw">fn</span> <span class="ident">insert_return_block</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
+    <span class="kw">let</span> <span class="ident">return_block</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
+    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">source_info</span>(<span class="ident">mir</span>);
+    <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">push</span>(<span class="ident">BasicBlockData</span> {
+        <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
+        <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
+            <span class="ident">source_info</span>,
+            <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">Return</span>,
+        }),
+        <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
+    });
+    <span class="ident">return_block</span>
+}
+
+<span class="kw">fn</span> <span class="ident">insert_panic_block</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                <span class="ident">message</span>: <span class="ident">AssertMessage</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
     <span class="kw">let</span> <span class="ident">assert_block</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
     <span class="kw">let</span> <span class="ident">term</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> {
         <span class="ident">cond</span>: <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">Constant</span> {
@@ -1416,16 +1502,12 @@
             },
         }),
         <span class="ident">expected</span>: <span class="bool-val">true</span>,
-        <span class="ident">msg</span>: <span class="ident">AssertMessage</span>::<span class="ident">GeneratorResumedAfterReturn</span>,
+        <span class="ident">msg</span>: <span class="ident">message</span>,
         <span class="ident">target</span>: <span class="ident">assert_block</span>,
         <span class="ident">cleanup</span>: <span class="prelude-val">None</span>,
     };
 
-    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">SourceInfo</span> {
-        <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
-        <span class="ident">scope</span>: <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span>,
-    };
-
+    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">source_info</span>(<span class="ident">mir</span>);
     <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">push</span>(<span class="ident">BasicBlockData</span> {
         <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
         <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
@@ -1434,11 +1516,13 @@
         }),
         <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
     });
+
+    <span class="ident">assert_block</span>
 }
 
 <span class="kw">fn</span> <span class="ident">create_generator_resume_function</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(
         <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="kw-2">mut</span> <span class="ident">transform</span>: <span class="ident">TransformVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">transform</span>: <span class="ident">TransformVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">def_id</span>: <span class="ident">DefId</span>,
         <span class="ident">source</span>: <span class="ident">MirSource</span>,
         <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
@@ -1450,61 +1534,16 @@
         }
     }
 
-    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">SourceInfo</span> {
-        <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
-        <span class="ident">scope</span>: <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span>,
-    };
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cases</span> <span class="op">=</span> <span class="ident">create_cases</span>(<span class="ident">mir</span>, <span class="kw-2">&amp;</span><span class="ident">transform</span>, <span class="op">|</span><span class="ident">point</span><span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">point</span>.<span class="ident">resume</span>));
 
-    <span class="kw">let</span> <span class="ident">poisoned_block</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
+    <span class="comment">// Jump to the entry point on the 0 state</span>
+    <span class="ident">cases</span>.<span class="ident">insert</span>(<span class="number">0</span>, (<span class="number">0</span>, <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">0</span>)));
+    <span class="comment">// Panic when resumed on the returned (1) state</span>
+    <span class="ident">cases</span>.<span class="ident">insert</span>(<span class="number">1</span>, (<span class="number">1</span>, <span class="ident">insert_panic_block</span>(<span class="ident">tcx</span>, <span class="ident">mir</span>, <span class="ident">AssertMessage</span>::<span class="ident">GeneratorResumedAfterReturn</span>)));
+    <span class="comment">// Panic when resumed on the poisoned (2) state</span>
+    <span class="ident">cases</span>.<span class="ident">insert</span>(<span class="number">2</span>, (<span class="number">2</span>, <span class="ident">insert_panic_block</span>(<span class="ident">tcx</span>, <span class="ident">mir</span>, <span class="ident">AssertMessage</span>::<span class="ident">GeneratorResumedAfterPanic</span>)));
 
-    <span class="kw">let</span> <span class="ident">term</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> {
-        <span class="ident">cond</span>: <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">Constant</span> {
-            <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
-            <span class="ident">ty</span>: <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>,
-            <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Value</span> {
-                <span class="ident">value</span>: <span class="ident">tcx</span>.<span class="ident">mk_const</span>(<span class="ident">ty</span>::<span class="ident">Const</span> {
-                    <span class="ident">val</span>: <span class="ident">ConstVal</span>::<span class="ident">Bool</span>(<span class="bool-val">false</span>),
-                    <span class="ident">ty</span>: <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>
-                }),
-            },
-        }),
-        <span class="ident">expected</span>: <span class="bool-val">true</span>,
-        <span class="ident">msg</span>: <span class="ident">AssertMessage</span>::<span class="ident">GeneratorResumedAfterPanic</span>,
-        <span class="ident">target</span>: <span class="ident">transform</span>.<span class="ident">return_block</span>,
-        <span class="ident">cleanup</span>: <span class="prelude-val">None</span>,
-    };
-
-    <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">push</span>(<span class="ident">BasicBlockData</span> {
-        <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
-            <span class="ident">source_info</span>,
-            <span class="ident">kind</span>: <span class="ident">term</span>,
-        }),
-        <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
-    });
-
-    <span class="ident">transform</span>.<span class="ident">bb_targets</span>.<span class="ident">insert</span>((<span class="ident">poisoned_block</span>, <span class="prelude-val">None</span>), <span class="number">1</span>);
-
-    <span class="kw">let</span> <span class="ident">switch</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">SwitchInt</span> {
-        <span class="ident">discr</span>: <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">transform</span>.<span class="ident">make_field</span>(<span class="ident">transform</span>.<span class="ident">state_field</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>)),
-        <span class="ident">switch_ty</span>: <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>,
-        <span class="ident">values</span>: <span class="ident">Cow</span>::<span class="ident">from</span>(<span class="ident">transform</span>.<span class="ident">bb_targets</span>.<span class="ident">values</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> {
-                <span class="ident">ConstInt</span>::<span class="ident">U32</span>(<span class="ident">i</span>)
-            }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()),
-        <span class="ident">targets</span>: <span class="ident">transform</span>.<span class="ident">bb_targets</span>.<span class="ident">keys</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">k</span>, _)<span class="op">|</span> <span class="ident">k</span>)
-            .<span class="ident">chain</span>(<span class="ident">once</span>(<span class="ident">transform</span>.<span class="ident">return_block</span>))
-            .<span class="ident">collect</span>(),
-    };
-
-    <span class="ident">insert_entry_point</span>(<span class="ident">mir</span>, <span class="ident">BasicBlockData</span> {
-        <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
-            <span class="ident">source_info</span>,
-            <span class="ident">kind</span>: <span class="ident">switch</span>,
-        }),
-        <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
-    });
+    <span class="ident">insert_switch</span>(<span class="ident">tcx</span>, <span class="ident">mir</span>, <span class="ident">cases</span>, <span class="kw-2">&amp;</span><span class="ident">transform</span>);
 
     <span class="ident">make_generator_state_argument_indirect</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>, <span class="ident">mir</span>);
 
@@ -1517,21 +1556,15 @@
     <span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="prelude-val">None</span>, <span class="string">&quot;generator_resume&quot;</span>, <span class="kw-2">&amp;</span><span class="number">0</span>, <span class="ident">source</span>, <span class="ident">mir</span>);
 }
 
-<span class="kw">fn</span> <span class="ident">insert_clean_drop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
-    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">SourceInfo</span> {
+<span class="kw">fn</span> <span class="ident">source_info</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">SourceInfo</span> {
+    <span class="ident">SourceInfo</span> {
         <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
         <span class="ident">scope</span>: <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span>,
-    };
+    }
+}
 
-    <span class="kw">let</span> <span class="ident">return_block</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
-    <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">push</span>(<span class="ident">BasicBlockData</span> {
-        <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
-            <span class="ident">source_info</span>,
-            <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">Return</span>,
-        }),
-        <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
-    });
+<span class="kw">fn</span> <span class="ident">insert_clean_drop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
+    <span class="kw">let</span> <span class="ident">return_block</span> <span class="op">=</span> <span class="ident">insert_return_block</span>(<span class="ident">mir</span>);
 
     <span class="comment">// Create a block to destroy an unresumed generators. This can only destroy upvars.</span>
     <span class="kw">let</span> <span class="ident">drop_clean</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
@@ -1540,6 +1573,7 @@
         <span class="ident">target</span>: <span class="ident">return_block</span>,
         <span class="ident">unwind</span>: <span class="prelude-val">None</span>,
     };
+    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">source_info</span>(<span class="ident">mir</span>);
     <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">push</span>(<span class="ident">BasicBlockData</span> {
         <span class="ident">statements</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
         <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
@@ -1550,6 +1584,46 @@
     });
 
     <span class="ident">drop_clean</span>
+}
+
+<span class="kw">fn</span> <span class="ident">create_cases</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                          <span class="ident">transform</span>: <span class="kw-2">&amp;</span><span class="ident">TransformVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                          <span class="ident">target</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">BasicBlock</span>)<span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">SuspensionPoint</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">source_info</span>(<span class="ident">mir</span>);
+
+    <span class="ident">transform</span>.<span class="ident">suspension_points</span>.<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">point</span><span class="op">|</span> {
+        <span class="comment">// Find the target for this suspension point, if applicable</span>
+        <span class="ident">target</span>(<span class="ident">point</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">target</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">statements</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+
+            <span class="comment">// Create StorageLive instructions for locals with live storage</span>
+            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..(<span class="ident">mir</span>.<span class="ident">local_decls</span>.<span class="ident">len</span>()) {
+                <span class="kw">let</span> <span class="ident">l</span> <span class="op">=</span> <span class="ident">Local</span>::<span class="ident">new</span>(<span class="ident">i</span>);
+                <span class="kw">if</span> <span class="ident">point</span>.<span class="ident">storage_liveness</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">l</span>) <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">transform</span>.<span class="ident">remap</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">l</span>) {
+                    <span class="ident">statements</span>.<span class="ident">push</span>(<span class="ident">Statement</span> {
+                        <span class="ident">source_info</span>,
+                        <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(<span class="ident">l</span>),
+                    });
+                }
+            }
+
+            <span class="comment">// Then jump to the real target</span>
+            <span class="ident">mir</span>.<span class="ident">basic_blocks_mut</span>().<span class="ident">push</span>(<span class="ident">BasicBlockData</span> {
+                <span class="ident">statements</span>,
+                <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
+                    <span class="ident">source_info</span>,
+                    <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> {
+                        <span class="ident">target</span>,
+                    },
+                }),
+                <span class="ident">is_cleanup</span>: <span class="bool-val">false</span>,
+            });
+
+            (<span class="ident">point</span>.<span class="ident">state</span>, <span class="ident">block</span>)
+        })
+    }).<span class="ident">collect</span>()
 }
 
 <span class="kw">impl</span> <span class="ident">MirPass</span> <span class="kw">for</span> <span class="ident">StateTransform</span> {
@@ -1589,15 +1663,10 @@
 
         <span class="comment">// Extract locals which are live across suspension point into `layout`</span>
         <span class="comment">// `remap` gives a mapping from local indices onto generator struct indices</span>
-        <span class="kw">let</span> (<span class="ident">remap</span>, <span class="ident">layout</span>) <span class="op">=</span> <span class="ident">compute_layout</span>(<span class="ident">tcx</span>, <span class="ident">source</span>, <span class="ident">interior</span>, <span class="ident">mir</span>);
+        <span class="comment">// `storage_liveness` tells us which locals have live storage at suspension points</span>
+        <span class="kw">let</span> (<span class="ident">remap</span>, <span class="ident">layout</span>, <span class="ident">storage_liveness</span>) <span class="op">=</span> <span class="ident">compute_layout</span>(<span class="ident">tcx</span>, <span class="ident">source</span>, <span class="ident">interior</span>, <span class="ident">mir</span>);
 
         <span class="kw">let</span> <span class="ident">state_field</span> <span class="op">=</span> <span class="ident">mir</span>.<span class="ident">upvar_decls</span>.<span class="ident">len</span>();
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bb_targets</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="ident">new</span>();
-
-        <span class="comment">// If we jump to the entry point, we should go to the initial 0 generator state.</span>
-        <span class="comment">// FIXME: Could this result in the need for destruction for state 0?</span>
-        <span class="ident">bb_targets</span>.<span class="ident">insert</span>((<span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="number">0</span>), <span class="prelude-val">None</span>), <span class="number">0</span>);
 
         <span class="comment">// Run the transformation which converts Lvalues from Local to generator struct</span>
         <span class="comment">// accesses for locals in `remap`.</span>
@@ -1608,14 +1677,10 @@
             <span class="ident">state_adt_ref</span>,
             <span class="ident">state_substs</span>,
             <span class="ident">remap</span>,
-            <span class="ident">bb_target_count</span>: <span class="number">2</span>,
-            <span class="ident">bb_targets</span>,
+            <span class="ident">storage_liveness</span>,
+            <span class="ident">suspension_points</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
             <span class="ident">new_ret_local</span>,
             <span class="ident">state_field</span>,
-
-            <span class="comment">// For returns we will resume execution at the next added basic block.</span>
-            <span class="comment">// This happens in `insert_panic_on_resume_after_return`</span>
-            <span class="ident">return_block</span>: <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>()),
         };
         <span class="ident">transform</span>.<span class="ident">visit_mir</span>(<span class="ident">mir</span>);
 
@@ -1625,9 +1690,6 @@
         <span class="ident">mir</span>.<span class="ident">arg_count</span> <span class="op">=</span> <span class="number">1</span>;
         <span class="ident">mir</span>.<span class="ident">spread_arg</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="ident">mir</span>.<span class="ident">generator_layout</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">layout</span>);
-
-        <span class="comment">// Panic if we resumed after returning</span>
-        <span class="ident">insert_panic_on_resume_after_return</span>(<span class="ident">tcx</span>, <span class="ident">mir</span>);
 
         <span class="comment">// Insert `drop(generator_struct)` which is used to drop upvars for generators in</span>
         <span class="comment">// the unresumed (0) state.</span>

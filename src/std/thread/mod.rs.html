@@ -1750,7 +1750,7 @@
 <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">thread</span> <span class="kw">as</span> <span class="ident">imp</span>;
 <span class="kw">use</span> <span class="ident">sys_common</span>::<span class="ident">mutex</span>;
 <span class="kw">use</span> <span class="ident">sys_common</span>::<span class="ident">thread_info</span>;
-<span class="kw">use</span> <span class="ident">sys_common</span>::<span class="ident">util</span>;
+<span class="kw">use</span> <span class="ident">sys_common</span>::<span class="ident">thread</span>;
 <span class="kw">use</span> <span class="ident">sys_common</span>::{<span class="ident">AsInner</span>, <span class="ident">IntoInner</span>};
 <span class="kw">use</span> <span class="ident">time</span>::<span class="ident">Duration</span>;
 
@@ -1950,7 +1950,7 @@
     {
         <span class="kw">let</span> <span class="ident">Builder</span> { <span class="ident">name</span>, <span class="ident">stack_size</span> } <span class="op">=</span> <span class="self">self</span>;
 
-        <span class="kw">let</span> <span class="ident">stack_size</span> <span class="op">=</span> <span class="ident">stack_size</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">util</span>::<span class="ident">min_stack</span>);
+        <span class="kw">let</span> <span class="ident">stack_size</span> <span class="op">=</span> <span class="ident">stack_size</span>.<span class="ident">unwrap_or_else</span>(<span class="ident">thread</span>::<span class="ident">min_stack</span>);
 
         <span class="kw">let</span> <span class="ident">my_thread</span> <span class="op">=</span> <span class="ident">Thread</span>::<span class="ident">new</span>(<span class="ident">name</span>);
         <span class="kw">let</span> <span class="ident">their_thread</span> <span class="op">=</span> <span class="ident">my_thread</span>.<span class="ident">clone</span>();

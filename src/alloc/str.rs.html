@@ -2099,6 +2099,41 @@
 <span id="2054">2054</span>
 <span id="2055">2055</span>
 <span id="2056">2056</span>
+<span id="2057">2057</span>
+<span id="2058">2058</span>
+<span id="2059">2059</span>
+<span id="2060">2060</span>
+<span id="2061">2061</span>
+<span id="2062">2062</span>
+<span id="2063">2063</span>
+<span id="2064">2064</span>
+<span id="2065">2065</span>
+<span id="2066">2066</span>
+<span id="2067">2067</span>
+<span id="2068">2068</span>
+<span id="2069">2069</span>
+<span id="2070">2070</span>
+<span id="2071">2071</span>
+<span id="2072">2072</span>
+<span id="2073">2073</span>
+<span id="2074">2074</span>
+<span id="2075">2075</span>
+<span id="2076">2076</span>
+<span id="2077">2077</span>
+<span id="2078">2078</span>
+<span id="2079">2079</span>
+<span id="2080">2080</span>
+<span id="2081">2081</span>
+<span id="2082">2082</span>
+<span id="2083">2083</span>
+<span id="2084">2084</span>
+<span id="2085">2085</span>
+<span id="2086">2086</span>
+<span id="2087">2087</span>
+<span id="2088">2088</span>
+<span id="2089">2089</span>
+<span id="2090">2090</span>
+<span id="2091">2091</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2957,6 +2992,19 @@
     }
 
     <span class="doccomment">/// Returns an iterator of `u16` over the string encoded as UTF-16.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Basic usage:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// let text = &quot;Zażółć gęślą jaźń&quot;;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let utf8_len = text.len();</span>
+    <span class="doccomment">/// let utf16_len = text.encode_utf16().count();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert!(utf16_len &lt;= utf8_len);</span>
+    <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;encode_utf16&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.8.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">encode_utf16</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">EncodeUtf16</span> {
         <span class="ident">EncodeUtf16</span> { <span class="ident">encoder</span>: <span class="ident">Utf16Encoder</span>::<span class="ident">new</span>(<span class="self">self</span>[..].<span class="ident">chars</span>()) }
@@ -3885,6 +3933,17 @@
     }
 
     <span class="doccomment">/// Converts a `Box&lt;str&gt;` into a `Box&lt;[u8]&gt;` without copying or allocating.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Basic usage:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// let s = &quot;this is a string&quot;;</span>
+    <span class="doccomment">/// let boxed_str = s.to_owned().into_boxed_str();</span>
+    <span class="doccomment">/// let boxed_bytes = boxed_str.into_boxed_bytes();</span>
+    <span class="doccomment">/// assert_eq!(*boxed_bytes, *s.as_bytes());</span>
+    <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;str_box_extras&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.20.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_boxed_bytes</span>(<span class="self">self</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">into</span>()
@@ -4152,6 +4211,17 @@
 
 <span class="doccomment">/// Converts a boxed slice of bytes to a boxed string slice without checking</span>
 <span class="doccomment">/// that the string contains valid UTF-8.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Basic usage:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// let smile_utf8 = Box::new([226, 152, 186]);</span>
+<span class="doccomment">/// let smile = unsafe { std::str::from_boxed_utf8_unchecked(smile_utf8) };</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(&quot;☺&quot;, &amp;*smile);</span>
+<span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;str_box_extras&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.20.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_boxed_utf8_unchecked</span>(<span class="ident">v</span>: <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span> {
     <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">v</span>)

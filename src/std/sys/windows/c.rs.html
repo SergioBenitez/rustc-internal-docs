@@ -1297,6 +1297,13 @@
 <span id="1252">1252</span>
 <span id="1253">1253</span>
 <span id="1254">1254</span>
+<span id="1255">1255</span>
+<span id="1256">1256</span>
+<span id="1257">1257</span>
+<span id="1258">1258</span>
+<span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1332,6 +1339,7 @@
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">HANDLE</span> <span class="op">=</span> <span class="ident">LPVOID</span>;
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">HINSTANCE</span> <span class="op">=</span> <span class="ident">HANDLE</span>;
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">HMODULE</span> <span class="op">=</span> <span class="ident">HINSTANCE</span>;
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">HRESULT</span> <span class="op">=</span> <span class="ident">LONG</span>;
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BOOL</span> <span class="op">=</span> <span class="ident">c_int</span>;
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BYTE</span> <span class="op">=</span> <span class="ident">u8</span>;
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">BOOLEAN</span> <span class="op">=</span> <span class="ident">BYTE</span>;
@@ -1496,6 +1504,8 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ERROR_OPERATION_ABORTED</span>: <span class="ident">DWORD</span> <span class="op">=</span> <span class="number">995</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ERROR_IO_PENDING</span>: <span class="ident">DWORD</span> <span class="op">=</span> <span class="number">997</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">ERROR_TIMEOUT</span>: <span class="ident">DWORD</span> <span class="op">=</span> <span class="number">0x5B4</span>;
+
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">E_NOTIMPL</span>: <span class="ident">HRESULT</span> <span class="op">=</span> <span class="number">0x80004001u32</span> <span class="kw">as</span> <span class="ident">HRESULT</span>;
 
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">INVALID_HANDLE_VALUE</span>: <span class="ident">HANDLE</span> <span class="op">=</span> <span class="op">!</span><span class="number">0</span> <span class="kw">as</span> <span class="ident">HANDLE</span>;
 
@@ -2463,8 +2473,8 @@
                   <span class="ident">timeout</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">timeval</span>) <span class="op">-&gt;</span> <span class="ident">c_int</span>;
 }
 
-<span class="comment">// Functions that aren&#39;t available on Windows XP, but we still use them and just</span>
-<span class="comment">// provide some form of a fallback implementation.</span>
+<span class="comment">// Functions that aren&#39;t available on every version of Windows that we support,</span>
+<span class="comment">// but we still use them and just provide some form of a fallback implementation.</span>
 <span class="macro">compat_fn</span><span class="macro">!</span> {
     <span class="ident">kernel32</span>:
 
@@ -2481,6 +2491,10 @@
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">SetThreadStackGuarantee</span>(<span class="ident">_size</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_ulong</span>) <span class="op">-&gt;</span> <span class="ident">BOOL</span> {
         <span class="ident">SetLastError</span>(<span class="ident">ERROR_CALL_NOT_IMPLEMENTED</span> <span class="kw">as</span> <span class="ident">DWORD</span>); <span class="number">0</span>
+    }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">SetThreadDescription</span>(<span class="ident">hThread</span>: <span class="ident">HANDLE</span>,
+                                <span class="ident">lpThreadDescription</span>: <span class="ident">LPCWSTR</span>) <span class="op">-&gt;</span> <span class="ident">HRESULT</span> {
+        <span class="ident">SetLastError</span>(<span class="ident">ERROR_CALL_NOT_IMPLEMENTED</span> <span class="kw">as</span> <span class="ident">DWORD</span>); <span class="ident">E_NOTIMPL</span>
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">SetFileInformationByHandle</span>(<span class="ident">_hFile</span>: <span class="ident">HANDLE</span>,
                     <span class="ident">_FileInformationClass</span>: <span class="ident">FILE_INFO_BY_HANDLE_CLASS</span>,
