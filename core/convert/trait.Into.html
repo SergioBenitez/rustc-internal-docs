@@ -75,7 +75,7 @@ If the destination type is not part of the current crate, and it uses a
 generic variable, then you can&#39;t implement <code>From</code> directly.  For example,
 take this crate:</p>
 
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="kw">struct</span> <span class="ident">Wrapper</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>);
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Wrapper</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">w</span>: <span class="ident">Wrapper</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {

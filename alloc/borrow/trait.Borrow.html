@@ -98,42 +98,42 @@ type can be borrowed as multiple different types. In particular, <code>Vec&lt;T&
     <li><code>impl&lt;T:&nbsp;?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; Borrow&lt;T&gt; for <a class="struct" href="../../alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;T&gt;</code></li>
 <li><code>impl&lt;T:&nbsp;?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; Borrow&lt;T&gt; for <a class="struct" href="../../alloc/arc/struct.Arc.html" title="struct alloc::arc::Arc">Arc</a>&lt;T&gt;</code></li>
 <li><code>impl&lt;T:&nbsp;?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; Borrow&lt;T&gt; for <a class="struct" href="../../alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;T&gt;</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8839) => core/796a5d8::array[0]::{{impl}}[234]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8994) => core/796a5d8::array[0]::{{impl}}[289]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8405) => core/796a5d8::array[0]::{{impl}}[80]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8808) => core/796a5d8::array[0]::{{impl}}[223]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8436) => core/796a5d8::array[0]::{{impl}}[91]::{{initializer}}[0] }, Slice([])) }]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 21]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 26]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 7]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 20]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 8]</code></li>
 <li><code>impl&lt;T&gt; Borrow&lt;T&gt; for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8498) => core/796a5d8::array[0]::{{impl}}[113]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:9118) => core/796a5d8::array[0]::{{impl}}[333]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8312) => core/796a5d8::array[0]::{{impl}}[47]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8374) => core/796a5d8::array[0]::{{impl}}[69]::{{initializer}}[0] }, Slice([])) }]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 10]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 30]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 4]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 6]</code></li>
 <li><code>impl&lt;'a, T&gt; Borrow&lt;T&gt; for &amp;'a mut T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8932) => core/796a5d8::array[0]::{{impl}}[267]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8250) => core/796a5d8::array[0]::{{impl}}[25]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8746) => core/796a5d8::array[0]::{{impl}}[201]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8529) => core/796a5d8::array[0]::{{impl}}[124]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8219) => core/796a5d8::array[0]::{{impl}}[14]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:9087) => core/796a5d8::array[0]::{{impl}}[322]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8684) => core/796a5d8::array[0]::{{impl}}[179]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8622) => core/796a5d8::array[0]::{{impl}}[157]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:9180) => core/796a5d8::array[0]::{{impl}}[355]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8591) => core/796a5d8::array[0]::{{impl}}[146]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8343) => core/796a5d8::array[0]::{{impl}}[58]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8715) => core/796a5d8::array[0]::{{impl}}[190]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:9149) => core/796a5d8::array[0]::{{impl}}[344]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8777) => core/796a5d8::array[0]::{{impl}}[212]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:9025) => core/796a5d8::array[0]::{{impl}}[300]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8188) => core/796a5d8::array[0]::{{impl}}[3]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8467) => core/796a5d8::array[0]::{{impl}}[102]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8560) => core/796a5d8::array[0]::{{impl}}[135]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8963) => core/796a5d8::array[0]::{{impl}}[278]::{{initializer}}[0] }, Slice([])) }]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 24]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 2]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 18]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 11]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 1]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 29]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 16]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 14]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 32]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 13]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 5]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 17]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 31]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 19]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 27]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 0]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 9]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 12]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 25]</code></li>
 <li><code>impl&lt;'a, T&gt; Borrow&lt;T&gt; for &amp;'a T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: ?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:9056) => core/796a5d8::array[0]::{{impl}}[311]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8653) => core/796a5d8::array[0]::{{impl}}[168]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8901) => core/796a5d8::array[0]::{{impl}}[256]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8281) => core/796a5d8::array[0]::{{impl}}[36]::{{initializer}}[0] }, Slice([])) }]</code></li>
-<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; Const { ty: usize, val: Unevaluated(DefId { krate: CrateNum(1), node: DefIndex(1:8870) => core/796a5d8::array[0]::{{impl}}[245]::{{initializer}}[0] }, Slice([])) }]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 28]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 15]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 23]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 3]</code></li>
+<li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for [T; 22]</code></li>
 <li><code>impl&lt;'a, B:&nbsp;?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>&gt; Borrow&lt;B&gt; for <a class="enum" href="../../alloc/borrow/enum.Cow.html" title="enum alloc::borrow::Cow">Cow</a>&lt;'a, B&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;B: <a class="trait" href="../../alloc/borrow/trait.ToOwned.html" title="trait alloc::borrow::ToOwned">ToOwned</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;B as <a class="trait" href="../../alloc/borrow/trait.ToOwned.html" title="trait alloc::borrow::ToOwned">ToOwned</a>&gt;::<a class="type" href="../../alloc/borrow/trait.ToOwned.html#associatedtype.Owned" title="type alloc::borrow::ToOwned::Owned">Owned</a>: 'a,&nbsp;</span></code></li>
 <li><code>impl&lt;T&gt; Borrow&lt;[T]&gt; for <a class="struct" href="../../alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T&gt;</code></li>
 <li><code>impl Borrow&lt;str&gt; for <a class="struct" href="../../alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code></li>

@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../compiler_builtins/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Int</p><div class="block items"><ul><li><a href="#associated-types">Associated Types</a></li><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../index.html'>compiler_builtins</a>::<wbr><a href='index.html'>int</a></p><script>window.sidebarCurrent = {name: 'Int', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Int</p><div class="block items"><ul><li><a href="#associated-types">Associated Types</a></li><li><a href="#associated-const">Associated Constants</a></li><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../index.html'>compiler_builtins</a>::<wbr><a href='index.html'>int</a></p><script>window.sidebarCurrent = {name: 'Int', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -52,10 +52,12 @@
 <pre class='rust trait'>pub trait Int: <a class="trait" href="../../core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> + <a class="trait" href="../../core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> + <a class="trait" href="../../core/cmp/trait.PartialOrd.html" title="trait core::cmp::PartialOrd">PartialOrd</a> + <a class="trait" href="../../core/ops/arith/trait.AddAssign.html" title="trait core::ops::arith::AddAssign">AddAssign</a> + <a class="trait" href="../../core/ops/arith/trait.Add.html" title="trait core::ops::arith::Add">Add</a>&lt;Output = Self&gt; + <a class="trait" href="../../core/ops/arith/trait.Sub.html" title="trait core::ops::arith::Sub">Sub</a>&lt;Output = Self&gt; + <a class="trait" href="../../core/ops/arith/trait.Div.html" title="trait core::ops::arith::Div">Div</a>&lt;Output = Self&gt; + <a class="trait" href="../../core/ops/bit/trait.Shl.html" title="trait core::ops::bit::Shl">Shl</a>&lt;u32, Output = Self&gt; + <a class="trait" href="../../core/ops/bit/trait.Shr.html" title="trait core::ops::bit::Shr">Shr</a>&lt;u32, Output = Self&gt; + <a class="trait" href="../../core/ops/bit/trait.BitOr.html" title="trait core::ops::bit::BitOr">BitOr</a>&lt;Output = Self&gt; + <a class="trait" href="../../core/ops/bit/trait.BitXor.html" title="trait core::ops::bit::BitXor">BitXor</a>&lt;Output = Self&gt; + <a class="trait" href="../../core/ops/bit/trait.BitAnd.html" title="trait core::ops::bit::BitAnd">BitAnd</a>&lt;Output = Self&gt; + <a class="trait" href="../../core/ops/bit/trait.BitAndAssign.html" title="trait core::ops::bit::BitAndAssign">BitAndAssign</a> + <a class="trait" href="../../core/ops/bit/trait.Not.html" title="trait core::ops::bit::Not">Not</a>&lt;Output = Self&gt; {
     type <a href='#associatedtype.OtherSign' class="type">OtherSign</a>: <a class="trait" href="../../compiler_builtins/int/trait.Int.html" title="trait compiler_builtins::int::Int">Int</a>;
     type <a href='#associatedtype.UnsignedInt' class="type">UnsignedInt</a>: <a class="trait" href="../../compiler_builtins/int/trait.Int.html" title="trait compiler_builtins::int::Int">Int</a>;
-    fn <a href='#tymethod.bits' class='fnname'>bits</a>() -&gt; u32;
-<div class='item-spacer'></div>    fn <a href='#tymethod.zero' class='fnname'>zero</a>() -&gt; Self;
-<div class='item-spacer'></div>    fn <a href='#tymethod.one' class='fnname'>one</a>() -&gt; Self;
-<div class='item-spacer'></div>    fn <a href='#tymethod.extract_sign' class='fnname'>extract_sign</a>(self) -&gt; (bool, Self::<a class="type" href="../../compiler_builtins/int/trait.Int.html#associatedtype.UnsignedInt" title="type compiler_builtins::int::Int::UnsignedInt">UnsignedInt</a>);
+
+    const <a href='#associatedconstant.BITS' class="constant"><b>BITS</b></a>: u32;
+    const <a href='#associatedconstant.ZERO' class="constant"><b>ZERO</b></a>: Self;
+    const <a href='#associatedconstant.ONE' class="constant"><b>ONE</b></a>: Self;
+
+    fn <a href='#tymethod.extract_sign' class='fnname'>extract_sign</a>(self) -&gt; (bool, Self::<a class="type" href="../../compiler_builtins/int/trait.Int.html#associatedtype.UnsignedInt" title="type compiler_builtins::int::Int::UnsignedInt">UnsignedInt</a>);
 <div class='item-spacer'></div>    fn <a href='#tymethod.unsigned' class='fnname'>unsigned</a>(self) -&gt; Self::<a class="type" href="../../compiler_builtins/int/trait.Int.html#associatedtype.UnsignedInt" title="type compiler_builtins::int::Int::UnsignedInt">UnsignedInt</a>;
 <div class='item-spacer'></div>    fn <a href='#tymethod.from_unsigned' class='fnname'>from_unsigned</a>(unsigned: Self::<a class="type" href="../../compiler_builtins/int/trait.Int.html#associatedtype.UnsignedInt" title="type compiler_builtins::int::Int::UnsignedInt">UnsignedInt</a>) -&gt; Self;
 <div class='item-spacer'></div>    fn <a href='#tymethod.max_value' class='fnname'>max_value</a>() -&gt; Self;
@@ -77,19 +79,24 @@
 </div><h3 id='associatedtype.UnsignedInt' class='method'><span id='UnsignedInt.t' class='invisible'><code>type <a href='#associatedtype.UnsignedInt' class="type">UnsignedInt</a>: <a class="trait" href="../../compiler_builtins/int/trait.Int.html" title="trait compiler_builtins::int::Int">Int</a></code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
 </details></div></div><div class='docblock'><p>Unsigned version of Self</p>
 </div></div>
+            <h2 id='associated-const' class='small-section-header'>
+              Associated Constants<a href='#associated-const' class='anchor'></a>
+            </h2>
+            <div class='methods'>
+        <h3 id='associatedconstant.BITS' class='method'><span id='BITS.v' class='invisible'><code>const <a href='#associatedconstant.BITS' class="constant"><b>BITS</b></a>: u32</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
+</details></div></div><div class='docblock'><p>The bitwidth of the int type</p>
+</div><h3 id='associatedconstant.ZERO' class='method'><span id='ZERO.v' class='invisible'><code>const <a href='#associatedconstant.ZERO' class="constant"><b>ZERO</b></a>: Self</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
+</details></div></div><h3 id='associatedconstant.ONE' class='method'><span id='ONE.v' class='invisible'><code>const <a href='#associatedconstant.ONE' class="constant"><b>ONE</b></a>: Self</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
+</details></div></div></div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
             </h2>
             <div class='methods'>
-        <h3 id='tymethod.bits' class='method'><span id='bits.v' class='invisible'><code>fn <a href='#tymethod.bits' class='fnname'>bits</a>() -&gt; u32</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
-</details></div></div><div class='docblock'><p>Returns the bitwidth of the int type</p>
-</div><h3 id='tymethod.zero' class='method'><span id='zero.v' class='invisible'><code>fn <a href='#tymethod.zero' class='fnname'>zero</a>() -&gt; Self</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
-</details></div></div><h3 id='tymethod.one' class='method'><span id='one.v' class='invisible'><code>fn <a href='#tymethod.one' class='fnname'>one</a>() -&gt; Self</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
-</details></div></div><h3 id='tymethod.extract_sign' class='method'><span id='extract_sign.v' class='invisible'><code>fn <a href='#tymethod.extract_sign' class='fnname'>extract_sign</a>(self) -&gt; (bool, Self::<a class="type" href="../../compiler_builtins/int/trait.Int.html#associatedtype.UnsignedInt" title="type compiler_builtins::int::Int::UnsignedInt">UnsignedInt</a>)</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
+        <h3 id='tymethod.extract_sign' class='method'><span id='extract_sign.v' class='invisible'><code>fn <a href='#tymethod.extract_sign' class='fnname'>extract_sign</a>(self) -&gt; (bool, Self::<a class="type" href="../../compiler_builtins/int/trait.Int.html#associatedtype.UnsignedInt" title="type compiler_builtins::int::Int::UnsignedInt">UnsignedInt</a>)</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>compiler_builtins_lib</code>)</summary><p>Compiler builtins. Will never become stable.</p>
 </details></div></div><div class='docblock'><p>Extracts the sign from self and returns a tuple.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip ignore'>⚠<span class='tooltiptext'>Be careful when using this code, it's not being tested!</span></div></div><pre class="rust rust-example-rendered ignore">
 <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="op">-</span><span class="number">25_i32</span>;
 <span class="kw">let</span> (<span class="ident">sign</span>, <span class="ident">u</span>) <span class="op">=</span> <span class="ident">i</span>.<span class="ident">extract_sign</span>();
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sign</span>, <span class="bool-val">true</span>);

@@ -72,7 +72,7 @@ unused lifetime parameter, typically as part of some unsafe code. For
 example, here is a struct <code>Slice</code> that has two pointers of type <code>*const T</code>,
 presumably pointing into an array somewhere:</p>
 
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="kw">struct</span> <span class="ident">Slice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">start</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>,
     <span class="ident">end</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>,

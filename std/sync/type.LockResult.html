@@ -54,7 +54,7 @@
 <p>The <a href="../../std/result/enum.Result.html#variant.Ok"><code>Ok</code></a> variant of this result indicates that the primitive was not
 poisoned, and the <code>Guard</code> is contained within. The <a href="../../std/result/enum.Result.html#variant.Err"><code>Err</code></a> variant indicates
 that the primitive was poisoned. Note that the <a href="../../std/result/enum.Result.html#variant.Err"><code>Err</code></a> variant <em>also</em> carries
-the associated guard, and it can be acquired through the <a href="../../std/sync/struct.Mutex.html#method.into_inner"><code>into_inner</code></a>
+the associated guard, and it can be acquired through the <a href="../../std/sync/struct.PoisonError.html#method.into_inner"><code>into_inner</code></a>
 method.</p>
 </div></section>
     <section id='search' class="content hidden"></section>

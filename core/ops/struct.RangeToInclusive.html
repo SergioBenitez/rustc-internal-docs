@@ -67,7 +67,7 @@ It cannot serve as an <a href="../iter/trait.IntoIterator.html"><code>Iterator</
 <p>It does not have an <a href="../iter/trait.Iterator.html"><code>IntoIterator</code></a> implementation, so you can&#39;t use it in a
 <code>for</code> loop directly. This won&#39;t compile:</p>
 
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">inclusive_range_syntax</span>)]</span>
 
 <span class="comment">// error[E0277]: the trait bound `std::ops::RangeToInclusive&lt;{integer}&gt;:</span>

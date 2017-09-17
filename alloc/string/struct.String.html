@@ -88,7 +88,7 @@ which is that if you need a non-UTF-8 string, consider <a href="../../std/ffi/st
 similar, but without the UTF-8 constraint. The second implication is that
 you cannot index into a <code>String</code>:</p>
 
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;hello&quot;</span>;
 
 <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;The first letter of s is {}&quot;</span>, <span class="ident">s</span>[<span class="number">0</span>]); <span class="comment">// ERROR!!!</span></pre>
@@ -123,7 +123,7 @@ slice <a href="../../std/primitive.str.html"><code>&amp;&#39;a str</code></a> im
 would need to make two implicit conversions, which Rust doesn&#39;t have the
 means to do. For that reason, the following example will not compile.</p>
 
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="kw">trait</span> <span class="ident">TraitExample</span> {}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">TraitExample</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {}

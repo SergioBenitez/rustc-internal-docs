@@ -1870,6 +1870,35 @@
 <span id="1825">1825</span>
 <span id="1826">1826</span>
 <span id="1827">1827</span>
+<span id="1828">1828</span>
+<span id="1829">1829</span>
+<span id="1830">1830</span>
+<span id="1831">1831</span>
+<span id="1832">1832</span>
+<span id="1833">1833</span>
+<span id="1834">1834</span>
+<span id="1835">1835</span>
+<span id="1836">1836</span>
+<span id="1837">1837</span>
+<span id="1838">1838</span>
+<span id="1839">1839</span>
+<span id="1840">1840</span>
+<span id="1841">1841</span>
+<span id="1842">1842</span>
+<span id="1843">1843</span>
+<span id="1844">1844</span>
+<span id="1845">1845</span>
+<span id="1846">1846</span>
+<span id="1847">1847</span>
+<span id="1848">1848</span>
+<span id="1849">1849</span>
+<span id="1850">1850</span>
+<span id="1851">1851</span>
+<span id="1852">1852</span>
+<span id="1853">1853</span>
+<span id="1854">1854</span>
+<span id="1855">1855</span>
+<span id="1856">1856</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1895,7 +1924,7 @@
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">intrinsics</span>::<span class="ident">abort</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::{<span class="self">self</span>, <span class="ident">size_of_val</span>, <span class="ident">uninitialized</span>};
+<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::{<span class="self">self</span>, <span class="ident">align_of_val</span>, <span class="ident">size_of_val</span>, <span class="ident">uninitialized</span>};
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">CoerceUnsized</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ptr</span>::{<span class="self">self</span>, <span class="ident">Shared</span>};
@@ -2197,7 +2226,9 @@
             <span class="prelude-val">Ok</span>(<span class="ident">elem</span>)
         }
     }
+}
 
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Consumes the `Arc`, returning the wrapped pointer.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// To avoid a memory leak the pointer must be converted back to an `Arc` using</span>
@@ -2251,16 +2282,21 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rc_raw&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.17.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_raw</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="comment">// To find the corresponding pointer to the `ArcInner` we need to subtract the offset of the</span>
-        <span class="comment">// `data` field from the pointer.</span>
-        <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> (<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>).<span class="ident">offset</span>(<span class="op">-</span><span class="macro">offset_of</span><span class="macro">!</span>(<span class="ident">ArcInner</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">data</span>));
+        <span class="comment">// Align the unsized value to the end of the ArcInner.</span>
+        <span class="comment">// Because it is ?Sized, it will always be the last field in memory.</span>
+        <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="ident">align_of_val</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">ptr</span>);
+        <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="ident">Layout</span>::<span class="ident">new</span>::<span class="op">&lt;</span><span class="ident">ArcInner</span><span class="op">&lt;</span>()<span class="op">&gt;&gt;</span>();
+        <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> (<span class="ident">layout</span>.<span class="ident">size</span>() <span class="op">+</span> <span class="ident">layout</span>.<span class="ident">padding_needed_for</span>(<span class="ident">align</span>)) <span class="kw">as</span> <span class="ident">isize</span>;
+
+        <span class="comment">// Reverse the offset to find the original ArcInner.</span>
+        <span class="kw">let</span> <span class="ident">fake_ptr</span> <span class="op">=</span> <span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">ArcInner</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
+        <span class="kw">let</span> <span class="ident">arc_ptr</span> <span class="op">=</span> <span class="ident">set_data_ptr</span>(<span class="ident">fake_ptr</span>, (<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>).<span class="ident">offset</span>(<span class="op">-</span><span class="ident">offset</span>));
+
         <span class="ident">Arc</span> {
-            <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> _),
+            <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">arc_ptr</span>),
         }
     }
-}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Creates a new [`Weak`][weak] pointer to this value.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [weak]: struct.Weak.html</span>
@@ -3362,6 +3398,28 @@
 
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Arc</span>::<span class="ident">try_unwrap</span>(<span class="ident">x</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">x</span>), <span class="prelude-val">Ok</span>(<span class="string">&quot;hello&quot;</span>));
         }
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_into_from_raw_unsized</span>() {
+        <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Display</span>;
+        <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">string</span>::<span class="ident">ToString</span>;
+
+        <span class="kw">let</span> <span class="ident">arc</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">from</span>(<span class="string">&quot;foo&quot;</span>);
+
+        <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">into_raw</span>(<span class="ident">arc</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">arc2</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Arc</span>::<span class="ident">from_raw</span>(<span class="ident">ptr</span>) };
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">ptr</span> }, <span class="string">&quot;foo&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">arc</span>, <span class="ident">arc2</span>);
+
+        <span class="kw">let</span> <span class="ident">arc</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Display</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="number">123</span>);
+
+        <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">into_raw</span>(<span class="ident">arc</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">arc2</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Arc</span>::<span class="ident">from_raw</span>(<span class="ident">ptr</span>) };
+
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">ptr</span> }.<span class="ident">to_string</span>(), <span class="string">&quot;123&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">arc2</span>.<span class="ident">to_string</span>(), <span class="string">&quot;123&quot;</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>

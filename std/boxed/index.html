@@ -80,7 +80,7 @@ drop their contents when they go out of scope.</p>
 <p>Recursive structures must be boxed, because if the definition of <code>Cons</code>
 looked like this:</p>
 
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="ident">Cons</span>(<span class="ident">T</span>, <span class="ident">List</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>),<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aenum%20List%3CT%3E%20%7B%0ACons(T%2C%20List%3CT%3E)%2C%0A%7D%0A%7D">Run</a></pre>
 
 <p>It wouldn&#39;t work. This is because the size of a <code>List</code> depends on how many

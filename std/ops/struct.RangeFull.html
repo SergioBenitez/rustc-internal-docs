@@ -63,7 +63,7 @@ It cannot serve as an <a href="../iter/trait.IntoIterator.html"><code>Iterator</
 <p>It does not have an <a href="../iter/trait.Iterator.html"><code>IntoIterator</code></a> implementation, so you can&#39;t use it in
 a <code>for</code> loop directly. This won&#39;t compile:</p>
 
-<pre class="rust rust-example-rendered">
+<div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> .. {
    <span class="comment">// ...</span>
 }<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afor%20i%20in%20..%20%7B%0A%20%20%20%2F%2F%20...%0A%7D%0A%7D">Run</a></pre>
