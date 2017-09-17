@@ -3521,6 +3521,9 @@
 <span id="3476">3476</span>
 <span id="3477">3477</span>
 <span id="3478">3478</span>
+<span id="3479">3479</span>
+<span id="3480">3480</span>
+<span id="3481">3481</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4111,6 +4114,9 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span>: <span class="ident">Hash</span> <span class="op">+</span> <span class="ident">Eq</span>, <span class="ident">V</span><span class="op">&gt;</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">K</span>, <span class="ident">V</span>, <span class="ident">RandomState</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Creates an empty `HashMap`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The hash map is initially created with a capacity of 0, so it will not allocate until it</span>
+    <span class="doccomment">/// is first inserted into.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>

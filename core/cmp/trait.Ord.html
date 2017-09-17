@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/cmp.rs.html#431-484' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/cmp.rs.html#431-480' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Ord: <a class="trait" href="../../core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> + <a class="trait" href="../../core/cmp/trait.PartialOrd.html" title="trait core::cmp::PartialOrd">PartialOrd</a>&lt;Self&gt; {
     fn <a href='#tymethod.cmp' class='fnname'>cmp</a>(&amp;self, other: &amp;Self) -&gt; <a class="enum" href="../../core/cmp/enum.Ordering.html" title="enum core::cmp::Ordering">Ordering</a>;
 
@@ -132,26 +132,22 @@ and <code>name</code>:</p>
               Provided Methods<a href='#provided-methods' class='anchor'></a>
             </h2>
             <div class='methods'>
-        <h3 id='method.max' class='method'><span id='max.v' class='invisible'><code>fn <a href='#method.max' class='fnname'>max</a>(self, other: Self) -&gt; Self <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code></span></h3><div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ord_max_min </code><a href="https://github.com/rust-lang/rust/issues/25663">#25663</a>)</div></div><div class='docblock'><p>Compares and returns the maximum of two values.</p>
+        <h3 id='method.max' class='method'><span id='max.v' class='invisible'><code>fn <a href='#method.max' class='fnname'>max</a>(self, other: Self) -&gt; Self <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><div class='since' title='Stable since Rust version 1.22.0'>1.22.0</div></span></h3><div class='docblock'><p>Compares and returns the maximum of two values.</p>
 
 <p>Returns the second argument if the comparison determines them to be equal.</p>
 
 <h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">ord_max_min</span>)]</span>
-
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="number">1</span>.<span class="ident">max</span>(<span class="number">2</span>));
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="number">2</span>.<span class="ident">max</span>(<span class="number">2</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(ord_max_min)%5D%0A%0Afn%20main()%20%7B%0Aassert_eq!(2%2C%201.max(2))%3B%0Aassert_eq!(2%2C%202.max(2))%3B%0A%7D&amp;version=nightly">Run</a></pre>
-</div><h3 id='method.min' class='method'><span id='min.v' class='invisible'><code>fn <a href='#method.min' class='fnname'>min</a>(self, other: Self) -&gt; Self <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code></span></h3><div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ord_max_min </code><a href="https://github.com/rust-lang/rust/issues/25663">#25663</a>)</div></div><div class='docblock'><p>Compares and returns the minimum of two values.</p>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="number">2</span>.<span class="ident">max</span>(<span class="number">2</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aassert_eq!(2%2C%201.max(2))%3B%0Aassert_eq!(2%2C%202.max(2))%3B%0A%7D">Run</a></pre>
+</div><h3 id='method.min' class='method'><span id='min.v' class='invisible'><code>fn <a href='#method.min' class='fnname'>min</a>(self, other: Self) -&gt; Self <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code><div class='since' title='Stable since Rust version 1.22.0'>1.22.0</div></span></h3><div class='docblock'><p>Compares and returns the minimum of two values.</p>
 
 <p>Returns the first argument if the comparison determines them to be equal.</p>
 
 <h1 id='examples-2' class='section-header'><a href='#examples-2'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">ord_max_min</span>)]</span>
-
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="number">1</span>.<span class="ident">min</span>(<span class="number">2</span>));
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="number">2</span>.<span class="ident">min</span>(<span class="number">2</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(ord_max_min)%5D%0A%0Afn%20main()%20%7B%0Aassert_eq!(1%2C%201.min(2))%3B%0Aassert_eq!(2%2C%202.min(2))%3B%0A%7D&amp;version=nightly">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="number">2</span>.<span class="ident">min</span>(<span class="number">2</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aassert_eq!(1%2C%201.min(2))%3B%0Aassert_eq!(2%2C%202.min(2))%3B%0A%7D">Run</a></pre>
 </div></div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
