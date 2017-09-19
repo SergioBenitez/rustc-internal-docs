@@ -70,18 +70,18 @@ LLVM&#39;s</a>.</p>
 <p>For more information see the <a href="../../../nomicon/atomics.html">nomicon</a>.</p>
 </div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
-<span id='variant.Relaxed' class='variant'><span id='Relaxed.v' class='invisible'><code>Relaxed</code></span></span><div class='docblock'><p>No ordering constraints, only atomic operations.</p>
+<span id="variant.Relaxed" class="variant small-section-header"><a href="#variant.Relaxed" class="anchor field"></a><span id='Relaxed.v' class='invisible'><code>Relaxed</code></span></span><div class='docblock'><p>No ordering constraints, only atomic operations.</p>
 
 <p>Corresponds to LLVM&#39;s <a href="http://llvm.org/docs/Atomics.html#monotonic"><code>Monotonic</code></a> ordering.</p>
-</div><span id='variant.Release' class='variant'><span id='Release.v' class='invisible'><code>Release</code></span></span><div class='docblock'><p>When coupled with a store, all previous writes become visible
+</div><span id="variant.Release" class="variant small-section-header"><a href="#variant.Release" class="anchor field"></a><span id='Release.v' class='invisible'><code>Release</code></span></span><div class='docblock'><p>When coupled with a store, all previous writes become visible
 to the other threads that perform a load with <a href="http://llvm.org/docs/Atomics.html#acquire"><code>Acquire</code></a> ordering
 on the same value.</p>
-</div><span id='variant.Acquire' class='variant'><span id='Acquire.v' class='invisible'><code>Acquire</code></span></span><div class='docblock'><p>When coupled with a load, all subsequent loads will see data
+</div><span id="variant.Acquire" class="variant small-section-header"><a href="#variant.Acquire" class="anchor field"></a><span id='Acquire.v' class='invisible'><code>Acquire</code></span></span><div class='docblock'><p>When coupled with a load, all subsequent loads will see data
 written before a store with <a href="http://llvm.org/docs/Atomics.html#release"><code>Release</code></a> ordering on the same value
 in other threads.</p>
-</div><span id='variant.AcqRel' class='variant'><span id='AcqRel.v' class='invisible'><code>AcqRel</code></span></span><div class='docblock'><p>When coupled with a load, uses <a href="http://llvm.org/docs/Atomics.html#acquire"><code>Acquire</code></a> ordering, and with a store
+</div><span id="variant.AcqRel" class="variant small-section-header"><a href="#variant.AcqRel" class="anchor field"></a><span id='AcqRel.v' class='invisible'><code>AcqRel</code></span></span><div class='docblock'><p>When coupled with a load, uses <a href="http://llvm.org/docs/Atomics.html#acquire"><code>Acquire</code></a> ordering, and with a store
 <a href="http://llvm.org/docs/Atomics.html#release"><code>Release</code></a> ordering.</p>
-</div><span id='variant.SeqCst' class='variant'><span id='SeqCst.v' class='invisible'><code>SeqCst</code></span></span><div class='docblock'><p>Like <code>AcqRel</code> with the additional guarantee that all threads see all
+</div><span id="variant.SeqCst" class="variant small-section-header"><a href="#variant.SeqCst" class="anchor field"></a><span id='SeqCst.v' class='invisible'><code>SeqCst</code></span></span><div class='docblock'><p>Like <code>AcqRel</code> with the additional guarantee that all threads see all
 sequentially consistent operations in the same order.</p>
 </div>
             <h2 id='implementations' class='small-section-header'>

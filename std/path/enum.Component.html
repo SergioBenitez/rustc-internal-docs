@@ -77,18 +77,18 @@ created by the <a href="struct.Path.html#method.components"><code>components</co
 ]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3A%7BComponent%2C%20Path%7D%3B%0A%0Alet%20path%20%3D%20Path%3A%3Anew(%22%2Ftmp%2Ffoo%2Fbar.txt%22)%3B%0Alet%20components%20%3D%20path.components().collect%3A%3A%3CVec%3C_%3E%3E()%3B%0Aassert_eq!(%26components%2C%20%26%5B%0A%20%20%20%20Component%3A%3ARootDir%2C%0A%20%20%20%20Component%3A%3ANormal(%22tmp%22.as_ref())%2C%0A%20%20%20%20Component%3A%3ANormal(%22foo%22.as_ref())%2C%0A%20%20%20%20Component%3A%3ANormal(%22bar.txt%22.as_ref())%2C%0A%5D)%3B%0A%7D">Run</a></pre>
 </div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
-<span id='variant.Prefix' class='variant'><span id='Prefix.v' class='invisible'><code>Prefix(<a class="struct" href="../../std/path/struct.PrefixComponent.html" title="struct std::path::PrefixComponent">PrefixComponent</a>&lt;'a&gt;)</code></span></span><div class='docblock'><p>A Windows path prefix, e.g. <code>C:</code> or <code>\\server\share</code>.</p>
+<span id="variant.Prefix" class="variant small-section-header"><a href="#variant.Prefix" class="anchor field"></a><span id='Prefix.v' class='invisible'><code>Prefix(<a class="struct" href="../../std/path/struct.PrefixComponent.html" title="struct std::path::PrefixComponent">PrefixComponent</a>&lt;'a&gt;)</code></span></span><div class='docblock'><p>A Windows path prefix, e.g. <code>C:</code> or <code>\\server\share</code>.</p>
 
 <p>There is a large variety of prefix types, see <a href="enum.Prefix.html"><code>Prefix</code></a>&#39;s documentation
 for more.</p>
 
 <p>Does not occur on Unix.</p>
-</div><span id='variant.RootDir' class='variant'><span id='RootDir.v' class='invisible'><code>RootDir</code></span></span><div class='docblock'><p>The root directory component, appears after any prefix and before anything else.</p>
+</div><span id="variant.RootDir" class="variant small-section-header"><a href="#variant.RootDir" class="anchor field"></a><span id='RootDir.v' class='invisible'><code>RootDir</code></span></span><div class='docblock'><p>The root directory component, appears after any prefix and before anything else.</p>
 
 <p>It represents a separator that designates that a path starts from root.</p>
-</div><span id='variant.CurDir' class='variant'><span id='CurDir.v' class='invisible'><code>CurDir</code></span></span><div class='docblock'><p>A reference to the current directory, i.e. <code>.</code>.</p>
-</div><span id='variant.ParentDir' class='variant'><span id='ParentDir.v' class='invisible'><code>ParentDir</code></span></span><div class='docblock'><p>A reference to the parent directory, i.e. <code>..</code>.</p>
-</div><span id='variant.Normal' class='variant'><span id='Normal.v' class='invisible'><code>Normal(&amp;'a <a class="struct" href="../../std/ffi/struct.OsStr.html" title="struct std::ffi::OsStr">OsStr</a>)</code></span></span><div class='docblock'><p>A normal component, e.g. <code>a</code> and <code>b</code> in <code>a/b</code>.</p>
+</div><span id="variant.CurDir" class="variant small-section-header"><a href="#variant.CurDir" class="anchor field"></a><span id='CurDir.v' class='invisible'><code>CurDir</code></span></span><div class='docblock'><p>A reference to the current directory, i.e. <code>.</code>.</p>
+</div><span id="variant.ParentDir" class="variant small-section-header"><a href="#variant.ParentDir" class="anchor field"></a><span id='ParentDir.v' class='invisible'><code>ParentDir</code></span></span><div class='docblock'><p>A reference to the parent directory, i.e. <code>..</code>.</p>
+</div><span id="variant.Normal" class="variant small-section-header"><a href="#variant.Normal" class="anchor field"></a><span id='Normal.v' class='invisible'><code>Normal(&amp;'a <a class="struct" href="../../std/ffi/struct.OsStr.html" title="struct std::ffi::OsStr">OsStr</a>)</code></span></span><div class='docblock'><p>A normal component, e.g. <code>a</code> and <code>b</code> in <code>a/b</code>.</p>
 
 <p>This variant is the most common one, it represents references to files
 or directories.</p>

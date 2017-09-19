@@ -2523,6 +2523,79 @@
 <span id="2478">2478</span>
 <span id="2479">2479</span>
 <span id="2480">2480</span>
+<span id="2481">2481</span>
+<span id="2482">2482</span>
+<span id="2483">2483</span>
+<span id="2484">2484</span>
+<span id="2485">2485</span>
+<span id="2486">2486</span>
+<span id="2487">2487</span>
+<span id="2488">2488</span>
+<span id="2489">2489</span>
+<span id="2490">2490</span>
+<span id="2491">2491</span>
+<span id="2492">2492</span>
+<span id="2493">2493</span>
+<span id="2494">2494</span>
+<span id="2495">2495</span>
+<span id="2496">2496</span>
+<span id="2497">2497</span>
+<span id="2498">2498</span>
+<span id="2499">2499</span>
+<span id="2500">2500</span>
+<span id="2501">2501</span>
+<span id="2502">2502</span>
+<span id="2503">2503</span>
+<span id="2504">2504</span>
+<span id="2505">2505</span>
+<span id="2506">2506</span>
+<span id="2507">2507</span>
+<span id="2508">2508</span>
+<span id="2509">2509</span>
+<span id="2510">2510</span>
+<span id="2511">2511</span>
+<span id="2512">2512</span>
+<span id="2513">2513</span>
+<span id="2514">2514</span>
+<span id="2515">2515</span>
+<span id="2516">2516</span>
+<span id="2517">2517</span>
+<span id="2518">2518</span>
+<span id="2519">2519</span>
+<span id="2520">2520</span>
+<span id="2521">2521</span>
+<span id="2522">2522</span>
+<span id="2523">2523</span>
+<span id="2524">2524</span>
+<span id="2525">2525</span>
+<span id="2526">2526</span>
+<span id="2527">2527</span>
+<span id="2528">2528</span>
+<span id="2529">2529</span>
+<span id="2530">2530</span>
+<span id="2531">2531</span>
+<span id="2532">2532</span>
+<span id="2533">2533</span>
+<span id="2534">2534</span>
+<span id="2535">2535</span>
+<span id="2536">2536</span>
+<span id="2537">2537</span>
+<span id="2538">2538</span>
+<span id="2539">2539</span>
+<span id="2540">2540</span>
+<span id="2541">2541</span>
+<span id="2542">2542</span>
+<span id="2543">2543</span>
+<span id="2544">2544</span>
+<span id="2545">2545</span>
+<span id="2546">2546</span>
+<span id="2547">2547</span>
+<span id="2548">2548</span>
+<span id="2549">2549</span>
+<span id="2550">2550</span>
+<span id="2551">2551</span>
+<span id="2552">2552</span>
+<span id="2553">2553</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3590,7 +3663,43 @@
         <span class="ident">copy_nonoverlapping</span>(<span class="self">self</span>, <span class="ident">dest</span>, <span class="ident">count</span>)
     }
 
-
+    <span class="doccomment">/// Computes the byte offset that needs to be applied in order to</span>
+    <span class="doccomment">/// make the pointer aligned to `align`.</span>
+    <span class="doccomment">/// If it is not possible to align the pointer, the implementation returns</span>
+    <span class="doccomment">/// `usize::max_value()`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// There are no guarantees whatsover that offsetting the pointer will not</span>
+    <span class="doccomment">/// overflow or go beyond the allocation that the pointer points into.</span>
+    <span class="doccomment">/// It is up to the caller to ensure that the returned offset is correct</span>
+    <span class="doccomment">/// in all terms other than alignment.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Accessing adjacent `u8` as `u16`</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(align_offset)]</span>
+    <span class="doccomment">/// # fn foo(n: usize) {</span>
+    <span class="doccomment">/// # use std::mem::align_of;</span>
+    <span class="doccomment">/// # unsafe {</span>
+    <span class="doccomment">/// let x = [5u8, 6u8, 7u8, 8u8, 9u8];</span>
+    <span class="doccomment">/// let ptr = &amp;x[n] as *const u8;</span>
+    <span class="doccomment">/// let offset = ptr.align_offset(align_of::&lt;u16&gt;());</span>
+    <span class="doccomment">/// if offset &lt; x.len() - n - 1 {</span>
+    <span class="doccomment">///     let u16_ptr = ptr.offset(offset as isize) as *const u16;</span>
+    <span class="doccomment">///     assert_ne!(*u16_ptr, 500);</span>
+    <span class="doccomment">/// } else {</span>
+    <span class="doccomment">///     // while the pointer can be aligned via `offset`, it would point</span>
+    <span class="doccomment">///     // outside the allocation</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// # } }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;align_offset&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;44488&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">align_offset</span>(<span class="self">self</span>, <span class="ident">align</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">unsafe</span> {
+            <span class="ident">intrinsics</span>::<span class="ident">align_offset</span>(<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> _, <span class="ident">align</span>)
+        }
+    }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;mut_ptr&quot;</span>]</span>
@@ -3810,6 +3919,43 @@
         }
     }
 
+    <span class="doccomment">/// Computes the byte offset that needs to be applied in order to</span>
+    <span class="doccomment">/// make the pointer aligned to `align`.</span>
+    <span class="doccomment">/// If it is not possible to align the pointer, the implementation returns</span>
+    <span class="doccomment">/// `usize::max_value()`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// There are no guarantees whatsover that offsetting the pointer will not</span>
+    <span class="doccomment">/// overflow or go beyond the allocation that the pointer points into.</span>
+    <span class="doccomment">/// It is up to the caller to ensure that the returned offset is correct</span>
+    <span class="doccomment">/// in all terms other than alignment.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Accessing adjacent `u8` as `u16`</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(align_offset)]</span>
+    <span class="doccomment">/// # fn foo(n: usize) {</span>
+    <span class="doccomment">/// # use std::mem::align_of;</span>
+    <span class="doccomment">/// # unsafe {</span>
+    <span class="doccomment">/// let x = [5u8, 6u8, 7u8, 8u8, 9u8];</span>
+    <span class="doccomment">/// let ptr = &amp;x[n] as *const u8;</span>
+    <span class="doccomment">/// let offset = ptr.align_offset(align_of::&lt;u16&gt;());</span>
+    <span class="doccomment">/// if offset &lt; x.len() - n - 1 {</span>
+    <span class="doccomment">///     let u16_ptr = ptr.offset(offset as isize) as *const u16;</span>
+    <span class="doccomment">///     assert_ne!(*u16_ptr, 500);</span>
+    <span class="doccomment">/// } else {</span>
+    <span class="doccomment">///     // while the pointer can be aligned via `offset`, it would point</span>
+    <span class="doccomment">///     // outside the allocation</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// # } }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;align_offset&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;44488&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">align_offset</span>(<span class="self">self</span>, <span class="ident">align</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">unsafe</span> {
+            <span class="ident">intrinsics</span>::<span class="ident">align_offset</span>(<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> _, <span class="ident">align</span>)
+        }
+    }
 
     <span class="doccomment">/// Calculates the offset from a pointer (convenience for `.offset(count as isize)`).</span>
     <span class="doccomment">///</span>

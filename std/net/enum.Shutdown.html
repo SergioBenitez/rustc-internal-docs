@@ -57,13 +57,13 @@
 <a href="struct.TcpStream.html"><code>TcpStream</code></a>.</p>
 </div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
-<span id='variant.Read' class='variant'><span id='Read.v' class='invisible'><code>Read</code></span></span><div class='docblock'><p>The reading portion of the <a href="../../std/net/struct.TcpStream.html"><code>TcpStream</code></a> should be shut down.</p>
+<span id="variant.Read" class="variant small-section-header"><a href="#variant.Read" class="anchor field"></a><span id='Read.v' class='invisible'><code>Read</code></span></span><div class='docblock'><p>The reading portion of the <a href="../../std/net/struct.TcpStream.html"><code>TcpStream</code></a> should be shut down.</p>
 
 <p>All currently blocked and future <a href="../../std/io/trait.Read.html">reads</a> will return <a href="../../std/result/enum.Result.html#variant.Ok"><code>Ok(0)</code></a>.</p>
-</div><span id='variant.Write' class='variant'><span id='Write.v' class='invisible'><code>Write</code></span></span><div class='docblock'><p>The writing portion of the <a href="../../std/net/struct.TcpStream.html"><code>TcpStream</code></a> should be shut down.</p>
+</div><span id="variant.Write" class="variant small-section-header"><a href="#variant.Write" class="anchor field"></a><span id='Write.v' class='invisible'><code>Write</code></span></span><div class='docblock'><p>The writing portion of the <a href="../../std/net/struct.TcpStream.html"><code>TcpStream</code></a> should be shut down.</p>
 
 <p>All currently blocked and future <a href="../../std/io/trait.Write.html">writes</a> will return an error.</p>
-</div><span id='variant.Both' class='variant'><span id='Both.v' class='invisible'><code>Both</code></span></span><div class='docblock'><p>Both the reading and the writing portions of the <a href="../../std/net/struct.TcpStream.html"><code>TcpStream</code></a> should be shut down.</p>
+</div><span id="variant.Both" class="variant small-section-header"><a href="#variant.Both" class="anchor field"></a><span id='Both.v' class='invisible'><code>Both</code></span></span><div class='docblock'><p>Both the reading and the writing portions of the <a href="../../std/net/struct.TcpStream.html"><code>TcpStream</code></a> should be shut down.</p>
 
 <p>See <a href="#variant.Read"><code>Shutdown::Read</code></a> and <a href="#variant.Write"><code>Shutdown::Write</code></a> for more information.</p>
 </div>

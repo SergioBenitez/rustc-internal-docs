@@ -84,16 +84,19 @@ continuing.</p>
 
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">ecode</span>.<span class="ident">success</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aprocess%3A%3ACommand%3B%0A%0Alet%20mut%20child%20%3D%20Command%3A%3Anew(%22%2Fbin%2Fcat%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.arg(%22file.txt%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.spawn()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.expect(%22failed%20to%20execute%20child%22)%3B%0A%0Alet%20ecode%20%3D%20child.wait()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.expect(%22failed%20to%20wait%20on%20child%22)%3B%0A%0Aassert!(ecode.success())%3B%0A%7D">Run</a></pre>
 </div><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.stdin' class="structfield">
-                           <span id='stdin.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.stdin" class="structfield small-section-header">
+                           <a href="#structfield.stdin" class="anchor field"></a>
+                           <span id="stdin.v" class='invisible'>
                            <code>stdin: <a class="enum" href="../../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="struct" href="../../std/process/struct.ChildStdin.html" title="struct std::process::ChildStdin">ChildStdin</a>&gt;</code>
                            </span></span><div class='docblock'><p>The handle for writing to the child&#39;s stdin, if it has been captured</p>
-</div><span id='structfield.stdout' class="structfield">
-                           <span id='stdout.v' class='invisible'>
+</div><span id="structfield.stdout" class="structfield small-section-header">
+                           <a href="#structfield.stdout" class="anchor field"></a>
+                           <span id="stdout.v" class='invisible'>
                            <code>stdout: <a class="enum" href="../../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="struct" href="../../std/process/struct.ChildStdout.html" title="struct std::process::ChildStdout">ChildStdout</a>&gt;</code>
                            </span></span><div class='docblock'><p>The handle for reading from the child&#39;s stdout, if it has been captured</p>
-</div><span id='structfield.stderr' class="structfield">
-                           <span id='stderr.v' class='invisible'>
+</div><span id="structfield.stderr" class="structfield small-section-header">
+                           <a href="#structfield.stderr" class="anchor field"></a>
+                           <span id="stderr.v" class='invisible'>
                            <code>stderr: <a class="enum" href="../../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="struct" href="../../std/process/struct.ChildStderr.html" title="struct std::process::ChildStderr">ChildStderr</a>&gt;</code>
                            </span></span><div class='docblock'><p>The handle for reading from the child&#39;s stderr, if it has been captured</p>
 </div>

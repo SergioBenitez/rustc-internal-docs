@@ -56,13 +56,13 @@
 <a href="struct.SyncSender.html#method.try_send"><code>try_send</code></a> method.</p>
 </div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
-<span id='variant.Full' class='variant'><span id='Full.v' class='invisible'><code>Full(T)</code></span></span><div class='docblock'><p>The data could not be sent on the <a href="fn.sync_channel.html"><code>sync_channel</code></a> because it would require that
+<span id="variant.Full" class="variant small-section-header"><a href="#variant.Full" class="anchor field"></a><span id='Full.v' class='invisible'><code>Full(T)</code></span></span><div class='docblock'><p>The data could not be sent on the <a href="fn.sync_channel.html"><code>sync_channel</code></a> because it would require that
 the callee block to send the data.</p>
 
 <p>If this is a buffered channel, then the buffer is full at this time. If
 this is not a buffered channel, then there is no <a href="struct.Receiver.html"><code>Receiver</code></a> available to
 acquire the data.</p>
-</div><span id='variant.Disconnected' class='variant'><span id='Disconnected.v' class='invisible'><code>Disconnected(T)</code></span></span><div class='docblock'><p>This <a href="fn.sync_channel.html"><code>sync_channel</code></a>&#39;s receiving half has disconnected, so the data could not be
+</div><span id="variant.Disconnected" class="variant small-section-header"><a href="#variant.Disconnected" class="anchor field"></a><span id='Disconnected.v' class='invisible'><code>Disconnected(T)</code></span></span><div class='docblock'><p>This <a href="fn.sync_channel.html"><code>sync_channel</code></a>&#39;s receiving half has disconnected, so the data could not be
 sent. The data is returned back to the callee in this case.</p>
 </div>
             <h2 id='implementations' class='small-section-header'>

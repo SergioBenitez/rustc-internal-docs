@@ -2572,7 +2572,6 @@
 <span id="2527">2527</span>
 <span id="2528">2528</span>
 <span id="2529">2529</span>
-<span id="2530">2530</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2599,7 +2598,6 @@
 <span class="kw">use</span> <span class="ident">iter</span>::{<span class="ident">Map</span>, <span class="ident">Cloned</span>, <span class="ident">FusedIterator</span>};
 <span class="kw">use</span> <span class="ident">slice</span>::{<span class="self">self</span>, <span class="ident">SliceIndex</span>};
 <span class="kw">use</span> <span class="ident">mem</span>;
-<span class="kw">use</span> <span class="ident">intrinsics</span>::<span class="ident">align_offset</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">pattern</span>;
 
@@ -2980,7 +2978,7 @@ Section: Creating a string
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_utf8_unchecked</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
-    <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">v</span>)
+    <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="ident">v</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> [<span class="ident">u8</span>] <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">str</span>)
 }
 
 <span class="doccomment">/// Converts a slice of bytes to a string slice without checking</span>
@@ -3005,7 +3003,7 @@ Section: Creating a string
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;str_mut_extras&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.20.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_utf8_unchecked_mut</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">str</span> {
-    <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">v</span>)
+    <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span>(<span class="ident">v</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">str</span>)
 }
 
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
@@ -4091,7 +4089,7 @@ Section: UTF-8 validation
             <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">as_ptr</span>();
             <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="kw">unsafe</span> {
                 <span class="comment">// the offset is safe, because `index` is guaranteed inbounds</span>
-                <span class="ident">align_offset</span>(<span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">index</span> <span class="kw">as</span> <span class="ident">isize</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> (), <span class="ident">usize_bytes</span>)
+                <span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">index</span> <span class="kw">as</span> <span class="ident">isize</span>).<span class="ident">align_offset</span>(<span class="ident">usize_bytes</span>)
             };
             <span class="kw">if</span> <span class="ident">align</span> <span class="op">==</span> <span class="number">0</span> {
                 <span class="kw">while</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="ident">blocks_end</span> {
@@ -5023,12 +5021,12 @@ Section: Trait implementations
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">as_bytes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
-        <span class="kw">unsafe</span> { <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="self">self</span>) }
+        <span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span>(<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">str</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> [<span class="ident">u8</span>]) }
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_bytes_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
-        <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="self">self</span>)
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span>(<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">str</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> [<span class="ident">u8</span>])
     }
 
     <span class="kw">fn</span> <span class="ident">find</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span>: <span class="ident">Pattern</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">pat</span>: <span class="ident">P</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {

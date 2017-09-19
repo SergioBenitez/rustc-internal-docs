@@ -1573,6 +1573,13 @@
 <span id="1528">1528</span>
 <span id="1529">1529</span>
 <span id="1530">1530</span>
+<span id="1531">1531</span>
+<span id="1532">1532</span>
+<span id="1533">1533</span>
+<span id="1534">1534</span>
+<span id="1535">1535</span>
+<span id="1536">1536</span>
+<span id="1537">1537</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1863,6 +1870,8 @@
     <span class="doccomment">/// Names the thread-to-be. Currently the name is used for identification</span>
     <span class="doccomment">/// only in panic messages.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// The name must not contain null bytes (`\0`).</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// For more information about named threads, see</span>
     <span class="doccomment">/// [this module-level documentation][naming-threads].</span>
     <span class="doccomment">///</span>
@@ -1930,6 +1939,10 @@
     <span class="doccomment">/// [`spawn`]: ../../std/thread/fn.spawn.html</span>
     <span class="doccomment">/// [`io::Result`]: ../../std/io/type.Result.html</span>
     <span class="doccomment">/// [`JoinHandle`]: ../../std/thread/struct.JoinHandle.html</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if a thread name was set and it contained null bytes.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
@@ -2517,6 +2530,7 @@
 
 <span class="kw">impl</span> <span class="ident">Thread</span> {
     <span class="comment">// Used only internally to construct a thread object without spawning</span>
+    <span class="comment">// Panics if the name contains nuls.</span>
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Thread</span> {
         <span class="kw">let</span> <span class="ident">cname</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> {
             <span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">n</span>).<span class="ident">expect</span>(<span class="string">&quot;thread name may not contain interior null bytes&quot;</span>)

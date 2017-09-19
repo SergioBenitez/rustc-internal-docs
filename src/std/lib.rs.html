@@ -560,6 +560,13 @@
 <span id="515">515</span>
 <span id="516">516</span>
 <span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -805,6 +812,7 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">allocator_internals</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">allow_internal_unsafe</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">allow_internal_unstable</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">align_offset</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">asm</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">box_syntax</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">cfg_target_has_atomic</span>)]</span>
@@ -876,6 +884,7 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">unwind_attributes</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">vec_push_all</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">doc_cfg</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">doc_masked</span>)]</span>
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">test</span>, <span class="ident">feature</span>(<span class="ident">update_panic_count</span>))]</span>
 
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">feature</span>(<span class="ident">const_max_value</span>))]</span>
@@ -921,19 +930,24 @@
                  <span class="ident">debug_assert_ne</span>, <span class="ident">unreachable</span>, <span class="ident">unimplemented</span>, <span class="ident">write</span>, <span class="ident">writeln</span>, <span class="ident">try</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">core</span> <span class="kw">as</span> <span class="ident">__core</span>;
 
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span> <span class="kw">as</span> <span class="ident">core_rand</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">masked</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span> <span class="kw">as</span> <span class="ident">core_rand</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="attribute">#[<span class="ident">macro_reexport</span>(<span class="ident">vec</span>, <span class="ident">format</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">alloc</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">alloc_system</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">std_unicode</span>;
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">masked</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libc</span>;
 
 <span class="comment">// We always need an unwinder currently for backtraces</span>
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">masked</span>)]</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_extern_crates</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">unwind</span>;
 
 <span class="comment">// compiler-rt intrinsics</span>
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">masked</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">compiler_builtins</span>;
 
 <span class="comment">// During testing, this crate is not actually the &quot;real&quot; std library, but rather</span>

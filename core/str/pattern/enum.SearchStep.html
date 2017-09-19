@@ -57,16 +57,16 @@
 </details></div></div><div class='docblock'><p>Result of calling <code>Searcher::next()</code> or <code>ReverseSearcher::next_back()</code>.</p>
 </div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
-<span id='variant.Match' class='variant'><span id='Match.v' class='invisible'><code>Match(usize,&nbsp;usize)</code></span></span><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>pattern </code><a href="https://github.com/rust-lang/rust/issues/27721">#27721</a>)</summary><p>API not fully fleshed out and ready to be stabilized</p>
+<span id="variant.Match" class="variant small-section-header"><a href="#variant.Match" class="anchor field"></a><span id='Match.v' class='invisible'><code>Match(usize,&nbsp;usize)</code></span></span><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>pattern </code><a href="https://github.com/rust-lang/rust/issues/27721">#27721</a>)</summary><p>API not fully fleshed out and ready to be stabilized</p>
 </details></div></div><div class='docblock'><p>Expresses that a match of the pattern has been found at
 <code>haystack[a..b]</code>.</p>
-</div><span id='variant.Reject' class='variant'><span id='Reject.v' class='invisible'><code>Reject(usize,&nbsp;usize)</code></span></span><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>pattern </code><a href="https://github.com/rust-lang/rust/issues/27721">#27721</a>)</summary><p>API not fully fleshed out and ready to be stabilized</p>
+</div><span id="variant.Reject" class="variant small-section-header"><a href="#variant.Reject" class="anchor field"></a><span id='Reject.v' class='invisible'><code>Reject(usize,&nbsp;usize)</code></span></span><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>pattern </code><a href="https://github.com/rust-lang/rust/issues/27721">#27721</a>)</summary><p>API not fully fleshed out and ready to be stabilized</p>
 </details></div></div><div class='docblock'><p>Expresses that <code>haystack[a..b]</code> has been rejected as a possible match
 of the pattern.</p>
 
 <p>Note that there might be more than one <code>Reject</code> between two <code>Match</code>es,
 there is no requirement for them to be combined into one.</p>
-</div><span id='variant.Done' class='variant'><span id='Done.v' class='invisible'><code>Done</code></span></span><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>pattern </code><a href="https://github.com/rust-lang/rust/issues/27721">#27721</a>)</summary><p>API not fully fleshed out and ready to be stabilized</p>
+</div><span id="variant.Done" class="variant small-section-header"><a href="#variant.Done" class="anchor field"></a><span id='Done.v' class='invisible'><code>Done</code></span></span><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>pattern </code><a href="https://github.com/rust-lang/rust/issues/27721">#27721</a>)</summary><p>API not fully fleshed out and ready to be stabilized</p>
 </details></div></div><div class='docblock'><p>Expresses that every byte of the haystack has been visited, ending
 the iteration.</p>
 </div>

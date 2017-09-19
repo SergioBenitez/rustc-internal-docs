@@ -3759,7 +3759,7 @@
     <span class="doccomment">/// s.splice(..beta_offset, &quot;Α is capital alpha; &quot;);</span>
     <span class="doccomment">/// assert_eq!(s, &quot;Α is capital alpha; β is beta&quot;);</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;splice&quot;</span>, <span class="ident">reason</span> <span class="op">=</span> <span class="string">&quot;recently added&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;32310&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;splice&quot;</span>, <span class="ident">reason</span> <span class="op">=</span> <span class="string">&quot;recently added&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;44643&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">splice</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">range</span>: <span class="ident">R</span>, <span class="ident">replace_with</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>)
         <span class="kw">where</span> <span class="ident">R</span>: <span class="ident">RangeArgument</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>
     {
