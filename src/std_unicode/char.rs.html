@@ -1161,7 +1161,7 @@
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;decode_utf8&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;33906&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">char</span>::{<span class="ident">DecodeUtf8</span>, <span class="ident">decode_utf8</span>};
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unicode&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27783&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tables</span>::<span class="ident">UNICODE_VERSION</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tables</span>::{<span class="ident">UnicodeVersion</span>, <span class="ident">UNICODE_VERSION</span>};
 
 <span class="doccomment">/// Returns an iterator that yields the lowercase equivalent of a `char`.</span>
 <span class="doccomment">///</span>

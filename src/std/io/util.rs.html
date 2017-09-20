@@ -302,6 +302,8 @@
 <span id="257">257</span>
 <span id="258">258</span>
 <span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -374,16 +376,18 @@
 
 <span class="doccomment">/// A reader which is always at EOF.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This struct is generally created by calling [`empty`][empty]. Please see</span>
-<span class="doccomment">/// the documentation of `empty()` for more details.</span>
+<span class="doccomment">/// This struct is generally created by calling [`empty`]. Please see</span>
+<span class="doccomment">/// the documentation of [`empty()`][`empty`] for more details.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// [empty]: fn.empty.html</span>
+<span class="doccomment">/// [`empty`]: fn.empty.html</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Empty</span> { <span class="ident">_priv</span>: () }
 
 <span class="doccomment">/// Constructs a new handle to an empty reader.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// All reads from the returned reader will return `Ok(0)`.</span>
+<span class="doccomment">/// All reads from the returned reader will return [`Ok`]`(0)`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [`Ok`]: ../result/enum.Result.html#variant.Ok</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
