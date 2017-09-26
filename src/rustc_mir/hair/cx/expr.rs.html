@@ -984,6 +984,10 @@
 <span id="939">939</span>
 <span id="940">940</span>
 <span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1035,22 +1039,24 @@
             <span class="ident">kind</span>: <span class="ident">ExprKind</span>::<span class="ident">Scope</span> {
                 <span class="ident">region_scope</span>: <span class="ident">expr_scope</span>,
                 <span class="ident">value</span>: <span class="ident">expr</span>.<span class="ident">to_ref</span>(),
+                <span class="ident">lint_level</span>: <span class="ident">cx</span>.<span class="ident">lint_level_of</span>(<span class="self">self</span>.<span class="ident">id</span>),
             },
         };
 
         <span class="comment">// Finally, create a destruction scope, if any.</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">region_scope</span>) <span class="op">=</span>
-                <span class="ident">cx</span>.<span class="ident">region_scope_tree</span>.<span class="ident">opt_destruction_scope</span>(<span class="self">self</span>.<span class="ident">hir_id</span>.<span class="ident">local_id</span>) {
-            <span class="ident">expr</span> <span class="op">=</span> <span class="ident">Expr</span> {
-                <span class="ident">temp_lifetime</span>,
-                <span class="ident">ty</span>: <span class="ident">expr</span>.<span class="ident">ty</span>,
-                <span class="ident">span</span>: <span class="self">self</span>.<span class="ident">span</span>,
-                <span class="ident">kind</span>: <span class="ident">ExprKind</span>::<span class="ident">Scope</span> {
-                    <span class="ident">region_scope</span>,
-                    <span class="ident">value</span>: <span class="ident">expr</span>.<span class="ident">to_ref</span>(),
-                },
-            };
-        }
+            <span class="ident">cx</span>.<span class="ident">region_scope_tree</span>.<span class="ident">opt_destruction_scope</span>(<span class="self">self</span>.<span class="ident">hir_id</span>.<span class="ident">local_id</span>) {
+                <span class="ident">expr</span> <span class="op">=</span> <span class="ident">Expr</span> {
+                    <span class="ident">temp_lifetime</span>,
+                    <span class="ident">ty</span>: <span class="ident">expr</span>.<span class="ident">ty</span>,
+                    <span class="ident">span</span>: <span class="self">self</span>.<span class="ident">span</span>,
+                    <span class="ident">kind</span>: <span class="ident">ExprKind</span>::<span class="ident">Scope</span> {
+                        <span class="ident">region_scope</span>,
+                        <span class="ident">value</span>: <span class="ident">expr</span>.<span class="ident">to_ref</span>(),
+                        <span class="ident">lint_level</span>: <span class="ident">LintLevel</span>::<span class="ident">Inherited</span>,
+                    },
+                };
+            }
 
         <span class="comment">// OK, all done!</span>
         <span class="ident">expr</span>
@@ -1606,6 +1612,8 @@
         <span class="ident">patterns</span>: <span class="ident">arm</span>.<span class="ident">pats</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">cx</span>.<span class="ident">pattern_from_hir</span>(<span class="ident">p</span>)).<span class="ident">collect</span>(),
         <span class="ident">guard</span>: <span class="ident">arm</span>.<span class="ident">guard</span>.<span class="ident">to_ref</span>(),
         <span class="ident">body</span>: <span class="ident">arm</span>.<span class="ident">body</span>.<span class="ident">to_ref</span>(),
+        <span class="comment">// BUG: fix this</span>
+        <span class="ident">lint_level</span>: <span class="ident">LintLevel</span>::<span class="ident">Inherited</span>,
     }
 }
 

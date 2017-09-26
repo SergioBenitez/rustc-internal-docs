@@ -945,6 +945,11 @@
 <span id="900">900</span>
 <span id="901">901</span>
 <span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1359,7 +1364,8 @@
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">emit_end_regions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">emit_end_regions</span> <span class="op">||</span>
-            (<span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">mir_emit_validate</span> <span class="op">&gt;</span> <span class="number">0</span>)
+            (<span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">mir_emit_validate</span> <span class="op">&gt;</span> <span class="number">0</span>) <span class="op">||</span>
+            <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">borrowck_mir</span>
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lto</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">lto</span>
@@ -1608,12 +1614,16 @@
     <span class="comment">// FIXME: This is not general enough to make the warning lint completely override</span>
     <span class="comment">// normal diagnostic warnings, since the warning lint can also be denied and changed</span>
     <span class="comment">// later via the source code.</span>
-    <span class="kw">let</span> <span class="ident">can_print_warnings</span> <span class="op">=</span> <span class="ident">sopts</span>.<span class="ident">lint_opts</span>
+    <span class="kw">let</span> <span class="ident">warnings_allow</span> <span class="op">=</span> <span class="ident">sopts</span>.<span class="ident">lint_opts</span>
         .<span class="ident">iter</span>()
         .<span class="ident">filter</span>(<span class="op">|</span><span class="op">&amp;&amp;</span>(<span class="kw-2">ref</span> <span class="ident">key</span>, _)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">key</span> <span class="op">==</span> <span class="string">&quot;warnings&quot;</span>)
-        .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(_, <span class="kw-2">ref</span> <span class="ident">level</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">level</span> <span class="op">!=</span> <span class="ident">lint</span>::<span class="ident">Allow</span>)
+        .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(_, <span class="kw-2">ref</span> <span class="ident">level</span>)<span class="op">|</span> <span class="kw-2">*</span><span class="ident">level</span> <span class="op">==</span> <span class="ident">lint</span>::<span class="ident">Allow</span>)
         .<span class="ident">last</span>()
-        .<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>);
+        .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+    <span class="kw">let</span> <span class="ident">cap_lints_allow</span> <span class="op">=</span> <span class="ident">sopts</span>.<span class="ident">lint_cap</span>.<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">cap</span><span class="op">|</span> <span class="ident">cap</span> <span class="op">==</span> <span class="ident">lint</span>::<span class="ident">Allow</span>);
+
+    <span class="kw">let</span> <span class="ident">can_print_warnings</span> <span class="op">=</span> <span class="op">!</span>(<span class="ident">warnings_allow</span> <span class="op">||</span> <span class="ident">cap_lints_allow</span>);
+
     <span class="kw">let</span> <span class="ident">treat_err_as_bug</span> <span class="op">=</span> <span class="ident">sopts</span>.<span class="ident">debugging_opts</span>.<span class="ident">treat_err_as_bug</span>;
 
     <span class="kw">let</span> <span class="ident">emitter</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Emitter</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">sopts</span>.<span class="ident">error_format</span>, <span class="ident">emitter_dest</span>) {

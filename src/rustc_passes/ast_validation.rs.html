@@ -392,14 +392,6 @@
 <span id="347">347</span>
 <span id="348">348</span>
 <span id="349">349</span>
-<span id="350">350</span>
-<span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -525,14 +517,6 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Visitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AstValidator</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">visit_lifetime</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lt</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Lifetime</span>) {
-        <span class="kw">if</span> <span class="ident">lt</span>.<span class="ident">ident</span>.<span class="ident">name</span> <span class="op">==</span> <span class="string">&quot;&#39;_&quot;</span> {
-            <span class="self">self</span>.<span class="ident">err_handler</span>().<span class="ident">span_err</span>(<span class="ident">lt</span>.<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;invalid lifetime name `{}`&quot;</span>, <span class="ident">lt</span>.<span class="ident">ident</span>));
-        }
-
-        <span class="ident">visit</span>::<span class="ident">walk_lifetime</span>(<span class="self">self</span>, <span class="ident">lt</span>)
-    }
-
     <span class="kw">fn</span> <span class="ident">visit_expr</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Expr</span>) {
         <span class="kw">match</span> <span class="ident">expr</span>.<span class="ident">node</span> {
             <span class="ident">ExprKind</span>::<span class="ident">While</span>(.., <span class="prelude-val">Some</span>(<span class="ident">ident</span>)) <span class="op">|</span>

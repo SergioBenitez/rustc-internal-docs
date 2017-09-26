@@ -643,6 +643,9 @@
 <span id="598">598</span>
 <span id="599">599</span>
 <span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -946,7 +949,7 @@
             <span class="kw">if</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">parent_substs</span>.<span class="ident">len</span>() {
                 <span class="ident">parent_substs</span>.<span class="ident">region_at</span>(<span class="ident">i</span>)
             } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lifetime</span>)
-                    <span class="op">=</span> <span class="ident">provided</span>.<span class="ident">lifetimes</span>.<span class="ident">get</span>(<span class="ident">i</span> <span class="op">-</span> <span class="ident">parent_substs</span>.<span class="ident">len</span>()) {
+                    <span class="op">=</span> <span class="ident">provided</span>.<span class="ident">as_ref</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">lifetimes</span>.<span class="ident">get</span>(<span class="ident">i</span> <span class="op">-</span> <span class="ident">parent_substs</span>.<span class="ident">len</span>())) {
                 <span class="ident">AstConv</span>::<span class="ident">ast_region_to_region</span>(<span class="self">self</span>.<span class="ident">fcx</span>, <span class="ident">lifetime</span>, <span class="prelude-val">Some</span>(<span class="ident">def</span>))
             } <span class="kw">else</span> {
                 <span class="self">self</span>.<span class="ident">region_var_for_def</span>(<span class="self">self</span>.<span class="ident">span</span>, <span class="ident">def</span>)
@@ -956,7 +959,10 @@
             <span class="kw">if</span> <span class="ident">i</span> <span class="op">&lt;</span> <span class="ident">parent_substs</span>.<span class="ident">len</span>() {
                 <span class="ident">parent_substs</span>.<span class="ident">type_at</span>(<span class="ident">i</span>)
             } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ast_ty</span>)
-                    <span class="op">=</span> <span class="ident">provided</span>.<span class="ident">types</span>.<span class="ident">get</span>(<span class="ident">i</span> <span class="op">-</span> <span class="ident">parent_substs</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">method_generics</span>.<span class="ident">regions</span>.<span class="ident">len</span>()) {
+                <span class="op">=</span> <span class="ident">provided</span>.<span class="ident">as_ref</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> {
+                    <span class="ident">p</span>.<span class="ident">types</span>.<span class="ident">get</span>(<span class="ident">i</span> <span class="op">-</span> <span class="ident">parent_substs</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">method_generics</span>.<span class="ident">regions</span>.<span class="ident">len</span>())
+                })
+            {
                 <span class="self">self</span>.<span class="ident">to_ty</span>(<span class="ident">ast_ty</span>)
             } <span class="kw">else</span> {
                 <span class="self">self</span>.<span class="ident">type_var_for_def</span>(<span class="self">self</span>.<span class="ident">span</span>, <span class="ident">def</span>, <span class="ident">cur_substs</span>)

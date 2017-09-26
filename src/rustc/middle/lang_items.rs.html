@@ -364,9 +364,6 @@
 <span id="319">319</span>
 <span id="320">320</span>
 <span id="321">321</span>
-<span id="322">322</span>
-<span id="323">323</span>
-<span id="324">324</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -562,8 +559,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">collect</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LanguageItems</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">collector</span> <span class="op">=</span> <span class="ident">LanguageItemCollector</span>::<span class="ident">new</span>(<span class="ident">tcx</span>);
     <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">cnum</span> <span class="kw">in</span> <span class="ident">tcx</span>.<span class="ident">crates</span>().<span class="ident">iter</span>() {
-        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">index</span>, <span class="ident">item_index</span>) <span class="kw">in</span> <span class="ident">tcx</span>.<span class="ident">defined_lang_items</span>(<span class="ident">cnum</span>).<span class="ident">iter</span>() {
-            <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">DefId</span> { <span class="ident">krate</span>: <span class="ident">cnum</span>, <span class="ident">index</span>: <span class="ident">index</span> };
+        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">def_id</span>, <span class="ident">item_index</span>) <span class="kw">in</span> <span class="ident">tcx</span>.<span class="ident">defined_lang_items</span>(<span class="ident">cnum</span>).<span class="ident">iter</span>() {
             <span class="ident">collector</span>.<span class="ident">collect_item</span>(<span class="ident">item_index</span>, <span class="ident">def_id</span>);
         }
     }
@@ -651,8 +647,6 @@
     <span class="ident">EqTraitLangItem</span>,                 <span class="string">&quot;eq&quot;</span>,                      <span class="ident">eq_trait</span>;
     <span class="ident">OrdTraitLangItem</span>,                <span class="string">&quot;ord&quot;</span>,                     <span class="ident">ord_trait</span>;
 
-    <span class="ident">StrEqFnLangItem</span>,                 <span class="string">&quot;str_eq&quot;</span>,                  <span class="ident">str_eq_fn</span>;
-
     <span class="comment">// A number of panic-related lang items. The `panic` item corresponds to</span>
     <span class="comment">// divide-by-zero and various panic cases with `match`. The</span>
     <span class="comment">// `panic_bounds_check` item is for indexing arrays.</span>
@@ -685,7 +679,7 @@
     <span class="ident">DebugTraitLangItem</span>,              <span class="string">&quot;debug_trait&quot;</span>,             <span class="ident">debug_trait</span>;
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">ty</span>::<span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">require_lang_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lang_item</span>: <span class="ident">LangItem</span>) <span class="op">-&gt;</span> <span class="ident">DefId</span> {
         <span class="self">self</span>.<span class="ident">lang_items</span>().<span class="ident">require</span>(<span class="ident">lang_item</span>).<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="ident">msg</span><span class="op">|</span> {
             <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">fatal</span>(<span class="kw-2">&amp;</span><span class="ident">msg</span>)

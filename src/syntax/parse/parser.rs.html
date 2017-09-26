@@ -6431,9 +6431,9 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">slice</span>;
 
 <span class="macro">bitflags</span><span class="macro">!</span> {
-    <span class="kw">pub</span> <span class="ident">flags</span> <span class="ident">Restrictions</span>: <span class="ident">u8</span> {
-        <span class="kw">const</span> <span class="ident">RESTRICTION_STMT_EXPR</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>,
-        <span class="kw">const</span> <span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>,
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Restrictions</span>: <span class="ident">u8</span> {
+        <span class="kw">const</span> <span class="ident">STMT_EXPR</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>;
+        <span class="kw">const</span> <span class="ident">NO_STRUCT_LITERAL</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
     }
 }
 
@@ -8607,7 +8607,7 @@
                     <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">can_begin_expr</span>()
                                <span class="op">&amp;&amp;</span> <span class="op">!</span>(<span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>)
                                     <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(
-                                           <span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>)) {
+                                           <span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>)) {
                         <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">parse_expr</span>()<span class="question-mark">?</span>)
                     } <span class="kw">else</span> {
                         <span class="prelude-val">None</span>
@@ -8642,7 +8642,7 @@
                         <span class="comment">// This is a struct literal, unless we&#39;re prohibited</span>
                         <span class="comment">// from parsing struct literals here.</span>
                         <span class="kw">let</span> <span class="ident">prohibited</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(
-                            <span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>
+                            <span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>
                         );
                         <span class="kw">if</span> <span class="op">!</span><span class="ident">prohibited</span> {
                             <span class="kw">return</span> <span class="self">self</span>.<span class="ident">parse_struct_expr</span>(<span class="ident">lo</span>, <span class="ident">pth</span>, <span class="ident">attrs</span>);
@@ -8999,7 +8999,7 @@
                 <span class="self">self</span>.<span class="ident">bump</span>();
                 <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_prefix_expr</span>(<span class="prelude-val">None</span>);
                 <span class="kw">let</span> (<span class="ident">span</span>, <span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">interpolated_or_expr_span</span>(<span class="ident">e</span>)<span class="question-mark">?</span>;
-                (<span class="ident">span</span>, <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Not</span>, <span class="ident">e</span>))
+                (<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">span</span>), <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Not</span>, <span class="ident">e</span>))
             }
             <span class="comment">// Suggest `!` for bitwise negation when encountering a `~`</span>
             <span class="ident">token</span>::<span class="ident">Tilde</span> <span class="op">=&gt;</span> {
@@ -9012,43 +9012,43 @@
                 <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span_of_tilde</span>, <span class="string">&quot;did you mean `!`?&quot;</span>);
                 <span class="ident">err</span>.<span class="ident">help</span>(<span class="string">&quot;use `!` instead of `~` if you meant to perform bitwise negation&quot;</span>);
                 <span class="ident">err</span>.<span class="ident">emit</span>();
-                (<span class="ident">span</span>, <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Not</span>, <span class="ident">e</span>))
+                (<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">span</span>), <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Not</span>, <span class="ident">e</span>))
             }
             <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Minus</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">bump</span>();
                 <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_prefix_expr</span>(<span class="prelude-val">None</span>);
                 <span class="kw">let</span> (<span class="ident">span</span>, <span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">interpolated_or_expr_span</span>(<span class="ident">e</span>)<span class="question-mark">?</span>;
-                (<span class="ident">span</span>, <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Neg</span>, <span class="ident">e</span>))
+                (<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">span</span>), <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Neg</span>, <span class="ident">e</span>))
             }
             <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Star</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">bump</span>();
                 <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_prefix_expr</span>(<span class="prelude-val">None</span>);
                 <span class="kw">let</span> (<span class="ident">span</span>, <span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">interpolated_or_expr_span</span>(<span class="ident">e</span>)<span class="question-mark">?</span>;
-                (<span class="ident">span</span>, <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Deref</span>, <span class="ident">e</span>))
+                (<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">span</span>), <span class="self">self</span>.<span class="ident">mk_unary</span>(<span class="ident">UnOp</span>::<span class="ident">Deref</span>, <span class="ident">e</span>))
             }
             <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">And</span>) <span class="op">|</span> <span class="ident">token</span>::<span class="ident">AndAnd</span> <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">expect_and</span>()<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_mutability</span>();
                 <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_prefix_expr</span>(<span class="prelude-val">None</span>);
                 <span class="kw">let</span> (<span class="ident">span</span>, <span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">interpolated_or_expr_span</span>(<span class="ident">e</span>)<span class="question-mark">?</span>;
-                (<span class="ident">span</span>, <span class="ident">ExprKind</span>::<span class="ident">AddrOf</span>(<span class="ident">m</span>, <span class="ident">e</span>))
+                (<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">span</span>), <span class="ident">ExprKind</span>::<span class="ident">AddrOf</span>(<span class="ident">m</span>, <span class="ident">e</span>))
             }
             <span class="ident">token</span>::<span class="ident">Ident</span>(..) <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">In</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">bump</span>();
                 <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(
-                    <span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>,
+                    <span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>,
                     <span class="prelude-val">None</span>,
                 )<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">blk</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_block</span>()<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">blk</span>.<span class="ident">span</span>;
                 <span class="kw">let</span> <span class="ident">blk_expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mk_expr</span>(<span class="ident">span</span>, <span class="ident">ExprKind</span>::<span class="ident">Block</span>(<span class="ident">blk</span>), <span class="ident">ThinVec</span>::<span class="ident">new</span>());
-                (<span class="ident">span</span>, <span class="ident">ExprKind</span>::<span class="ident">InPlace</span>(<span class="ident">place</span>, <span class="ident">blk_expr</span>))
+                (<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">span</span>), <span class="ident">ExprKind</span>::<span class="ident">InPlace</span>(<span class="ident">place</span>, <span class="ident">blk_expr</span>))
             }
             <span class="ident">token</span>::<span class="ident">Ident</span>(..) <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Box</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">bump</span>();
                 <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_prefix_expr</span>(<span class="prelude-val">None</span>);
                 <span class="kw">let</span> (<span class="ident">span</span>, <span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">interpolated_or_expr_span</span>(<span class="ident">e</span>)<span class="question-mark">?</span>;
-                (<span class="ident">span</span>, <span class="ident">ExprKind</span>::<span class="ident">Box</span>(<span class="ident">e</span>))
+                (<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">span</span>), <span class="ident">ExprKind</span>::<span class="ident">Box</span>(<span class="ident">e</span>))
             }
             _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="self">self</span>.<span class="ident">parse_dot_or_call_expr</span>(<span class="prelude-val">Some</span>(<span class="ident">attrs</span>))
         };
@@ -9104,7 +9104,7 @@
 
             <span class="kw">let</span> <span class="ident">cur_op_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
             <span class="kw">let</span> <span class="ident">restrictions</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">op</span>.<span class="ident">is_assign_like</span>() {
-                <span class="self">self</span>.<span class="ident">restrictions</span> <span class="op">&amp;</span> <span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>
+                <span class="self">self</span>.<span class="ident">restrictions</span> <span class="op">&amp;</span> <span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>
             } <span class="kw">else</span> {
                 <span class="self">self</span>.<span class="ident">restrictions</span>
             };
@@ -9167,13 +9167,13 @@
 
             <span class="kw">let</span> <span class="ident">rhs</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">op</span>.<span class="ident">fixity</span>() {
                 <span class="ident">Fixity</span>::<span class="ident">Right</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">with_res</span>(
-                    <span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">RESTRICTION_STMT_EXPR</span>,
+                    <span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>,
                     <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                         <span class="ident">this</span>.<span class="ident">parse_assoc_expr_with</span>(<span class="ident">op</span>.<span class="ident">precedence</span>(),
                             <span class="ident">LhsExpr</span>::<span class="ident">NotYetParsed</span>)
                 }),
                 <span class="ident">Fixity</span>::<span class="ident">Left</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">with_res</span>(
-                    <span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">RESTRICTION_STMT_EXPR</span>,
+                    <span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>,
                     <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                         <span class="ident">this</span>.<span class="ident">parse_assoc_expr_with</span>(<span class="ident">op</span>.<span class="ident">precedence</span>() <span class="op">+</span> <span class="number">1</span>,
                             <span class="ident">LhsExpr</span>::<span class="ident">NotYetParsed</span>)
@@ -9181,7 +9181,7 @@
                 <span class="comment">// We currently have no non-associative operators that are not handled above by</span>
                 <span class="comment">// the special cases. The code is here only for future convenience.</span>
                 <span class="ident">Fixity</span>::<span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">with_res</span>(
-                    <span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">RESTRICTION_STMT_EXPR</span>,
+                    <span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>,
                     <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                         <span class="ident">this</span>.<span class="ident">parse_assoc_expr_with</span>(<span class="ident">op</span>.<span class="ident">precedence</span>() <span class="op">+</span> <span class="number">1</span>,
                             <span class="ident">LhsExpr</span>::<span class="ident">NotYetParsed</span>)
@@ -9356,7 +9356,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">can_begin_expr</span>() {
             <span class="comment">// parse `for i in 1.. { }` as infinite loop, not as `for i in (1..{})`.</span>
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>) {
-                <span class="kw">return</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>);
+                <span class="kw">return</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>);
             }
             <span class="bool-val">true</span>
         } <span class="kw">else</span> {
@@ -9370,7 +9370,7 @@
             <span class="kw">return</span> <span class="self">self</span>.<span class="ident">parse_if_let_expr</span>(<span class="ident">attrs</span>);
         }
         <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
-        <span class="kw">let</span> <span class="ident">cond</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">cond</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
 
         <span class="comment">// Verify that the parsed `if` condition makes sense as a condition. If it is a block, then</span>
         <span class="comment">// verify that the last statement is either an implicit return (no `;`) or an explicit</span>
@@ -9401,7 +9401,7 @@
         <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Let</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat</span>()<span class="question-mark">?</span>;
         <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Eq</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">thn</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_block</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> (<span class="ident">hi</span>, <span class="ident">els</span>) <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Else</span>) {
             <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_else_expr</span>()<span class="question-mark">?</span>;
@@ -9423,7 +9423,7 @@
         <span class="kw">let</span> <span class="ident">decl_hi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
         <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">decl</span>.<span class="ident">output</span> {
             <span class="ident">FunctionRetTy</span>::<span class="ident">Default</span>(_) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">restrictions</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">RESTRICTION_STMT_EXPR</span>;
+                <span class="kw">let</span> <span class="ident">restrictions</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">restrictions</span> <span class="op">-</span> <span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>;
                 <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">restrictions</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>
             },
             _ <span class="op">=&gt;</span> {
@@ -9458,7 +9458,7 @@
 
         <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat</span>()<span class="question-mark">?</span>;
         <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">In</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> (<span class="ident">iattrs</span>, <span class="ident">loop_block</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_inner_attrs_and_block</span>()<span class="question-mark">?</span>;
         <span class="ident">attrs</span>.<span class="ident">extend</span>(<span class="ident">iattrs</span>);
 
@@ -9473,7 +9473,7 @@
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Let</span>) {
             <span class="kw">return</span> <span class="self">self</span>.<span class="ident">parse_while_let_expr</span>(<span class="ident">opt_ident</span>, <span class="ident">span_lo</span>, <span class="ident">attrs</span>);
         }
-        <span class="kw">let</span> <span class="ident">cond</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">cond</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> (<span class="ident">iattrs</span>, <span class="ident">body</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_inner_attrs_and_block</span>()<span class="question-mark">?</span>;
         <span class="ident">attrs</span>.<span class="ident">extend</span>(<span class="ident">iattrs</span>);
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">span_lo</span>.<span class="ident">to</span>(<span class="ident">body</span>.<span class="ident">span</span>);
@@ -9487,7 +9487,7 @@
         <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Let</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat</span>()<span class="question-mark">?</span>;
         <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Eq</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> (<span class="ident">iattrs</span>, <span class="ident">body</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_inner_attrs_and_block</span>()<span class="question-mark">?</span>;
         <span class="ident">attrs</span>.<span class="ident">extend</span>(<span class="ident">iattrs</span>);
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">span_lo</span>.<span class="ident">to</span>(<span class="ident">body</span>.<span class="ident">span</span>);
@@ -9517,7 +9517,7 @@
     <span class="kw">fn</span> <span class="ident">parse_match_expr</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">attrs</span>: <span class="ident">ThinVec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">match_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
         <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
-        <span class="kw">let</span> <span class="ident">discriminant</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>,
+        <span class="kw">let</span> <span class="ident">discriminant</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>,
                                                <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="kw-2">mut</span> <span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>)) {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">Semi</span> {
@@ -9565,7 +9565,7 @@
             <span class="prelude-val">None</span>
         };
         <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">FatArrow</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">RESTRICTION_STMT_EXPR</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="ident">require_comma</span> <span class="op">=</span> <span class="ident">classify</span>::<span class="ident">expr_requires_semi_to_be_stmt</span>(<span class="kw-2">&amp;</span><span class="ident">expr</span>)
             <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">!=</span> <span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>);
@@ -10156,7 +10156,7 @@
         <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">2</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">t</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>)) <span class="op">&amp;&amp;</span>
 
         <span class="comment">// prevent `while catch {} {}`, `if catch {} {} else {}`, etc.</span>
-        <span class="op">!</span><span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(<span class="ident">RESTRICTION_NO_STRUCT_LITERAL</span>)
+        <span class="op">!</span><span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">is_union_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -10278,7 +10278,7 @@
                     <span class="self">self</span>.<span class="ident">mk_expr</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">hi</span>), <span class="ident">ExprKind</span>::<span class="ident">Path</span>(<span class="prelude-val">None</span>, <span class="ident">pth</span>), <span class="ident">ThinVec</span>::<span class="ident">new</span>())
                 };
 
-                <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">with_res</span>(<span class="ident">RESTRICTION_STMT_EXPR</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">with_res</span>(<span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                     <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">parse_dot_or_call_expr_with</span>(<span class="ident">expr</span>, <span class="ident">lo</span>, <span class="ident">attrs</span>.<span class="ident">into</span>())<span class="question-mark">?</span>;
                     <span class="ident">this</span>.<span class="ident">parse_assoc_expr_with</span>(<span class="number">0</span>, <span class="ident">LhsExpr</span>::<span class="ident">AlreadyParsed</span>(<span class="ident">expr</span>))
                 })<span class="question-mark">?</span>;
@@ -10419,7 +10419,7 @@
 
                     <span class="comment">// Remainder are line-expr stmts.</span>
                     <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(
-                        <span class="ident">RESTRICTION_STMT_EXPR</span>, <span class="prelude-val">Some</span>(<span class="ident">attrs</span>.<span class="ident">into</span>()))<span class="question-mark">?</span>;
+                        <span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>, <span class="prelude-val">Some</span>(<span class="ident">attrs</span>.<span class="ident">into</span>()))<span class="question-mark">?</span>;
                     <span class="ident">Stmt</span> {
                         <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>,
                         <span class="ident">span</span>: <span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">e</span>.<span class="ident">span</span>),
@@ -10432,7 +10432,7 @@
 
     <span class="doccomment">/// Is this expression a successfully-parsed statement?</span>
     <span class="kw">fn</span> <span class="ident">expr_is_complete</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">e</span>: <span class="kw-2">&amp;</span><span class="ident">Expr</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(<span class="ident">RESTRICTION_STMT_EXPR</span>) <span class="op">&amp;&amp;</span>
+        <span class="self">self</span>.<span class="ident">restrictions</span>.<span class="ident">contains</span>(<span class="ident">Restrictions</span>::<span class="ident">STMT_EXPR</span>) <span class="op">&amp;&amp;</span>
             <span class="op">!</span><span class="ident">classify</span>::<span class="ident">expr_requires_semi_to_be_stmt</span>(<span class="ident">e</span>)
     }
 

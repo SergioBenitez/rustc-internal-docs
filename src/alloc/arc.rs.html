@@ -1899,6 +1899,9 @@
 <span id="1854">1854</span>
 <span id="1855">1855</span>
 <span id="1856">1856</span>
+<span id="1857">1857</span>
+<span id="1858">1858</span>
+<span id="1859">1859</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1974,13 +1977,13 @@
 <span class="doccomment">/// first: after all, isn&#39;t the point of `Arc&lt;T&gt;` thread safety? The key is</span>
 <span class="doccomment">/// this: `Arc&lt;T&gt;` makes it thread safe to have multiple ownership of the same</span>
 <span class="doccomment">/// data, but it  doesn&#39;t add thread safety to its data. Consider</span>
-<span class="doccomment">/// `Arc&lt;RefCell&lt;T&gt;&gt;`. `RefCell&lt;T&gt;` isn&#39;t [`Sync`], and if `Arc&lt;T&gt;` was always</span>
-<span class="doccomment">/// [`Send`], `Arc&lt;RefCell&lt;T&gt;&gt;` would be as well. But then we&#39;d have a problem:</span>
-<span class="doccomment">/// `RefCell&lt;T&gt;` is not thread safe; it keeps track of the borrowing count using</span>
+<span class="doccomment">/// `Arc&lt;`[`RefCell&lt;T&gt;`]`&gt;`. [`RefCell&lt;T&gt;`] isn&#39;t [`Sync`], and if `Arc&lt;T&gt;` was always</span>
+<span class="doccomment">/// [`Send`], `Arc&lt;`[`RefCell&lt;T&gt;`]`&gt;` would be as well. But then we&#39;d have a problem:</span>
+<span class="doccomment">/// [`RefCell&lt;T&gt;`] is not thread safe; it keeps track of the borrowing count using</span>
 <span class="doccomment">/// non-atomic operations.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// In the end, this means that you may need to pair `Arc&lt;T&gt;` with some sort of</span>
-<span class="doccomment">/// `std::sync` type, usually `Mutex&lt;T&gt;`.</span>
+<span class="doccomment">/// [`std::sync`] type, usually [`Mutex&lt;T&gt;`][mutex].</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ## Breaking cycles with `Weak`</span>
 <span class="doccomment">///</span>
@@ -2008,7 +2011,7 @@
 <span class="doccomment">/// // a and b both point to the same memory location as foo.</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// The `Arc::clone(&amp;from)` syntax is the most idiomatic because it conveys more explicitly</span>
+<span class="doccomment">/// The [`Arc::clone(&amp;from)`] syntax is the most idiomatic because it conveys more explicitly</span>
 <span class="doccomment">/// the meaning of the code. In the example above, this syntax makes it easier to see that</span>
 <span class="doccomment">/// this code is creating a new reference rather than copying the whole content of foo.</span>
 <span class="doccomment">///</span>
@@ -2043,6 +2046,9 @@
 <span class="doccomment">/// [upgrade]: struct.Weak.html#method.upgrade</span>
 <span class="doccomment">/// [`None`]: ../../std/option/enum.Option.html#variant.None</span>
 <span class="doccomment">/// [assoc]: ../../book/first-edition/method-syntax.html#associated-functions</span>
+<span class="doccomment">/// [`RefCell&lt;T&gt;`]: ../../std/cell/struct.RefCell.html</span>
+<span class="doccomment">/// [`std::sync`]: ../../std/sync/index.html</span>
+<span class="doccomment">/// [`Arc::clone(&amp;from)`]: #method.clone</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>

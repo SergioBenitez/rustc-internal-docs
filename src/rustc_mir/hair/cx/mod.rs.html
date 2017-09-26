@@ -290,6 +290,50 @@
 <span id="245">245</span>
 <span id="246">246</span>
 <span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -313,13 +357,14 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">const_val</span>::{<span class="ident">ConstEvalErr</span>, <span class="ident">ConstVal</span>};
 <span class="kw">use</span> <span class="ident">rustc_const_eval</span>::<span class="ident">ConstContext</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">LOCAL_CRATE</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">blocks</span>::<span class="ident">FnLikeNode</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">region</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Subst</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">rustc_const_math</span>::{<span class="ident">ConstInt</span>, <span class="ident">ConstUsize</span>};
@@ -330,6 +375,7 @@
     <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 
+    <span class="kw">pub</span> <span class="ident">root_lint_level</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
     <span class="kw">pub</span> <span class="ident">param_env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Identity `Substs` for use with const-evaluation.</span>
@@ -350,7 +396,8 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Cx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">src</span>: <span class="ident">MirSource</span>) <span class="op">-&gt;</span> <span class="ident">Cx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+               <span class="ident">src</span>: <span class="ident">MirSource</span>) <span class="op">-&gt;</span> <span class="ident">Cx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">constness</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">src</span> {
             <span class="ident">MirSource</span>::<span class="ident">Const</span>(_) <span class="op">|</span>
             <span class="ident">MirSource</span>::<span class="ident">Static</span>(..) <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">Constness</span>::<span class="ident">Const</span>,
@@ -380,9 +427,11 @@
         <span class="comment">// Constants and const fn&#39;s always need overflow checks.</span>
         <span class="ident">check_overflow</span> <span class="op">|=</span> <span class="ident">constness</span> <span class="op">==</span> <span class="ident">hir</span>::<span class="ident">Constness</span>::<span class="ident">Const</span>;
 
+        <span class="kw">let</span> <span class="ident">lint_level</span> <span class="op">=</span> <span class="ident">lint_level_for_hir_id</span>(<span class="ident">tcx</span>, <span class="ident">src_id</span>);
         <span class="ident">Cx</span> {
             <span class="ident">tcx</span>,
             <span class="ident">infcx</span>,
+            <span class="ident">root_lint_level</span>: <span class="ident">lint_level</span>,
             <span class="ident">param_env</span>: <span class="ident">tcx</span>.<span class="ident">param_env</span>(<span class="ident">src_def_id</span>),
             <span class="ident">identity_substs</span>: <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(), <span class="ident">src_def_id</span>),
             <span class="ident">region_scope_tree</span>: <span class="ident">tcx</span>.<span class="ident">region_scope_tree</span>(<span class="ident">src_def_id</span>),
@@ -392,6 +441,7 @@
             <span class="ident">check_overflow</span>,
         }
     }
+
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Cx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -522,6 +572,19 @@
         <span class="ident">ty</span>.<span class="ident">needs_drop</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(), <span class="ident">param_env</span>)
     }
 
+    <span class="kw">fn</span> <span class="ident">lint_level_of</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node_id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>) <span class="op">-&gt;</span> <span class="ident">LintLevel</span> {
+        <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">definitions</span>().<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
+        <span class="kw">let</span> <span class="ident">has_lint_level</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
+            <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">lint_levels</span>(<span class="ident">LOCAL_CRATE</span>).<span class="ident">lint_level_set</span>(<span class="ident">hir_id</span>).<span class="ident">is_some</span>()
+        });
+
+        <span class="kw">if</span> <span class="ident">has_lint_level</span> {
+            <span class="ident">LintLevel</span>::<span class="ident">Explicit</span>(<span class="ident">node_id</span>)
+        } <span class="kw">else</span> {
+            <span class="ident">LintLevel</span>::<span class="ident">Inherited</span>
+        }
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tcx</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">tcx</span>
     }
@@ -533,6 +596,31 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_overflow</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">check_overflow</span>
     }
+}
+
+<span class="kw">fn</span> <span class="ident">lint_level_for_hir_id</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="kw-2">mut</span> <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">NodeId</span> {
+    <span class="comment">// Right now we insert a `with_ignore` node in the dep graph here to</span>
+    <span class="comment">// ignore the fact that `lint_levels` below depends on the entire crate.</span>
+    <span class="comment">// For now this&#39;ll prevent false positives of recompiling too much when</span>
+    <span class="comment">// anything changes.</span>
+    <span class="comment">//</span>
+    <span class="comment">// Once red/green incremental compilation lands we should be able to</span>
+    <span class="comment">// remove this because while the crate changes often the lint level map</span>
+    <span class="comment">// will change rarely.</span>
+    <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
+        <span class="kw">let</span> <span class="ident">sets</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">lint_levels</span>(<span class="ident">LOCAL_CRATE</span>);
+        <span class="kw">loop</span> {
+            <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">definitions</span>().<span class="ident">node_to_hir_id</span>(<span class="ident">id</span>);
+            <span class="kw">if</span> <span class="ident">sets</span>.<span class="ident">lint_level_set</span>(<span class="ident">hir_id</span>).<span class="ident">is_some</span>() {
+                <span class="kw">return</span> <span class="ident">id</span>
+            }
+            <span class="kw">let</span> <span class="ident">next</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_parent_node</span>(<span class="ident">id</span>);
+            <span class="kw">if</span> <span class="ident">next</span> <span class="op">==</span> <span class="ident">id</span> {
+                <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;lint traversal reached the root of the crate&quot;</span>);
+            }
+            <span class="ident">id</span> <span class="op">=</span> <span class="ident">next</span>;
+        }
+    })
 }
 
 <span class="kw">mod</span> <span class="ident">block</span>;

@@ -62,7 +62,7 @@ more memory efficient and make better use of CPU cache.</p>
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
                 <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;T&gt; <a class="struct" href="../../alloc/linked_list/struct.LinkedList.html" title="struct alloc::linked_list::LinkedList">LinkedList</a>&lt;T&gt;</code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#234-780' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#246-253' title='goto source code'>[src]</a></span></h4>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>() -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#246-253' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Creates an empty <code>LinkedList</code>.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
@@ -70,7 +70,7 @@ more memory efficient and make better use of CPU cache.</p>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">LinkedList</span>;
 
 <span class="kw">let</span> <span class="ident">list</span>: <span class="ident">LinkedList</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">LinkedList</span>::<span class="ident">new</span>();</pre>
-</div><h4 id='method.append' class="method"><span id='append.v' class='invisible'><code>fn <a href='#method.append' class='fnname'>append</a>(&amp;mut self, other: &amp;mut Self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#285-300' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.append' class="method"><span id='append.v' class='invisible'><code>pub fn <a href='#method.append' class='fnname'>append</a>(&amp;mut self, other: &amp;mut Self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#285-300' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Moves all elements from <code>other</code> to the end of the list.</p>
 
 <p>This reuses all the nodes from <code>other</code> and moves them into <code>self</code>. After
@@ -98,7 +98,7 @@ this operation, <code>other</code> becomes empty.</p>
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
 
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">list2</span>.<span class="ident">is_empty</span>());</pre>
-</div><h4 id='method.iter' class="method"><span id='iter.v' class='invisible'><code>fn <a href='#method.iter' class='fnname'>iter</a>(&amp;self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.Iter.html" title="struct alloc::linked_list::Iter">Iter</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#323-330' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.iter' class="method"><span id='iter.v' class='invisible'><code>pub fn <a href='#method.iter' class='fnname'>iter</a>(&amp;self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.Iter.html" title="struct alloc::linked_list::Iter">Iter</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#323-330' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Provides a forward iterator.</p>
 
 <h1 id='examples-2' class='section-header'><a href='#examples-2'>Examples</a></h1>
@@ -116,7 +116,7 @@ this operation, <code>other</code> becomes empty.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">1</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">2</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);</pre>
-</div><h4 id='method.iter_mut' class="method"><span id='iter_mut.v' class='invisible'><code>fn <a href='#method.iter_mut' class='fnname'>iter_mut</a>(&amp;mut self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.IterMut.html" title="struct alloc::linked_list::IterMut">IterMut</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#357-364' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.iter_mut' class="method"><span id='iter_mut.v' class='invisible'><code>pub fn <a href='#method.iter_mut' class='fnname'>iter_mut</a>(&amp;mut self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.IterMut.html" title="struct alloc::linked_list::IterMut">IterMut</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#357-364' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Provides a forward iterator with mutable references.</p>
 
 <h1 id='examples-3' class='section-header'><a href='#examples-3'>Examples</a></h1>
@@ -138,7 +138,7 @@ this operation, <code>other</code> becomes empty.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">11</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">12</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);</pre>
-</div><h4 id='method.is_empty' class="method"><span id='is_empty.v' class='invisible'><code>fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; bool</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#383-385' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.is_empty' class="method"><span id='is_empty.v' class='invisible'><code>pub fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; bool</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#383-385' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns <code>true</code> if the <code>LinkedList</code> is empty.</p>
 
 <p>This operation should compute in O(1) time.</p>
@@ -152,7 +152,7 @@ this operation, <code>other</code> becomes empty.</p>
 
 <span class="ident">dl</span>.<span class="ident">push_front</span>(<span class="string">&quot;foo&quot;</span>);
 <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">dl</span>.<span class="ident">is_empty</span>());</pre>
-</div><h4 id='method.len' class="method"><span id='len.v' class='invisible'><code>fn <a href='#method.len' class='fnname'>len</a>(&amp;self) -&gt; usize</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#409-411' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.len' class="method"><span id='len.v' class='invisible'><code>pub fn <a href='#method.len' class='fnname'>len</a>(&amp;self) -&gt; usize</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#409-411' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns the length of the <code>LinkedList</code>.</p>
 
 <p>This operation should compute in O(1) time.</p>
@@ -171,7 +171,7 @@ this operation, <code>other</code> becomes empty.</p>
 
 <span class="ident">dl</span>.<span class="ident">push_back</span>(<span class="number">3</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">len</span>(), <span class="number">3</span>);</pre>
-</div><h4 id='method.clear' class="method"><span id='clear.v' class='invisible'><code>fn <a href='#method.clear' class='fnname'>clear</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#435-437' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.clear' class="method"><span id='clear.v' class='invisible'><code>pub fn <a href='#method.clear' class='fnname'>clear</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#435-437' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Removes all elements from the <code>LinkedList</code>.</p>
 
 <p>This operation should compute in O(n) time.</p>
@@ -190,7 +190,7 @@ this operation, <code>other</code> becomes empty.</p>
 <span class="ident">dl</span>.<span class="ident">clear</span>();
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">len</span>(), <span class="number">0</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">front</span>(), <span class="prelude-val">None</span>);</pre>
-</div><h4 id='method.contains' class="method"><span id='contains.v' class='invisible'><code>fn <a href='#method.contains' class='fnname'>contains</a>(&amp;self, x: &amp;T) -&gt; bool <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="../../core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>&lt;T&gt;,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.12.0'>1.12.0</div><a class='srclink' href='../../src/alloc/linked_list.rs.html#457-461' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.contains' class="method"><span id='contains.v' class='invisible'><code>pub fn <a href='#method.contains' class='fnname'>contains</a>(&amp;self, x: &amp;T) -&gt; bool <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="../../core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>&lt;T&gt;,&nbsp;</span></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.12.0'>1.12.0</div><a class='srclink' href='../../src/alloc/linked_list.rs.html#457-461' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns <code>true</code> if the <code>LinkedList</code> contains an element equal to the
 given value.</p>
 
@@ -206,7 +206,7 @@ given value.</p>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">list</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="number">0</span>), <span class="bool-val">true</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">list</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="number">10</span>), <span class="bool-val">false</span>);</pre>
-</div><h4 id='method.front' class="method"><span id='front.v' class='invisible'><code>fn <a href='#method.front' class='fnname'>front</a>(&amp;self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#479-483' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.front' class="method"><span id='front.v' class='invisible'><code>pub fn <a href='#method.front' class='fnname'>front</a>(&amp;self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#479-483' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Provides a reference to the front element, or <code>None</code> if the list is
 empty.</p>
 
@@ -219,7 +219,7 @@ empty.</p>
 
 <span class="ident">dl</span>.<span class="ident">push_front</span>(<span class="number">1</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">front</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">1</span>));</pre>
-</div><h4 id='method.front_mut' class="method"><span id='front_mut.v' class='invisible'><code>fn <a href='#method.front_mut' class='fnname'>front_mut</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;mut T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#507-511' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.front_mut' class="method"><span id='front_mut.v' class='invisible'><code>pub fn <a href='#method.front_mut' class='fnname'>front_mut</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;mut T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#507-511' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Provides a mutable reference to the front element, or <code>None</code> if the list
 is empty.</p>
 
@@ -238,7 +238,7 @@ is empty.</p>
     <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="number">5</span>,
 }
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">front</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">5</span>));</pre>
-</div><h4 id='method.back' class="method"><span id='back.v' class='invisible'><code>fn <a href='#method.back' class='fnname'>back</a>(&amp;self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#529-533' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.back' class="method"><span id='back.v' class='invisible'><code>pub fn <a href='#method.back' class='fnname'>back</a>(&amp;self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#529-533' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Provides a reference to the back element, or <code>None</code> if the list is
 empty.</p>
 
@@ -251,7 +251,7 @@ empty.</p>
 
 <span class="ident">dl</span>.<span class="ident">push_back</span>(<span class="number">1</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">back</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">1</span>));</pre>
-</div><h4 id='method.back_mut' class="method"><span id='back_mut.v' class='invisible'><code>fn <a href='#method.back_mut' class='fnname'>back_mut</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;mut T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#557-561' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.back_mut' class="method"><span id='back_mut.v' class='invisible'><code>pub fn <a href='#method.back_mut' class='fnname'>back_mut</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;mut T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#557-561' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Provides a mutable reference to the back element, or <code>None</code> if the list
 is empty.</p>
 
@@ -270,7 +270,7 @@ is empty.</p>
     <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="kw-2">*</span><span class="ident">x</span> <span class="op">=</span> <span class="number">5</span>,
 }
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">back</span>(), <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="number">5</span>));</pre>
-</div><h4 id='method.push_front' class="method"><span id='push_front.v' class='invisible'><code>fn <a href='#method.push_front' class='fnname'>push_front</a>(&amp;mut self, elt: T)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#581-583' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.push_front' class="method"><span id='push_front.v' class='invisible'><code>pub fn <a href='#method.push_front' class='fnname'>push_front</a>(&amp;mut self, elt: T)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#581-583' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Adds an element first in the list.</p>
 
 <p>This operation should compute in O(1) time.</p>
@@ -286,7 +286,7 @@ is empty.</p>
 
 <span class="ident">dl</span>.<span class="ident">push_front</span>(<span class="number">1</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dl</span>.<span class="ident">front</span>().<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span><span class="number">1</span>);</pre>
-</div><h4 id='method.pop_front' class="method"><span id='pop_front.v' class='invisible'><code>fn <a href='#method.pop_front' class='fnname'>pop_front</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#605-607' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.pop_front' class="method"><span id='pop_front.v' class='invisible'><code>pub fn <a href='#method.pop_front' class='fnname'>pop_front</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#605-607' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Removes the first element and returns it, or <code>None</code> if the list is
 empty.</p>
 
@@ -304,7 +304,7 @@ empty.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">pop_front</span>(), <span class="prelude-val">Some</span>(<span class="number">3</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">pop_front</span>(), <span class="prelude-val">Some</span>(<span class="number">1</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">pop_front</span>(), <span class="prelude-val">None</span>);</pre>
-</div><h4 id='method.push_back' class="method"><span id='push_back.v' class='invisible'><code>fn <a href='#method.push_back' class='fnname'>push_back</a>(&amp;mut self, elt: T)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#622-624' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.push_back' class="method"><span id='push_back.v' class='invisible'><code>pub fn <a href='#method.push_back' class='fnname'>push_back</a>(&amp;mut self, elt: T)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#622-624' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Appends an element to the back of a list</p>
 
 <h1 id='examples-14' class='section-header'><a href='#examples-14'>Examples</a></h1>
@@ -315,7 +315,7 @@ empty.</p>
 <span class="ident">d</span>.<span class="ident">push_back</span>(<span class="number">1</span>);
 <span class="ident">d</span>.<span class="ident">push_back</span>(<span class="number">3</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="kw-2">*</span><span class="ident">d</span>.<span class="ident">back</span>().<span class="ident">unwrap</span>());</pre>
-</div><h4 id='method.pop_back' class="method"><span id='pop_back.v' class='invisible'><code>fn <a href='#method.pop_back' class='fnname'>pop_back</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#641-643' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.pop_back' class="method"><span id='pop_back.v' class='invisible'><code>pub fn <a href='#method.pop_back' class='fnname'>pop_back</a>(&amp;mut self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#641-643' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Removes the last element from a list and returns it, or <code>None</code> if
 it is empty.</p>
 
@@ -328,7 +328,7 @@ it is empty.</p>
 <span class="ident">d</span>.<span class="ident">push_back</span>(<span class="number">1</span>);
 <span class="ident">d</span>.<span class="ident">push_back</span>(<span class="number">3</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">d</span>.<span class="ident">pop_back</span>(), <span class="prelude-val">Some</span>(<span class="number">3</span>));</pre>
-</div><h4 id='method.split_off' class="method"><span id='split_off.v' class='invisible'><code>fn <a href='#method.split_off' class='fnname'>split_off</a>(&amp;mut self, at: usize) -&gt; <a class="struct" href="../../alloc/linked_list/struct.LinkedList.html" title="struct alloc::linked_list::LinkedList">LinkedList</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#671-723' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.split_off' class="method"><span id='split_off.v' class='invisible'><code>pub fn <a href='#method.split_off' class='fnname'>split_off</a>(&amp;mut self, at: usize) -&gt; <a class="struct" href="../../alloc/linked_list/struct.LinkedList.html" title="struct alloc::linked_list::LinkedList">LinkedList</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#671-723' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Splits the list into two at the given index. Returns everything after the given index,
 including the index.</p>
 
@@ -351,7 +351,7 @@ including the index.</p>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">splitted</span>.<span class="ident">pop_front</span>(), <span class="prelude-val">Some</span>(<span class="number">1</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">splitted</span>.<span class="ident">pop_front</span>(), <span class="prelude-val">None</span>);</pre>
-</div><h4 id='method.front_place' class="method"><span id='front_place.v' class='invisible'><code>fn <a href='#method.front_place' class='fnname'>front_place</a>(&amp;mut self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.FrontPlace.html" title="struct alloc::linked_list::FrontPlace">FrontPlace</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#746-751' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.front_place' class="method"><span id='front_place.v' class='invisible'><code>pub fn <a href='#method.front_place' class='fnname'>front_place</a>(&amp;mut self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.FrontPlace.html" title="struct alloc::linked_list::FrontPlace">FrontPlace</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#746-751' title='goto source code'>[src]</a></span></h4>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>collection_placement </code><a href="https://github.com/rust-lang/rust/issues/30172">#30172</a>)</summary><p>method name and placement protocol are subject to change</p>
 </details></div></div><div class='docblock'><p>Returns a place for insertion at the front of the list.</p>
 
@@ -369,7 +369,7 @@ including the index.</p>
 <span class="ident">list</span>.<span class="ident">front_place</span>() &lt;- <span class="number">2</span>;
 <span class="ident">list</span>.<span class="ident">front_place</span>() &lt;- <span class="number">4</span>;
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">list</span>.<span class="ident">iter</span>().<span class="ident">eq</span>(<span class="kw-2">&amp;</span>[<span class="number">4</span>, <span class="number">2</span>]));</pre>
-</div><h4 id='method.back_place' class="method"><span id='back_place.v' class='invisible'><code>fn <a href='#method.back_place' class='fnname'>back_place</a>(&amp;mut self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.BackPlace.html" title="struct alloc::linked_list::BackPlace">BackPlace</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#774-779' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.back_place' class="method"><span id='back_place.v' class='invisible'><code>pub fn <a href='#method.back_place' class='fnname'>back_place</a>(&amp;mut self) -&gt; <a class="struct" href="../../alloc/linked_list/struct.BackPlace.html" title="struct alloc::linked_list::BackPlace">BackPlace</a>&lt;T&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/linked_list.rs.html#774-779' title='goto source code'>[src]</a></span></h4>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>collection_placement </code><a href="https://github.com/rust-lang/rust/issues/30172">#30172</a>)</summary><p>method name and placement protocol are subject to change</p>
 </details></div></div><div class='docblock'><p>Returns a place for insertion at the back of the list.</p>
 

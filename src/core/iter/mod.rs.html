@@ -2213,6 +2213,51 @@
 <span id="2168">2168</span>
 <span id="2169">2169</span>
 <span id="2170">2170</span>
+<span id="2171">2171</span>
+<span id="2172">2172</span>
+<span id="2173">2173</span>
+<span id="2174">2174</span>
+<span id="2175">2175</span>
+<span id="2176">2176</span>
+<span id="2177">2177</span>
+<span id="2178">2178</span>
+<span id="2179">2179</span>
+<span id="2180">2180</span>
+<span id="2181">2181</span>
+<span id="2182">2182</span>
+<span id="2183">2183</span>
+<span id="2184">2184</span>
+<span id="2185">2185</span>
+<span id="2186">2186</span>
+<span id="2187">2187</span>
+<span id="2188">2188</span>
+<span id="2189">2189</span>
+<span id="2190">2190</span>
+<span id="2191">2191</span>
+<span id="2192">2192</span>
+<span id="2193">2193</span>
+<span id="2194">2194</span>
+<span id="2195">2195</span>
+<span id="2196">2196</span>
+<span id="2197">2197</span>
+<span id="2198">2198</span>
+<span id="2199">2199</span>
+<span id="2200">2200</span>
+<span id="2201">2201</span>
+<span id="2202">2202</span>
+<span id="2203">2203</span>
+<span id="2204">2204</span>
+<span id="2205">2205</span>
+<span id="2206">2206</span>
+<span id="2207">2207</span>
+<span id="2208">2208</span>
+<span id="2209">2209</span>
+<span id="2210">2210</span>
+<span id="2211">2211</span>
+<span id="2212">2212</span>
+<span id="2213">2213</span>
+<span id="2214">2214</span>
+<span id="2215">2215</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2575,6 +2620,12 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">size_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> (<span class="ident">usize</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) { <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">size_hint</span>() }
 
+    <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">Acc</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">init</span>: <span class="ident">Acc</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Acc</span>, <span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>,
+    {
+        <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">rfold</span>(<span class="ident">init</span>, <span class="ident">f</span>)
+    }
+
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">find</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">predicate</span>: <span class="ident">P</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span>
         <span class="kw">where</span> <span class="ident">P</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
@@ -2594,6 +2645,12 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="ident">DoubleEndedIterator</span> <span class="kw">for</span> <span class="ident">Rev</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">I</span>: <span class="ident">DoubleEndedIterator</span> {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">next_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;&lt;</span><span class="ident">I</span> <span class="kw">as</span> <span class="ident">Iterator</span><span class="op">&gt;</span>::<span class="ident">Item</span><span class="op">&gt;</span> { <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">next</span>() }
+
+    <span class="kw">fn</span> <span class="ident">rfold</span><span class="op">&lt;</span><span class="ident">Acc</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">init</span>: <span class="ident">Acc</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Acc</span>, <span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>,
+    {
+        <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">fold</span>(<span class="ident">init</span>, <span class="ident">f</span>)
+    }
 
     <span class="kw">fn</span> <span class="ident">rfind</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">predicate</span>: <span class="ident">P</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span>
         <span class="kw">where</span> <span class="ident">P</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
@@ -2664,6 +2721,12 @@
 {
     <span class="kw">fn</span> <span class="ident">next_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">it</span>.<span class="ident">next_back</span>().<span class="ident">cloned</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">rfold</span><span class="op">&lt;</span><span class="ident">Acc</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">init</span>: <span class="ident">Acc</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Acc</span>, <span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>,
+    {
+        <span class="self">self</span>.<span class="ident">it</span>.<span class="ident">rfold</span>(<span class="ident">init</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">acc</span>, <span class="ident">elt</span><span class="op">|</span> <span class="ident">f</span>(<span class="ident">acc</span>, <span class="ident">elt</span>.<span class="ident">clone</span>()))
     }
 }
 
@@ -2977,6 +3040,26 @@
             <span class="ident">ChainState</span>::<span class="ident">Back</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">b</span>.<span class="ident">next_back</span>(),
         }
     }
+
+    <span class="kw">fn</span> <span class="ident">rfold</span><span class="op">&lt;</span><span class="ident">Acc</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">init</span>: <span class="ident">Acc</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">Acc</span>, <span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>,
+    {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">accum</span> <span class="op">=</span> <span class="ident">init</span>;
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+            <span class="ident">ChainState</span>::<span class="ident">Both</span> <span class="op">|</span> <span class="ident">ChainState</span>::<span class="ident">Back</span> <span class="op">=&gt;</span> {
+                <span class="ident">accum</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">b</span>.<span class="ident">rfold</span>(<span class="ident">accum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">f</span>);
+            }
+            _ <span class="op">=&gt;</span> { }
+        }
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+            <span class="ident">ChainState</span>::<span class="ident">Both</span> <span class="op">|</span> <span class="ident">ChainState</span>::<span class="ident">Front</span> <span class="op">=&gt;</span> {
+                <span class="ident">accum</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">a</span>.<span class="ident">rfold</span>(<span class="ident">accum</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">f</span>);
+            }
+            _ <span class="op">=&gt;</span> { }
+        }
+        <span class="ident">accum</span>
+    }
+
 }
 
 <span class="comment">// Note: *both* must be fused to handle double-ended iterators.</span>
@@ -3309,6 +3392,13 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">next_back</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">B</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">next_back</span>().<span class="ident">map</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">f</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">rfold</span><span class="op">&lt;</span><span class="ident">Acc</span>, <span class="ident">G</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">init</span>: <span class="ident">Acc</span>, <span class="kw-2">mut</span> <span class="ident">g</span>: <span class="ident">G</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>
+        <span class="kw">where</span> <span class="ident">G</span>: <span class="ident">FnMut</span>(<span class="ident">Acc</span>, <span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">Acc</span>,
+    {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">f</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">f</span>;
+        <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">rfold</span>(<span class="ident">init</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">acc</span>, <span class="ident">elt</span><span class="op">|</span> <span class="ident">g</span>(<span class="ident">acc</span>, <span class="ident">f</span>(<span class="ident">elt</span>)))
     }
 }
 

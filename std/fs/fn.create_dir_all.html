@@ -70,9 +70,9 @@ determined to not exist) are outlined by <code>fs::create_dir</code>.</li>
 
 <p>Notable exception is made for situations where any of the directories
 specified in the <code>path</code> could not be created as it was being created concurrently.
-Such cases are considered success. In other words: calling <code>create_dir_all</code>
-concurrently from multiple threads or processes is guaranteed to not fail
-due to race itself.</p>
+Such cases are considered to be successful. That is, calling <code>create_dir_all</code>
+concurrently from multiple threads or processes is guaranteed not to fail
+due to a race condition with itself.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class="rust rust-example-rendered">

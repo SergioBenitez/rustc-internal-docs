@@ -59,7 +59,7 @@ and <a href="../../std/str/fn.from_utf8.html"><code>&amp;str</code></a>s make us
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
                 <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../core/str/struct.Utf8Error.html" title="struct core::str::Utf8Error">Utf8Error</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/core/str/mod.rs.html#172-214' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.valid_up_to' class="method"><span id='valid_up_to.v' class='invisible'><code>fn <a href='#method.valid_up_to' class='fnname'>valid_up_to</a>(&amp;self) -&gt; usize</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.5.0'>1.5.0</div><a class='srclink' href='../../src/core/str/mod.rs.html#196' title='goto source code'>[src]</a></span></h4>
+<div class='impl-items'><h4 id='method.valid_up_to' class="method"><span id='valid_up_to.v' class='invisible'><code>pub fn <a href='#method.valid_up_to' class='fnname'>valid_up_to</a>(&amp;self) -&gt; usize</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.5.0'>1.5.0</div><a class='srclink' href='../../src/core/str/mod.rs.html#196' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns the index in the given string up to which valid UTF-8 was
 verified.</p>
 
@@ -80,7 +80,7 @@ would return <code>Ok(_)</code>.</p>
 
 <span class="comment">// the second byte is invalid here</span>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">1</span>, <span class="ident">error</span>.<span class="ident">valid_up_to</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20invalid%20bytes%2C%20in%20a%20vector%0Alet%20sparkle_heart%20%3D%20vec!%5B0%2C%20159%2C%20146%2C%20150%5D%3B%0A%0A%2F%2F%20std%3A%3Astr%3A%3Afrom_utf8%20returns%20a%20Utf8Error%0Alet%20error%20%3D%20str%3A%3Afrom_utf8(%26sparkle_heart).unwrap_err()%3B%0A%0A%2F%2F%20the%20second%20byte%20is%20invalid%20here%0Aassert_eq!(1%2C%20error.valid_up_to())%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.error_len' class="method"><span id='error_len.v' class='invisible'><code>fn <a href='#method.error_len' class='fnname'>error_len</a>(&amp;self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;usize&gt;</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.20.0'>1.20.0</div><a class='srclink' href='../../src/core/str/mod.rs.html#211-213' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.error_len' class="method"><span id='error_len.v' class='invisible'><code>pub fn <a href='#method.error_len' class='fnname'>error_len</a>(&amp;self) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;usize&gt;</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.20.0'>1.20.0</div><a class='srclink' href='../../src/core/str/mod.rs.html#211-213' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Provide more information about the failure:</p>
 
 <ul>

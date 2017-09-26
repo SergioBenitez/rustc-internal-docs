@@ -1185,7 +1185,7 @@
                                          <span class="ident">fcx</span>: <span class="kw-2">&amp;</span><span class="ident">FnCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;fcx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                          <span class="ident">method_sig</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">MethodSig</span>,
                                          <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">AssociatedItem</span>,
-                                         <span class="ident">self_ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                                         <span class="ident">self_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
     {
         <span class="comment">// check that the type of the method&#39;s receiver matches the</span>
         <span class="comment">// method&#39;s first parameter.</span>
@@ -1259,7 +1259,7 @@
 
             <span class="kw">let</span> (<span class="ident">span</span>, <span class="ident">name</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="ident">ast_generics</span>.<span class="ident">lifetimes</span>.<span class="ident">len</span>() {
                 (<span class="ident">ast_generics</span>.<span class="ident">lifetimes</span>[<span class="ident">index</span>].<span class="ident">lifetime</span>.<span class="ident">span</span>,
-                 <span class="ident">ast_generics</span>.<span class="ident">lifetimes</span>[<span class="ident">index</span>].<span class="ident">lifetime</span>.<span class="ident">name</span>)
+                 <span class="ident">ast_generics</span>.<span class="ident">lifetimes</span>[<span class="ident">index</span>].<span class="ident">lifetime</span>.<span class="ident">name</span>.<span class="ident">name</span>())
             } <span class="kw">else</span> {
                 <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">-</span> <span class="ident">ast_generics</span>.<span class="ident">lifetimes</span>.<span class="ident">len</span>();
                 (<span class="ident">ast_generics</span>.<span class="ident">ty_params</span>[<span class="ident">index</span>].<span class="ident">span</span>,

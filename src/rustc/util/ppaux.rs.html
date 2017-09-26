@@ -1107,6 +1107,13 @@
 <span id="1062">1062</span>
 <span id="1063">1063</span>
 <span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1136,6 +1143,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">usize</span>;
 
 <span class="kw">use</span> <span class="ident">rustc_const_math</span>::<span class="ident">ConstInt</span>;
+<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">abi</span>::<span class="ident">Abi</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::<span class="ident">CRATE_NODE_ID</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
@@ -1640,17 +1648,17 @@
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">br</span>)
             }
             <span class="ident">ty</span>::<span class="ident">ReScope</span>(<span class="ident">scope</span>) <span class="kw">if</span> <span class="ident">identify_regions</span>() <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="ident">scope</span> {
-                    <span class="ident">region</span>::<span class="ident">Scope</span>::<span class="ident">Node</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
+                <span class="kw">match</span> <span class="ident">scope</span>.<span class="ident">data</span>() {
+                    <span class="ident">region</span>::<span class="ident">ScopeData</span>::<span class="ident">Node</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
                         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}s&quot;</span>, <span class="ident">id</span>.<span class="ident">as_usize</span>()),
-                    <span class="ident">region</span>::<span class="ident">Scope</span>::<span class="ident">CallSite</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
+                    <span class="ident">region</span>::<span class="ident">ScopeData</span>::<span class="ident">CallSite</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
                         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}cs&quot;</span>, <span class="ident">id</span>.<span class="ident">as_usize</span>()),
-                    <span class="ident">region</span>::<span class="ident">Scope</span>::<span class="ident">Arguments</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
+                    <span class="ident">region</span>::<span class="ident">ScopeData</span>::<span class="ident">Arguments</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
                         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}as&quot;</span>, <span class="ident">id</span>.<span class="ident">as_usize</span>()),
-                    <span class="ident">region</span>::<span class="ident">Scope</span>::<span class="ident">Destruction</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
+                    <span class="ident">region</span>::<span class="ident">ScopeData</span>::<span class="ident">Destruction</span>(<span class="ident">id</span>) <span class="op">=&gt;</span>
                         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}ds&quot;</span>, <span class="ident">id</span>.<span class="ident">as_usize</span>()),
-                    <span class="ident">region</span>::<span class="ident">Scope</span>::<span class="ident">Remainder</span>(<span class="ident">BlockRemainder</span> { <span class="ident">block</span>, <span class="ident">first_statement_index</span> }) <span class="op">=&gt;</span>
-                        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}_{}rs&quot;</span>, <span class="ident">block</span>.<span class="ident">as_usize</span>(), <span class="ident">first_statement_index</span>),
+                    <span class="ident">region</span>::<span class="ident">ScopeData</span>::<span class="ident">Remainder</span>(<span class="ident">BlockRemainder</span> { <span class="ident">block</span>, <span class="ident">first_statement_index</span> }) <span class="op">=&gt;</span>
+                        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}_{}rs&quot;</span>, <span class="ident">block</span>.<span class="ident">as_usize</span>(), <span class="ident">first_statement_index</span>.<span class="ident">index</span>()),
                 }
             }
             <span class="ident">ty</span>::<span class="ident">ReVar</span>(<span class="ident">region_vid</span>) <span class="kw">if</span> <span class="ident">identify_regions</span>() <span class="op">=&gt;</span> {
@@ -1781,6 +1789,12 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">Binder</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">TraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">tcx</span><span class="op">|</span> <span class="ident">in_binder</span>(<span class="ident">f</span>, <span class="ident">tcx</span>, <span class="self">self</span>, <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="self">self</span>)))
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">Binder</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">FnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">tcx</span><span class="op">|</span> <span class="ident">in_binder</span>(<span class="ident">f</span>, <span class="ident">tcx</span>, <span class="self">self</span>, <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="self">self</span>)))
     }

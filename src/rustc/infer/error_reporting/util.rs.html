@@ -280,7 +280,7 @@
 <span class="doccomment">//! anonymous regions.</span>
 <span class="kw">use</span> <span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
-<span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Region</span>};
+<span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Region</span>, <span class="ident">Ty</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span> <span class="kw">as</span> <span class="ident">hir_map</span>;
 
@@ -303,7 +303,7 @@
     <span class="comment">// the argument corresponding to the anonymous region</span>
     <span class="kw">pub</span> <span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Arg</span>,
     <span class="comment">// the type corresponding to the anonymopus region argument</span>
-    <span class="kw">pub</span> <span class="ident">arg_ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">arg_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="comment">// the ty::BoundRegion corresponding to the anonymous region</span>
     <span class="kw">pub</span> <span class="ident">bound_region</span>: <span class="ident">ty</span>::<span class="ident">BoundRegion</span>,
     <span class="comment">// corresponds to id the argument is the first parameter</span>

@@ -403,6 +403,7 @@
 <span id="358">358</span>
 <span id="359">359</span>
 <span id="360">360</span>
+<span id="361">361</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -426,7 +427,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::{<span class="ident">Duration</span>, <span class="ident">Instant</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">mpsc</span>::{<span class="ident">Sender</span>};
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>};
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">SpanData</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">maps</span>::{<span class="ident">QueryMsg</span>};
 <span class="kw">use</span> <span class="ident">dep_graph</span>::{<span class="ident">DepNode</span>};
 
@@ -467,7 +468,8 @@
     <span class="doccomment">/// end a task</span>
     <span class="ident">TaskEnd</span>,
     <span class="doccomment">/// begin a new query</span>
-    <span class="ident">QueryBegin</span>(<span class="ident">Span</span>, <span class="ident">QueryMsg</span>),
+    <span class="doccomment">/// can&#39;t use `Span` because queries are sent to other thread</span>
+    <span class="ident">QueryBegin</span>(<span class="ident">SpanData</span>, <span class="ident">QueryMsg</span>),
     <span class="doccomment">/// query is satisfied by using an already-known value for the given key</span>
     <span class="ident">CacheHit</span>,
     <span class="doccomment">/// query requires running a provider; providers may nest, permitting queries to nest.</span>

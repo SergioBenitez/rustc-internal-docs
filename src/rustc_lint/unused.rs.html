@@ -470,6 +470,14 @@
 <span id="425">425</span>
 <span id="426">426</span>
 <span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -558,20 +566,12 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">LateLintPass</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">UnusedMut</span> {
-    <span class="kw">fn</span> <span class="ident">check_expr</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">LateContext</span>, <span class="ident">e</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">ExprMatch</span>(_, <span class="kw-2">ref</span> <span class="ident">arms</span>, _) <span class="op">=</span> <span class="ident">e</span>.<span class="ident">node</span> {
-            <span class="kw">for</span> <span class="ident">a</span> <span class="kw">in</span> <span class="ident">arms</span> {
-                <span class="self">self</span>.<span class="ident">check_unused_mut_pat</span>(<span class="ident">cx</span>, <span class="kw-2">&amp;</span><span class="ident">a</span>.<span class="ident">pats</span>)
-            }
-        }
+    <span class="kw">fn</span> <span class="ident">check_arm</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">LateContext</span>, <span class="ident">a</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Arm</span>) {
+        <span class="self">self</span>.<span class="ident">check_unused_mut_pat</span>(<span class="ident">cx</span>, <span class="kw-2">&amp;</span><span class="ident">a</span>.<span class="ident">pats</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">check_stmt</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">LateContext</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Stmt</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">StmtDecl</span>(<span class="kw-2">ref</span> <span class="ident">d</span>, _) <span class="op">=</span> <span class="ident">s</span>.<span class="ident">node</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">DeclLocal</span>(<span class="kw-2">ref</span> <span class="ident">l</span>) <span class="op">=</span> <span class="ident">d</span>.<span class="ident">node</span> {
-                <span class="self">self</span>.<span class="ident">check_unused_mut_pat</span>(<span class="ident">cx</span>, <span class="ident">slice</span>::<span class="ident">ref_slice</span>(<span class="kw-2">&amp;</span><span class="ident">l</span>.<span class="ident">pat</span>));
-            }
-        }
+    <span class="kw">fn</span> <span class="ident">check_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">LateContext</span>, <span class="ident">l</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Local</span>) {
+        <span class="self">self</span>.<span class="ident">check_unused_mut_pat</span>(<span class="ident">cx</span>, <span class="ident">slice</span>::<span class="ident">ref_slice</span>(<span class="kw-2">&amp;</span><span class="ident">l</span>.<span class="ident">pat</span>));
     }
 
     <span class="kw">fn</span> <span class="ident">check_fn</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
@@ -634,6 +634,7 @@
         };
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fn_warned</span> <span class="op">=</span> <span class="bool-val">false</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">op_warned</span> <span class="op">=</span> <span class="bool-val">false</span>;
         <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">features</span>.<span class="ident">borrow</span>().<span class="ident">fn_must_use</span> {
             <span class="kw">let</span> <span class="ident">maybe_def</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">expr</span>.<span class="ident">node</span> {
                 <span class="ident">hir</span>::<span class="ident">ExprCall</span>(<span class="kw-2">ref</span> <span class="ident">callee</span>, _) <span class="op">=&gt;</span> {
@@ -653,9 +654,24 @@
                 <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">def</span>.<span class="ident">def_id</span>();
                 <span class="ident">fn_warned</span> <span class="op">=</span> <span class="ident">check_must_use</span>(<span class="ident">cx</span>, <span class="ident">def_id</span>, <span class="ident">s</span>.<span class="ident">span</span>, <span class="string">&quot;return value of &quot;</span>);
             }
+
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">ExprBinary</span>(<span class="ident">bin_op</span>, ..) <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">node</span> {
+                <span class="kw">match</span> <span class="ident">bin_op</span>.<span class="ident">node</span> {
+                    <span class="comment">// Hardcoding the comparison operators here seemed more</span>
+                    <span class="comment">// expedient than the refactoring that would be needed to</span>
+                    <span class="comment">// look up the `#[must_use]` attribute which does exist on</span>
+                    <span class="comment">// the comparison trait methods</span>
+                    <span class="ident">hir</span>::<span class="ident">BiEq</span> <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">BiLt</span> <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">BiLe</span> <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">BiNe</span> <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">BiGe</span> <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">BiGt</span> <span class="op">=&gt;</span> {
+                        <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="string">&quot;unused comparison which must be used&quot;</span>;
+                        <span class="ident">cx</span>.<span class="ident">span_lint</span>(<span class="ident">UNUSED_MUST_USE</span>, <span class="ident">expr</span>.<span class="ident">span</span>, <span class="ident">msg</span>);
+                        <span class="ident">op_warned</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                    },
+                    _ <span class="op">=&gt;</span> {},
+                }
+            }
         }
 
-        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">ty_warned</span> <span class="op">||</span> <span class="ident">fn_warned</span>) {
+        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">ty_warned</span> <span class="op">||</span> <span class="ident">fn_warned</span> <span class="op">||</span> <span class="ident">op_warned</span>) {
             <span class="ident">cx</span>.<span class="ident">span_lint</span>(<span class="ident">UNUSED_RESULTS</span>, <span class="ident">s</span>.<span class="ident">span</span>, <span class="string">&quot;unused result&quot;</span>);
         }
 

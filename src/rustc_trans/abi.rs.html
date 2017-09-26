@@ -1109,17 +1109,17 @@
 <span class="kw">mod</span> <span class="ident">attr_impl</span> {
     <span class="comment">// The subset of llvm::Attribute needed for arguments, packed into a bitfield.</span>
     <span class="macro">bitflags</span><span class="macro">!</span> {
-        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Debug</span>)]</span>
-        <span class="ident">flags</span> <span class="ident">ArgAttribute</span> : <span class="ident">u16</span> {
-            <span class="kw">const</span> <span class="ident">ByVal</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>,
-            <span class="kw">const</span> <span class="ident">NoAlias</span>   <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>,
-            <span class="kw">const</span> <span class="ident">NoCapture</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>,
-            <span class="kw">const</span> <span class="ident">NonNull</span>   <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>,
-            <span class="kw">const</span> <span class="ident">ReadOnly</span>  <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>,
-            <span class="kw">const</span> <span class="ident">SExt</span>      <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>,
-            <span class="kw">const</span> <span class="ident">StructRet</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>,
-            <span class="kw">const</span> <span class="ident">ZExt</span>      <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">7</span>,
-            <span class="kw">const</span> <span class="ident">InReg</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">8</span>,
+        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ArgAttribute</span>: <span class="ident">u16</span> {
+            <span class="kw">const</span> <span class="ident">ByVal</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>;
+            <span class="kw">const</span> <span class="ident">NoAlias</span>   <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
+            <span class="kw">const</span> <span class="ident">NoCapture</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>;
+            <span class="kw">const</span> <span class="ident">NonNull</span>   <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>;
+            <span class="kw">const</span> <span class="ident">ReadOnly</span>  <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>;
+            <span class="kw">const</span> <span class="ident">SExt</span>      <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>;
+            <span class="kw">const</span> <span class="ident">StructRet</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>;
+            <span class="kw">const</span> <span class="ident">ZExt</span>      <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">7</span>;
+            <span class="kw">const</span> <span class="ident">InReg</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">8</span>;
         }
     }
 }
@@ -1656,7 +1656,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">FnType</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">of_instance</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">instance</span>: <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                        <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">fn_ty</span> <span class="op">=</span> <span class="ident">instance_ty</span>(<span class="ident">ccx</span>.<span class="ident">shared</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>);
+        <span class="kw">let</span> <span class="ident">fn_ty</span> <span class="op">=</span> <span class="ident">instance_ty</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>);
         <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">ty_fn_sig</span>(<span class="ident">ccx</span>, <span class="ident">fn_ty</span>);
         <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">erase_late_bound_regions_and_normalize</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>);
         <span class="self">Self</span>::<span class="ident">new</span>(<span class="ident">ccx</span>, <span class="ident">sig</span>, <span class="kw-2">&amp;</span>[])

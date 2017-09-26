@@ -2181,26 +2181,26 @@
     <span class="comment">// These values **must** match with LLVMRustDIFlags!!</span>
     <span class="macro">bitflags</span><span class="macro">!</span> {
         <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
-        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-        <span class="ident">flags</span> <span class="ident">DIFlags</span>: ::<span class="ident">libc</span>::<span class="ident">uint32_t</span> {
-            <span class="kw">const</span> <span class="ident">FlagZero</span>                <span class="op">=</span> <span class="number">0</span>,
-            <span class="kw">const</span> <span class="ident">FlagPrivate</span>             <span class="op">=</span> <span class="number">1</span>,
-            <span class="kw">const</span> <span class="ident">FlagProtected</span>           <span class="op">=</span> <span class="number">2</span>,
-            <span class="kw">const</span> <span class="ident">FlagPublic</span>              <span class="op">=</span> <span class="number">3</span>,
-            <span class="kw">const</span> <span class="ident">FlagFwdDecl</span>             <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>),
-            <span class="kw">const</span> <span class="ident">FlagAppleBlock</span>          <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>),
-            <span class="kw">const</span> <span class="ident">FlagBlockByrefStruct</span>    <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>),
-            <span class="kw">const</span> <span class="ident">FlagVirtual</span>             <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>),
-            <span class="kw">const</span> <span class="ident">FlagArtificial</span>          <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>),
-            <span class="kw">const</span> <span class="ident">FlagExplicit</span>            <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">7</span>),
-            <span class="kw">const</span> <span class="ident">FlagPrototyped</span>          <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">8</span>),
-            <span class="kw">const</span> <span class="ident">FlagObjcClassComplete</span>   <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">9</span>),
-            <span class="kw">const</span> <span class="ident">FlagObjectPointer</span>       <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">10</span>),
-            <span class="kw">const</span> <span class="ident">FlagVector</span>              <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">11</span>),
-            <span class="kw">const</span> <span class="ident">FlagStaticMember</span>        <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">12</span>),
-            <span class="kw">const</span> <span class="ident">FlagLValueReference</span>     <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">13</span>),
-            <span class="kw">const</span> <span class="ident">FlagRValueReference</span>     <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">14</span>),
-            <span class="kw">const</span> <span class="ident">FlagMainSubprogram</span>      <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">21</span>),
+        <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DIFlags</span>: ::<span class="ident">libc</span>::<span class="ident">uint32_t</span> {
+            <span class="kw">const</span> <span class="ident">FlagZero</span>                <span class="op">=</span> <span class="number">0</span>;
+            <span class="kw">const</span> <span class="ident">FlagPrivate</span>             <span class="op">=</span> <span class="number">1</span>;
+            <span class="kw">const</span> <span class="ident">FlagProtected</span>           <span class="op">=</span> <span class="number">2</span>;
+            <span class="kw">const</span> <span class="ident">FlagPublic</span>              <span class="op">=</span> <span class="number">3</span>;
+            <span class="kw">const</span> <span class="ident">FlagFwdDecl</span>             <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>);
+            <span class="kw">const</span> <span class="ident">FlagAppleBlock</span>          <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>);
+            <span class="kw">const</span> <span class="ident">FlagBlockByrefStruct</span>    <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>);
+            <span class="kw">const</span> <span class="ident">FlagVirtual</span>             <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>);
+            <span class="kw">const</span> <span class="ident">FlagArtificial</span>          <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>);
+            <span class="kw">const</span> <span class="ident">FlagExplicit</span>            <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">7</span>);
+            <span class="kw">const</span> <span class="ident">FlagPrototyped</span>          <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">8</span>);
+            <span class="kw">const</span> <span class="ident">FlagObjcClassComplete</span>   <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">9</span>);
+            <span class="kw">const</span> <span class="ident">FlagObjectPointer</span>       <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">10</span>);
+            <span class="kw">const</span> <span class="ident">FlagVector</span>              <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">11</span>);
+            <span class="kw">const</span> <span class="ident">FlagStaticMember</span>        <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">12</span>);
+            <span class="kw">const</span> <span class="ident">FlagLValueReference</span>     <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">13</span>);
+            <span class="kw">const</span> <span class="ident">FlagRValueReference</span>     <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">14</span>);
+            <span class="kw">const</span> <span class="ident">FlagMainSubprogram</span>      <span class="op">=</span> (<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">21</span>);
         }
     }
 }

@@ -187,6 +187,28 @@
 <span id="142">142</span>
 <span id="143">143</span>
 <span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -198,7 +220,28 @@
 <span class="comment">// option. This file may not be copied, modified, or distributed</span>
 <span class="comment">// except according to those terms.</span>
 
-<span class="doccomment">//! The Rust compiler.</span>
+<span class="doccomment">//! The &quot;main crate&quot; of the Rust compiler. This crate contains common</span>
+<span class="doccomment">//! type definitions that are used by the other crates in the rustc</span>
+<span class="doccomment">//! &quot;family&quot;. Some prominent examples (note that each of these modules</span>
+<span class="doccomment">//! has their own README with further details).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! - **HIR.** The &quot;high-level (H) intermediate representation (IR)&quot; is</span>
+<span class="doccomment">//!   defined in the `hir` module.</span>
+<span class="doccomment">//! - **MIR.** The &quot;mid-level (M) intermediate representation (IR)&quot; is</span>
+<span class="doccomment">//!   defined in the `mir` module. This module contains only the</span>
+<span class="doccomment">//!   *definition* of the MIR; the passes that transform and operate</span>
+<span class="doccomment">//!   on MIR are found in `librustc_mir` crate.</span>
+<span class="doccomment">//! - **Types.** The internal representation of types used in rustc is</span>
+<span class="doccomment">//!   defined in the `ty` module. This includes the **type context**</span>
+<span class="doccomment">//!   (or `tcx`), which is the central context during most of</span>
+<span class="doccomment">//!   compilation, containing the interners and other things.</span>
+<span class="doccomment">//! - **Traits.** Trait resolution is implemented in the `traits` module.</span>
+<span class="doccomment">//! - **Type inference.** The type inference code can be found in the `infer` module;</span>
+<span class="doccomment">//!   this code handles low-level equality and subtyping operations. The</span>
+<span class="doccomment">//!   type check pass in the compiler is found in the `librustc_typeck` crate.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! For a deeper explanation of how the compiler works and is</span>
+<span class="doccomment">//! organized, see the README.md file in this directory.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Note</span>
 <span class="doccomment">//!</span>
@@ -231,6 +274,7 @@
 <span class="attribute">#![<span class="ident">recursion_limit</span><span class="op">=</span><span class="string">&quot;256&quot;</span>]</span>
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">arena</span>;
+<span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">bitflags</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">core</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">fmt_macros</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">getopts</span>;
@@ -246,7 +290,6 @@
 <span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">syntax</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">syntax_pos</span>;
-<span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="attribute">#[<span class="ident">no_link</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_bitflags</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">jobserver</span>;
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serialize</span> <span class="kw">as</span> <span class="ident">rustc_serialize</span>; <span class="comment">// used by deriving</span>
@@ -280,8 +323,8 @@
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dataflow</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dead</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dependency_format</span>;
-    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">effect</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">entry</span>;
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">exported_symbols</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">free_region</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">intrinsicck</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lang_items</span>;
@@ -293,6 +336,7 @@
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">recursion_limit</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">resolve_lifetime</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stability</span>;
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trans</span>;
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">weak_lang_items</span>;
 }
 

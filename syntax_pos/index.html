@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/syntax_pos/lib.rs.html#11-1014' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/syntax_pos/lib.rs.html#11-1026' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, and unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>The source positions and related helper functions</p>
 
@@ -179,6 +179,17 @@ values to CharPos values as necessary.</p>
                            <td><a class="struct" href="struct.Span.html"
                                   title='struct syntax_pos::Span'>Span</a></td>
                            <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>A compressed span.
+Contains either fields of <code>SpanData</code> inline if they are small, or index into span interner.
+The primary goal of <code>Span</code> is to be as small as possible and fit into other structures
+(that&#39;s why it uses <code>packed</code> as well). Decoding speed is the second priority.
+See <code>SpanData</code> for the info on span fields in decoded representation.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="struct" href="struct.SpanData.html"
+                                  title='struct syntax_pos::SpanData'>SpanData</a></td>
+                           <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] <p>Spans represent a region of code, used for error reporting. Positions in spans
 are <em>absolute</em> positions from the beginning of the codemap, not positions
 relative to FileMaps. Methods on the CodeMap can be used to relate spans back
@@ -223,7 +234,8 @@ range between files.</p>
                            <td><a class="constant" href="constant.DUMMY_SP.html"
                                   title='constant syntax_pos::DUMMY_SP'>DUMMY_SP</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] 
+                               [<div class='stab unstable'>Experimental</div>] <p>Dummy span, both position and length are zero, syntax context is zero as well.
+This span is kept inline and encoded with format 0.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>

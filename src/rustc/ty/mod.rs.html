@@ -2632,6 +2632,9 @@
 <span id="2587">2587</span>
 <span id="2588">2588</span>
 <span id="2589">2589</span>
+<span id="2590">2590</span>
+<span id="2591">2591</span>
+<span id="2592">2592</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2756,7 +2759,6 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CrateAnalysis</span> {
     <span class="kw">pub</span> <span class="ident">access_levels</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">AccessLevels</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">reachable</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">NodeSet</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">glob_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">GlobMap</span><span class="op">&gt;</span>,
 }
@@ -3034,35 +3036,35 @@
 <span class="comment">// check whether the type has various kinds of types in it without</span>
 <span class="comment">// recursing over the type itself.</span>
 <span class="macro">bitflags</span><span class="macro">!</span> {
-    <span class="ident">flags</span> <span class="ident">TypeFlags</span>: <span class="ident">u32</span> {
-        <span class="kw">const</span> <span class="ident">HAS_PARAMS</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>,
-        <span class="kw">const</span> <span class="ident">HAS_SELF</span>           <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>,
-        <span class="kw">const</span> <span class="ident">HAS_TY_INFER</span>       <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>,
-        <span class="kw">const</span> <span class="ident">HAS_RE_INFER</span>       <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>,
-        <span class="kw">const</span> <span class="ident">HAS_RE_SKOL</span>        <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>,
-        <span class="kw">const</span> <span class="ident">HAS_RE_EARLY_BOUND</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>,
-        <span class="kw">const</span> <span class="ident">HAS_FREE_REGIONS</span>   <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>,
-        <span class="kw">const</span> <span class="ident">HAS_TY_ERR</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">7</span>,
-        <span class="kw">const</span> <span class="ident">HAS_PROJECTION</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">8</span>,
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TypeFlags</span>: <span class="ident">u32</span> {
+        <span class="kw">const</span> <span class="ident">HAS_PARAMS</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>;
+        <span class="kw">const</span> <span class="ident">HAS_SELF</span>           <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
+        <span class="kw">const</span> <span class="ident">HAS_TY_INFER</span>       <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>;
+        <span class="kw">const</span> <span class="ident">HAS_RE_INFER</span>       <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>;
+        <span class="kw">const</span> <span class="ident">HAS_RE_SKOL</span>        <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>;
+        <span class="kw">const</span> <span class="ident">HAS_RE_EARLY_BOUND</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>;
+        <span class="kw">const</span> <span class="ident">HAS_FREE_REGIONS</span>   <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>;
+        <span class="kw">const</span> <span class="ident">HAS_TY_ERR</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">7</span>;
+        <span class="kw">const</span> <span class="ident">HAS_PROJECTION</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">8</span>;
 
         <span class="comment">// FIXME: Rename this to the actual property since it&#39;s used for generators too</span>
-        <span class="kw">const</span> <span class="ident">HAS_TY_CLOSURE</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">9</span>,
+        <span class="kw">const</span> <span class="ident">HAS_TY_CLOSURE</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">9</span>;
 
         <span class="comment">// true if there are &quot;names&quot; of types and regions and so forth</span>
         <span class="comment">// that are local to a particular fn</span>
-        <span class="kw">const</span> <span class="ident">HAS_LOCAL_NAMES</span>    <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">10</span>,
+        <span class="kw">const</span> <span class="ident">HAS_LOCAL_NAMES</span>    <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">10</span>;
 
         <span class="comment">// Present if the type belongs in a local type context.</span>
         <span class="comment">// Only set for TyInfer other than Fresh.</span>
-        <span class="kw">const</span> <span class="ident">KEEP_IN_LOCAL_TCX</span>  <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">11</span>,
+        <span class="kw">const</span> <span class="ident">KEEP_IN_LOCAL_TCX</span>  <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">11</span>;
 
         <span class="comment">// Is there a projection that does not involve a bound region?</span>
         <span class="comment">// Currently we can&#39;t normalize projections w/ bound regions.</span>
-        <span class="kw">const</span> <span class="ident">HAS_NORMALIZABLE_PROJECTION</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">12</span>,
+        <span class="kw">const</span> <span class="ident">HAS_NORMALIZABLE_PROJECTION</span> <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">12</span>;
 
         <span class="kw">const</span> <span class="ident">NEEDS_SUBST</span>        <span class="op">=</span> <span class="ident">TypeFlags</span>::<span class="ident">HAS_PARAMS</span>.<span class="ident">bits</span> <span class="op">|</span>
                                    <span class="ident">TypeFlags</span>::<span class="ident">HAS_SELF</span>.<span class="ident">bits</span> <span class="op">|</span>
-                                   <span class="ident">TypeFlags</span>::<span class="ident">HAS_RE_EARLY_BOUND</span>.<span class="ident">bits</span>,
+                                   <span class="ident">TypeFlags</span>::<span class="ident">HAS_RE_EARLY_BOUND</span>.<span class="ident">bits</span>;
 
         <span class="comment">// Flags representing the nominal content of a type,</span>
         <span class="comment">// computed by FlagsComputation. If you add a new nominal</span>
@@ -3078,7 +3080,7 @@
                                   <span class="ident">TypeFlags</span>::<span class="ident">HAS_PROJECTION</span>.<span class="ident">bits</span> <span class="op">|</span>
                                   <span class="ident">TypeFlags</span>::<span class="ident">HAS_TY_CLOSURE</span>.<span class="ident">bits</span> <span class="op">|</span>
                                   <span class="ident">TypeFlags</span>::<span class="ident">HAS_LOCAL_NAMES</span>.<span class="ident">bits</span> <span class="op">|</span>
-                                  <span class="ident">TypeFlags</span>::<span class="ident">KEEP_IN_LOCAL_TCX</span>.<span class="ident">bits</span>,
+                                  <span class="ident">TypeFlags</span>::<span class="ident">KEEP_IN_LOCAL_TCX</span>.<span class="ident">bits</span>;
     }
 }
 
@@ -3136,9 +3138,9 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">TyS</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">TyS</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
                                           <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyS</span> {
             <span class="kw-2">ref</span> <span class="ident">sty</span>,
@@ -3894,13 +3896,13 @@
 }
 
 <span class="macro">bitflags</span><span class="macro">!</span> {
-    <span class="ident">flags</span> <span class="ident">AdtFlags</span>: <span class="ident">u32</span> {
-        <span class="kw">const</span> <span class="ident">NO_ADT_FLAGS</span>        <span class="op">=</span> <span class="number">0</span>,
-        <span class="kw">const</span> <span class="ident">IS_ENUM</span>             <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>,
-        <span class="kw">const</span> <span class="ident">IS_PHANTOM_DATA</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>,
-        <span class="kw">const</span> <span class="ident">IS_FUNDAMENTAL</span>      <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>,
-        <span class="kw">const</span> <span class="ident">IS_UNION</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>,
-        <span class="kw">const</span> <span class="ident">IS_BOX</span>              <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>,
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AdtFlags</span>: <span class="ident">u32</span> {
+        <span class="kw">const</span> <span class="ident">NO_ADT_FLAGS</span>        <span class="op">=</span> <span class="number">0</span>;
+        <span class="kw">const</span> <span class="ident">IS_ENUM</span>             <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>;
+        <span class="kw">const</span> <span class="ident">IS_PHANTOM_DATA</span>     <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
+        <span class="kw">const</span> <span class="ident">IS_FUNDAMENTAL</span>      <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>;
+        <span class="kw">const</span> <span class="ident">IS_UNION</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>;
+        <span class="kw">const</span> <span class="ident">IS_BOX</span>              <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>;
     }
 }
 
@@ -3970,9 +3972,9 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">serialize</span>::<span class="ident">UseSpecializedDecodable</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">AdtDef</span> {}
 
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">AdtDef</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">AdtDef</span> {
     <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
                                           <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">AdtDef</span> {
             <span class="ident">did</span>,
@@ -3993,18 +3995,18 @@
 
 <span class="macro">bitflags</span><span class="macro">!</span> {
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Default</span>)]</span>
-    <span class="ident">flags</span> <span class="ident">ReprFlags</span>: <span class="ident">u8</span> {
-        <span class="kw">const</span> <span class="ident">IS_C</span>               <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>,
-        <span class="kw">const</span> <span class="ident">IS_PACKED</span>          <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>,
-        <span class="kw">const</span> <span class="ident">IS_SIMD</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>,
+    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ReprFlags</span>: <span class="ident">u8</span> {
+        <span class="kw">const</span> <span class="ident">IS_C</span>               <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>;
+        <span class="kw">const</span> <span class="ident">IS_PACKED</span>          <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
+        <span class="kw">const</span> <span class="ident">IS_SIMD</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>;
         <span class="comment">// Internal only for now. If true, don&#39;t reorder fields.</span>
-        <span class="kw">const</span> <span class="ident">IS_LINEAR</span>          <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>,
+        <span class="kw">const</span> <span class="ident">IS_LINEAR</span>          <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>;
 
         <span class="comment">// Any of these flags being set prevent field reordering optimisation.</span>
         <span class="kw">const</span> <span class="ident">IS_UNOPTIMISABLE</span>   <span class="op">=</span> <span class="ident">ReprFlags</span>::<span class="ident">IS_C</span>.<span class="ident">bits</span> <span class="op">|</span>
                                    <span class="ident">ReprFlags</span>::<span class="ident">IS_PACKED</span>.<span class="ident">bits</span> <span class="op">|</span>
                                    <span class="ident">ReprFlags</span>::<span class="ident">IS_SIMD</span>.<span class="ident">bits</span> <span class="op">|</span>
-                                   <span class="ident">ReprFlags</span>::<span class="ident">IS_LINEAR</span>.<span class="ident">bits</span>,
+                                   <span class="ident">ReprFlags</span>::<span class="ident">IS_LINEAR</span>.<span class="ident">bits</span>;
     }
 }
 
@@ -5210,6 +5212,10 @@
     <span class="comment">// this be a `&amp;&#39;tcx str`.</span>
     <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">InternedString</span>
 }
+
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="self">self</span>::<span class="ident">SymbolName</span> {
+    <span class="ident">name</span>
+});
 
 <span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">SymbolName</span> {
     <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">str</span>;

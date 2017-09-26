@@ -1627,6 +1627,22 @@
 <span id="1582">1582</span>
 <span id="1583">1583</span>
 <span id="1584">1584</span>
+<span id="1585">1585</span>
+<span id="1586">1586</span>
+<span id="1587">1587</span>
+<span id="1588">1588</span>
+<span id="1589">1589</span>
+<span id="1590">1590</span>
+<span id="1591">1591</span>
+<span id="1592">1592</span>
+<span id="1593">1593</span>
+<span id="1594">1594</span>
+<span id="1595">1595</span>
+<span id="1596">1596</span>
+<span id="1597">1597</span>
+<span id="1598">1598</span>
+<span id="1599">1599</span>
+<span id="1600">1600</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1736,15 +1752,18 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Child</span> {
     <span class="ident">handle</span>: <span class="ident">imp</span>::<span class="ident">Process</span>,
 
-    <span class="doccomment">/// The handle for writing to the child&#39;s stdin, if it has been captured</span>
+    <span class="doccomment">/// The handle for writing to the child&#39;s standard input (stdin), if it has</span>
+    <span class="doccomment">/// been captured.</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">stdin</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ChildStdin</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// The handle for reading from the child&#39;s stdout, if it has been captured</span>
+    <span class="doccomment">/// The handle for reading from the child&#39;s standard output (stdout), if it</span>
+    <span class="doccomment">/// has been captured.</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">stdout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ChildStdout</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// The handle for reading from the child&#39;s stderr, if it has been captured</span>
+    <span class="doccomment">/// The handle for reading from the child&#39;s standard error (stderr), if it</span>
+    <span class="doccomment">/// has been captured.</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">stderr</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ChildStderr</span><span class="op">&gt;</span>,
 }
@@ -1779,12 +1798,17 @@
     }
 }
 
-<span class="doccomment">/// A handle to a child process&#39;s stdin.</span>
+<span class="doccomment">/// A handle to a child process&#39;s standard input (stdin).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This struct is used in the [`stdin`] field on [`Child`].</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// When an instance of `ChildStdin` is [dropped], the `ChildStdin`&#39;s underlying</span>
+<span class="doccomment">/// file handle will be closed. If the child process was blocked on input prior</span>
+<span class="doccomment">/// to being dropped, it will become unblocked after dropping.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// [`Child`]: struct.Child.html</span>
 <span class="doccomment">/// [`stdin`]: struct.Child.html#structfield.stdin</span>
+<span class="doccomment">/// [dropped]: ../ops/trait.Drop.html</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChildStdin</span> {
     <span class="ident">inner</span>: <span class="ident">AnonPipe</span>
@@ -1822,12 +1846,16 @@
     }
 }
 
-<span class="doccomment">/// A handle to a child process&#39;s stdout.</span>
+<span class="doccomment">/// A handle to a child process&#39;s standard output (stdout).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This struct is used in the [`stdout`] field on [`Child`].</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// When an instance of `ChildStdout` is [dropped], the `ChildStdout`&#39;s</span>
+<span class="doccomment">/// underlying file handle will be closed.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// [`Child`]: struct.Child.html</span>
 <span class="doccomment">/// [`stdout`]: struct.Child.html#structfield.stdout</span>
+<span class="doccomment">/// [dropped]: ../ops/trait.Drop.html</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChildStdout</span> {
     <span class="ident">inner</span>: <span class="ident">AnonPipe</span>
@@ -1869,8 +1897,12 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// This struct is used in the [`stderr`] field on [`Child`].</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// When an instance of `ChildStderr` is [dropped], the `ChildStderr`&#39;s</span>
+<span class="doccomment">/// underlying file handle will be closed.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// [`Child`]: struct.Child.html</span>
 <span class="doccomment">/// [`stderr`]: struct.Child.html#structfield.stderr</span>
+<span class="doccomment">/// [dropped]: ../ops/trait.Drop.html</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChildStderr</span> {
     <span class="ident">inner</span>: <span class="ident">AnonPipe</span>
@@ -2164,7 +2196,7 @@
         <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Configuration for the child process&#39;s stdin handle (file descriptor 0).</span>
+    <span class="doccomment">/// Configuration for the child process&#39;s standard input (stdin) handle.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
@@ -2184,7 +2216,7 @@
         <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Configuration for the child process&#39;s stdout handle (file descriptor 1).</span>
+    <span class="doccomment">/// Configuration for the child process&#39;s standard output (stdout) handle.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
@@ -2204,7 +2236,7 @@
         <span class="self">self</span>
     }
 
-    <span class="doccomment">/// Configuration for the child process&#39;s stderr handle (file descriptor 2).</span>
+    <span class="doccomment">/// Configuration for the child process&#39;s standard error (stderr) handle.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>

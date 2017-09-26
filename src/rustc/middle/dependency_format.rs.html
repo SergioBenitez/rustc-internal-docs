@@ -455,6 +455,14 @@
 <span id="410">410</span>
 <span id="411">411</span>
 <span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -570,52 +578,61 @@
         <span class="kw">return</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
     }
 
-    <span class="kw">match</span> <span class="ident">ty</span> {
-        <span class="comment">// If the global prefer_dynamic switch is turned off, first attempt</span>
-        <span class="comment">// static linkage (this can fail).</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeExecutable</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">prefer_dynamic</span> <span class="op">=&gt;</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">attempt_static</span>(<span class="ident">tcx</span>) {
-                <span class="kw">return</span> <span class="ident">v</span>;
-            }
-        }
-
-        <span class="comment">// No linkage happens with rlibs, we just needed the metadata (which we</span>
-        <span class="comment">// got long ago), so don&#39;t bother with anything.</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeRlib</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">Vec</span>::<span class="ident">new</span>(),
-
-        <span class="comment">// Staticlibs and cdylibs must have all static dependencies. If any fail</span>
-        <span class="comment">// to be found, we generate some nice pretty errors.</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeStaticlib</span> <span class="op">|</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeCdylib</span> <span class="op">=&gt;</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">attempt_static</span>(<span class="ident">tcx</span>) {
-                <span class="kw">return</span> <span class="ident">v</span>;
-            }
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">cnum</span> <span class="kw">in</span> <span class="ident">tcx</span>.<span class="ident">crates</span>().<span class="ident">iter</span>() {
-                <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">dep_kind</span>(<span class="ident">cnum</span>).<span class="ident">macros_only</span>() { <span class="kw">continue</span> }
-                <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">used_crate_source</span>(<span class="ident">cnum</span>);
-                <span class="kw">if</span> <span class="ident">src</span>.<span class="ident">rlib</span>.<span class="ident">is_some</span>() { <span class="kw">continue</span> }
-                <span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;dependency `{}` not found in rlib format&quot;</span>,
-                                  <span class="ident">tcx</span>.<span class="ident">crate_name</span>(<span class="ident">cnum</span>)));
-            }
-            <span class="kw">return</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-        }
+    <span class="kw">let</span> <span class="ident">preferred_linkage</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ty</span> {
+        <span class="comment">// cdylibs must have all static dependencies.</span>
+        <span class="ident">config</span>::<span class="ident">CrateTypeCdylib</span> <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">Static</span>,
 
         <span class="comment">// Generating a dylib without `-C prefer-dynamic` means that we&#39;re going</span>
         <span class="comment">// to try to eagerly statically link all dependencies. This is normally</span>
         <span class="comment">// done for end-product dylibs, not intermediate products.</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeDylib</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">prefer_dynamic</span> <span class="op">=&gt;</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">attempt_static</span>(<span class="ident">tcx</span>) {
-                <span class="kw">return</span> <span class="ident">v</span>;
-            }
-        }
+        <span class="ident">config</span>::<span class="ident">CrateTypeDylib</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">prefer_dynamic</span> <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">Static</span>,
+        <span class="ident">config</span>::<span class="ident">CrateTypeDylib</span> <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">Dynamic</span>,
 
-        <span class="comment">// Everything else falls through below. This will happen either with the</span>
-        <span class="comment">// `-C prefer-dynamic` or because we&#39;re a proc-macro crate. Note that</span>
+        <span class="comment">// If the global prefer_dynamic switch is turned off, or the final</span>
+        <span class="comment">// executable will be statically linked, prefer static crate linkage.</span>
+        <span class="ident">config</span>::<span class="ident">CrateTypeExecutable</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">prefer_dynamic</span> <span class="op">||</span>
+            <span class="ident">sess</span>.<span class="ident">crt_static</span>() <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">Static</span>,
+        <span class="ident">config</span>::<span class="ident">CrateTypeExecutable</span> <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">Dynamic</span>,
+
         <span class="comment">// proc-macro crates are required to be dylibs, and they&#39;re currently</span>
         <span class="comment">// required to link to libsyntax as well.</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeExecutable</span> <span class="op">|</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeDylib</span> <span class="op">|</span>
-        <span class="ident">config</span>::<span class="ident">CrateTypeProcMacro</span> <span class="op">=&gt;</span> {},
+        <span class="ident">config</span>::<span class="ident">CrateTypeProcMacro</span> <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">Dynamic</span>,
+
+        <span class="comment">// No linkage happens with rlibs, we just needed the metadata (which we</span>
+        <span class="comment">// got long ago), so don&#39;t bother with anything.</span>
+        <span class="ident">config</span>::<span class="ident">CrateTypeRlib</span> <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">NotLinked</span>,
+
+        <span class="comment">// staticlibs must have all static dependencies.</span>
+        <span class="ident">config</span>::<span class="ident">CrateTypeStaticlib</span> <span class="op">=&gt;</span> <span class="ident">Linkage</span>::<span class="ident">Static</span>,
+    };
+
+    <span class="kw">if</span> <span class="ident">preferred_linkage</span> <span class="op">==</span> <span class="ident">Linkage</span>::<span class="ident">NotLinked</span> {
+        <span class="comment">// If the crate is not linked, there are no link-time dependencies.</span>
+        <span class="kw">return</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+    }
+
+    <span class="kw">if</span> <span class="ident">preferred_linkage</span> <span class="op">==</span> <span class="ident">Linkage</span>::<span class="ident">Static</span> {
+        <span class="comment">// Attempt static linkage first. For dylibs and executables, we may be</span>
+        <span class="comment">// able to retry below with dynamic linkage.</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">attempt_static</span>(<span class="ident">tcx</span>) {
+            <span class="kw">return</span> <span class="ident">v</span>;
+        }
+
+        <span class="comment">// Staticlibs, cdylibs, and static executables must have all static</span>
+        <span class="comment">// dependencies. If any are not found, generate some nice pretty errors.</span>
+        <span class="kw">if</span> <span class="ident">ty</span> <span class="op">==</span> <span class="ident">config</span>::<span class="ident">CrateTypeCdylib</span> <span class="op">||</span> <span class="ident">ty</span> <span class="op">==</span> <span class="ident">config</span>::<span class="ident">CrateTypeStaticlib</span> <span class="op">||</span>
+                (<span class="ident">ty</span> <span class="op">==</span> <span class="ident">config</span>::<span class="ident">CrateTypeExecutable</span> <span class="op">&amp;&amp;</span> <span class="ident">sess</span>.<span class="ident">crt_static</span>() <span class="op">&amp;&amp;</span>
+                <span class="op">!</span><span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">crt_static_allows_dylibs</span>) {
+            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">cnum</span> <span class="kw">in</span> <span class="ident">tcx</span>.<span class="ident">crates</span>().<span class="ident">iter</span>() {
+                <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">dep_kind</span>(<span class="ident">cnum</span>).<span class="ident">macros_only</span>() { <span class="kw">continue</span> }
+                <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">used_crate_source</span>(<span class="ident">cnum</span>);
+                <span class="kw">if</span> <span class="ident">src</span>.<span class="ident">rlib</span>.<span class="ident">is_some</span>() { <span class="kw">continue</span> }
+                <span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;crate `{}` required to be available in rlib format, \
+                                  but was not found in this form&quot;</span>,
+                                  <span class="ident">tcx</span>.<span class="ident">crate_name</span>(<span class="ident">cnum</span>)));
+            }
+            <span class="kw">return</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+        }
     }
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">formats</span> <span class="op">=</span> <span class="ident">FxHashMap</span>();
@@ -694,10 +711,9 @@
                     <span class="ident">Linkage</span>::<span class="ident">Static</span> <span class="op">=&gt;</span> <span class="string">&quot;rlib&quot;</span>,
                     _ <span class="op">=&gt;</span> <span class="string">&quot;dylib&quot;</span>,
                 };
-                <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">crate_name</span>(<span class="ident">cnum</span>);
-                <span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;crate `{}` required to be available in {}, \
-                                  but it was not available in this form&quot;</span>,
-                                  <span class="ident">name</span>, <span class="ident">kind</span>));
+                <span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;crate `{}` required to be available in {} format, \
+                                  but was not found in this form&quot;</span>,
+                                  <span class="ident">tcx</span>.<span class="ident">crate_name</span>(<span class="ident">cnum</span>), <span class="ident">kind</span>));
             }
         }
     }

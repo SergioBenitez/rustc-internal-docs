@@ -174,8 +174,8 @@
 
         <span class="kw">let</span> <span class="ident">expr_span</span> <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">span</span>;
         <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">source_info</span>(<span class="ident">expr_span</span>);
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ExprKind</span>::<span class="ident">Scope</span> { <span class="ident">region_scope</span>, <span class="ident">value</span> } <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">kind</span> {
-            <span class="kw">return</span> <span class="ident">this</span>.<span class="ident">in_scope</span>((<span class="ident">region_scope</span>, <span class="ident">source_info</span>), <span class="ident">block</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ExprKind</span>::<span class="ident">Scope</span> { <span class="ident">region_scope</span>, <span class="ident">lint_level</span>, <span class="ident">value</span> } <span class="op">=</span> <span class="ident">expr</span>.<span class="ident">kind</span> {
+            <span class="kw">return</span> <span class="ident">this</span>.<span class="ident">in_scope</span>((<span class="ident">region_scope</span>, <span class="ident">source_info</span>), <span class="ident">lint_level</span>, <span class="ident">block</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                 <span class="ident">this</span>.<span class="ident">as_temp</span>(<span class="ident">block</span>, <span class="ident">temp_lifetime</span>, <span class="ident">value</span>)
             });
         }

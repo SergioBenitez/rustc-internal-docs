@@ -854,10 +854,10 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">promoter</span> <span class="op">=</span> <span class="ident">Promoter</span> {
             <span class="ident">promoted</span>: <span class="ident">Mir</span>::<span class="ident">new</span>(
                 <span class="ident">IndexVec</span>::<span class="ident">new</span>(),
-                <span class="prelude-val">Some</span>(<span class="ident">VisibilityScopeData</span> {
-                    <span class="ident">span</span>,
-                    <span class="ident">parent_scope</span>: <span class="prelude-val">None</span>
-                }).<span class="ident">into_iter</span>().<span class="ident">collect</span>(),
+                <span class="comment">// FIXME: maybe try to filter this to avoid blowing up</span>
+                <span class="comment">// memory usage?</span>
+                <span class="ident">mir</span>.<span class="ident">visibility_scopes</span>.<span class="ident">clone</span>(),
+                <span class="ident">mir</span>.<span class="ident">visibility_scope_info</span>.<span class="ident">clone</span>(),
                 <span class="ident">IndexVec</span>::<span class="ident">new</span>(),
                 <span class="ident">ty</span>,
                 <span class="prelude-val">None</span>,

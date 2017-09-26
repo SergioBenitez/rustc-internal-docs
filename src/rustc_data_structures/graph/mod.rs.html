@@ -498,6 +498,13 @@
 <span id="453">453</span>
 <span id="454">454</span>
 <span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -612,6 +619,13 @@
         <span class="ident">Graph</span> {
             <span class="ident">nodes</span>: <span class="ident">SnapshotVec</span>::<span class="ident">new</span>(),
             <span class="ident">edges</span>: <span class="ident">SnapshotVec</span>::<span class="ident">new</span>(),
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_capacity</span>(<span class="ident">nodes</span>: <span class="ident">usize</span>, <span class="ident">edges</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">Graph</span><span class="op">&lt;</span><span class="ident">N</span>, <span class="ident">E</span><span class="op">&gt;</span> {
+        <span class="ident">Graph</span> {
+            <span class="ident">nodes</span>: <span class="ident">SnapshotVec</span>::<span class="ident">with_capacity</span>(<span class="ident">nodes</span>),
+            <span class="ident">edges</span>: <span class="ident">SnapshotVec</span>::<span class="ident">with_capacity</span>(<span class="ident">edges</span>),
         }
     }
 

@@ -208,6 +208,9 @@
 <span id="163">163</span>
 <span id="164">164</span>
 <span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -237,6 +240,7 @@
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">add_validation</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">clean_end_regions</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">check_unsafety</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">simplify_branches</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">simplify</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">erase_regions</span>;
@@ -257,6 +261,7 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">provide</span>(<span class="ident">providers</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Providers</span>) {
     <span class="self">self</span>::<span class="ident">qualify_consts</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
+    <span class="self">self</span>::<span class="ident">check_unsafety</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
     <span class="kw-2">*</span><span class="ident">providers</span> <span class="op">=</span> <span class="ident">Providers</span> {
         <span class="ident">mir_keys</span>,
         <span class="ident">mir_const</span>,
@@ -327,6 +332,7 @@
         <span class="comment">// directly need the result or `mir_const_qualif`, so we can just force it.</span>
         <span class="ident">ty</span>::<span class="ident">queries</span>::<span class="ident">mir_const_qualif</span>::<span class="ident">force</span>(<span class="ident">tcx</span>, <span class="ident">DUMMY_SP</span>, <span class="ident">def_id</span>);
     }
+    <span class="ident">ty</span>::<span class="ident">queries</span>::<span class="ident">unsafety_violations</span>::<span class="ident">force</span>(<span class="ident">tcx</span>, <span class="ident">DUMMY_SP</span>, <span class="ident">def_id</span>);
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mir</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mir_const</span>(<span class="ident">def_id</span>).<span class="ident">steal</span>();
     <span class="ident">transform</span>::<span class="ident">run_suite</span>(<span class="ident">tcx</span>, <span class="ident">source</span>, <span class="ident">MIR_VALIDATED</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">mir</span>);

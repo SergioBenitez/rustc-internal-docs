@@ -219,9 +219,9 @@
         <span class="comment">// Handle a number of expressions that don&#39;t need a destination at all. This</span>
         <span class="comment">// avoids needing a mountain of temporary `()` variables.</span>
         <span class="kw">match</span> <span class="ident">expr</span>.<span class="ident">kind</span> {
-            <span class="ident">ExprKind</span>::<span class="ident">Scope</span> { <span class="ident">region_scope</span>, <span class="ident">value</span> } <span class="op">=&gt;</span> {
+            <span class="ident">ExprKind</span>::<span class="ident">Scope</span> { <span class="ident">region_scope</span>, <span class="ident">lint_level</span>, <span class="ident">value</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">hir</span>.<span class="ident">mirror</span>(<span class="ident">value</span>);
-                <span class="ident">this</span>.<span class="ident">in_scope</span>((<span class="ident">region_scope</span>, <span class="ident">source_info</span>), <span class="ident">block</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
+                <span class="ident">this</span>.<span class="ident">in_scope</span>((<span class="ident">region_scope</span>, <span class="ident">source_info</span>), <span class="ident">lint_level</span>, <span class="ident">block</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                     <span class="ident">this</span>.<span class="ident">stmt_expr</span>(<span class="ident">block</span>, <span class="ident">value</span>)
                 })
             }

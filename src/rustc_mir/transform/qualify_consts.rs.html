@@ -1148,38 +1148,38 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">promote_consts</span>::{<span class="self">self</span>, <span class="ident">Candidate</span>, <span class="ident">TempState</span>};
 
 <span class="macro">bitflags</span><span class="macro">!</span> {
-    <span class="ident">flags</span> <span class="ident">Qualif</span>: <span class="ident">u8</span> {
+    <span class="kw">struct</span> <span class="ident">Qualif</span>: <span class="ident">u8</span> {
         <span class="comment">// Constant containing interior mutability (UnsafeCell).</span>
-        <span class="kw">const</span> <span class="ident">MUTABLE_INTERIOR</span>  <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>,
+        <span class="kw">const</span> <span class="ident">MUTABLE_INTERIOR</span>  <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">0</span>;
 
         <span class="comment">// Constant containing an ADT that implements Drop.</span>
-        <span class="kw">const</span> <span class="ident">NEEDS_DROP</span>        <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>,
+        <span class="kw">const</span> <span class="ident">NEEDS_DROP</span>        <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">1</span>;
 
         <span class="comment">// Function argument.</span>
-        <span class="kw">const</span> <span class="ident">FN_ARGUMENT</span>       <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>,
+        <span class="kw">const</span> <span class="ident">FN_ARGUMENT</span>       <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>;
 
         <span class="comment">// Static lvalue or move from a static.</span>
-        <span class="kw">const</span> <span class="ident">STATIC</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>,
+        <span class="kw">const</span> <span class="ident">STATIC</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>;
 
         <span class="comment">// Reference to a static.</span>
-        <span class="kw">const</span> <span class="ident">STATIC_REF</span>        <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>,
+        <span class="kw">const</span> <span class="ident">STATIC_REF</span>        <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>;
 
         <span class="comment">// Not constant at all - non-`const fn` calls, asm!,</span>
         <span class="comment">// pointer comparisons, ptr-to-int casts, etc.</span>
-        <span class="kw">const</span> <span class="ident">NOT_CONST</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>,
+        <span class="kw">const</span> <span class="ident">NOT_CONST</span>         <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>;
 
         <span class="comment">// Refers to temporaries which cannot be promoted as</span>
         <span class="comment">// promote_consts decided they weren&#39;t simple enough.</span>
-        <span class="kw">const</span> <span class="ident">NOT_PROMOTABLE</span>    <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>,
+        <span class="kw">const</span> <span class="ident">NOT_PROMOTABLE</span>    <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">6</span>;
 
         <span class="comment">// Borrows of temporaries can be promoted only</span>
         <span class="comment">// if they have none of the above qualifications.</span>
-        <span class="kw">const</span> <span class="ident">NEVER_PROMOTE</span>     <span class="op">=</span> <span class="number">0b111_1111</span>,
+        <span class="kw">const</span> <span class="ident">NEVER_PROMOTE</span>     <span class="op">=</span> <span class="number">0b111_1111</span>;
 
         <span class="comment">// Const items can only have MUTABLE_INTERIOR</span>
         <span class="comment">// and NOT_PROMOTABLE without producing an error.</span>
         <span class="kw">const</span> <span class="ident">CONST_ERROR</span>       <span class="op">=</span> <span class="op">!</span><span class="ident">Qualif</span>::<span class="ident">MUTABLE_INTERIOR</span>.<span class="ident">bits</span> <span class="op">&amp;</span>
-                                  <span class="op">!</span><span class="ident">Qualif</span>::<span class="ident">NOT_PROMOTABLE</span>.<span class="ident">bits</span>
+                                  <span class="op">!</span><span class="ident">Qualif</span>::<span class="ident">NOT_PROMOTABLE</span>.<span class="ident">bits</span>;
     }
 }
 

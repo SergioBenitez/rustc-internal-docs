@@ -492,6 +492,11 @@
 <span id="447">447</span>
 <span id="448">448</span>
 <span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -517,7 +522,7 @@
 <span class="kw">use</span> <span class="ident">rustc_const_math</span>::{<span class="ident">ConstInt</span>, <span class="ident">ConstIsize</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">region</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
@@ -553,9 +558,10 @@
         <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">source_info</span>(<span class="ident">expr_span</span>);
 
         <span class="kw">match</span> <span class="ident">expr</span>.<span class="ident">kind</span> {
-            <span class="ident">ExprKind</span>::<span class="ident">Scope</span> { <span class="ident">region_scope</span>, <span class="ident">value</span> } <span class="op">=&gt;</span> {
+            <span class="ident">ExprKind</span>::<span class="ident">Scope</span> { <span class="ident">region_scope</span>, <span class="ident">lint_level</span>, <span class="ident">value</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">region_scope</span> <span class="op">=</span> (<span class="ident">region_scope</span>, <span class="ident">source_info</span>);
-                <span class="ident">this</span>.<span class="ident">in_scope</span>(<span class="ident">region_scope</span>, <span class="ident">block</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">this</span>.<span class="ident">as_rvalue</span>(<span class="ident">block</span>, <span class="ident">scope</span>, <span class="ident">value</span>))
+                <span class="ident">this</span>.<span class="ident">in_scope</span>(<span class="ident">region_scope</span>, <span class="ident">lint_level</span>, <span class="ident">block</span>,
+                              <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">this</span>.<span class="ident">as_rvalue</span>(<span class="ident">block</span>, <span class="ident">scope</span>, <span class="ident">value</span>))
             }
             <span class="ident">ExprKind</span>::<span class="ident">Repeat</span> { <span class="ident">value</span>, <span class="ident">count</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">value_operand</span> <span class="op">=</span> <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">as_operand</span>(<span class="ident">block</span>, <span class="ident">scope</span>, <span class="ident">value</span>));
@@ -591,7 +597,11 @@
             }
             <span class="ident">ExprKind</span>::<span class="ident">Box</span> { <span class="ident">value</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">hir</span>.<span class="ident">mirror</span>(<span class="ident">value</span>);
-                <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">local_decls</span>.<span class="ident">push</span>(<span class="ident">LocalDecl</span>::<span class="ident">new_temp</span>(<span class="ident">expr</span>.<span class="ident">ty</span>, <span class="ident">expr_span</span>));
+                <span class="comment">// The `Box&lt;T&gt;` temporary created here is not a part of the HIR,</span>
+                <span class="comment">// and therefore is not considered during generator OIBIT</span>
+                <span class="comment">// determination. See the comment about `box` at `yield_in_scope`.</span>
+                <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">local_decls</span>.<span class="ident">push</span>(
+                    <span class="ident">LocalDecl</span>::<span class="ident">new_internal</span>(<span class="ident">expr</span>.<span class="ident">ty</span>, <span class="ident">expr_span</span>));
                 <span class="ident">this</span>.<span class="ident">cfg</span>.<span class="ident">push</span>(<span class="ident">block</span>, <span class="ident">Statement</span> {
                     <span class="ident">source_info</span>,
                     <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(<span class="ident">result</span>)
@@ -786,7 +796,7 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_binary_op</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">block</span>: <span class="ident">BasicBlock</span>,
-                           <span class="ident">op</span>: <span class="ident">BinOp</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                           <span class="ident">op</span>: <span class="ident">BinOp</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                            <span class="ident">lhs</span>: <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">rhs</span>: <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BlockAnd</span><span class="op">&lt;</span><span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">source_info</span>(<span class="ident">span</span>);
         <span class="kw">let</span> <span class="ident">bool_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">bool_ty</span>();
@@ -873,7 +883,7 @@
     }
 
     <span class="comment">// Helper to get a `-1` value of the appropriate type</span>
-    <span class="kw">fn</span> <span class="ident">neg_1_literal</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">neg_1_literal</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">literal</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
             <span class="ident">ty</span>::<span class="ident">TyInt</span>(<span class="ident">ity</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ity</span> {
@@ -905,7 +915,7 @@
     }
 
     <span class="comment">// Helper to get the minimum value of the appropriate type</span>
-    <span class="kw">fn</span> <span class="ident">minval_literal</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">minval_literal</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">literal</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
             <span class="ident">ty</span>::<span class="ident">TyInt</span>(<span class="ident">ity</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ity</span> {

@@ -71,14 +71,11 @@ a lot of them.</p>
                            <td><a class="struct" href="struct.Span.html"
                                   title='struct syntax::ext::quote::rt::Span'>Span</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] <p>Spans represent a region of code, used for error reporting. Positions in spans
-are <em>absolute</em> positions from the beginning of the codemap, not positions
-relative to FileMaps. Methods on the CodeMap can be used to relate spans back
-to the original source.
-You must be careful if the span crosses more than one file - you will not be
-able to use many of the functions on spans in codemap and you cannot assume
-that the length of the span = hi - lo; there may be space in the BytePos
-range between files.</p>
+                               [<div class='stab unstable'>Experimental</div>] <p>A compressed span.
+Contains either fields of <code>SpanData</code> inline if they are small, or index into span interner.
+The primary goal of <code>Span</code> is to be as small as possible and fit into other structures
+(that&#39;s why it uses <code>packed</code> as well). Decoding speed is the second priority.
+See <code>SpanData</code> for the info on span fields in decoded representation.</p>
                            </td>
                        </tr></table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
 <table>
@@ -86,7 +83,8 @@ range between files.</p>
                            <td><a class="constant" href="constant.DUMMY_SP.html"
                                   title='constant syntax::ext::quote::rt::DUMMY_SP'>DUMMY_SP</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] 
+                               [<div class='stab unstable'>Experimental</div>] <p>Dummy span, both position and length are zero, syntax context is zero as well.
+This span is kept inline and encoded with format 0.</p>
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>

@@ -635,6 +635,7 @@
 <span id="590">590</span>
 <span id="591">591</span>
 <span id="592">592</span>
+<span id="593">593</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -663,23 +664,19 @@
 <span class="kw">use</span> <span class="ident">monomorphize</span>::<span class="ident">Instance</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">trans</span>::{<span class="ident">Linkage</span>, <span class="ident">Visibility</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">traits</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFoldable</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Subst</span>, <span class="ident">Substs</span>};
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">NodeId</span>};
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">attr</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
 <span class="kw">use</span> <span class="ident">type_of</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Write</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Write</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TransItem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="ident">Fn</span>(<span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
-    <span class="ident">Static</span>(<span class="ident">NodeId</span>),
-    <span class="ident">GlobalAsm</span>(<span class="ident">NodeId</span>),
-}
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">trans</span>::<span class="ident">TransItem</span>;
 
 <span class="doccomment">/// Describes how a translation item will be instantiated in object files.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Hash</span>)]</span>
@@ -693,15 +690,16 @@
     <span class="ident">LocalCopy</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TransItem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">TransItemExt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span> {
+    <span class="kw">fn</span> <span class="ident">as_trans_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">TransItem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>;
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">define</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+    <span class="kw">fn</span> <span class="ident">define</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;BEGIN IMPLEMENTING &#39;{} ({})&#39; in cgu {}&quot;</span>,
-                  <span class="self">self</span>.<span class="ident">to_string</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>()),
-                  <span class="self">self</span>.<span class="ident">to_raw_string</span>(),
-                  <span class="ident">ccx</span>.<span class="ident">codegen_unit</span>().<span class="ident">name</span>());
+               <span class="self">self</span>.<span class="ident">to_string</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>()),
+               <span class="self">self</span>.<span class="ident">to_raw_string</span>(),
+               <span class="ident">ccx</span>.<span class="ident">codegen_unit</span>().<span class="ident">name</span>());
 
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Static</span>(<span class="ident">node_id</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>();
                 <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">expect_item</span>(<span class="ident">node_id</span>);
@@ -735,10 +733,10 @@
                <span class="ident">ccx</span>.<span class="ident">codegen_unit</span>().<span class="ident">name</span>());
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">predefine</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                     <span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                     <span class="ident">linkage</span>: <span class="ident">llvm</span>::<span class="ident">Linkage</span>,
-                     <span class="ident">visibility</span>: <span class="ident">llvm</span>::<span class="ident">Visibility</span>) {
+    <span class="kw">fn</span> <span class="ident">predefine</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                 <span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                 <span class="ident">linkage</span>: <span class="ident">Linkage</span>,
+                 <span class="ident">visibility</span>: <span class="ident">Visibility</span>) {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;BEGIN PREDEFINING &#39;{} ({})&#39; in cgu {}&quot;</span>,
                <span class="self">self</span>.<span class="ident">to_string</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>()),
                <span class="self">self</span>.<span class="ident">to_raw_string</span>(),
@@ -748,12 +746,12 @@
 
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;symbol {}&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">symbol_name</span>);
 
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Static</span>(<span class="ident">node_id</span>) <span class="op">=&gt;</span> {
-                <span class="ident">TransItem</span>::<span class="ident">predefine_static</span>(<span class="ident">ccx</span>, <span class="ident">node_id</span>, <span class="ident">linkage</span>, <span class="ident">visibility</span>, <span class="kw-2">&amp;</span><span class="ident">symbol_name</span>);
+                <span class="ident">predefine_static</span>(<span class="ident">ccx</span>, <span class="ident">node_id</span>, <span class="ident">linkage</span>, <span class="ident">visibility</span>, <span class="kw-2">&amp;</span><span class="ident">symbol_name</span>);
             }
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="ident">instance</span>) <span class="op">=&gt;</span> {
-                <span class="ident">TransItem</span>::<span class="ident">predefine_fn</span>(<span class="ident">ccx</span>, <span class="ident">instance</span>, <span class="ident">linkage</span>, <span class="ident">visibility</span>, <span class="kw-2">&amp;</span><span class="ident">symbol_name</span>);
+                <span class="ident">predefine_fn</span>(<span class="ident">ccx</span>, <span class="ident">instance</span>, <span class="ident">linkage</span>, <span class="ident">visibility</span>, <span class="kw-2">&amp;</span><span class="ident">symbol_name</span>);
             }
             <span class="ident">TransItem</span>::<span class="ident">GlobalAsm</span>(..) <span class="op">=&gt;</span> {}
         }
@@ -764,75 +762,8 @@
                <span class="ident">ccx</span>.<span class="ident">codegen_unit</span>().<span class="ident">name</span>());
     }
 
-    <span class="kw">fn</span> <span class="ident">predefine_static</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                        <span class="ident">node_id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
-                        <span class="ident">linkage</span>: <span class="ident">llvm</span>::<span class="ident">Linkage</span>,
-                        <span class="ident">visibility</span>: <span class="ident">llvm</span>::<span class="ident">Visibility</span>,
-                        <span class="ident">symbol_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">node_id</span>);
-        <span class="kw">let</span> <span class="ident">instance</span> <span class="op">=</span> <span class="ident">Instance</span>::<span class="ident">mono</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="ident">def_id</span>);
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">common</span>::<span class="ident">instance_ty</span>(<span class="ident">ccx</span>.<span class="ident">shared</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>);
-        <span class="kw">let</span> <span class="ident">llty</span> <span class="op">=</span> <span class="ident">type_of</span>::<span class="ident">type_of</span>(<span class="ident">ccx</span>, <span class="ident">ty</span>);
-
-        <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">declare</span>::<span class="ident">define_global</span>(<span class="ident">ccx</span>, <span class="ident">symbol_name</span>, <span class="ident">llty</span>).<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
-            <span class="ident">ccx</span>.<span class="ident">sess</span>().<span class="ident">span_fatal</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">span</span>(<span class="ident">node_id</span>),
-                <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;symbol `{}` is already defined&quot;</span>, <span class="ident">symbol_name</span>))
-        });
-
-        <span class="kw">unsafe</span> {
-            <span class="ident">llvm</span>::<span class="ident">LLVMRustSetLinkage</span>(<span class="ident">g</span>, <span class="ident">linkage</span>);
-            <span class="ident">llvm</span>::<span class="ident">LLVMRustSetVisibility</span>(<span class="ident">g</span>, <span class="ident">visibility</span>);
-        }
-
-        <span class="ident">ccx</span>.<span class="ident">instances</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">instance</span>, <span class="ident">g</span>);
-        <span class="ident">ccx</span>.<span class="ident">statics</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">g</span>, <span class="ident">def_id</span>);
-    }
-
-    <span class="kw">fn</span> <span class="ident">predefine_fn</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                    <span class="ident">instance</span>: <span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                    <span class="ident">linkage</span>: <span class="ident">llvm</span>::<span class="ident">Linkage</span>,
-                    <span class="ident">visibility</span>: <span class="ident">llvm</span>::<span class="ident">Visibility</span>,
-                    <span class="ident">symbol_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">instance</span>.<span class="ident">substs</span>.<span class="ident">needs_infer</span>() <span class="op">&amp;&amp;</span>
-                <span class="op">!</span><span class="ident">instance</span>.<span class="ident">substs</span>.<span class="ident">has_param_types</span>());
-
-        <span class="kw">let</span> <span class="ident">mono_ty</span> <span class="op">=</span> <span class="ident">common</span>::<span class="ident">instance_ty</span>(<span class="ident">ccx</span>.<span class="ident">shared</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>);
-        <span class="kw">let</span> <span class="ident">attrs</span> <span class="op">=</span> <span class="ident">instance</span>.<span class="ident">def</span>.<span class="ident">attrs</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>());
-        <span class="kw">let</span> <span class="ident">lldecl</span> <span class="op">=</span> <span class="ident">declare</span>::<span class="ident">declare_fn</span>(<span class="ident">ccx</span>, <span class="ident">symbol_name</span>, <span class="ident">mono_ty</span>);
-        <span class="kw">unsafe</span> { <span class="ident">llvm</span>::<span class="ident">LLVMRustSetLinkage</span>(<span class="ident">lldecl</span>, <span class="ident">linkage</span>) };
-        <span class="ident">base</span>::<span class="ident">set_link_section</span>(<span class="ident">ccx</span>, <span class="ident">lldecl</span>, <span class="kw-2">&amp;</span><span class="ident">attrs</span>);
-        <span class="kw">if</span> <span class="ident">linkage</span> <span class="op">==</span> <span class="ident">llvm</span>::<span class="ident">Linkage</span>::<span class="ident">LinkOnceODRLinkage</span> <span class="op">||</span>
-            <span class="ident">linkage</span> <span class="op">==</span> <span class="ident">llvm</span>::<span class="ident">Linkage</span>::<span class="ident">WeakODRLinkage</span> {
-            <span class="ident">llvm</span>::<span class="ident">SetUniqueComdat</span>(<span class="ident">ccx</span>.<span class="ident">llmod</span>(), <span class="ident">lldecl</span>);
-        }
-
-        <span class="comment">// If we&#39;re compiling the compiler-builtins crate, e.g. the equivalent of</span>
-        <span class="comment">// compiler-rt, then we want to implicitly compile everything with hidden</span>
-        <span class="comment">// visibility as we&#39;re going to link this object all over the place but</span>
-        <span class="comment">// don&#39;t want the symbols to get exported.</span>
-        <span class="kw">if</span> <span class="ident">linkage</span> <span class="op">!=</span> <span class="ident">llvm</span>::<span class="ident">Linkage</span>::<span class="ident">InternalLinkage</span> <span class="op">&amp;&amp;</span>
-           <span class="ident">linkage</span> <span class="op">!=</span> <span class="ident">llvm</span>::<span class="ident">Linkage</span>::<span class="ident">PrivateLinkage</span> <span class="op">&amp;&amp;</span>
-           <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">krate_attrs</span>(), <span class="string">&quot;compiler_builtins&quot;</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="ident">llvm</span>::<span class="ident">LLVMRustSetVisibility</span>(<span class="ident">lldecl</span>, <span class="ident">llvm</span>::<span class="ident">Visibility</span>::<span class="ident">Hidden</span>);
-            }
-        } <span class="kw">else</span> {
-            <span class="kw">unsafe</span> {
-                <span class="ident">llvm</span>::<span class="ident">LLVMRustSetVisibility</span>(<span class="ident">lldecl</span>, <span class="ident">visibility</span>);
-            }
-        }
-
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;predefine_fn: mono_ty = {:?} instance = {:?}&quot;</span>, <span class="ident">mono_ty</span>, <span class="ident">instance</span>);
-        <span class="kw">if</span> <span class="ident">common</span>::<span class="ident">is_inline_instance</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>) {
-            <span class="ident">attributes</span>::<span class="ident">inline</span>(<span class="ident">lldecl</span>, <span class="ident">attributes</span>::<span class="ident">InlineAttr</span>::<span class="ident">Hint</span>);
-        }
-        <span class="ident">attributes</span>::<span class="ident">from_fn_attrs</span>(<span class="ident">ccx</span>, <span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="ident">lldecl</span>);
-
-        <span class="ident">ccx</span>.<span class="ident">instances</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">instance</span>, <span class="ident">lldecl</span>);
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">symbol_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">SymbolName</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+    <span class="kw">fn</span> <span class="ident">symbol_name</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">SymbolName</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="ident">instance</span>) <span class="op">=&gt;</span> <span class="ident">tcx</span>.<span class="ident">symbol_name</span>(<span class="ident">instance</span>),
             <span class="ident">TransItem</span>::<span class="ident">Static</span>(<span class="ident">node_id</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">node_id</span>);
@@ -847,8 +778,8 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+    <span class="kw">fn</span> <span class="ident">local_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="ident">Instance</span> { <span class="ident">def</span>, .. }) <span class="op">=&gt;</span> {
                 <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def</span>.<span class="ident">def_id</span>())
             }
@@ -859,10 +790,10 @@
         }.<span class="ident">map</span>(<span class="op">|</span><span class="ident">node_id</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span</span>(<span class="ident">node_id</span>))
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">instantiation_mode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                              <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                              <span class="op">-&gt;</span> <span class="ident">InstantiationMode</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+    <span class="kw">fn</span> <span class="ident">instantiation_mode</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                          <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                          <span class="op">-&gt;</span> <span class="ident">InstantiationMode</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="kw-2">ref</span> <span class="ident">instance</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">explicit_linkage</span>(<span class="ident">tcx</span>).<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span>
                     <span class="ident">common</span>::<span class="ident">requests_inline</span>(<span class="ident">tcx</span>, <span class="ident">instance</span>)
@@ -877,8 +808,8 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_generic_fn</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+    <span class="kw">fn</span> <span class="ident">is_generic_fn</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="kw-2">ref</span> <span class="ident">instance</span>) <span class="op">=&gt;</span> {
                 <span class="ident">instance</span>.<span class="ident">substs</span>.<span class="ident">types</span>().<span class="ident">next</span>().<span class="ident">is_some</span>()
             }
@@ -887,8 +818,8 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">explicit_linkage</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">llvm</span>::<span class="ident">Linkage</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+    <span class="kw">fn</span> <span class="ident">explicit_linkage</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Linkage</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="kw-2">ref</span> <span class="ident">instance</span>) <span class="op">=&gt;</span> <span class="ident">instance</span>.<span class="ident">def_id</span>(),
             <span class="ident">TransItem</span>::<span class="ident">Static</span>(<span class="ident">node_id</span>) <span class="op">=&gt;</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">node_id</span>),
             <span class="ident">TransItem</span>::<span class="ident">GlobalAsm</span>(..) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
@@ -896,7 +827,7 @@
 
         <span class="kw">let</span> <span class="ident">attributes</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">get_attrs</span>(<span class="ident">def_id</span>);
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">attr</span>::<span class="ident">first_attr_value_str_by_name</span>(<span class="kw-2">&amp;</span><span class="ident">attributes</span>, <span class="string">&quot;linkage&quot;</span>) {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">linkage</span>) <span class="op">=</span> <span class="ident">base</span>::<span class="ident">llvm_linkage_by_name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>.<span class="ident">as_str</span>()) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">linkage</span>) <span class="op">=</span> <span class="ident">base</span>::<span class="ident">linkage_by_name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>.<span class="ident">as_str</span>()) {
                 <span class="prelude-val">Some</span>(<span class="ident">linkage</span>)
             } <span class="kw">else</span> {
                 <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span_if_local</span>(<span class="ident">def_id</span>);
@@ -936,9 +867,9 @@
     <span class="doccomment">/// Similarly, if a vtable method has such a signature, and therefore can&#39;t</span>
     <span class="doccomment">/// be used, we can just not emit it and have a placeholder (a null pointer,</span>
     <span class="doccomment">/// which will never be accessed) in its place.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_instantiable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_instantiable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;is_instantiable({:?})&quot;</span>, <span class="self">self</span>);
-        <span class="kw">let</span> (<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+        <span class="kw">let</span> (<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="kw-2">ref</span> <span class="ident">instance</span>) <span class="op">=&gt;</span> (<span class="ident">instance</span>.<span class="ident">def_id</span>(), <span class="ident">instance</span>.<span class="ident">substs</span>),
             <span class="ident">TransItem</span>::<span class="ident">Static</span>(<span class="ident">node_id</span>) <span class="op">=&gt;</span> (<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">node_id</span>), <span class="ident">Substs</span>::<span class="ident">empty</span>()),
             <span class="comment">// global asm never has predicates</span>
@@ -949,10 +880,10 @@
         <span class="ident">traits</span>::<span class="ident">normalize_and_test_predicates</span>(<span class="ident">tcx</span>, <span class="ident">predicates</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+    <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">let</span> <span class="ident">hir_map</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">tcx</span>.<span class="ident">hir</span>;
 
-        <span class="kw">return</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+        <span class="kw">return</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="ident">instance</span>) <span class="op">=&gt;</span> {
                 <span class="ident">to_string_internal</span>(<span class="ident">tcx</span>, <span class="string">&quot;fn &quot;</span>, <span class="ident">instance</span>)
             },
@@ -978,8 +909,8 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_raw_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+    <span class="kw">fn</span> <span class="ident">to_raw_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_trans_item</span>() {
             <span class="ident">TransItem</span>::<span class="ident">Fn</span>(<span class="ident">instance</span>) <span class="op">=&gt;</span> {
                 <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Fn({:?}, {})&quot;</span>,
                          <span class="ident">instance</span>.<span class="ident">def</span>,
@@ -995,6 +926,77 @@
     }
 }
 
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TransItemExt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TransItem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">as_trans_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">TransItem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="self">self</span>
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">predefine_static</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                              <span class="ident">node_id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
+                              <span class="ident">linkage</span>: <span class="ident">Linkage</span>,
+                              <span class="ident">visibility</span>: <span class="ident">Visibility</span>,
+                              <span class="ident">symbol_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+    <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">node_id</span>);
+    <span class="kw">let</span> <span class="ident">instance</span> <span class="op">=</span> <span class="ident">Instance</span>::<span class="ident">mono</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="ident">def_id</span>);
+    <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">common</span>::<span class="ident">instance_ty</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>);
+    <span class="kw">let</span> <span class="ident">llty</span> <span class="op">=</span> <span class="ident">type_of</span>::<span class="ident">type_of</span>(<span class="ident">ccx</span>, <span class="ident">ty</span>);
+
+    <span class="kw">let</span> <span class="ident">g</span> <span class="op">=</span> <span class="ident">declare</span>::<span class="ident">define_global</span>(<span class="ident">ccx</span>, <span class="ident">symbol_name</span>, <span class="ident">llty</span>).<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
+        <span class="ident">ccx</span>.<span class="ident">sess</span>().<span class="ident">span_fatal</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">span</span>(<span class="ident">node_id</span>),
+            <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;symbol `{}` is already defined&quot;</span>, <span class="ident">symbol_name</span>))
+    });
+
+    <span class="kw">unsafe</span> {
+        <span class="ident">llvm</span>::<span class="ident">LLVMRustSetLinkage</span>(<span class="ident">g</span>, <span class="ident">base</span>::<span class="ident">linkage_to_llvm</span>(<span class="ident">linkage</span>));
+        <span class="ident">llvm</span>::<span class="ident">LLVMRustSetVisibility</span>(<span class="ident">g</span>, <span class="ident">base</span>::<span class="ident">visibility_to_llvm</span>(<span class="ident">visibility</span>));
+    }
+
+    <span class="ident">ccx</span>.<span class="ident">instances</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">instance</span>, <span class="ident">g</span>);
+    <span class="ident">ccx</span>.<span class="ident">statics</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">g</span>, <span class="ident">def_id</span>);
+}
+
+<span class="kw">fn</span> <span class="ident">predefine_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                          <span class="ident">instance</span>: <span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                          <span class="ident">linkage</span>: <span class="ident">Linkage</span>,
+                          <span class="ident">visibility</span>: <span class="ident">Visibility</span>,
+                          <span class="ident">symbol_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+    <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">instance</span>.<span class="ident">substs</span>.<span class="ident">needs_infer</span>() <span class="op">&amp;&amp;</span>
+            <span class="op">!</span><span class="ident">instance</span>.<span class="ident">substs</span>.<span class="ident">has_param_types</span>());
+
+    <span class="kw">let</span> <span class="ident">mono_ty</span> <span class="op">=</span> <span class="ident">common</span>::<span class="ident">instance_ty</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>);
+    <span class="kw">let</span> <span class="ident">attrs</span> <span class="op">=</span> <span class="ident">instance</span>.<span class="ident">def</span>.<span class="ident">attrs</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>());
+    <span class="kw">let</span> <span class="ident">lldecl</span> <span class="op">=</span> <span class="ident">declare</span>::<span class="ident">declare_fn</span>(<span class="ident">ccx</span>, <span class="ident">symbol_name</span>, <span class="ident">mono_ty</span>);
+    <span class="kw">unsafe</span> { <span class="ident">llvm</span>::<span class="ident">LLVMRustSetLinkage</span>(<span class="ident">lldecl</span>, <span class="ident">base</span>::<span class="ident">linkage_to_llvm</span>(<span class="ident">linkage</span>)) };
+    <span class="ident">base</span>::<span class="ident">set_link_section</span>(<span class="ident">ccx</span>, <span class="ident">lldecl</span>, <span class="kw-2">&amp;</span><span class="ident">attrs</span>);
+    <span class="kw">if</span> <span class="ident">linkage</span> <span class="op">==</span> <span class="ident">Linkage</span>::<span class="ident">LinkOnceODR</span> <span class="op">||</span>
+        <span class="ident">linkage</span> <span class="op">==</span> <span class="ident">Linkage</span>::<span class="ident">WeakODR</span> {
+        <span class="ident">llvm</span>::<span class="ident">SetUniqueComdat</span>(<span class="ident">ccx</span>.<span class="ident">llmod</span>(), <span class="ident">lldecl</span>);
+    }
+
+    <span class="comment">// If we&#39;re compiling the compiler-builtins crate, e.g. the equivalent of</span>
+    <span class="comment">// compiler-rt, then we want to implicitly compile everything with hidden</span>
+    <span class="comment">// visibility as we&#39;re going to link this object all over the place but</span>
+    <span class="comment">// don&#39;t want the symbols to get exported.</span>
+    <span class="kw">if</span> <span class="ident">linkage</span> <span class="op">!=</span> <span class="ident">Linkage</span>::<span class="ident">Internal</span> <span class="op">&amp;&amp;</span> <span class="ident">linkage</span> <span class="op">!=</span> <span class="ident">Linkage</span>::<span class="ident">Private</span> <span class="op">&amp;&amp;</span>
+       <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">krate_attrs</span>(), <span class="string">&quot;compiler_builtins&quot;</span>) {
+        <span class="kw">unsafe</span> {
+            <span class="ident">llvm</span>::<span class="ident">LLVMRustSetVisibility</span>(<span class="ident">lldecl</span>, <span class="ident">llvm</span>::<span class="ident">Visibility</span>::<span class="ident">Hidden</span>);
+        }
+    } <span class="kw">else</span> {
+        <span class="kw">unsafe</span> {
+            <span class="ident">llvm</span>::<span class="ident">LLVMRustSetVisibility</span>(<span class="ident">lldecl</span>, <span class="ident">base</span>::<span class="ident">visibility_to_llvm</span>(<span class="ident">visibility</span>));
+        }
+    }
+
+    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;predefine_fn: mono_ty = {:?} instance = {:?}&quot;</span>, <span class="ident">mono_ty</span>, <span class="ident">instance</span>);
+    <span class="kw">if</span> <span class="ident">common</span>::<span class="ident">is_inline_instance</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">instance</span>) {
+        <span class="ident">attributes</span>::<span class="ident">inline</span>(<span class="ident">lldecl</span>, <span class="ident">attributes</span>::<span class="ident">InlineAttr</span>::<span class="ident">Hint</span>);
+    }
+    <span class="ident">attributes</span>::<span class="ident">from_fn_attrs</span>(<span class="ident">ccx</span>, <span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="ident">lldecl</span>);
+
+    <span class="ident">ccx</span>.<span class="ident">instances</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">instance</span>, <span class="ident">lldecl</span>);
+}
 
 <span class="comment">//=-----------------------------------------------------------------------------</span>
 <span class="comment">// TransItem String Keys</span>

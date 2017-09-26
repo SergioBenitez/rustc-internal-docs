@@ -1290,9 +1290,6 @@
 <span id="1245">1245</span>
 <span id="1246">1246</span>
 <span id="1247">1247</span>
-<span id="1248">1248</span>
-<span id="1249">1249</span>
-<span id="1250">1250</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1469,14 +1466,23 @@
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">stmt</span>.<span class="ident">source_info</span>.<span class="ident">span</span>;
         <span class="kw">match</span> <span class="ident">stmt</span>.<span class="ident">kind</span> {
             <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">lhs</span>, <span class="kw-2">ref</span> <span class="ident">rhs</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// NOTE: NLL RFC calls for *shallow* write; using Deep</span>
+                <span class="comment">// for short-term compat w/ AST-borrowck. Also, switch</span>
+                <span class="comment">// to shallow requires to dataflow: &quot;if this is an</span>
+                <span class="comment">// assignment `lv = &lt;rvalue&gt;`, then any loan for some</span>
+                <span class="comment">// path P of which `lv` is a prefix is killed.&quot;</span>
                 <span class="self">self</span>.<span class="ident">mutate_lvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">AssignLhs</span>.<span class="ident">new</span>(<span class="ident">location</span>),
-                                   (<span class="ident">lhs</span>, <span class="ident">span</span>), <span class="ident">JustWrite</span>, <span class="ident">flow_state</span>);
+                                   (<span class="ident">lhs</span>, <span class="ident">span</span>), <span class="ident">Deep</span>, <span class="ident">JustWrite</span>, <span class="ident">flow_state</span>);
+
                 <span class="self">self</span>.<span class="ident">consume_rvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">AssignRhs</span>.<span class="ident">new</span>(<span class="ident">location</span>),
                                     (<span class="ident">rhs</span>, <span class="ident">span</span>), <span class="ident">location</span>, <span class="ident">flow_state</span>);
             }
             <span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span> { <span class="kw-2">ref</span> <span class="ident">lvalue</span>, <span class="ident">variant_index</span>: _ } <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">mutate_lvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">SetDiscrim</span>.<span class="ident">new</span>(<span class="ident">location</span>),
-                                   (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">JustWrite</span>, <span class="ident">flow_state</span>);
+                                   (<span class="ident">lvalue</span>, <span class="ident">span</span>),
+                                   <span class="ident">Shallow</span>(<span class="prelude-val">Some</span>(<span class="ident">ArtificialField</span>::<span class="ident">Discriminant</span>)),
+                                   <span class="ident">JustWrite</span>,
+                                   <span class="ident">flow_state</span>);
             }
             <span class="ident">StatementKind</span>::<span class="ident">InlineAsm</span> { <span class="kw-2">ref</span> <span class="ident">asm</span>, <span class="kw-2">ref</span> <span class="ident">outputs</span>, <span class="kw-2">ref</span> <span class="ident">inputs</span> } <span class="op">=&gt;</span> {
                 <span class="kw">for</span> (<span class="ident">o</span>, <span class="ident">output</span>) <span class="kw">in</span> <span class="ident">asm</span>.<span class="ident">outputs</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">outputs</span>) {
@@ -1488,6 +1494,7 @@
                     } <span class="kw">else</span> {
                         <span class="self">self</span>.<span class="ident">mutate_lvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">InlineAsm</span>.<span class="ident">new</span>(<span class="ident">location</span>),
                                            (<span class="ident">output</span>, <span class="ident">span</span>),
+                                           <span class="ident">Deep</span>,
                                            <span class="kw">if</span> <span class="ident">o</span>.<span class="ident">is_rw</span> { <span class="ident">WriteAndRead</span> } <span class="kw">else</span> { <span class="ident">JustWrite</span> },
                                            <span class="ident">flow_state</span>);
                     }
@@ -1505,15 +1512,15 @@
             <span class="ident">StatementKind</span>::<span class="ident">Nop</span> <span class="op">|</span>
             <span class="ident">StatementKind</span>::<span class="ident">Validate</span>(..) <span class="op">|</span>
             <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(..) <span class="op">=&gt;</span> {
-                <span class="comment">// ignored by borrowck</span>
+                <span class="comment">// `Nop`, `Validate`, and `StorageLive` are irrelevant</span>
+                <span class="comment">// to borrow check.</span>
             }
 
             <span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(<span class="ident">local</span>) <span class="op">=&gt;</span> {
-                <span class="comment">// causes non-drop values to be dropped.</span>
-                <span class="self">self</span>.<span class="ident">consume_lvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">StorageDead</span>.<span class="ident">new</span>(<span class="ident">location</span>),
-                                    <span class="ident">ConsumeKind</span>::<span class="ident">Consume</span>,
-                                    (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>), <span class="ident">span</span>),
-                                    <span class="ident">flow_state</span>)
+                <span class="self">self</span>.<span class="ident">access_lvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">StorageDead</span>.<span class="ident">new</span>(<span class="ident">location</span>),
+                                   (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>), <span class="ident">span</span>),
+                                   (<span class="ident">Shallow</span>(<span class="prelude-val">None</span>), <span class="ident">Write</span>(<span class="ident">WriteKind</span>::<span class="ident">StorageDead</span>)),
+                                   <span class="ident">flow_state</span>);
             }
         }
     }
@@ -1542,7 +1549,10 @@
                                              <span class="ident">target</span>: _,
                                              <span class="ident">unwind</span>: _ } <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">mutate_lvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">DropAndReplace</span>.<span class="ident">new</span>(<span class="ident">loc</span>),
-                                   (<span class="ident">drop_lvalue</span>, <span class="ident">span</span>), <span class="ident">JustWrite</span>, <span class="ident">flow_state</span>);
+                                   (<span class="ident">drop_lvalue</span>, <span class="ident">span</span>),
+                                   <span class="ident">Deep</span>,
+                                   <span class="ident">JustWrite</span>,
+                                   <span class="ident">flow_state</span>);
                 <span class="self">self</span>.<span class="ident">consume_operand</span>(<span class="ident">ContextKind</span>::<span class="ident">DropAndReplace</span>.<span class="ident">new</span>(<span class="ident">loc</span>),
                                      <span class="ident">ConsumeKind</span>::<span class="ident">Drop</span>,
                                      (<span class="ident">new_value</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>);
@@ -1558,7 +1568,10 @@
                 }
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="kw-2">ref</span> <span class="ident">dest</span>, _<span class="comment">/*bb*/</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">destination</span> {
                     <span class="self">self</span>.<span class="ident">mutate_lvalue</span>(<span class="ident">ContextKind</span>::<span class="ident">CallDest</span>.<span class="ident">new</span>(<span class="ident">loc</span>),
-                                       (<span class="ident">dest</span>, <span class="ident">span</span>), <span class="ident">JustWrite</span>, <span class="ident">flow_state</span>);
+                                       (<span class="ident">dest</span>, <span class="ident">span</span>),
+                                       <span class="ident">Deep</span>,
+                                       <span class="ident">JustWrite</span>,
+                                       <span class="ident">flow_state</span>);
                 }
             }
             <span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> { <span class="kw-2">ref</span> <span class="ident">cond</span>, <span class="ident">expected</span>: _, <span class="kw-2">ref</span> <span class="ident">msg</span>, <span class="ident">target</span>: _, <span class="ident">cleanup</span>: _ } <span class="op">=&gt;</span> {
@@ -1605,29 +1618,121 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">enum</span> <span class="ident">Control</span> { <span class="ident">Continue</span>, <span class="ident">Break</span> }
 
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">ShallowOrDeep</span>::{<span class="ident">Shallow</span>, <span class="ident">Deep</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">ReadOrWrite</span>::{<span class="ident">Read</span>, <span class="ident">Write</span>};
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">enum</span> <span class="ident">ArtificialField</span> {
+    <span class="ident">Discriminant</span>,
+    <span class="ident">ArrayLength</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">enum</span> <span class="ident">ShallowOrDeep</span> {
+    <span class="doccomment">/// From the RFC: &quot;A *shallow* access means that the immediate</span>
+    <span class="doccomment">/// fields reached at LV are accessed, but references or pointers</span>
+    <span class="doccomment">/// found within are not dereferenced. Right now, the only access</span>
+    <span class="doccomment">/// that is shallow is an assignment like `x = ...;`, which would</span>
+    <span class="doccomment">/// be a *shallow write* of `x`.&quot;</span>
+    <span class="ident">Shallow</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ArtificialField</span><span class="op">&gt;</span>),
+
+    <span class="doccomment">/// From the RFC: &quot;A *deep* access means that all data reachable</span>
+    <span class="doccomment">/// through the given lvalue may be invalidated or accesses by</span>
+    <span class="doccomment">/// this action.&quot;</span>
+    <span class="ident">Deep</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">enum</span> <span class="ident">ReadOrWrite</span> {
+    <span class="doccomment">/// From the RFC: &quot;A *read* means that the existing data may be</span>
+    <span class="doccomment">/// read, but will not be changed.&quot;</span>
+    <span class="ident">Read</span>(<span class="ident">ReadKind</span>),
+
+    <span class="doccomment">/// From the RFC: &quot;A *write* means that the data may be mutated to</span>
+    <span class="doccomment">/// new values or otherwise invalidated (for example, it could be</span>
+    <span class="doccomment">/// de-initialized, as in a move operation).</span>
+    <span class="ident">Write</span>(<span class="ident">WriteKind</span>),
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">enum</span> <span class="ident">ReadKind</span> {
+    <span class="ident">Borrow</span>(<span class="ident">BorrowKind</span>),
+    <span class="ident">Copy</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">enum</span> <span class="ident">WriteKind</span> {
+    <span class="ident">StorageDead</span>,
+    <span class="ident">MutableBorrow</span>(<span class="ident">BorrowKind</span>),
+    <span class="ident">Mutate</span>,
+    <span class="ident">Move</span>,
+}
+
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>: <span class="lifetime">&#39;b</span><span class="op">+</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">MirBorrowckCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">access_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                     <span class="ident">context</span>: <span class="ident">Context</span>,
+                     <span class="ident">lvalue_span</span>: (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
+                     <span class="ident">kind</span>: (<span class="ident">ShallowOrDeep</span>, <span class="ident">ReadOrWrite</span>),
+                     <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) {
+        <span class="comment">// FIXME: also need to check permissions (e.g. reject mut</span>
+        <span class="comment">// borrow of immutable ref, moves through non-`Box`-ref)</span>
+        <span class="kw">let</span> (<span class="ident">sd</span>, <span class="ident">rw</span>) <span class="op">=</span> <span class="ident">kind</span>;
+        <span class="self">self</span>.<span class="ident">each_borrow_involving_path</span>(
+            <span class="ident">context</span>, (<span class="ident">sd</span>, <span class="ident">lvalue_span</span>.<span class="number">0</span>), <span class="ident">flow_state</span>, <span class="op">|</span><span class="ident">this</span>, <span class="ident">_index</span>, <span class="ident">borrow</span><span class="op">|</span> {
+                <span class="kw">match</span> (<span class="ident">rw</span>, <span class="ident">borrow</span>.<span class="ident">kind</span>) {
+                    (<span class="ident">Read</span>(_), <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">Control</span>::<span class="ident">Continue</span>
+                    }
+                    (<span class="ident">Read</span>(<span class="ident">kind</span>), <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>) <span class="op">|</span>
+                    (<span class="ident">Read</span>(<span class="ident">kind</span>), <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">match</span> <span class="ident">kind</span> {
+                            <span class="ident">ReadKind</span>::<span class="ident">Copy</span> <span class="op">=&gt;</span>
+                                <span class="ident">this</span>.<span class="ident">report_use_while_mutably_borrowed</span>(
+                                    <span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">borrow</span>),
+                            <span class="ident">ReadKind</span>::<span class="ident">Borrow</span>(<span class="ident">bk</span>) <span class="op">=&gt;</span>
+                                <span class="ident">this</span>.<span class="ident">report_conflicting_borrow</span>(
+                                    <span class="ident">context</span>, <span class="ident">lvalue_span</span>,
+                                    (<span class="ident">lvalue_span</span>.<span class="number">0</span>, <span class="ident">bk</span>), (<span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">lvalue</span>, <span class="ident">borrow</span>.<span class="ident">kind</span>)),
+                        }
+                        <span class="ident">Control</span>::<span class="ident">Break</span>
+                    }
+                    (<span class="ident">Write</span>(<span class="ident">kind</span>), _) <span class="op">=&gt;</span> {
+                        <span class="kw">match</span> <span class="ident">kind</span> {
+                            <span class="ident">WriteKind</span>::<span class="ident">MutableBorrow</span>(<span class="ident">bk</span>) <span class="op">=&gt;</span>
+                                <span class="ident">this</span>.<span class="ident">report_conflicting_borrow</span>(
+                                    <span class="ident">context</span>, <span class="ident">lvalue_span</span>,
+                                    (<span class="ident">lvalue_span</span>.<span class="number">0</span>, <span class="ident">bk</span>), (<span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">lvalue</span>, <span class="ident">borrow</span>.<span class="ident">kind</span>)),
+                            <span class="ident">WriteKind</span>::<span class="ident">StorageDead</span> <span class="op">|</span>
+                            <span class="ident">WriteKind</span>::<span class="ident">Mutate</span> <span class="op">=&gt;</span>
+                                <span class="ident">this</span>.<span class="ident">report_illegal_mutation_of_borrowed</span>(
+                                    <span class="ident">context</span>, <span class="ident">lvalue_span</span>),
+                            <span class="ident">WriteKind</span>::<span class="ident">Move</span> <span class="op">=&gt;</span>
+                                <span class="ident">this</span>.<span class="ident">report_move_out_while_borrowed</span>(
+                                    <span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">borrow</span>),
+                        }
+                        <span class="ident">Control</span>::<span class="ident">Break</span>
+                    }
+                }
+            });
+    }
+
     <span class="kw">fn</span> <span class="ident">mutate_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                      <span class="ident">context</span>: <span class="ident">Context</span>,
                      <span class="ident">lvalue_span</span>: (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
+                     <span class="ident">kind</span>: <span class="ident">ShallowOrDeep</span>,
                      <span class="ident">mode</span>: <span class="ident">MutateMode</span>,
                      <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) {
         <span class="comment">// Write of P[i] or *P, or WriteAndRead of any P, requires P init&#39;d.</span>
         <span class="kw">match</span> <span class="ident">mode</span> {
             <span class="ident">MutateMode</span>::<span class="ident">WriteAndRead</span> <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
+                <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, <span class="string">&quot;update&quot;</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
             }
             <span class="ident">MutateMode</span>::<span class="ident">JustWrite</span> <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">check_if_assigned_path_is_moved</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
             }
         }
 
-        <span class="comment">// check we don&#39;t invalidate any outstanding loans</span>
-        <span class="self">self</span>.<span class="ident">each_borrow_involving_path</span>(<span class="ident">context</span>,
-                                        <span class="ident">lvalue_span</span>.<span class="number">0</span>, <span class="ident">flow_state</span>, <span class="op">|</span><span class="ident">this</span>, <span class="ident">_index</span>, <span class="ident">_data</span><span class="op">|</span> {
-                                            <span class="ident">this</span>.<span class="ident">report_illegal_mutation_of_borrowed</span>(<span class="ident">context</span>,
-                                                                                     <span class="ident">lvalue_span</span>);
-                                            <span class="ident">Control</span>::<span class="ident">Break</span>
-                                        });
+        <span class="self">self</span>.<span class="ident">access_lvalue</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, (<span class="ident">kind</span>, <span class="ident">Write</span>(<span class="ident">WriteKind</span>::<span class="ident">Mutate</span>)), <span class="ident">flow_state</span>);
 
         <span class="comment">// check for reassignments to immutable local variables</span>
         <span class="self">self</span>.<span class="ident">check_if_reassignment_to_immutable_state</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
@@ -1636,11 +1741,17 @@
     <span class="kw">fn</span> <span class="ident">consume_rvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                       <span class="ident">context</span>: <span class="ident">Context</span>,
                       (<span class="ident">rvalue</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
-                      <span class="ident">location</span>: <span class="ident">Location</span>,
+                      <span class="ident">_location</span>: <span class="ident">Location</span>,
                       <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rvalue</span> {
             <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(_<span class="comment">/*rgn*/</span>, <span class="ident">bk</span>, <span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">borrow</span>(<span class="ident">context</span>, <span class="ident">location</span>, <span class="ident">bk</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>)
+                <span class="kw">let</span> <span class="ident">access_kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">bk</span> {
+                    <span class="ident">BorrowKind</span>::<span class="ident">Shared</span> <span class="op">=&gt;</span> (<span class="ident">Deep</span>, <span class="ident">Read</span>(<span class="ident">ReadKind</span>::<span class="ident">Borrow</span>(<span class="ident">bk</span>))),
+                    <span class="ident">BorrowKind</span>::<span class="ident">Unique</span> <span class="op">|</span>
+                    <span class="ident">BorrowKind</span>::<span class="ident">Mut</span> <span class="op">=&gt;</span> (<span class="ident">Deep</span>, <span class="ident">Write</span>(<span class="ident">WriteKind</span>::<span class="ident">MutableBorrow</span>(<span class="ident">bk</span>))),
+                };
+                <span class="self">self</span>.<span class="ident">access_lvalue</span>(<span class="ident">context</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">access_kind</span>, <span class="ident">flow_state</span>);
+                <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, <span class="string">&quot;borrow&quot;</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>);
             }
 
             <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">operand</span>) <span class="op">|</span>
@@ -1652,8 +1763,14 @@
 
             <span class="ident">Rvalue</span>::<span class="ident">Len</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">|</span>
             <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
-                <span class="comment">// len(_)/discriminant(_) merely read, not consume.</span>
-                <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>);
+                <span class="kw">let</span> <span class="ident">af</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rvalue</span> {
+                    <span class="ident">Rvalue</span>::<span class="ident">Len</span>(..) <span class="op">=&gt;</span> <span class="ident">ArtificialField</span>::<span class="ident">ArrayLength</span>,
+                    <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(..) <span class="op">=&gt;</span> <span class="ident">ArtificialField</span>::<span class="ident">Discriminant</span>,
+                    _ <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
+                };
+                <span class="self">self</span>.<span class="ident">access_lvalue</span>(
+                    <span class="ident">context</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), (<span class="ident">Shallow</span>(<span class="prelude-val">Some</span>(<span class="ident">af</span>)), <span class="ident">Read</span>(<span class="ident">ReadKind</span>::<span class="ident">Copy</span>)), <span class="ident">flow_state</span>);
+                <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, <span class="string">&quot;use&quot;</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>);
             }
 
             <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">_bin_op</span>, <span class="kw-2">ref</span> <span class="ident">operand1</span>, <span class="kw-2">ref</span> <span class="ident">operand2</span>) <span class="op">|</span>
@@ -1684,8 +1801,9 @@
                        (<span class="ident">operand</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
                        <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
-            <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span>
-                <span class="self">self</span>.<span class="ident">consume_lvalue</span>(<span class="ident">context</span>, <span class="ident">consume_via_drop</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>),
+            <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">consume_lvalue</span>(<span class="ident">context</span>, <span class="ident">consume_via_drop</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>)
+            }
             <span class="ident">Operand</span>::<span class="ident">Constant</span>(_) <span class="op">=&gt;</span> {}
         }
     }
@@ -1701,26 +1819,10 @@
             <span class="self">self</span>.<span class="ident">fake_infer_ctxt</span>.<span class="ident">type_moves_by_default</span>(<span class="self">self</span>.<span class="ident">param_env</span>, <span class="ident">ty</span>, <span class="ident">DUMMY_SP</span>);
         <span class="kw">if</span> <span class="ident">moves_by_default</span> {
             <span class="comment">// move of lvalue: check if this is move of already borrowed path</span>
-            <span class="self">self</span>.<span class="ident">each_borrow_involving_path</span>(
-                <span class="ident">context</span>, <span class="ident">lvalue_span</span>.<span class="number">0</span>, <span class="ident">flow_state</span>, <span class="op">|</span><span class="ident">this</span>, <span class="ident">_idx</span>, <span class="ident">borrow</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">borrow</span>.<span class="ident">compatible_with</span>(<span class="ident">BorrowKind</span>::<span class="ident">Mut</span>) {
-                        <span class="ident">this</span>.<span class="ident">report_move_out_while_borrowed</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>);
-                        <span class="ident">Control</span>::<span class="ident">Break</span>
-                    } <span class="kw">else</span> {
-                        <span class="ident">Control</span>::<span class="ident">Continue</span>
-                    }
-                });
+            <span class="self">self</span>.<span class="ident">access_lvalue</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, (<span class="ident">Deep</span>, <span class="ident">Write</span>(<span class="ident">WriteKind</span>::<span class="ident">Move</span>)), <span class="ident">flow_state</span>);
         } <span class="kw">else</span> {
             <span class="comment">// copy of lvalue: check if this is &quot;copy of frozen path&quot; (FIXME: see check_loans.rs)</span>
-            <span class="self">self</span>.<span class="ident">each_borrow_involving_path</span>(
-                <span class="ident">context</span>, <span class="ident">lvalue_span</span>.<span class="number">0</span>, <span class="ident">flow_state</span>, <span class="op">|</span><span class="ident">this</span>, <span class="ident">_idx</span>, <span class="ident">borrow</span><span class="op">|</span> {
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">borrow</span>.<span class="ident">compatible_with</span>(<span class="ident">BorrowKind</span>::<span class="ident">Shared</span>) {
-                        <span class="ident">this</span>.<span class="ident">report_use_while_mutably_borrowed</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>);
-                        <span class="ident">Control</span>::<span class="ident">Break</span>
-                    } <span class="kw">else</span> {
-                        <span class="ident">Control</span>::<span class="ident">Continue</span>
-                    }
-                });
+            <span class="self">self</span>.<span class="ident">access_lvalue</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, (<span class="ident">Deep</span>, <span class="ident">Read</span>(<span class="ident">ReadKind</span>::<span class="ident">Copy</span>)), <span class="ident">flow_state</span>);
         }
 
         <span class="comment">// Finally, check if path was already moved.</span>
@@ -1731,21 +1833,9 @@
                 <span class="comment">// skip this check in that case).</span>
             }
             <span class="ident">ConsumeKind</span>::<span class="ident">Consume</span> <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
+                <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, <span class="string">&quot;use&quot;</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
             }
         }
-    }
-
-    <span class="kw">fn</span> <span class="ident">borrow</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-              <span class="ident">context</span>: <span class="ident">Context</span>,
-              <span class="ident">location</span>: <span class="ident">Location</span>,
-              <span class="ident">bk</span>: <span class="ident">BorrowKind</span>,
-              <span class="ident">lvalue_span</span>: (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
-              <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;borrow location: {:?} lvalue: {:?} span: {:?}&quot;</span>,
-               <span class="ident">location</span>, <span class="ident">lvalue_span</span>.<span class="number">0</span>, <span class="ident">lvalue_span</span>.<span class="number">1</span>);
-        <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
-        <span class="self">self</span>.<span class="ident">check_for_conflicting_loans</span>(<span class="ident">context</span>, <span class="ident">location</span>, <span class="ident">bk</span>, <span class="ident">lvalue_span</span>, <span class="ident">flow_state</span>);
     }
 }
 
@@ -1790,6 +1880,7 @@
 
     <span class="kw">fn</span> <span class="ident">check_if_path_is_moved</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                               <span class="ident">context</span>: <span class="ident">Context</span>,
+                              <span class="ident">desired_action</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
                               <span class="ident">lvalue_span</span>: (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
                               <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) {
         <span class="comment">// FIXME: analogous code in check_loans first maps `lvalue` to</span>
@@ -1801,7 +1892,7 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">mpi</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">move_path_for_lvalue</span>(<span class="ident">context</span>, <span class="ident">move_data</span>, <span class="ident">lvalue</span>) {
             <span class="kw">if</span> <span class="ident">maybe_uninits</span>.<span class="ident">curr_state</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">mpi</span>) {
                 <span class="comment">// find and report move(s) that could cause this to be uninitialized</span>
-                <span class="self">self</span>.<span class="ident">report_use_of_moved</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>);
+                <span class="self">self</span>.<span class="ident">report_use_of_moved</span>(<span class="ident">context</span>, <span class="ident">desired_action</span>, <span class="ident">lvalue_span</span>);
             } <span class="kw">else</span> {
                 <span class="comment">// sanity check: initialized on *some* path, right?</span>
                 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">flow_state</span>.<span class="ident">inits</span>.<span class="ident">curr_state</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">mpi</span>));
@@ -1868,8 +1959,8 @@
                                     <span class="comment">// check_loans.rs first maps</span>
                                     <span class="comment">// `base` to its base_path.</span>
 
-                                    <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(<span class="ident">context</span>,
-                                                                (<span class="ident">base</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>);
+                                    <span class="self">self</span>.<span class="ident">check_if_path_is_moved</span>(
+                                        <span class="ident">context</span>, <span class="string">&quot;assignment&quot;</span>, (<span class="ident">base</span>, <span class="ident">span</span>), <span class="ident">flow_state</span>);
 
                                     <span class="comment">// (base initialized; no need to</span>
                                     <span class="comment">// recur further)</span>
@@ -1886,72 +1977,18 @@
             }
         }
     }
-
-    <span class="kw">fn</span> <span class="ident">check_for_conflicting_loans</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                                   <span class="ident">context</span>: <span class="ident">Context</span>,
-                                   <span class="ident">_location</span>: <span class="ident">Location</span>,
-                                   <span class="ident">_bk</span>: <span class="ident">BorrowKind</span>,
-                                   <span class="ident">lvalue_span</span>: (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
-                                   <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) {
-        <span class="comment">// NOTE FIXME: The analogous code in old borrowck</span>
-        <span class="comment">// check_loans.rs is careful to iterate over every *issued*</span>
-        <span class="comment">// loan, as opposed to just the in scope ones.</span>
-        <span class="comment">//</span>
-        <span class="comment">// (Or if you prefer, all the *other* iterations over loans</span>
-        <span class="comment">// only consider loans that are in scope of some given</span>
-        <span class="comment">// region::Scope)</span>
-        <span class="comment">//</span>
-        <span class="comment">// The (currently skeletal) code here does not encode such a</span>
-        <span class="comment">// distinction, which means it is almost certainly over</span>
-        <span class="comment">// looking something.</span>
-        <span class="comment">//</span>
-        <span class="comment">// (It is probably going to reject code that should be</span>
-        <span class="comment">// accepted, I suspect, by treated issued-but-out-of-scope</span>
-        <span class="comment">// loans as issued-and-in-scope, and thus causing them to</span>
-        <span class="comment">// interfere with other loans.)</span>
-        <span class="comment">//</span>
-        <span class="comment">// However, I just want to get something running, especially</span>
-        <span class="comment">// since I am trying to move into new territory with NLL, so</span>
-        <span class="comment">// lets get this going first, and then address the issued vs</span>
-        <span class="comment">// in-scope distinction later.</span>
-
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">flow_state</span>.<span class="ident">borrows</span>;
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">state</span>.<span class="ident">base_results</span>.<span class="ident">operator</span>().<span class="ident">borrows</span>();
-
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;check_for_conflicting_loans location: {:?}&quot;</span>, <span class="ident">_location</span>);
-
-        <span class="comment">// does any loan generated here conflict with a previously issued loan?</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">loans_generated</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> (<span class="ident">g</span>, <span class="ident">gen</span>) <span class="kw">in</span> <span class="ident">state</span>.<span class="ident">elems_generated</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">g</span><span class="op">|</span> (<span class="ident">g</span>, <span class="kw-2">&amp;</span><span class="ident">data</span>[<span class="ident">g</span>])) {
-            <span class="ident">loans_generated</span> <span class="op">+=</span> <span class="number">1</span>;
-            <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">issued</span>) <span class="kw">in</span> <span class="ident">state</span>.<span class="ident">elems_incoming</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">data</span>[<span class="ident">i</span>])) {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;check_for_conflicting_loans gen: {:?} issued: {:?} conflicts: {}&quot;</span>,
-                       (<span class="ident">g</span>, <span class="ident">gen</span>, <span class="self">self</span>.<span class="ident">base_path</span>(<span class="kw-2">&amp;</span><span class="ident">gen</span>.<span class="ident">lvalue</span>),
-                        <span class="self">self</span>.<span class="ident">restrictions</span>(<span class="kw-2">&amp;</span><span class="ident">gen</span>.<span class="ident">lvalue</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()),
-                       (<span class="ident">i</span>, <span class="ident">issued</span>, <span class="self">self</span>.<span class="ident">base_path</span>(<span class="kw-2">&amp;</span><span class="ident">issued</span>.<span class="ident">lvalue</span>),
-                        <span class="self">self</span>.<span class="ident">restrictions</span>(<span class="kw-2">&amp;</span><span class="ident">issued</span>.<span class="ident">lvalue</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()),
-                       <span class="self">self</span>.<span class="ident">conflicts_with</span>(<span class="ident">gen</span>, <span class="ident">issued</span>));
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">conflicts_with</span>(<span class="ident">gen</span>, <span class="ident">issued</span>) {
-                    <span class="self">self</span>.<span class="ident">report_conflicting_borrow</span>(<span class="ident">context</span>, <span class="ident">lvalue_span</span>, <span class="ident">gen</span>, <span class="ident">issued</span>);
-                }
-            }
-        }
-
-        <span class="comment">// MIR statically ensures each statement gens *at most one*</span>
-        <span class="comment">// loan; mutual conflict (within a statement) can&#39;t arise.</span>
-        <span class="comment">//</span>
-        <span class="comment">// As safe-guard, assert that above property actually holds.</span>
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">loans_generated</span> <span class="op">&lt;=</span> <span class="number">1</span>);
-    } }
+}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>: <span class="lifetime">&#39;b</span><span class="op">+</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">MirBorrowckCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">each_borrow_involving_path</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                      <span class="ident">_context</span>: <span class="ident">Context</span>,
-                                     <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
+                                     <span class="ident">access_lvalue</span>: (<span class="ident">ShallowOrDeep</span>, <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>),
                                      <span class="ident">flow_state</span>: <span class="kw-2">&amp;</span><span class="ident">InProgress</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
                                      <span class="kw-2">mut</span> <span class="ident">op</span>: <span class="ident">F</span>)
         <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">BorrowIndex</span>, <span class="kw-2">&amp;</span><span class="ident">BorrowData</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Control</span>
     {
+        <span class="kw">let</span> (<span class="ident">access</span>, <span class="ident">lvalue</span>) <span class="op">=</span> <span class="ident">access_lvalue</span>;
+
         <span class="comment">// FIXME: analogous code in check_loans first maps `lvalue` to</span>
         <span class="comment">// its base_path.</span>
 
@@ -1960,228 +1997,182 @@
 
         <span class="comment">// check for loan restricting path P being used. Accounts for</span>
         <span class="comment">// borrows of P, P.a.b, etc.</span>
-        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">flow_state</span>.<span class="ident">borrows</span>.<span class="ident">elems_incoming</span>() {
-            <span class="comment">// FIXME: check_loans.rs filtered this to &quot;in scope&quot;</span>
-            <span class="comment">// loans; i.e. it took a scope S and checked that each</span>
-            <span class="comment">// restriction&#39;s kill_scope was a superscope of S.</span>
+        <span class="lifetime">&#39;next_borrow</span>: <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">flow_state</span>.<span class="ident">borrows</span>.<span class="ident">elems_incoming</span>() {
             <span class="kw">let</span> <span class="ident">borrowed</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">data</span>[<span class="ident">i</span>];
-            <span class="kw">for</span> <span class="ident">restricted</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">restrictions</span>(<span class="kw-2">&amp;</span><span class="ident">borrowed</span>.<span class="ident">lvalue</span>) {
-                <span class="kw">if</span> <span class="ident">restricted</span> <span class="op">==</span> <span class="ident">lvalue</span> {
-                    <span class="kw">let</span> <span class="ident">ctrl</span> <span class="op">=</span> <span class="ident">op</span>(<span class="self">self</span>, <span class="ident">i</span>, <span class="ident">borrowed</span>);
-                    <span class="kw">if</span> <span class="ident">ctrl</span> <span class="op">==</span> <span class="ident">Control</span>::<span class="ident">Break</span> { <span class="kw">return</span>; }
-                }
-            }
-        }
 
-        <span class="comment">// check for loans (not restrictions) on any base path.</span>
-        <span class="comment">// e.g. Rejects `{ let x = &amp;mut a.b; let y = a.b.c; }`,</span>
-        <span class="comment">// since that moves out of borrowed path `a.b`.</span>
-        <span class="comment">//</span>
-        <span class="comment">// Limiting to loans (not restrictions) keeps this one</span>
-        <span class="comment">// working: `{ let x = &amp;mut a.b; let y = a.c; }`</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="ident">lvalue</span>;
-        <span class="kw">loop</span> {
-            <span class="comment">// FIXME: check_loans.rs invoked `op` *before* cursor</span>
-            <span class="comment">// shift here.  Might just work (and even avoid redundant</span>
-            <span class="comment">// errors?) given code above?  But for now, I want to try</span>
-            <span class="comment">// doing what I think is more &quot;natural&quot; check.</span>
-            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">flow_state</span>.<span class="ident">borrows</span>.<span class="ident">elems_incoming</span>() {
-                <span class="kw">let</span> <span class="ident">borrowed</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">data</span>[<span class="ident">i</span>];
-                <span class="kw">if</span> <span class="ident">borrowed</span>.<span class="ident">lvalue</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">cursor</span> {
+            <span class="comment">// Is `lvalue` (or a prefix of it) already borrowed? If</span>
+            <span class="comment">// so, that&#39;s relevant.</span>
+            <span class="comment">//</span>
+            <span class="comment">// FIXME: Differs from AST-borrowck; includes drive-by fix</span>
+            <span class="comment">// to #38899. Will probably need back-compat mode flag.</span>
+            <span class="kw">for</span> <span class="ident">accessed_prefix</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">prefixes</span>(<span class="ident">lvalue</span>, <span class="ident">PrefixSet</span>::<span class="ident">All</span>) {
+                <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">accessed_prefix</span> <span class="op">==</span> <span class="ident">borrowed</span>.<span class="ident">lvalue</span> {
+                    <span class="comment">// FIXME: pass in prefix here too? And/or enum</span>
+                    <span class="comment">// describing case we are in?</span>
                     <span class="kw">let</span> <span class="ident">ctrl</span> <span class="op">=</span> <span class="ident">op</span>(<span class="self">self</span>, <span class="ident">i</span>, <span class="ident">borrowed</span>);
                     <span class="kw">if</span> <span class="ident">ctrl</span> <span class="op">==</span> <span class="ident">Control</span>::<span class="ident">Break</span> { <span class="kw">return</span>; }
                 }
             }
 
-            <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">cursor</span> {
-                <span class="ident">Lvalue</span>::<span class="ident">Local</span>(_) <span class="op">|</span> <span class="ident">Lvalue</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span> <span class="kw">break</span>,
-                <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>,
+            <span class="comment">// Is `lvalue` a prefix (modulo access type) of the</span>
+            <span class="comment">// `borrowed.lvalue`? If so, that&#39;s relevant.</span>
+
+            <span class="kw">let</span> <span class="ident">prefix_kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">access</span> {
+                <span class="ident">Shallow</span>(<span class="prelude-val">Some</span>(<span class="ident">ArtificialField</span>::<span class="ident">Discriminant</span>)) <span class="op">|</span>
+                <span class="ident">Shallow</span>(<span class="prelude-val">Some</span>(<span class="ident">ArtificialField</span>::<span class="ident">ArrayLength</span>)) <span class="op">=&gt;</span> {
+                    <span class="comment">// The discriminant and array length are like</span>
+                    <span class="comment">// additional fields on the type; they do not</span>
+                    <span class="comment">// overlap any existing data there. Furthermore,</span>
+                    <span class="comment">// they cannot actually be a prefix of any</span>
+                    <span class="comment">// borrowed lvalue (at least in MIR as it is</span>
+                    <span class="comment">// currently.)</span>
+                    <span class="kw">continue</span> <span class="lifetime">&#39;next_borrow</span>;
+                }
+                <span class="ident">Shallow</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> <span class="ident">PrefixSet</span>::<span class="ident">Shallow</span>,
+                <span class="ident">Deep</span> <span class="op">=&gt;</span> <span class="ident">PrefixSet</span>::<span class="ident">Supporting</span>,
+            };
+
+            <span class="kw">for</span> <span class="ident">borrowed_prefix</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">prefixes</span>(<span class="kw-2">&amp;</span><span class="ident">borrowed</span>.<span class="ident">lvalue</span>, <span class="ident">prefix_kind</span>) {
+                <span class="kw">if</span> <span class="ident">borrowed_prefix</span> <span class="op">==</span> <span class="ident">lvalue</span> {
+                    <span class="comment">// FIXME: pass in prefix here too? And/or enum</span>
+                    <span class="comment">// describing case we are in?</span>
+                    <span class="kw">let</span> <span class="ident">ctrl</span> <span class="op">=</span> <span class="ident">op</span>(<span class="self">self</span>, <span class="ident">i</span>, <span class="ident">borrowed</span>);
+                    <span class="kw">if</span> <span class="ident">ctrl</span> <span class="op">==</span> <span class="ident">Control</span>::<span class="ident">Break</span> { <span class="kw">return</span>; }
+                }
             }
         }
     }
 }
 
-<span class="kw">mod</span> <span class="ident">restrictions</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">MirBorrowckCtxt</span>;
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">prefixes</span>::<span class="ident">PrefixSet</span>;
+
+<span class="doccomment">/// From the NLL RFC: &quot;The deep [aka &#39;supporting&#39;] prefixes for an</span>
+<span class="doccomment">/// lvalue are formed by stripping away fields and derefs, except that</span>
+<span class="doccomment">/// we stop when we reach the deref of a shared reference. [...] &quot;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// &quot;Shallow prefixes are found by stripping away fields, but stop at</span>
+<span class="doccomment">/// any dereference. So: writing a path like `a` is illegal if `a.b`</span>
+<span class="doccomment">/// is borrowed. But: writing `a` is legal if `*a` is borrowed,</span>
+<span class="doccomment">/// whether or not `a` is a shared or mutable reference. [...] &quot;</span>
+<span class="kw">mod</span> <span class="ident">prefixes</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">MirBorrowckCtxt</span>};
 
     <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
     <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>};
     <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Lvalue</span>, <span class="ident">Mir</span>, <span class="ident">ProjectionElem</span>};
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">Restrictions</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;c</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">Prefixes</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;c</span><span class="op">&gt;</span> {
         <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;c</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="ident">lvalue_stack</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;c</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">kind</span>: <span class="ident">PrefixSet</span>,
+        <span class="ident">next</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;c</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
+    }
+
+    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">enum</span> <span class="ident">PrefixSet</span> {
+        <span class="ident">All</span>,
+        <span class="ident">Shallow</span>,
+        <span class="ident">Supporting</span>,
     }
 
     <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>: <span class="lifetime">&#39;b</span><span class="op">+</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">MirBorrowckCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">restrictions</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                                       <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>)
-                                       <span class="op">-&gt;</span> <span class="ident">Restrictions</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="lifetime">&#39;b</span>: <span class="lifetime">&#39;d</span>
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">prefixes</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                   <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
+                                   <span class="ident">kind</span>: <span class="ident">PrefixSet</span>)
+                                   <span class="op">-&gt;</span> <span class="ident">Prefixes</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="lifetime">&#39;b</span>: <span class="lifetime">&#39;d</span>
         {
-            <span class="kw">let</span> <span class="ident">lvalue_stack</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">has_restrictions</span>(<span class="ident">lvalue</span>) { <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">lvalue</span>] } <span class="kw">else</span> { <span class="macro">vec</span><span class="macro">!</span>[] };
-            <span class="ident">Restrictions</span> { <span class="ident">lvalue_stack</span>: <span class="ident">lvalue_stack</span>, <span class="ident">mir</span>: <span class="self">self</span>.<span class="ident">mir</span>, <span class="ident">tcx</span>: <span class="self">self</span>.<span class="ident">tcx</span> }
-        }
-
-        <span class="kw">fn</span> <span class="ident">has_restrictions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="ident">lvalue</span>;
-            <span class="kw">loop</span> {
-                <span class="kw">let</span> <span class="ident">proj</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">cursor</span> {
-                    <span class="ident">Lvalue</span>::<span class="ident">Local</span>(_) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="bool-val">true</span>,
-                    <span class="ident">Lvalue</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,
-                    <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> <span class="ident">proj</span>,
-                };
-                <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
-                    <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(..) <span class="op">|</span>
-                    <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { .. } <span class="op">|</span>
-                    <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(..) <span class="op">|</span>
-                    <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { .. } <span class="op">|</span>
-                    <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(_<span class="comment">/*field*/</span>, _<span class="comment">/*ty*/</span>) <span class="op">=&gt;</span> {
-                        <span class="ident">cursor</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>;
-                        <span class="kw">continue</span>;
-                    }
-                    <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">proj</span>.<span class="ident">base</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>);
-                        <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
-                            <span class="ident">ty</span>::<span class="ident">TyRawPtr</span>(_) <span class="op">=&gt;</span> {
-                                <span class="kw">return</span> <span class="bool-val">false</span>;
-                            }
-                            <span class="ident">ty</span>::<span class="ident">TyRef</span>(_, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> { <span class="ident">ty</span>: _, <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">MutImmutable</span> }) <span class="op">=&gt;</span> {
-                                <span class="comment">// FIXME: do I need to check validity of</span>
-                                <span class="comment">// region here though? (I think the original</span>
-                                <span class="comment">// check_loans code did, like readme says)</span>
-                                <span class="kw">return</span> <span class="bool-val">false</span>;
-                            }
-                            <span class="ident">ty</span>::<span class="ident">TyRef</span>(_, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> { <span class="ident">ty</span>: _, <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">MutMutable</span> }) <span class="op">=&gt;</span> {
-                                <span class="ident">cursor</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>;
-                                <span class="kw">continue</span>;
-                            }
-                            <span class="ident">ty</span>::<span class="ident">TyAdt</span>(..) <span class="kw">if</span> <span class="ident">ty</span>.<span class="ident">is_box</span>() <span class="op">=&gt;</span> {
-                                <span class="ident">cursor</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>;
-                                <span class="kw">continue</span>;
-                            }
-                            _ <span class="op">=&gt;</span> {
-                                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;unknown type fed to Projection Deref.&quot;</span>);
-                            }
-                        }
-                    }
-                }
-            }
+            <span class="ident">Prefixes</span> { <span class="ident">next</span>: <span class="prelude-val">Some</span>(<span class="ident">lvalue</span>), <span class="ident">kind</span>, <span class="ident">mir</span>: <span class="self">self</span>.<span class="ident">mir</span>, <span class="ident">tcx</span>: <span class="self">self</span>.<span class="ident">tcx</span> }
         }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Restrictions</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">Prefixes</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;c</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>;
         <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
-            <span class="lifetime">&#39;pop</span>: <span class="kw">loop</span> {
-                <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">lvalue_stack</span>.<span class="ident">pop</span>() {
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-                    <span class="prelude-val">Some</span>(<span class="ident">lvalue</span>) <span class="op">=&gt;</span> <span class="ident">lvalue</span>,
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">next</span> {
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">lvalue</span>) <span class="op">=&gt;</span> <span class="ident">lvalue</span>,
+            };
+
+            <span class="comment">// Post-processing `lvalue`: Enqueue any remaining</span>
+            <span class="comment">// work. Also, `lvalue` may not be a prefix itself, but</span>
+            <span class="comment">// may hold one further down (e.g. we never return</span>
+            <span class="comment">// downcasts here, but may return a base of a downcast).</span>
+
+            <span class="lifetime">&#39;cursor</span>: <span class="kw">loop</span> {
+                <span class="kw">let</span> <span class="ident">proj</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">cursor</span> {
+                    <span class="ident">Lvalue</span>::<span class="ident">Local</span>(_) <span class="op">|</span> <span class="comment">// search yielded this leaf</span>
+                    <span class="ident">Lvalue</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
+                    }
+
+                    <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> <span class="ident">proj</span>,
                 };
 
-                <span class="comment">// `lvalue` may not be a restriction itself, but may</span>
-                <span class="comment">// hold one further down (e.g. we never return</span>
-                <span class="comment">// downcasts here, but may return a base of a</span>
-                <span class="comment">// downcast).</span>
-                <span class="comment">//</span>
-                <span class="comment">// Also, we need to enqueue any additional</span>
-                <span class="comment">// subrestrictions that it implies, since we can only</span>
-                <span class="comment">// return from from this call alone.</span>
+                <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
+                    <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(_<span class="comment">/*field*/</span>, _<span class="comment">/*ty*/</span>) <span class="op">=&gt;</span> {
+                        <span class="comment">// FIXME: add union handling</span>
+                        <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>);
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
+                    }
+                    <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(..) <span class="op">|</span>
+                    <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { .. } <span class="op">|</span>
+                    <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { .. } <span class="op">|</span>
+                    <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(_) <span class="op">=&gt;</span> {
+                        <span class="ident">cursor</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>;
+                        <span class="kw">continue</span> <span class="lifetime">&#39;cursor</span>;
+                    }
+                    <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> {
+                        <span class="comment">// (handled below)</span>
+                    }
+                }
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="ident">lvalue</span>;
-                <span class="lifetime">&#39;cursor</span>: <span class="kw">loop</span> {
-                    <span class="kw">let</span> <span class="ident">proj</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">cursor</span> {
-                        <span class="ident">Lvalue</span>::<span class="ident">Local</span>(_) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>), <span class="comment">// search yielded this leaf</span>
-                        <span class="ident">Lvalue</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span> <span class="kw">continue</span> <span class="lifetime">&#39;pop</span>, <span class="comment">// fruitless leaf; try next on stack</span>
-                        <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> <span class="ident">proj</span>,
-                    };
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">proj</span>.<span class="ident">elem</span>, <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span>);
 
-                    <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
-                        <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(_<span class="comment">/*field*/</span>, _<span class="comment">/*ty*/</span>) <span class="op">=&gt;</span> {
-                            <span class="comment">// FIXME: add union handling</span>
-                            <span class="self">self</span>.<span class="ident">lvalue_stack</span>.<span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>);
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
-                        }
-                        <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(..) <span class="op">|</span>
-                        <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { .. } <span class="op">|</span>
-                        <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { .. } <span class="op">|</span>
-                        <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(_) <span class="op">=&gt;</span> {
-                            <span class="ident">cursor</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>;
-                            <span class="kw">continue</span> <span class="lifetime">&#39;cursor</span>;
-                        }
-                        <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> {
-                            <span class="comment">// (handled below)</span>
-                        }
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">kind</span> {
+                    <span class="ident">PrefixSet</span>::<span class="ident">Shallow</span> <span class="op">=&gt;</span> {
+                        <span class="comment">// shallow prefixes are found by stripping away</span>
+                        <span class="comment">// fields, but stop at *any* dereference.</span>
+                        <span class="comment">// So we can just stop the traversal now.</span>
+                        <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
+                    }
+                    <span class="ident">PrefixSet</span>::<span class="ident">All</span> <span class="op">=&gt;</span> {
+                        <span class="comment">// all prefixes: just blindly enqueue the base</span>
+                        <span class="comment">// of the projection</span>
+                        <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>);
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
+                    }
+                    <span class="ident">PrefixSet</span>::<span class="ident">Supporting</span> <span class="op">=&gt;</span> {
+                        <span class="comment">// fall through!</span>
+                    }
+                }
+
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">kind</span>, <span class="ident">PrefixSet</span>::<span class="ident">Supporting</span>);
+                <span class="comment">// supporting prefixes: strip away fields and</span>
+                <span class="comment">// derefs, except we stop at the deref of a shared</span>
+                <span class="comment">// reference.</span>
+
+                <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">proj</span>.<span class="ident">base</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>);
+                <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
+                    <span class="ident">ty</span>::<span class="ident">TyRawPtr</span>(_) <span class="op">|</span>
+                    <span class="ident">ty</span>::<span class="ident">TyRef</span>(_<span class="comment">/*rgn*/</span>, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> { <span class="ident">ty</span>: _, <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">MutImmutable</span> }) <span class="op">=&gt;</span> {
+                        <span class="comment">// don&#39;t continue traversing over derefs of raw pointers or shared borrows.</span>
+                        <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
                     }
 
-                    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">proj</span>.<span class="ident">elem</span>, <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span>);
-
-                    <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">proj</span>.<span class="ident">base</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>);
-                    <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
-                        <span class="ident">ty</span>::<span class="ident">TyRawPtr</span>(_) <span class="op">=&gt;</span> {
-                            <span class="comment">// borrowck ignores raw ptrs; treat analogous to imm borrow</span>
-                            <span class="kw">continue</span> <span class="lifetime">&#39;pop</span>;
-                        }
-                        <span class="comment">// R-Deref-Imm-Borrowed</span>
-                        <span class="ident">ty</span>::<span class="ident">TyRef</span>(_<span class="comment">/*rgn*/</span>, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> { <span class="ident">ty</span>: _, <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">MutImmutable</span> }) <span class="op">=&gt;</span> {
-                            <span class="comment">// immutably-borrowed referents do not</span>
-                            <span class="comment">// have recursively-implied restrictions</span>
-                            <span class="comment">// (because preventing actions on `*LV`</span>
-                            <span class="comment">// does nothing about aliases like `*LV1`)</span>
-
-                            <span class="comment">// FIXME: do I need to check validity of</span>
-                            <span class="comment">// `_r` here though? (I think the original</span>
-                            <span class="comment">// check_loans code did, like the readme</span>
-                            <span class="comment">// says)</span>
-
-                            <span class="comment">// (And do I *really* not have to</span>
-                            <span class="comment">// recursively process the `base` as a</span>
-                            <span class="comment">// further search here? Leaving this `if</span>
-                            <span class="comment">// false` here as a hint to look at this</span>
-                            <span class="comment">// again later.</span>
-                            <span class="comment">//</span>
-                            <span class="comment">// Ah, it might be because the</span>
-                            <span class="comment">// restrictions are distinct from the path</span>
-                            <span class="comment">// substructure. Note that there is a</span>
-                            <span class="comment">// separate loop over the path</span>
-                            <span class="comment">// substructure in fn</span>
-                            <span class="comment">// each_borrow_involving_path, for better</span>
-                            <span class="comment">// or for worse.</span>
-
-                            <span class="kw">if</span> <span class="bool-val">false</span> {
-                                <span class="ident">cursor</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>;
-                                <span class="kw">continue</span> <span class="lifetime">&#39;cursor</span>;
-                            } <span class="kw">else</span> {
-                                <span class="kw">continue</span> <span class="lifetime">&#39;pop</span>;
-                            }
-                        }
-
-                        <span class="comment">// R-Deref-Mut-Borrowed</span>
-                        <span class="ident">ty</span>::<span class="ident">TyRef</span>(_<span class="comment">/*rgn*/</span>, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> { <span class="ident">ty</span>: _, <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">MutMutable</span> }) <span class="op">=&gt;</span> {
-                            <span class="comment">// mutably-borrowed referents are</span>
-                            <span class="comment">// themselves restricted.</span>
-
-                            <span class="comment">// FIXME: do I need to check validity of</span>
-                            <span class="comment">// `_r` here though? (I think the original</span>
-                            <span class="comment">// check_loans code did, like the readme</span>
-                            <span class="comment">// says)</span>
-
-                            <span class="comment">// schedule base for future iteration.</span>
-                            <span class="self">self</span>.<span class="ident">lvalue_stack</span>.<span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>);
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>); <span class="comment">// search yielded interior node</span>
-                        }
-
-                        <span class="comment">// R-Deref-Send-Pointer</span>
-                        <span class="ident">ty</span>::<span class="ident">TyAdt</span>(..) <span class="kw">if</span> <span class="ident">ty</span>.<span class="ident">is_box</span>() <span class="op">=&gt;</span> {
-                            <span class="comment">// borrowing interior of a box implies that</span>
-                            <span class="comment">// its base can no longer be mutated (o/w box</span>
-                            <span class="comment">// storage would be freed)</span>
-                            <span class="self">self</span>.<span class="ident">lvalue_stack</span>.<span class="ident">push</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>);
-                            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>); <span class="comment">// search yielded interior node</span>
-                        }
-
-                        _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;unknown type fed to Projection Deref.&quot;</span>),
+                    <span class="ident">ty</span>::<span class="ident">TyRef</span>(_<span class="comment">/*rgn*/</span>, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> { <span class="ident">ty</span>: _, <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">MutMutable</span> }) <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>);
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
                     }
+
+                    <span class="ident">ty</span>::<span class="ident">TyAdt</span>(..) <span class="kw">if</span> <span class="ident">ty</span>.<span class="ident">is_box</span>() <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">next</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>);
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">cursor</span>);
+                    }
+
+                    _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;unknown type fed to Projection Deref.&quot;</span>),
                 }
             }
         }
@@ -2191,53 +2182,86 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>: <span class="lifetime">&#39;b</span><span class="op">+</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">MirBorrowckCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">report_use_of_moved</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                            <span class="ident">_context</span>: <span class="ident">Context</span>,
+                           <span class="ident">desired_action</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
                            (<span class="ident">lvalue</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">Span</span>)) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_act_on_uninitialized_variable</span>(
-            <span class="ident">span</span>, <span class="string">&quot;use&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="ident">Origin</span>::<span class="ident">Mir</span>);
-        <span class="comment">// FIXME: add span_label for use of uninitialized variable</span>
-        <span class="ident">err</span>.<span class="ident">emit</span>();
+        <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_act_on_uninitialized_variable</span>(<span class="ident">span</span>,
+                                                      <span class="ident">desired_action</span>,
+                                                      <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>),
+                                                      <span class="ident">Origin</span>::<span class="ident">Mir</span>)
+                .<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;use of possibly uninitialized `{}`&quot;</span>,
+                                          <span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>)))
+                .<span class="ident">emit</span>();
     }
 
     <span class="kw">fn</span> <span class="ident">report_move_out_while_borrowed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                       <span class="ident">_context</span>: <span class="ident">Context</span>,
-                                      (<span class="ident">lvalue</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">Span</span>)) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_move_when_borrowed</span>(
-            <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="ident">Origin</span>::<span class="ident">Mir</span>);
-        <span class="comment">// FIXME 1: add span_label for &quot;borrow of `()` occurs here&quot;</span>
-        <span class="comment">// FIXME 2: add span_label for &quot;move out of `{}` occurs here&quot;</span>
-        <span class="ident">err</span>.<span class="ident">emit</span>();
+                                      (<span class="ident">lvalue</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">Span</span>),
+                                      <span class="ident">borrow</span>: <span class="kw-2">&amp;</span><span class="ident">BorrowData</span>) {
+        <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_move_when_borrowed</span>(<span class="ident">span</span>,
+                                           <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>),
+                                           <span class="ident">Origin</span>::<span class="ident">Mir</span>)
+                .<span class="ident">span_label</span>(<span class="self">self</span>.<span class="ident">retrieve_borrow_span</span>(<span class="ident">borrow</span>),
+                            <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;borrow of `{}` occurs here&quot;</span>,
+                                    <span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">lvalue</span>)))
+                .<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;move out of `{}` occurs here&quot;</span>,
+                                          <span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>)))
+                .<span class="ident">emit</span>();
     }
 
     <span class="kw">fn</span> <span class="ident">report_use_while_mutably_borrowed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                          <span class="ident">_context</span>: <span class="ident">Context</span>,
-                                         (<span class="ident">lvalue</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">Span</span>)) {
+                                         (<span class="ident">lvalue</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">Span</span>),
+                                         <span class="ident">borrow</span> : <span class="kw-2">&amp;</span><span class="ident">BorrowData</span>) {
+        <span class="kw">let</span> <span class="ident">described_lvalue</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>);
+        <span class="kw">let</span> <span class="ident">borrow_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">retrieve_borrow_span</span>(<span class="ident">borrow</span>);
+
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_use_when_mutably_borrowed</span>(
-            <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="ident">Origin</span>::<span class="ident">Mir</span>);
-        <span class="comment">// FIXME 1: add span_label for &quot;borrow of `()` occurs here&quot;</span>
-        <span class="comment">// FIXME 2: add span_label for &quot;use of `{}` occurs here&quot;</span>
+            <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="ident">described_lvalue</span>, <span class="ident">Origin</span>::<span class="ident">Mir</span>);
+
+        <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">borrow_span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;borrow of `{}` occurs here&quot;</span>, <span class="ident">described_lvalue</span>));
+        <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;use of borrowed `{}`&quot;</span>, <span class="ident">described_lvalue</span>));
+
         <span class="ident">err</span>.<span class="ident">emit</span>();
     }
 
     <span class="kw">fn</span> <span class="ident">report_conflicting_borrow</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                  <span class="ident">_context</span>: <span class="ident">Context</span>,
                                  (<span class="ident">lvalue</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">Span</span>),
-                                 <span class="ident">loan1</span>: <span class="kw-2">&amp;</span><span class="ident">BorrowData</span>,
-                                 <span class="ident">loan2</span>: <span class="kw-2">&amp;</span><span class="ident">BorrowData</span>) {
+                                 <span class="ident">loan1</span>: (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">BorrowKind</span>),
+                                 <span class="ident">loan2</span>: (<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>, <span class="ident">BorrowKind</span>)) {
+        <span class="kw">let</span> (<span class="ident">loan1_lvalue</span>, <span class="ident">loan1_kind</span>) <span class="op">=</span> <span class="ident">loan1</span>;
+        <span class="kw">let</span> (<span class="ident">loan2_lvalue</span>, <span class="ident">loan2_kind</span>) <span class="op">=</span> <span class="ident">loan2</span>;
         <span class="comment">// FIXME: obviously falsifiable. Generalize for non-eq lvalues later.</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loan1</span>.<span class="ident">lvalue</span>, <span class="ident">loan2</span>.<span class="ident">lvalue</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loan1_lvalue</span>, <span class="ident">loan2_lvalue</span>);
 
         <span class="comment">// FIXME: supply non-&quot;&quot; `opt_via` when appropriate</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">loan1</span>.<span class="ident">kind</span>, <span class="string">&quot;immutable&quot;</span>, <span class="string">&quot;mutable&quot;</span>,
-                             <span class="ident">loan2</span>.<span class="ident">kind</span>, <span class="string">&quot;immutable&quot;</span>, <span class="string">&quot;mutable&quot;</span>) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">loan1_kind</span>, <span class="string">&quot;immutable&quot;</span>, <span class="string">&quot;mutable&quot;</span>,
+                             <span class="ident">loan2_kind</span>, <span class="string">&quot;immutable&quot;</span>, <span class="string">&quot;mutable&quot;</span>) {
             (<span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, <span class="ident">lft</span>, _, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _, <span class="ident">rgt</span>) <span class="op">|</span>
-            (<span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _, <span class="ident">lft</span>, <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, <span class="ident">rgt</span>, _) <span class="op">|</span>
-            (<span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _, <span class="ident">lft</span>, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _, <span class="ident">rgt</span>) <span class="op">=&gt;</span>
+            (<span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _, <span class="ident">lft</span>, <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, <span class="ident">rgt</span>, _) <span class="op">=&gt;</span>
                 <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_reborrow_already_borrowed</span>(
                     <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>),
                     <span class="string">&quot;&quot;</span>, <span class="ident">lft</span>, <span class="string">&quot;it&quot;</span>, <span class="ident">rgt</span>, <span class="string">&quot;&quot;</span>, <span class="ident">Origin</span>::<span class="ident">Mir</span>),
 
-            _ <span class="op">=&gt;</span>  <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_mutably_borrow_multiply</span>(
-                <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="string">&quot;&quot;</span>, <span class="ident">Origin</span>::<span class="ident">Mir</span>),
+            (<span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _, _, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _, _) <span class="op">=&gt;</span>
+                <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_mutably_borrow_multiply</span>(
+                    <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="string">&quot;&quot;</span>, <span class="ident">Origin</span>::<span class="ident">Mir</span>),
+
+            (<span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, _, _, <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, _, _) <span class="op">=&gt;</span>
+                <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_uniquely_borrow_by_two_closures</span>(
+                    <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="ident">Origin</span>::<span class="ident">Mir</span>),
+
+            (<span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, _, _, _, _, _) <span class="op">=&gt;</span>
+                <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_uniquely_borrow_by_one_closure</span>(
+                    <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="string">&quot;it&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="ident">Origin</span>::<span class="ident">Mir</span>),
+
+            (_, _, _, <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, _, _) <span class="op">=&gt;</span>
+                <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">cannot_reborrow_already_uniquely_borrowed</span>(
+                    <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">describe_lvalue</span>(<span class="ident">lvalue</span>), <span class="string">&quot;it&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="ident">Origin</span>::<span class="ident">Mir</span>),
+
+            (<span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, _, _, <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, _, _) <span class="op">=&gt;</span>
+                <span class="macro">unreachable</span><span class="macro">!</span>(),
+
             <span class="comment">// FIXME: add span labels for first and second mutable borrows, as well as</span>
             <span class="comment">// end point for first.</span>
         };
@@ -2294,7 +2318,7 @@
                     <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(..) <span class="op">=&gt;</span>
                         (<span class="string">&quot;&quot;</span>,   <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">None</span>), <span class="comment">// (dont emit downcast info)</span>
                     <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(<span class="ident">field</span>, <span class="ident">_ty</span>) <span class="op">=&gt;</span>
-                        (<span class="string">&quot;&quot;</span>,   <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;.{}&quot;</span>, <span class="ident">field</span>.<span class="ident">index</span>()), <span class="prelude-val">None</span>),
+                        (<span class="string">&quot;&quot;</span>,   <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;.{}&quot;</span>, <span class="ident">field</span>.<span class="ident">index</span>()), <span class="prelude-val">None</span>), <span class="comment">// FIXME: report name of field</span>
                     <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(<span class="ident">index</span>) <span class="op">=&gt;</span>
                         (<span class="string">&quot;&quot;</span>,   <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">Some</span>(<span class="ident">index</span>)),
                     <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { <span class="ident">offset</span>, <span class="ident">min_length</span>, <span class="ident">from_end</span>: <span class="bool-val">true</span> } <span class="op">=&gt;</span>
@@ -2320,28 +2344,16 @@
             }
         }
     }
+
+    <span class="comment">// Retrieve span of given borrow from the current MIR representation</span>
+    <span class="kw">fn</span> <span class="ident">retrieve_borrow_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">borrow</span>: <span class="kw-2">&amp;</span><span class="ident">BorrowData</span>) <span class="op">-&gt;</span> <span class="ident">Span</span> {
+        <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">basic_blocks</span>()[<span class="ident">borrow</span>.<span class="ident">location</span>.<span class="ident">block</span>]
+            .<span class="ident">statements</span>[<span class="ident">borrow</span>.<span class="ident">location</span>.<span class="ident">statement_index</span>]
+            .<span class="ident">source_info</span>.<span class="ident">span</span>
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>: <span class="lifetime">&#39;b</span><span class="op">+</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">MirBorrowckCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="comment">// FIXME: needs to be able to express errors analogous to check_loans.rs</span>
-    <span class="kw">fn</span> <span class="ident">conflicts_with</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">loan1</span>: <span class="kw-2">&amp;</span><span class="ident">BorrowData</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>, <span class="ident">loan2</span>: <span class="kw-2">&amp;</span><span class="ident">BorrowData</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="ident">loan1</span>.<span class="ident">compatible_with</span>(<span class="ident">loan2</span>.<span class="ident">kind</span>) { <span class="kw">return</span> <span class="bool-val">false</span>; }
-
-        <span class="kw">let</span> <span class="ident">loan2_base_path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">base_path</span>(<span class="kw-2">&amp;</span><span class="ident">loan2</span>.<span class="ident">lvalue</span>);
-        <span class="kw">for</span> <span class="ident">restricted</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">restrictions</span>(<span class="kw-2">&amp;</span><span class="ident">loan1</span>.<span class="ident">lvalue</span>) {
-            <span class="kw">if</span> <span class="ident">restricted</span> <span class="op">!=</span> <span class="ident">loan2_base_path</span> { <span class="kw">continue</span>; }
-            <span class="kw">return</span> <span class="bool-val">true</span>;
-        }
-
-        <span class="kw">let</span> <span class="ident">loan1_base_path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">base_path</span>(<span class="kw-2">&amp;</span><span class="ident">loan1</span>.<span class="ident">lvalue</span>);
-        <span class="kw">for</span> <span class="ident">restricted</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">restrictions</span>(<span class="kw-2">&amp;</span><span class="ident">loan2</span>.<span class="ident">lvalue</span>) {
-            <span class="kw">if</span> <span class="ident">restricted</span> <span class="op">!=</span> <span class="ident">loan1_base_path</span> { <span class="kw">continue</span>; }
-            <span class="kw">return</span> <span class="bool-val">true</span>;
-        }
-
-        <span class="kw">return</span> <span class="bool-val">false</span>;
-    }
-
     <span class="comment">// FIXME (#16118): function intended to allow the borrow checker</span>
     <span class="comment">// to be less precise in its handling of Box while still allowing</span>
     <span class="comment">// moves out of a Box. They should be removed when/if we stop</span>
@@ -2388,8 +2400,8 @@
     <span class="ident">CallOperand</span>,
     <span class="ident">CallDest</span>,
     <span class="ident">Assert</span>,
-    <span class="ident">StorageDead</span>,
     <span class="ident">Yield</span>,
+    <span class="ident">StorageDead</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">ContextKind</span> {
@@ -2521,27 +2533,9 @@
         <span class="self">self</span>.<span class="ident">curr_state</span>.<span class="ident">subtract</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">stmt_kill</span>);
     }
 
-    <span class="kw">fn</span> <span class="ident">elems_generated</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">indexed_set</span>::<span class="ident">Elems</span><span class="op">&lt;</span><span class="ident">BD</span>::<span class="ident">Idx</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">univ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">base_results</span>.<span class="ident">sets</span>().<span class="ident">bits_per_block</span>();
-        <span class="self">self</span>.<span class="ident">stmt_gen</span>.<span class="ident">elems</span>(<span class="ident">univ</span>)
-    }
-
     <span class="kw">fn</span> <span class="ident">elems_incoming</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">indexed_set</span>::<span class="ident">Elems</span><span class="op">&lt;</span><span class="ident">BD</span>::<span class="ident">Idx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">univ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">base_results</span>.<span class="ident">sets</span>().<span class="ident">bits_per_block</span>();
         <span class="self">self</span>.<span class="ident">curr_state</span>.<span class="ident">elems</span>(<span class="ident">univ</span>)
-    }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">BorrowData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">compatible_with</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">bk</span>: <span class="ident">BorrowKind</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">match</span> (<span class="self">self</span>.<span class="ident">kind</span>, <span class="ident">bk</span>) {
-            (<span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-
-            (<span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, _) <span class="op">|</span>
-            (<span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, _) <span class="op">|</span>
-            (_, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>) <span class="op">|</span>
-            (_, <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-        }
     }
 }
 </pre>

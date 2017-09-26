@@ -683,7 +683,7 @@
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">expr_use_visitor</span> <span class="kw">as</span> <span class="ident">euv</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">mem_categorization</span> <span class="kw">as</span> <span class="ident">mc</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">mem_categorization</span>::<span class="ident">Categorization</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">infer</span>::<span class="ident">UpvarRegion</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
@@ -1224,7 +1224,7 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">var_name</span>(<span class="ident">tcx</span>: <span class="ident">ty</span>::<span class="ident">TyCtxt</span>, <span class="ident">var_hir_id</span>: <span class="ident">hir</span>::<span class="ident">HirId</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">Name</span> {
+<span class="kw">fn</span> <span class="ident">var_name</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">var_hir_id</span>: <span class="ident">hir</span>::<span class="ident">HirId</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">Name</span> {
     <span class="kw">let</span> <span class="ident">var_node_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">hir_to_node_id</span>(<span class="ident">var_hir_id</span>);
     <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">var_node_id</span>)
 }

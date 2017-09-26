@@ -640,6 +640,11 @@
 <span id="595">595</span>
 <span id="596">596</span>
 <span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -807,6 +812,7 @@
             <span class="ident">MethodError</span>::<span class="ident">NoMatch</span>(<span class="ident">NoMatchData</span> { <span class="ident">static_candidates</span>: <span class="ident">static_sources</span>,
                                                <span class="ident">unsatisfied_predicates</span>,
                                                <span class="ident">out_of_scope_traits</span>,
+                                               <span class="ident">lev_candidate</span>,
                                                <span class="ident">mode</span>,
                                                .. }) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
@@ -925,6 +931,10 @@
                                               <span class="ident">item_name</span>,
                                               <span class="ident">rcvr_expr</span>,
                                               <span class="ident">out_of_scope_traits</span>);
+
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">lev_candidate</span>) <span class="op">=</span> <span class="ident">lev_candidate</span> {
+                    <span class="ident">err</span>.<span class="ident">help</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;did you mean `{}`?&quot;</span>, <span class="ident">lev_candidate</span>.<span class="ident">name</span>));
+                }
                 <span class="ident">err</span>.<span class="ident">emit</span>();
             }
 

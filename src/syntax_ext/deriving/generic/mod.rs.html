@@ -1730,6 +1730,9 @@
 <span id="1685">1685</span>
 <span id="1686">1686</span>
 <span id="1687">1687</span>
+<span id="1688">1688</span>
+<span id="1689">1689</span>
+<span id="1690">1690</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2161,8 +2164,9 @@
                         }
                     }
                     _ <span class="op">=&gt;</span> {
-                        <span class="ident">cx</span>.<span class="ident">span_err</span>(<span class="ident">mitem</span>.<span class="ident">span</span>,
-                                    <span class="string">&quot;`derive` may only be applied to structs, enums and unions&quot;</span>);
+                        <span class="comment">// Non-ADT derive is an error, but it should have been</span>
+                        <span class="comment">// set earlier; see</span>
+                        <span class="comment">// libsyntax/ext/expand.rs:MacroExpander::expand()</span>
                         <span class="kw">return</span>;
                     }
                 };
@@ -2181,8 +2185,10 @@
                 <span class="ident">push</span>(<span class="ident">Annotatable</span>::<span class="ident">Item</span>(<span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">Item</span> { <span class="ident">attrs</span>: <span class="ident">attrs</span>, ..(<span class="kw-2">*</span><span class="ident">newitem</span>).<span class="ident">clone</span>() })))
             }
             _ <span class="op">=&gt;</span> {
-                <span class="ident">cx</span>.<span class="ident">span_err</span>(<span class="ident">mitem</span>.<span class="ident">span</span>,
-                            <span class="string">&quot;`derive` may only be applied to structs and enums&quot;</span>);
+                <span class="comment">// Non-Item derive is an error, but it should have been</span>
+                <span class="comment">// set earlier; see</span>
+                <span class="comment">// libsyntax/ext/expand.rs:MacroExpander::expand()</span>
+                <span class="kw">return</span>;
             }
         }
     }

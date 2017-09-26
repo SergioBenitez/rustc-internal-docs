@@ -48,9 +48,32 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rustc/lib.rs.html#11-144' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rustc/lib.rs.html#11-166' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, and unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
-</details></div></div><div class='docblock'><p>The Rust compiler.</p>
+</details></div></div><div class='docblock'><p>The &quot;main crate&quot; of the Rust compiler. This crate contains common
+type definitions that are used by the other crates in the rustc
+&quot;family&quot;. Some prominent examples (note that each of these modules
+has their own README with further details).</p>
+
+<ul>
+<li><strong>HIR.</strong> The &quot;high-level (H) intermediate representation (IR)&quot; is
+defined in the <code>hir</code> module.</li>
+<li><strong>MIR.</strong> The &quot;mid-level (M) intermediate representation (IR)&quot; is
+defined in the <code>mir</code> module. This module contains only the
+<em>definition</em> of the MIR; the passes that transform and operate
+on MIR are found in <code>librustc_mir</code> crate.</li>
+<li><strong>Types.</strong> The internal representation of types used in rustc is
+defined in the <code>ty</code> module. This includes the <strong>type context</strong>
+(or <code>tcx</code>), which is the central context during most of
+compilation, containing the interners and other things.</li>
+<li><strong>Traits.</strong> Trait resolution is implemented in the <code>traits</code> module.</li>
+<li><strong>Type inference.</strong> The type inference code can be found in the <code>infer</code> module;
+this code handles low-level equality and subtyping operations. The
+type check pass in the compiler is found in the <code>librustc_typeck</code> crate.</li>
+</ul>
+
+<p>For a deeper explanation of how the compiler works and is
+organized, see the README.md file in this directory.</p>
 
 <h1 id='note' class='section-header'><a href='#note'>Note</a></h1>
 <p>This API is completely unstable and subject to change.</p>

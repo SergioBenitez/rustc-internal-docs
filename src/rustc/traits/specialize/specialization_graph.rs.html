@@ -410,6 +410,27 @@
 <span id="365">365</span>
 <span id="366">366</span>
 <span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -424,6 +445,9 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">OverlapError</span>;
 
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
+<span class="kw">use</span> <span class="ident">ich</span>::{<span class="self">self</span>, <span class="ident">StableHashingContext</span>};
+<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">stable_hasher</span>::{<span class="ident">HashStable</span>, <span class="ident">StableHasher</span>,
+                                           <span class="ident">StableHasherResult</span>};
 <span class="kw">use</span> <span class="ident">traits</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFoldable</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">fast_reject</span>::{<span class="self">self</span>, <span class="ident">SimplifiedType</span>};
@@ -778,6 +802,24 @@
         <span class="ident">current_source</span>: <span class="prelude-val">Some</span>(<span class="ident">Node</span>::<span class="ident">Impl</span>(<span class="ident">start_from_impl</span>)),
     }
 }
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">Children</span> {
+    <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
+                                          <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
+        <span class="kw">let</span> <span class="ident">Children</span> {
+            <span class="kw-2">ref</span> <span class="ident">nonblanket_impls</span>,
+            <span class="kw-2">ref</span> <span class="ident">blanket_impls</span>,
+        } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
+
+        <span class="ident">ich</span>::<span class="ident">hash_stable_trait_impls</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>, <span class="ident">blanket_impls</span>, <span class="ident">nonblanket_impls</span>);
+    }
+}
+
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="self">self</span>::<span class="ident">Graph</span> {
+    <span class="ident">parent</span>,
+    <span class="ident">children</span>
+});
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

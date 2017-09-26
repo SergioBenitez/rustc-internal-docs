@@ -786,6 +786,77 @@
 <span id="741">741</span>
 <span id="742">742</span>
 <span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
+<span id="746">746</span>
+<span id="747">747</span>
+<span id="748">748</span>
+<span id="749">749</span>
+<span id="750">750</span>
+<span id="751">751</span>
+<span id="752">752</span>
+<span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -849,7 +920,7 @@
 <span class="doccomment">//! user of the `DepNode` API of having to know how to compute the expected</span>
 <span class="doccomment">//! fingerprint for a given set of node parameters.</span>
 
-<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">DefIndex</span>};
+<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">DefIndex</span>, <span class="ident">CRATE_DEF_INDEX</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">DefPathHash</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::{<span class="ident">HirId</span>, <span class="ident">ItemLocalId</span>};
 
@@ -860,6 +931,7 @@
 <span class="kw">use</span> <span class="ident">ich</span>::<span class="ident">StableHashingContext</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::<span class="ident">Hash</span>;
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">symbol</span>::<span class="ident">InternedString</span>;
 
 <span class="comment">// erase!() just makes tokens go away. It&#39;s used to specify which macro argument</span>
 <span class="comment">// is repeated (i.e. which sub-expression of the macro we are in) but don&#39;t need</span>
@@ -868,14 +940,28 @@
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> ({})
 }
 
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">anon_attr_to_bool</span> {
-    (<span class="ident">anon</span>) <span class="op">=&gt;</span> (<span class="bool-val">true</span>)
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">is_anon_attr</span> {
+    (<span class="ident">anon</span>) <span class="op">=&gt;</span> (<span class="bool-val">true</span>);
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> (<span class="bool-val">false</span>);
+}
+
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">is_input_attr</span> {
+    (<span class="ident">input</span>) <span class="op">=&gt;</span> (<span class="bool-val">true</span>);
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> (<span class="bool-val">false</span>);
+}
+
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">contains_anon_attr</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> ({$(<span class="macro">is_anon_attr</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>) <span class="op">|</span> )<span class="op">*</span> <span class="bool-val">false</span>});
+}
+
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">contains_input_attr</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> ({$(<span class="macro">is_input_attr</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>) <span class="op">|</span> )<span class="op">*</span> <span class="bool-val">false</span>});
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">define_dep_nodes</span> {
     (<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span><span class="op">&gt;</span>
     $(
-        [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">anon</span>:<span class="ident">ident</span>)<span class="kw-2">*</span>]
+        [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">ident</span>),<span class="op">*</span> ]
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span>:<span class="ident">ident</span> $(( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tuple_arg</span>:<span class="ident">tt</span>),<span class="op">*</span> ))<span class="op">*</span>
                        $({ $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">struct_arg_name</span>:<span class="ident">ident</span> : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">struct_arg_ty</span>:<span class="ident">ty</span>),<span class="op">*</span> })<span class="op">*</span>
       ,)<span class="op">*</span>
@@ -893,7 +979,9 @@
                 <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
                     $(
                         <span class="ident">DepKind</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> <span class="op">=&gt;</span> {
-                            $(<span class="kw">return</span> <span class="op">!</span><span class="macro">anon_attr_to_bool</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">anon</span>);)<span class="op">*</span>
+                            <span class="kw">if</span> <span class="macro">contains_anon_attr</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>),<span class="kw-2">*</span>) {
+                                <span class="kw">return</span> <span class="bool-val">false</span>;
+                            }
 
                             <span class="comment">// tuple args</span>
                             $({
@@ -914,15 +1002,20 @@
                 }
             }
 
-            <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unreachable_code</span>)]</span>
             <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_anon</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_anon</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
                 <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
                     $(
-                        <span class="ident">DepKind</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> <span class="op">=&gt;</span> {
-                            $(<span class="kw">return</span> <span class="macro">anon_attr_to_bool</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">anon</span>);)<span class="op">*</span>
-                            <span class="bool-val">false</span>
-                        }
+                        <span class="ident">DepKind</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> <span class="op">=&gt;</span> { <span class="macro">contains_anon_attr</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>),<span class="kw-2">*</span>) }
+                    )<span class="op">*</span>
+                }
+            }
+
+            <span class="attribute">#[<span class="ident">inline</span>]</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_input</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+                <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+                    $(
+                        <span class="ident">DepKind</span> :: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> <span class="op">=&gt;</span> { <span class="macro">contains_input_attr</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>),<span class="kw-2">*</span>) }
                     )<span class="op">*</span>
                 }
             }
@@ -1154,6 +1247,17 @@
     }
 }
 
+<span class="kw">impl</span> <span class="ident">DepKind</span> {
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fingerprint_needed_for_crate_hash</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">DepKind</span>::<span class="ident">HirBody</span> <span class="op">|</span>
+            <span class="ident">DepKind</span>::<span class="ident">Krate</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        }
+    }
+}
+
 <span class="macro">define_dep_nodes</span><span class="macro">!</span>( <span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     <span class="comment">// Represents the `Krate` as a whole (the `hir::Krate` value) (as</span>
     <span class="comment">// distinct from the krate module). This is basically a hash of</span>
@@ -1166,18 +1270,17 @@
     <span class="comment">// suitable wrapper, you can use `tcx.dep_graph.ignore()` to gain</span>
     <span class="comment">// access to the krate, but you must remember to add suitable</span>
     <span class="comment">// edges yourself for the individual items that you read.</span>
-    [] <span class="ident">Krate</span>,
-
-    <span class="comment">// Represents the HIR node with the given node-id</span>
-    [] <span class="ident">Hir</span>(<span class="ident">DefId</span>),
+    [<span class="ident">input</span>] <span class="ident">Krate</span>,
 
     <span class="comment">// Represents the body of a function or method. The def-id is that of the</span>
     <span class="comment">// function/method.</span>
-    [] <span class="ident">HirBody</span>(<span class="ident">DefId</span>),
+    [<span class="ident">input</span>] <span class="ident">HirBody</span>(<span class="ident">DefId</span>),
 
-    <span class="comment">// Represents the metadata for a given HIR node, typically found</span>
-    <span class="comment">// in an extern crate.</span>
-    [] <span class="ident">MetaData</span>(<span class="ident">DefId</span>),
+    <span class="comment">// Represents the HIR node with the given node-id</span>
+    [<span class="ident">input</span>] <span class="ident">Hir</span>(<span class="ident">DefId</span>),
+
+    <span class="comment">// Represents metadata from an extern crate.</span>
+    [<span class="ident">input</span>] <span class="ident">CrateMetadata</span>(<span class="ident">CrateNum</span>),
 
     <span class="comment">// Represents some artifact that we save to disk. Note that these</span>
     <span class="comment">// do not have a def-id as part of their identifier.</span>
@@ -1202,6 +1305,7 @@
     [] <span class="ident">BorrowCheckKrate</span>,
     [] <span class="ident">BorrowCheck</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MirBorrowCheck</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">UnsafetyViolations</span>(<span class="ident">DefId</span>),
 
     [] <span class="ident">RvalueCheck</span>(<span class="ident">DefId</span>),
     [] <span class="ident">Reachability</span>,
@@ -1317,14 +1421,14 @@
     [] <span class="ident">ExternCrate</span>(<span class="ident">DefId</span>),
     [] <span class="ident">LintLevels</span>,
     [] <span class="ident">Specializes</span> { <span class="ident">impl1</span>: <span class="ident">DefId</span>, <span class="ident">impl2</span>: <span class="ident">DefId</span> },
-    [] <span class="ident">InScopeTraits</span>(<span class="ident">DefIndex</span>),
+    [<span class="ident">input</span>] <span class="ident">InScopeTraits</span>(<span class="ident">DefIndex</span>),
     [] <span class="ident">ModuleExports</span>(<span class="ident">DefId</span>),
     [] <span class="ident">IsSanitizerRuntime</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">IsProfilerRuntime</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">GetPanicStrategy</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">IsNoBuiltins</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">ImplDefaultness</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">ExportedSymbols</span>(<span class="ident">CrateNum</span>),
+    [] <span class="ident">ExportedSymbolIds</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">NativeLibraries</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">PluginRegistrarFn</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">DeriveRegistrarFn</span>(<span class="ident">CrateNum</span>),
@@ -1358,12 +1462,22 @@
     [] <span class="ident">MissingExternCrateItem</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">UsedCrateSource</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">PostorderCnums</span>,
+    [] <span class="ident">HasCloneClosures</span>(<span class="ident">CrateNum</span>),
+    [] <span class="ident">HasCopyClosures</span>(<span class="ident">CrateNum</span>),
 
     [] <span class="ident">Freevars</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MaybeUnusedTraitImport</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MaybeUnusedExternCrates</span>,
     [] <span class="ident">StabilityIndex</span>,
     [] <span class="ident">AllCrateNums</span>,
+    [] <span class="ident">ExportedSymbols</span>(<span class="ident">CrateNum</span>),
+    [] <span class="ident">CollectAndPartitionTranslationItems</span>,
+    [] <span class="ident">ExportName</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">ContainsExternIndicator</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">IsTranslatedFunction</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">CodegenUnit</span>(<span class="ident">InternedString</span>),
+    [] <span class="ident">CompileCodegenUnit</span>(<span class="ident">InternedString</span>),
+    [] <span class="ident">OutputFilenames</span>,
 );
 
 <span class="kw">trait</span> <span class="ident">DepNodeParams</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> : <span class="ident">fmt</span>::<span class="ident">Debug</span> {
@@ -1383,12 +1497,12 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">DepNodeParams</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">T</span>
-    <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="op">+</span> <span class="ident">fmt</span>::<span class="ident">Debug</span>
+    <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="op">+</span> <span class="ident">fmt</span>::<span class="ident">Debug</span>
 {
     <span class="ident">default</span> <span class="kw">const</span> <span class="ident">CAN_RECONSTRUCT_QUERY_KEY</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
     <span class="ident">default</span> <span class="kw">fn</span> <span class="ident">to_fingerprint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Fingerprint</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hcx</span> <span class="op">=</span> <span class="ident">StableHashingContext</span>::<span class="ident">new</span>(<span class="ident">tcx</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hcx</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">create_stable_hashing_context</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">StableHasher</span>::<span class="ident">new</span>();
 
         <span class="self">self</span>.<span class="ident">hash_stable</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hasher</span>);
@@ -1410,6 +1524,34 @@
 
     <span class="kw">fn</span> <span class="ident">to_debug_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="self">self</span>.<span class="number">0</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">DepNodeParams</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">DefIndex</span>,) {
+    <span class="kw">const</span> <span class="ident">CAN_RECONSTRUCT_QUERY_KEY</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
+
+    <span class="kw">fn</span> <span class="ident">to_fingerprint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) <span class="op">-&gt;</span> <span class="ident">Fingerprint</span> {
+        <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">definitions</span>().<span class="ident">def_path_hash</span>(<span class="self">self</span>.<span class="number">0</span>).<span class="number">0</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">to_debug_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+        <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">DefId</span>::<span class="ident">local</span>(<span class="self">self</span>.<span class="number">0</span>))
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">DepNodeParams</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">CrateNum</span>,) {
+    <span class="kw">const</span> <span class="ident">CAN_RECONSTRUCT_QUERY_KEY</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
+
+    <span class="kw">fn</span> <span class="ident">to_fingerprint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) <span class="op">-&gt;</span> <span class="ident">Fingerprint</span> {
+        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">DefId</span> {
+            <span class="ident">krate</span>: <span class="self">self</span>.<span class="number">0</span>,
+            <span class="ident">index</span>: <span class="ident">CRATE_DEF_INDEX</span>,
+        };
+        <span class="ident">tcx</span>.<span class="ident">def_path_hash</span>(<span class="ident">def_id</span>).<span class="number">0</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">to_debug_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+        <span class="ident">tcx</span>.<span class="ident">crate_name</span>(<span class="self">self</span>.<span class="number">0</span>).<span class="ident">as_str</span>().<span class="ident">to_string</span>()
     }
 }
 
