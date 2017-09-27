@@ -3592,7 +3592,7 @@
             .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">needed_cap</span><span class="op">|</span> <span class="ident">needed_cap</span>.<span class="ident">checked_next_power_of_two</span>())
             .<span class="ident">expect</span>(<span class="string">&quot;capacity overflow&quot;</span>);
 
-        <span class="kw">if</span> <span class="ident">new_cap</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">capacity</span>() {
+        <span class="kw">if</span> <span class="ident">new_cap</span> <span class="op">&gt;</span> <span class="ident">old_cap</span> {
             <span class="self">self</span>.<span class="ident">buf</span>.<span class="ident">reserve_exact</span>(<span class="ident">used_cap</span>, <span class="ident">new_cap</span> <span class="op">-</span> <span class="ident">used_cap</span>);
             <span class="kw">unsafe</span> {
                 <span class="self">self</span>.<span class="ident">handle_cap_increase</span>(<span class="ident">old_cap</span>);

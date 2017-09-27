@@ -233,6 +233,7 @@
 <span id="188">188</span>
 <span id="189">189</span>
 <span id="190">190</span>
+<span id="191">191</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -255,7 +256,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
-<span class="kw">use</span> <span class="ident">traits</span>::{<span class="ident">FulfillmentContext</span>, <span class="ident">Obligation</span>, <span class="ident">ObligationCause</span>, <span class="ident">Reveal</span>, <span class="ident">SelectionContext</span>, <span class="ident">Vtable</span>};
+<span class="kw">use</span> <span class="ident">traits</span>::{<span class="ident">FulfillmentContext</span>, <span class="ident">Obligation</span>, <span class="ident">ObligationCause</span>, <span class="ident">SelectionContext</span>, <span class="ident">Vtable</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Subst</span>, <span class="ident">Substs</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">fold</span>::{<span class="ident">TypeFoldable</span>, <span class="ident">TypeFolder</span>};
@@ -267,24 +268,25 @@
     <span class="doccomment">/// (necessarily) resolve all nested obligations on the impl. Note</span>
     <span class="doccomment">/// that type check should guarantee to us that all nested</span>
     <span class="doccomment">/// obligations *could be* resolved if we wanted to.</span>
+    <span class="doccomment">/// Assumes that this is run after the entire crate has been successfully type-checked.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trans_fulfill_obligation</span>(<span class="self">self</span>,
                                     <span class="ident">span</span>: <span class="ident">Span</span>,
+                                    <span class="ident">param_env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                     <span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                     <span class="op">-&gt;</span> <span class="ident">Vtable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, ()<span class="op">&gt;</span>
     {
         <span class="comment">// Remove any references to regions; this helps improve caching.</span>
         <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">erase_regions</span>(<span class="kw-2">&amp;</span><span class="ident">trait_ref</span>);
 
-        <span class="self">self</span>.<span class="ident">trans_trait_caches</span>.<span class="ident">trait_cache</span>.<span class="ident">memoize</span>(<span class="ident">trait_ref</span>, <span class="op">||</span> {
+        <span class="self">self</span>.<span class="ident">trans_trait_caches</span>.<span class="ident">trait_cache</span>.<span class="ident">memoize</span>((<span class="ident">param_env</span>, <span class="ident">trait_ref</span>), <span class="op">||</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trans::fulfill_obligation(trait_ref={:?}, def_id={:?})&quot;</span>,
-                   <span class="ident">trait_ref</span>, <span class="ident">trait_ref</span>.<span class="ident">def_id</span>());
+                   (<span class="ident">param_env</span>, <span class="ident">trait_ref</span>), <span class="ident">trait_ref</span>.<span class="ident">def_id</span>());
 
             <span class="comment">// Do the initial selection for the obligation. This yields the</span>
             <span class="comment">// shallow result we are looking for -- that is, what specific impl.</span>
             <span class="self">self</span>.<span class="ident">infer_ctxt</span>().<span class="ident">enter</span>(<span class="op">|</span><span class="ident">infcx</span><span class="op">|</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">selcx</span> <span class="op">=</span> <span class="ident">SelectionContext</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">infcx</span>);
 
-                <span class="kw">let</span> <span class="ident">param_env</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">ParamEnv</span>::<span class="ident">empty</span>(<span class="ident">Reveal</span>::<span class="ident">All</span>);
                 <span class="kw">let</span> <span class="ident">obligation_cause</span> <span class="op">=</span> <span class="ident">ObligationCause</span>::<span class="ident">misc</span>(<span class="ident">span</span>,
                                                              <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>);
                 <span class="kw">let</span> <span class="ident">obligation</span> <span class="op">=</span> <span class="ident">Obligation</span>::<span class="ident">new</span>(<span class="ident">obligation_cause</span>,
@@ -403,7 +405,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">DepTrackingMapConfig</span> <span class="kw">for</span> <span class="ident">TraitSelectionCache</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Key</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>;
+    <span class="kw">type</span> <span class="ident">Key</span> <span class="op">=</span> (<span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>);
     <span class="kw">type</span> <span class="ident">Value</span> <span class="op">=</span> <span class="ident">Vtable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, ()<span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">to_dep_kind</span>() <span class="op">-&gt;</span> <span class="ident">DepKind</span> {
         <span class="ident">DepKind</span>::<span class="ident">TraitSelect</span>
