@@ -1734,6 +1734,15 @@
 <span id="1689">1689</span>
 <span id="1690">1690</span>
 <span id="1691">1691</span>
+<span id="1692">1692</span>
+<span id="1693">1693</span>
+<span id="1694">1694</span>
+<span id="1695">1695</span>
+<span id="1696">1696</span>
+<span id="1697">1697</span>
+<span id="1698">1698</span>
+<span id="1699">1699</span>
+<span id="1700">1700</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2659,6 +2668,7 @@
                         <span class="ident">has_default</span>: <span class="bool-val">false</span>,
                         <span class="ident">object_lifetime_default</span>: <span class="ident">rl</span>::<span class="ident">Set1</span>::<span class="ident">Empty</span>,
                         <span class="ident">pure_wrt_drop</span>: <span class="bool-val">false</span>,
+                        <span class="ident">synthetic</span>: <span class="prelude-val">None</span>,
                     });
 
                     <span class="ident">allow_defaults</span> <span class="op">=</span> <span class="bool-val">true</span>;
@@ -2730,6 +2740,7 @@
             <span class="ident">object_lifetime_default</span>:
                 <span class="ident">object_lifetime_defaults</span>.<span class="ident">as_ref</span>().<span class="ident">map_or</span>(<span class="ident">rl</span>::<span class="ident">Set1</span>::<span class="ident">Empty</span>, <span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>[<span class="ident">i</span>]),
             <span class="ident">pure_wrt_drop</span>: <span class="ident">p</span>.<span class="ident">pure_wrt_drop</span>,
+            <span class="ident">synthetic</span>: <span class="ident">p</span>.<span class="ident">synthetic</span>,
         }
     });
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">types</span>: <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">opt_self</span>.<span class="ident">into_iter</span>().<span class="ident">chain</span>(<span class="ident">types</span>).<span class="ident">collect</span>();
@@ -2746,6 +2757,7 @@
                 <span class="ident">has_default</span>: <span class="bool-val">false</span>,
                 <span class="ident">object_lifetime_default</span>: <span class="ident">rl</span>::<span class="ident">Set1</span>::<span class="ident">Empty</span>,
                 <span class="ident">pure_wrt_drop</span>: <span class="bool-val">false</span>,
+                <span class="ident">synthetic</span>: <span class="prelude-val">None</span>,
             }));
         });
     }
@@ -3064,6 +3076,12 @@
 }
 
 <span class="kw">fn</span> <span class="ident">predicates_of</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                           <span class="ident">def_id</span>: <span class="ident">DefId</span>)
+                           <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">GenericPredicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="ident">explicit_predicates_of</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">explicit_predicates_of</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                            <span class="ident">def_id</span>: <span class="ident">DefId</span>)
                            <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">GenericPredicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">map</span>::<span class="kw-2">*</span>;

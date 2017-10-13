@@ -1071,6 +1071,84 @@
 <span id="1026">1026</span>
 <span id="1027">1027</span>
 <span id="1028">1028</span>
+<span id="1029">1029</span>
+<span id="1030">1030</span>
+<span id="1031">1031</span>
+<span id="1032">1032</span>
+<span id="1033">1033</span>
+<span id="1034">1034</span>
+<span id="1035">1035</span>
+<span id="1036">1036</span>
+<span id="1037">1037</span>
+<span id="1038">1038</span>
+<span id="1039">1039</span>
+<span id="1040">1040</span>
+<span id="1041">1041</span>
+<span id="1042">1042</span>
+<span id="1043">1043</span>
+<span id="1044">1044</span>
+<span id="1045">1045</span>
+<span id="1046">1046</span>
+<span id="1047">1047</span>
+<span id="1048">1048</span>
+<span id="1049">1049</span>
+<span id="1050">1050</span>
+<span id="1051">1051</span>
+<span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1283,6 +1361,35 @@
 <span class="doccomment">/// The mutability of a pointer does not change its size. As such, `&amp;T` and `&amp;mut T`</span>
 <span class="doccomment">/// have the same size. Likewise for `*const T` and `*mut T`.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Size of `#[repr(C)]` items</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The `C` representation for items has a defined layout. With this layout,</span>
+<span class="doccomment">/// the size of items is also stable as long as all fields have a stable size.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ## Size of Structs</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// For `structs`, the size is determined by the following algorithm.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// For each field in the struct ordered by declaration order:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 1. Add the size of the field.</span>
+<span class="doccomment">/// 2. Round up the current size to the nearest multiple of the next field&#39;s [alignment].</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Finally, round the size of the struct to the nearest multiple of its [alignment].</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Unlike `C`, zero sized structs are not rounded up to one byte in size.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ## Size of Enums</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Enums that carry no data other than the descriminant have the same size as C enums</span>
+<span class="doccomment">/// on the platform they are compiled for.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ## Size of Unions</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The size of a union is the size of its largest field.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Unlike `C`, zero sized unions are not rounded up to one byte in size.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
@@ -1305,6 +1412,55 @@
 <span class="doccomment">/// assert_eq!(mem::size_of::&lt;&amp;i32&gt;(), mem::size_of::&lt;Option&lt;&amp;i32&gt;&gt;());</span>
 <span class="doccomment">/// assert_eq!(mem::size_of::&lt;Box&lt;i32&gt;&gt;(), mem::size_of::&lt;Option&lt;Box&lt;i32&gt;&gt;&gt;());</span>
 <span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Using `#[repr(C)]`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use std::mem;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// #[repr(C)]</span>
+<span class="doccomment">/// struct FieldStruct {</span>
+<span class="doccomment">///     first: u8,</span>
+<span class="doccomment">///     second: u16,</span>
+<span class="doccomment">///     third: u8</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // The size of the first field is 1, so add 1 to the size. Size is 1.</span>
+<span class="doccomment">/// // The alignment of the second field is 2, so add 1 to the size for padding. Size is 2.</span>
+<span class="doccomment">/// // The size of the second field is 2, so add 2 to the size. Size is 4.</span>
+<span class="doccomment">/// // The alignment of the third field is 1, so add 0 to the size for padding. Size is 4.</span>
+<span class="doccomment">/// // The size of the third field is 1, so add 1 to the size. Size is 5.</span>
+<span class="doccomment">/// // Finally, the alignment of the struct is 2, so add 1 to the size for padding. Size is 6.</span>
+<span class="doccomment">/// assert_eq!(6, mem::size_of::&lt;FieldStruct&gt;());</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// #[repr(C)]</span>
+<span class="doccomment">/// struct TupleStruct(u8, u16, u8);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // Tuple structs follow the same rules.</span>
+<span class="doccomment">/// assert_eq!(6, mem::size_of::&lt;TupleStruct&gt;());</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // Note that reordering the fields can lower the size. We can remove both padding bytes</span>
+<span class="doccomment">/// // by putting `third` before `second`.</span>
+<span class="doccomment">/// #[repr(C)]</span>
+<span class="doccomment">/// struct FieldStructOptimized {</span>
+<span class="doccomment">///     first: u8,</span>
+<span class="doccomment">///     third: u8,</span>
+<span class="doccomment">///     second: u16</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(4, mem::size_of::&lt;FieldStructOptimized&gt;());</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // Union size is the size of the largest field.</span>
+<span class="doccomment">/// #[repr(C)]</span>
+<span class="doccomment">/// union ExampleUnion {</span>
+<span class="doccomment">///     smaller: u8,</span>
+<span class="doccomment">///     larger: u16</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// assert_eq!(2, mem::size_of::&lt;ExampleUnion&gt;());</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [alignment]: ./fn.align_of.html</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_size_of&quot;</span>))]</span>
@@ -1476,7 +1632,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;needs_drop&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.22.0&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;needs_drop&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">needs_drop</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">needs_drop</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() }
 }
@@ -1832,7 +1988,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// See the `discriminant` function in this module for more information.</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;discriminant_value&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Discriminant</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">u64</span>, <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span><span class="op">&gt;</span>);
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Discriminant</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">u64</span>, <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="kw">fn</span>() <span class="op">-&gt;</span> <span class="ident">T</span><span class="op">&gt;</span>);
 
 <span class="comment">// N.B. These trait implementations cannot be derived because we don&#39;t want any bounds on T.</span>
 

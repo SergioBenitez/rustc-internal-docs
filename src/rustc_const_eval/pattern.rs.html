@@ -970,6 +970,44 @@
 <span id="925">925</span>
 <span id="926">926</span>
 <span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1274,6 +1312,44 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lower_pattern</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pat</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Pat</span>) <span class="op">-&gt;</span> <span class="ident">Pattern</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="comment">// When implicit dereferences have been inserted in this pattern, the unadjusted lowered</span>
+        <span class="comment">// pattern has the type that results *after* dereferencing. For example, in this code:</span>
+        <span class="comment">//</span>
+        <span class="comment">// ```</span>
+        <span class="comment">// match &amp;&amp;Some(0i32) {</span>
+        <span class="comment">//     Some(n) =&gt; { ... },</span>
+        <span class="comment">//     _ =&gt; { ... },</span>
+        <span class="comment">// }</span>
+        <span class="comment">// ```</span>
+        <span class="comment">//</span>
+        <span class="comment">// the type assigned to `Some(n)` in `unadjusted_pat` would be `Option&lt;i32&gt;` (this is</span>
+        <span class="comment">// determined in rustc_typeck::check::match). The adjustments would be</span>
+        <span class="comment">//</span>
+        <span class="comment">// `vec![&amp;&amp;Option&lt;i32&gt;, &amp;Option&lt;i32&gt;]`.</span>
+        <span class="comment">//</span>
+        <span class="comment">// Applying the adjustments, we want to instead output `&amp;&amp;Some(n)` (as a HAIR pattern). So</span>
+        <span class="comment">// we wrap the unadjusted pattern in `PatternKind::Deref` repeatedly, consuming the</span>
+        <span class="comment">// adjustments in *reverse order* (last-in-first-out, so that the last `Deref` inserted</span>
+        <span class="comment">// gets the least-dereferenced type).</span>
+        <span class="kw">let</span> <span class="ident">unadjusted_pat</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lower_pattern_unadjusted</span>(<span class="ident">pat</span>);
+        <span class="self">self</span>.<span class="ident">tables</span>
+            .<span class="ident">pat_adjustments</span>()
+            .<span class="ident">get</span>(<span class="ident">pat</span>.<span class="ident">hir_id</span>)
+            .<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="macro">vec</span><span class="macro">!</span>[])
+            .<span class="ident">iter</span>()
+            .<span class="ident">rev</span>()
+            .<span class="ident">fold</span>(<span class="ident">unadjusted_pat</span>, <span class="op">|</span><span class="ident">pat</span>, <span class="ident">ref_ty</span><span class="op">|</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;{:?}: wrapping pattern with type {:?}&quot;</span>, <span class="ident">pat</span>, <span class="ident">ref_ty</span>);
+                    <span class="ident">Pattern</span> {
+                        <span class="ident">span</span>: <span class="ident">pat</span>.<span class="ident">span</span>,
+                        <span class="ident">ty</span>: <span class="ident">ref_ty</span>,
+                        <span class="ident">kind</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">PatternKind</span>::<span class="ident">Deref</span> { <span class="ident">subpattern</span>: <span class="ident">pat</span> }),
+                    }
+                },
+            )
+    }
+
+    <span class="kw">fn</span> <span class="ident">lower_pattern_unadjusted</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pat</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Pat</span>) <span class="op">-&gt;</span> <span class="ident">Pattern</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tables</span>.<span class="ident">node_id_to_type</span>(<span class="ident">pat</span>.<span class="ident">hir_id</span>);
 
         <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">pat</span>.<span class="ident">node</span> {

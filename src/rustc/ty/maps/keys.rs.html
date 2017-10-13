@@ -205,6 +205,15 @@
 <span id="160">160</span>
 <span id="161">161</span>
 <span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -339,6 +348,15 @@
     }
     <span class="kw">fn</span> <span class="ident">default_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) <span class="op">-&gt;</span> <span class="ident">Span</span> {
         <span class="self">self</span>.<span class="number">2</span>.<span class="ident">default_span</span>(<span class="ident">tcx</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Key</span> <span class="kw">for</span> (<span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+    <span class="kw">fn</span> <span class="ident">map_crate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">CrateNum</span> {
+        <span class="self">self</span>.<span class="number">1</span>.<span class="ident">def_id</span>().<span class="ident">krate</span>
+    }
+    <span class="kw">fn</span> <span class="ident">default_span</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) <span class="op">-&gt;</span> <span class="ident">Span</span> {
+        <span class="ident">tcx</span>.<span class="ident">def_span</span>(<span class="self">self</span>.<span class="number">1</span>.<span class="ident">def_id</span>())
     }
 }
 

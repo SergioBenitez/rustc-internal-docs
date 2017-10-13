@@ -366,10 +366,6 @@
 <span id="321">321</span>
 <span id="322">322</span>
 <span id="323">323</span>
-<span id="324">324</span>
-<span id="325">325</span>
-<span id="326">326</span>
-<span id="327">327</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -604,17 +600,13 @@
         <span class="ident">g</span>
     };
 
-
-    <span class="comment">// FIXME(#42293) we should actually track this, but fails too many tests</span>
-    <span class="comment">// today.</span>
-    <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
-        <span class="kw">if</span> <span class="ident">ccx</span>.<span class="ident">use_dll_storage_attrs</span>() <span class="op">&amp;&amp;</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">is_dllimport_foreign_item</span>(<span class="ident">def_id</span>) {
-            <span class="comment">// For foreign (native) libs we know the exact storage type to use.</span>
-            <span class="kw">unsafe</span> {
-                <span class="ident">llvm</span>::<span class="ident">LLVMSetDLLStorageClass</span>(<span class="ident">g</span>, <span class="ident">llvm</span>::<span class="ident">DLLStorageClass</span>::<span class="ident">DllImport</span>);
-            }
+    <span class="kw">if</span> <span class="ident">ccx</span>.<span class="ident">use_dll_storage_attrs</span>() <span class="op">&amp;&amp;</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">is_dllimport_foreign_item</span>(<span class="ident">def_id</span>) {
+        <span class="comment">// For foreign (native) libs we know the exact storage type to use.</span>
+        <span class="kw">unsafe</span> {
+            <span class="ident">llvm</span>::<span class="ident">LLVMSetDLLStorageClass</span>(<span class="ident">g</span>, <span class="ident">llvm</span>::<span class="ident">DLLStorageClass</span>::<span class="ident">DllImport</span>);
         }
-    });
+    }
+
     <span class="ident">ccx</span>.<span class="ident">instances</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">instance</span>, <span class="ident">g</span>);
     <span class="ident">ccx</span>.<span class="ident">statics</span>().<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">g</span>, <span class="ident">def_id</span>);
     <span class="ident">g</span>

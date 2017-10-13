@@ -431,6 +431,9 @@
 <span id="386">386</span>
 <span id="387">387</span>
 <span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -780,11 +783,14 @@
     <span class="doccomment">/// Search the items from the given ancestors, returning each definition</span>
     <span class="doccomment">/// with the given name and the given kind.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span> <span class="comment">// FIXME(#35870) Avoid closures being unexported due to impl Trait.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">defs</span>(<span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">name</span>: <span class="ident">Name</span>, <span class="ident">kind</span>: <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">defs</span>(<span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">trait_item_name</span>: <span class="ident">Name</span>,
+                <span class="ident">trait_item_kind</span>: <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>, <span class="ident">trait_def_id</span>: <span class="ident">DefId</span>)
                 <span class="op">-&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">NodeItem</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">AssociatedItem</span><span class="op">&gt;&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span> {
         <span class="self">self</span>.<span class="ident">flat_map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">node</span><span class="op">|</span> {
-            <span class="ident">node</span>.<span class="ident">items</span>(<span class="ident">tcx</span>).<span class="ident">filter</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">kind</span> <span class="op">&amp;&amp;</span> <span class="ident">item</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">name</span>)
-                           .<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">NodeItem</span> { <span class="ident">node</span>: <span class="ident">node</span>, <span class="ident">item</span>: <span class="ident">item</span> })
+            <span class="ident">node</span>.<span class="ident">items</span>(<span class="ident">tcx</span>).<span class="ident">filter</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">impl_item</span><span class="op">|</span> {
+                <span class="ident">impl_item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">trait_item_kind</span> <span class="op">&amp;&amp;</span>
+                <span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">impl_item</span>.<span class="ident">name</span>, <span class="ident">trait_item_name</span>, <span class="ident">trait_def_id</span>)
+            }).<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">NodeItem</span> { <span class="ident">node</span>: <span class="ident">node</span>, <span class="ident">item</span>: <span class="ident">item</span> })
         })
     }
 }

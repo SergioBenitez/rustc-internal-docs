@@ -1801,7 +1801,7 @@
     <span class="doccomment">/// connection request.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`SocketAddr`]: ../../std/net/enum.SocketAddr.html</span>
-    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;tcpstream_connect_timeout&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.22.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;tcpstream_connect_timeout&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connect_timeout</span>(<span class="ident">addr</span>: <span class="kw-2">&amp;</span><span class="ident">SocketAddr</span>, <span class="ident">timeout</span>: <span class="ident">Duration</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TcpStream</span><span class="op">&gt;</span> {
         <span class="ident">net_imp</span>::<span class="ident">TcpStream</span>::<span class="ident">connect_timeout</span>(<span class="ident">addr</span>, <span class="ident">timeout</span>).<span class="ident">map</span>(<span class="ident">TcpStream</span>)
     }
@@ -1828,12 +1828,12 @@
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```no_run</span>
-    <span class="doccomment">/// use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpStream};</span>
+    <span class="doccomment">/// use std::net::{IpAddr, Ipv4Addr, TcpStream};</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let stream = TcpStream::connect(&quot;127.0.0.1:8080&quot;)</span>
     <span class="doccomment">///                        .expect(&quot;Couldn&#39;t connect to the server...&quot;);</span>
-    <span class="doccomment">/// assert_eq!(stream.local_addr().unwrap(),</span>
-    <span class="doccomment">///            SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 8080)));</span>
+    <span class="doccomment">/// assert_eq!(stream.local_addr().unwrap().ip(),</span>
+    <span class="doccomment">///            IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_addr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SocketAddr</span><span class="op">&gt;</span> {

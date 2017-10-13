@@ -1234,6 +1234,12 @@
 <span id="1189">1189</span>
 <span id="1190">1190</span>
 <span id="1191">1191</span>
+<span id="1192">1192</span>
+<span id="1193">1193</span>
+<span id="1194">1194</span>
+<span id="1195">1195</span>
+<span id="1196">1196</span>
+<span id="1197">1197</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1414,7 +1420,8 @@
     <span class="ident">bounds</span>,
     <span class="ident">default</span>,
     <span class="ident">span</span>,
-    <span class="ident">pure_wrt_drop</span>
+    <span class="ident">pure_wrt_drop</span>,
+    <span class="ident">synthetic</span>
 });
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">hir</span>::<span class="ident">Generics</span> {
@@ -1422,6 +1429,10 @@
     <span class="ident">ty_params</span>,
     <span class="ident">where_clause</span>,
     <span class="ident">span</span>
+});
+
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> <span class="ident">hir</span>::<span class="ident">SyntheticTyParamKind</span> {
+    <span class="ident">ImplTrait</span>
 });
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">hir</span>::<span class="ident">WhereClause</span> {
@@ -1506,7 +1517,8 @@
     <span class="ident">unsafety</span>,
     <span class="ident">abi</span>,
     <span class="ident">lifetimes</span>,
-    <span class="ident">decl</span>
+    <span class="ident">decl</span>,
+    <span class="ident">arg_names</span>
 });
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> <span class="ident">hir</span>::<span class="ident">Ty_</span> {

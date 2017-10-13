@@ -2971,14 +2971,6 @@
 <span id="2926">2926</span>
 <span id="2927">2927</span>
 <span id="2928">2928</span>
-<span id="2929">2929</span>
-<span id="2930">2930</span>
-<span id="2931">2931</span>
-<span id="2932">2932</span>
-<span id="2933">2933</span>
-<span id="2934">2934</span>
-<span id="2935">2935</span>
-<span id="2936">2936</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2994,7 +2986,7 @@
 
 <span class="attribute">#![<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 
-<span class="kw">use</span> <span class="ident">convert</span>::<span class="ident">TryFrom</span>;
+<span class="kw">use</span> <span class="ident">convert</span>::{<span class="ident">Infallible</span>, <span class="ident">TryFrom</span>};
 <span class="kw">use</span> <span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">intrinsics</span>;
 <span class="kw">use</span> <span class="ident">str</span>::<span class="ident">FromStr</span>;
@@ -5489,16 +5481,24 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;try_from&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;33417&quot;</span>)]</span>
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Infallible</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TryFromIntError</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">infallible</span>: <span class="ident">Infallible</span>) <span class="op">-&gt;</span> <span class="ident">TryFromIntError</span> {
+        <span class="kw">match</span> <span class="ident">infallible</span> {
+        }
+    }
+}
+
 <span class="comment">// no possible bounds violation</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">try_from_unbounded</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">source</span>:<span class="ident">ty</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">target</span>:<span class="ident">ty</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {$(
         <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;try_from&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;33417&quot;</span>)]</span>
         <span class="kw">impl</span> <span class="ident">TryFrom</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">source</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">target</span> {
-            <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">TryFromIntError</span>;
+            <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Infallible</span>;
 
             <span class="attribute">#[<span class="ident">inline</span>]</span>
-            <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">u</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">source</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">target</span>, <span class="ident">TryFromIntError</span><span class="op">&gt;</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">u</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">target</span>)
+            <span class="kw">fn</span> <span class="ident">try_from</span>(<span class="ident">value</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">source</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Ok</span>(<span class="ident">value</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">target</span>)
             }
         }
     )<span class="kw-2">*</span>}
@@ -5570,31 +5570,17 @@
 }
 
 <span class="doccomment">/// intra-sign conversions</span>
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u8</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u16</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u64</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u128</span>, <span class="ident">u128</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">u16</span>, <span class="ident">u8</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">u32</span>, <span class="ident">u16</span>, <span class="ident">u8</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">u64</span>, <span class="ident">u32</span>, <span class="ident">u16</span>, <span class="ident">u8</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">u128</span>, <span class="ident">u64</span>, <span class="ident">u32</span>, <span class="ident">u16</span>, <span class="ident">u8</span>);
 
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">i8</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">i16</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">i32</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">i64</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">i128</span>, <span class="ident">i128</span>);
 <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">i16</span>, <span class="ident">i8</span>);
 <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">i32</span>, <span class="ident">i16</span>, <span class="ident">i8</span>);
 <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">i64</span>, <span class="ident">i32</span>, <span class="ident">i16</span>, <span class="ident">i8</span>);
 <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">i128</span>, <span class="ident">i64</span>, <span class="ident">i32</span>, <span class="ident">i16</span>, <span class="ident">i8</span>);
 
 <span class="comment">// unsigned-to-signed</span>
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">u64</span>, <span class="ident">i128</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">u8</span>, <span class="ident">i8</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">u16</span>, <span class="ident">i8</span>, <span class="ident">i16</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">u32</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>);
@@ -5613,15 +5599,13 @@
 <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">i128</span>, <span class="ident">u64</span>, <span class="ident">u32</span>, <span class="ident">u16</span>, <span class="ident">u8</span>);
 
 <span class="comment">// usize/isize</span>
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">usize</span>);
 <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">isize</span>);
 <span class="macro">try_from_lower_bounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">usize</span>);
-<span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">isize</span>);
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;16&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">ptr_try_from_impls</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">TryFromIntError</span>;
-    <span class="kw">use</span> <span class="ident">convert</span>::<span class="ident">TryFrom</span>;
+    <span class="kw">use</span> <span class="ident">convert</span>::{<span class="ident">Infallible</span>, <span class="ident">TryFrom</span>};
 
     <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">u8</span>);
     <span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
@@ -5633,21 +5617,21 @@
     <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">i8</span>);
     <span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
 
-    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">usize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>);
+    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">usize</span>, <span class="ident">u16</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_upper_bounded</span>, <span class="ident">usize</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_lower_bounded</span>, <span class="ident">usize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_both_bounded</span>, <span class="ident">usize</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
 
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">u8</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_upper_bounded</span>, <span class="ident">isize</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
-    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>);
+    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">i16</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_both_bounded</span>, <span class="ident">isize</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">ptr_try_from_impls</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">TryFromIntError</span>;
-    <span class="kw">use</span> <span class="ident">convert</span>::<span class="ident">TryFrom</span>;
+    <span class="kw">use</span> <span class="ident">convert</span>::{<span class="ident">Infallible</span>, <span class="ident">TryFrom</span>};
 
     <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>);
     <span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
@@ -5659,21 +5643,21 @@
     <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>);
     <span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">i32</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
 
-    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">usize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>);
+    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">usize</span>, <span class="ident">u16</span>, <span class="ident">u32</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_upper_bounded</span>, <span class="ident">usize</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_lower_bounded</span>, <span class="ident">usize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_both_bounded</span>, <span class="ident">usize</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
 
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_upper_bounded</span>, <span class="ident">isize</span>, <span class="ident">u32</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
-    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>);
+    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">i16</span>, <span class="ident">i32</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_both_bounded</span>, <span class="ident">isize</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
 <span class="kw">mod</span> <span class="ident">ptr_try_from_impls</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">TryFromIntError</span>;
-    <span class="kw">use</span> <span class="ident">convert</span>::<span class="ident">TryFrom</span>;
+    <span class="kw">use</span> <span class="ident">convert</span>::{<span class="ident">Infallible</span>, <span class="ident">TryFrom</span>};
 
     <span class="macro">try_from_upper_bounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>);
     <span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">usize</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
@@ -5685,14 +5669,14 @@
     <span class="macro">try_from_both_bounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>);
     <span class="macro">try_from_unbounded</span><span class="macro">!</span>(<span class="ident">isize</span>, <span class="ident">i64</span>, <span class="ident">i128</span>);
 
-    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">usize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>);
+    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">usize</span>, <span class="ident">u16</span>, <span class="ident">u32</span>, <span class="ident">u64</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_upper_bounded</span>, <span class="ident">usize</span>, <span class="ident">u128</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_lower_bounded</span>, <span class="ident">usize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_both_bounded</span>, <span class="ident">usize</span>, <span class="ident">i128</span>);
 
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">u8</span>, <span class="ident">u16</span>, <span class="ident">u32</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_upper_bounded</span>, <span class="ident">isize</span>, <span class="ident">u64</span>, <span class="ident">u128</span>);
-    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">i8</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>);
+    <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_unbounded</span>, <span class="ident">isize</span>, <span class="ident">i16</span>, <span class="ident">i32</span>, <span class="ident">i64</span>);
     <span class="macro">rev</span><span class="macro">!</span>(<span class="ident">try_from_both_bounded</span>, <span class="ident">isize</span>, <span class="ident">i128</span>);
 }
 

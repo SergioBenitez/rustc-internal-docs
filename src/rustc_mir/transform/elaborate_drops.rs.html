@@ -730,7 +730,7 @@
         }
         <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">src</span>.<span class="ident">item_id</span>();
         <span class="kw">let</span> <span class="ident">param_env</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">param_env</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">id</span>));
-        <span class="kw">let</span> <span class="ident">move_data</span> <span class="op">=</span> <span class="ident">MoveData</span>::<span class="ident">gather_moves</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>, <span class="ident">param_env</span>);
+        <span class="kw">let</span> <span class="ident">move_data</span> <span class="op">=</span> <span class="ident">MoveData</span>::<span class="ident">gather_moves</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>, <span class="ident">param_env</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">elaborate_patch</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">mir</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">mir</span>;
             <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="ident">MoveDataParamEnv</span> {

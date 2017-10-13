@@ -663,6 +663,11 @@
 <span id="618">618</span>
 <span id="619">619</span>
 <span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -818,6 +823,8 @@
     <span class="ident">Dot</span>,
     <span class="ident">DotDot</span>,
     <span class="ident">DotDotDot</span>,
+    <span class="ident">DotDotEq</span>,
+    <span class="ident">DotEq</span>, <span class="comment">// HACK(durka42) never produced by the parser, only used for libproc_macro</span>
     <span class="ident">Comma</span>,
     <span class="ident">Semi</span>,
     <span class="ident">Colon</span>,
@@ -878,18 +885,19 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">can_begin_expr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">Ident</span>(<span class="ident">ident</span>)                <span class="op">=&gt;</span> <span class="ident">ident_can_begin_expr</span>(<span class="ident">ident</span>), <span class="comment">// value name or keyword</span>
-            <span class="ident">OpenDelim</span>(..)               <span class="op">|</span> <span class="comment">// tuple, array or block</span>
-            <span class="ident">Literal</span>(..)                 <span class="op">|</span> <span class="comment">// literal</span>
-            <span class="ident">Not</span>                         <span class="op">|</span> <span class="comment">// operator not</span>
-            <span class="ident">BinOp</span>(<span class="ident">Minus</span>)                <span class="op">|</span> <span class="comment">// unary minus</span>
-            <span class="ident">BinOp</span>(<span class="ident">Star</span>)                 <span class="op">|</span> <span class="comment">// dereference</span>
-            <span class="ident">BinOp</span>(<span class="ident">Or</span>) <span class="op">|</span> <span class="ident">OrOr</span>            <span class="op">|</span> <span class="comment">// closure</span>
-            <span class="ident">BinOp</span>(<span class="ident">And</span>)                  <span class="op">|</span> <span class="comment">// reference</span>
-            <span class="ident">AndAnd</span>                      <span class="op">|</span> <span class="comment">// double reference</span>
-            <span class="ident">DotDot</span> <span class="op">|</span> <span class="ident">DotDotDot</span>          <span class="op">|</span> <span class="comment">// range notation</span>
-            <span class="ident">Lt</span> <span class="op">|</span> <span class="ident">BinOp</span>(<span class="ident">Shl</span>)             <span class="op">|</span> <span class="comment">// associated path</span>
-            <span class="ident">ModSep</span>                      <span class="op">|</span> <span class="comment">// global path</span>
-            <span class="ident">Pound</span>                       <span class="op">=&gt;</span> <span class="bool-val">true</span>, <span class="comment">// expression attributes</span>
+            <span class="ident">OpenDelim</span>(..)                     <span class="op">|</span> <span class="comment">// tuple, array or block</span>
+            <span class="ident">Literal</span>(..)                       <span class="op">|</span> <span class="comment">// literal</span>
+            <span class="ident">Not</span>                               <span class="op">|</span> <span class="comment">// operator not</span>
+            <span class="ident">BinOp</span>(<span class="ident">Minus</span>)                      <span class="op">|</span> <span class="comment">// unary minus</span>
+            <span class="ident">BinOp</span>(<span class="ident">Star</span>)                       <span class="op">|</span> <span class="comment">// dereference</span>
+            <span class="ident">BinOp</span>(<span class="ident">Or</span>) <span class="op">|</span> <span class="ident">OrOr</span>                  <span class="op">|</span> <span class="comment">// closure</span>
+            <span class="ident">BinOp</span>(<span class="ident">And</span>)                        <span class="op">|</span> <span class="comment">// reference</span>
+            <span class="ident">AndAnd</span>                            <span class="op">|</span> <span class="comment">// double reference</span>
+            <span class="ident">DotDot</span> <span class="op">|</span> <span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">DotDotEq</span>     <span class="op">|</span> <span class="comment">// range notation</span>
+                <span class="comment">// SNAP remove DotDotDot</span>
+            <span class="ident">Lt</span> <span class="op">|</span> <span class="ident">BinOp</span>(<span class="ident">Shl</span>)                   <span class="op">|</span> <span class="comment">// associated path</span>
+            <span class="ident">ModSep</span>                            <span class="op">|</span> <span class="comment">// global path</span>
+            <span class="ident">Pound</span>                             <span class="op">=&gt;</span> <span class="bool-val">true</span>, <span class="comment">// expression attributes</span>
             <span class="ident">Interpolated</span>(<span class="kw-2">ref</span> <span class="ident">nt</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">nt</span>.<span class="number">0</span> {
                 <span class="ident">NtIdent</span>(..) <span class="op">|</span> <span class="ident">NtExpr</span>(..) <span class="op">|</span> <span class="ident">NtBlock</span>(..) <span class="op">|</span> <span class="ident">NtPath</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
                 _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
@@ -1068,10 +1076,12 @@
             <span class="ident">Dot</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">joint</span> {
                 <span class="ident">Dot</span> <span class="op">=&gt;</span> <span class="ident">DotDot</span>,
                 <span class="ident">DotDot</span> <span class="op">=&gt;</span> <span class="ident">DotDotDot</span>,
+                <span class="ident">DotEq</span> <span class="op">=&gt;</span> <span class="ident">DotDotEq</span>,
                 _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
             },
             <span class="ident">DotDot</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">joint</span> {
                 <span class="ident">Dot</span> <span class="op">=&gt;</span> <span class="ident">DotDotDot</span>,
+                <span class="ident">Eq</span> <span class="op">=&gt;</span> <span class="ident">DotDotEq</span>,
                 _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
             },
             <span class="ident">Colon</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">joint</span> {
@@ -1079,9 +1089,9 @@
                 _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
             },
 
-            <span class="ident">Le</span> <span class="op">|</span> <span class="ident">EqEq</span> <span class="op">|</span> <span class="ident">Ne</span> <span class="op">|</span> <span class="ident">Ge</span> <span class="op">|</span> <span class="ident">AndAnd</span> <span class="op">|</span> <span class="ident">OrOr</span> <span class="op">|</span> <span class="ident">Tilde</span> <span class="op">|</span> <span class="ident">BinOpEq</span>(..) <span class="op">|</span> <span class="ident">At</span> <span class="op">|</span> <span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">Comma</span> <span class="op">|</span>
-            <span class="ident">Semi</span> <span class="op">|</span> <span class="ident">ModSep</span> <span class="op">|</span> <span class="ident">RArrow</span> <span class="op">|</span> <span class="ident">LArrow</span> <span class="op">|</span> <span class="ident">FatArrow</span> <span class="op">|</span> <span class="ident">Pound</span> <span class="op">|</span> <span class="ident">Dollar</span> <span class="op">|</span> <span class="ident">Question</span> <span class="op">|</span>
-            <span class="ident">OpenDelim</span>(..) <span class="op">|</span> <span class="ident">CloseDelim</span>(..) <span class="op">|</span> <span class="ident">Underscore</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
+            <span class="ident">Le</span> <span class="op">|</span> <span class="ident">EqEq</span> <span class="op">|</span> <span class="ident">Ne</span> <span class="op">|</span> <span class="ident">Ge</span> <span class="op">|</span> <span class="ident">AndAnd</span> <span class="op">|</span> <span class="ident">OrOr</span> <span class="op">|</span> <span class="ident">Tilde</span> <span class="op">|</span> <span class="ident">BinOpEq</span>(..) <span class="op">|</span> <span class="ident">At</span> <span class="op">|</span> <span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">DotEq</span> <span class="op">|</span>
+            <span class="ident">DotDotEq</span> <span class="op">|</span> <span class="ident">Comma</span> <span class="op">|</span> <span class="ident">Semi</span> <span class="op">|</span> <span class="ident">ModSep</span> <span class="op">|</span> <span class="ident">RArrow</span> <span class="op">|</span> <span class="ident">LArrow</span> <span class="op">|</span> <span class="ident">FatArrow</span> <span class="op">|</span> <span class="ident">Pound</span> <span class="op">|</span> <span class="ident">Dollar</span> <span class="op">|</span>
+            <span class="ident">Question</span> <span class="op">|</span> <span class="ident">OpenDelim</span>(..) <span class="op">|</span> <span class="ident">CloseDelim</span>(..) <span class="op">|</span> <span class="ident">Underscore</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
 
             <span class="ident">Literal</span>(..) <span class="op">|</span> <span class="ident">Ident</span>(..) <span class="op">|</span> <span class="ident">Lifetime</span>(..) <span class="op">|</span> <span class="ident">Interpolated</span>(..) <span class="op">|</span> <span class="ident">DocComment</span>(..) <span class="op">|</span>
             <span class="ident">Whitespace</span> <span class="op">|</span> <span class="ident">Comment</span> <span class="op">|</span> <span class="ident">Shebang</span>(..) <span class="op">|</span> <span class="ident">Eof</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,

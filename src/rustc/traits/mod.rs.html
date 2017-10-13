@@ -892,6 +892,8 @@
 <span id="847">847</span>
 <span id="848">848</span>
 <span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1730,6 +1732,7 @@
         <span class="ident">is_object_safe</span>: <span class="ident">object_safety</span>::<span class="ident">is_object_safe_provider</span>,
         <span class="ident">specialization_graph_of</span>: <span class="ident">specialize</span>::<span class="ident">specialization_graph_provider</span>,
         <span class="ident">specializes</span>: <span class="ident">specialize</span>::<span class="ident">specializes</span>,
+        <span class="ident">trans_fulfill_obligation</span>: <span class="ident">trans</span>::<span class="ident">trans_fulfill_obligation</span>,
         ..<span class="kw-2">*</span><span class="ident">providers</span>
     };
 }
@@ -1739,6 +1742,7 @@
         <span class="ident">is_object_safe</span>: <span class="ident">object_safety</span>::<span class="ident">is_object_safe_provider</span>,
         <span class="ident">specialization_graph_of</span>: <span class="ident">specialize</span>::<span class="ident">specialization_graph_provider</span>,
         <span class="ident">specializes</span>: <span class="ident">specialize</span>::<span class="ident">specializes</span>,
+        <span class="ident">trans_fulfill_obligation</span>: <span class="ident">trans</span>::<span class="ident">trans_fulfill_obligation</span>,
         ..<span class="kw-2">*</span><span class="ident">providers</span>
     };
 }

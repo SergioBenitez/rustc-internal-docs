@@ -828,35 +828,6 @@
 <span id="783">783</span>
 <span id="784">784</span>
 <span id="785">785</span>
-<span id="786">786</span>
-<span id="787">787</span>
-<span id="788">788</span>
-<span id="789">789</span>
-<span id="790">790</span>
-<span id="791">791</span>
-<span id="792">792</span>
-<span id="793">793</span>
-<span id="794">794</span>
-<span id="795">795</span>
-<span id="796">796</span>
-<span id="797">797</span>
-<span id="798">798</span>
-<span id="799">799</span>
-<span id="800">800</span>
-<span id="801">801</span>
-<span id="802">802</span>
-<span id="803">803</span>
-<span id="804">804</span>
-<span id="805">805</span>
-<span id="806">806</span>
-<span id="807">807</span>
-<span id="808">808</span>
-<span id="809">809</span>
-<span id="810">810</span>
-<span id="811">811</span>
-<span id="812">812</span>
-<span id="813">813</span>
-<span id="814">814</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -925,8 +896,8 @@
 <span class="kw">use</span> <span class="ident">hir</span>::{<span class="ident">HirId</span>, <span class="ident">ItemLocalId</span>};
 
 <span class="kw">use</span> <span class="ident">ich</span>::<span class="ident">Fingerprint</span>;
-<span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">TyCtxt</span>, <span class="ident">Instance</span>, <span class="ident">InstanceDef</span>};
-<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">fast_reject</span>::<span class="ident">SimplifiedType</span>;
+<span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">TyCtxt</span>, <span class="ident">Instance</span>, <span class="ident">InstanceDef</span>, <span class="ident">ParamEnv</span>, <span class="ident">ParamEnvAnd</span>, <span class="ident">PolyTraitRef</span>, <span class="ident">Ty</span>};
+<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">stable_hasher</span>::{<span class="ident">StableHasher</span>, <span class="ident">HashStable</span>};
 <span class="kw">use</span> <span class="ident">ich</span>::<span class="ident">StableHashingContext</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
@@ -1199,6 +1170,25 @@
                     <span class="prelude-val">Ok</span>(<span class="ident">DepNode</span>::<span class="ident">new_no_params</span>(<span class="ident">kind</span>))
                 }
             }
+
+            <span class="doccomment">/// Used in testing</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_label_string</span>(<span class="ident">label</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+                <span class="kw">match</span> <span class="ident">label</span> {
+                    $(
+                        <span class="macro">stringify</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    )<span class="op">*</span>
+                    _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                }
+            }
+        }
+
+        <span class="doccomment">/// Contains variant =&gt; str representations for constructing</span>
+        <span class="doccomment">/// DepNode groups for tests.</span>
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>, <span class="ident">non_upper_case_globals</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">label_strs</span> {
+           $(
+                <span class="kw">pub</span> <span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="macro">stringify</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span>);
+            )<span class="op">*</span>
         }
     );
 }
@@ -1207,7 +1197,7 @@
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">kind</span>)<span class="question-mark">?</span>;
 
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">kind</span>.<span class="ident">has_params</span>() {
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">kind</span>.<span class="ident">has_params</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">kind</span>.<span class="ident">is_anon</span>() {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
         }
 
@@ -1216,14 +1206,14 @@
         ::<span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with_opt</span>(<span class="op">|</span><span class="ident">opt_tcx</span><span class="op">|</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tcx</span>) <span class="op">=</span> <span class="ident">opt_tcx</span> {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">def_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">extract_def_id</span>(<span class="ident">tcx</span>) {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))<span class="question-mark">?</span>;
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">def_path_debug_str</span>(<span class="ident">def_id</span>))<span class="question-mark">?</span>;
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">dep_node_debug_str</span>(<span class="kw-2">*</span><span class="self">self</span>) {
                     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
                 } <span class="kw">else</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">hash</span>)<span class="question-mark">?</span>;
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="ident">hash</span>)<span class="question-mark">?</span>;
                 }
             } <span class="kw">else</span> {
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">hash</span>)<span class="question-mark">?</span>;
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>.<span class="ident">hash</span>)<span class="question-mark">?</span>;
             }
             <span class="prelude-val">Ok</span>(())
         })<span class="question-mark">?</span>;
@@ -1290,7 +1280,6 @@
     [] <span class="ident">RegionScopeTree</span>(<span class="ident">DefId</span>),
     [] <span class="ident">Coherence</span>,
     [] <span class="ident">CoherenceInherentImplOverlapCheck</span>,
-    [] <span class="ident">Resolve</span>,
     [] <span class="ident">CoherenceCheckTrait</span>(<span class="ident">DefId</span>),
     [] <span class="ident">PrivacyAccessLevels</span>(<span class="ident">CrateNum</span>),
 
@@ -1307,10 +1296,8 @@
     [] <span class="ident">MirBorrowCheck</span>(<span class="ident">DefId</span>),
     [] <span class="ident">UnsafetyViolations</span>(<span class="ident">DefId</span>),
 
-    [] <span class="ident">RvalueCheck</span>(<span class="ident">DefId</span>),
     [] <span class="ident">Reachability</span>,
     [] <span class="ident">MirKeys</span>,
-    [] <span class="ident">TransWriteMetadata</span>,
     [] <span class="ident">CrateVariances</span>,
 
     <span class="comment">// Nodes representing bits of computed IR in the tcx. Each shared</span>
@@ -1344,31 +1331,23 @@
     [] <span class="ident">TypeckBodiesKrate</span>,
     [] <span class="ident">TypeckTables</span>(<span class="ident">DefId</span>),
     [] <span class="ident">HasTypeckTables</span>(<span class="ident">DefId</span>),
-    [<span class="ident">anon</span>] <span class="ident">ConstEval</span>,
+    [] <span class="ident">ConstEval</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, (<span class="ident">DefId</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)<span class="op">&gt;</span> },
     [] <span class="ident">SymbolName</span>(<span class="ident">DefId</span>),
     [] <span class="ident">InstanceSymbolName</span> { <span class="ident">instance</span>: <span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
     [] <span class="ident">SpecializationGraph</span>(<span class="ident">DefId</span>),
     [] <span class="ident">ObjectSafety</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">FulfillObligation</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">trait_ref</span>: <span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
 
-    [<span class="ident">anon</span>] <span class="ident">IsCopy</span>,
-    [<span class="ident">anon</span>] <span class="ident">IsSized</span>,
-    [<span class="ident">anon</span>] <span class="ident">IsFreeze</span>,
-    [<span class="ident">anon</span>] <span class="ident">NeedsDrop</span>,
-    [<span class="ident">anon</span>] <span class="ident">Layout</span>,
+    [] <span class="ident">IsCopy</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> },
+    [] <span class="ident">IsSized</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> },
+    [] <span class="ident">IsFreeze</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> },
+    [] <span class="ident">NeedsDrop</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> },
+    [] <span class="ident">Layout</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> },
 
     <span class="comment">// The set of impls for a given trait.</span>
     [] <span class="ident">TraitImpls</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">RelevantTraitImpls</span>(<span class="ident">DefId</span>, <span class="ident">SimplifiedType</span>),
 
     [] <span class="ident">AllLocalTraitImpls</span>,
-
-    <span class="comment">// Nodes representing caches. To properly handle a true cache, we</span>
-    <span class="comment">// don&#39;t use a DepTrackingMap, but rather we push a task node.</span>
-    <span class="comment">// Otherwise the write into the map would be incorrectly</span>
-    <span class="comment">// attributed to the first task that happened to fill the cache,</span>
-    <span class="comment">// which would yield an overly conservative dep-graph.</span>
-    [] <span class="ident">TraitItems</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">ReprHints</span>(<span class="ident">DefId</span>),
 
     <span class="comment">// Trait selection cache is a little funny. Given a trait</span>
     <span class="comment">// reference like `Foo: SomeTrait&lt;Bar&gt;`, there could be</span>
@@ -1396,10 +1375,6 @@
     <span class="comment">// that for any given trait-ref, we always map to the **same**</span>
     <span class="comment">// trait-select node.</span>
     [<span class="ident">anon</span>] <span class="ident">TraitSelect</span>,
-
-    <span class="comment">// For proj. cache, we just keep a list of all def-ids, since it is</span>
-    <span class="comment">// not a hotspot.</span>
-    [] <span class="ident">ProjectionCache</span> { <span class="ident">def_ids</span>: <span class="ident">DefIdList</span> },
 
     [] <span class="ident">ParamEnv</span>(<span class="ident">DefId</span>),
     [] <span class="ident">DescribeDef</span>(<span class="ident">DefId</span>),
@@ -1458,7 +1433,6 @@
     [] <span class="ident">MissingLangItems</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">ExternConstBody</span>(<span class="ident">DefId</span>),
     [] <span class="ident">VisibleParentMap</span>,
-    [] <span class="ident">IsDirectExternCrate</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">MissingExternCrateItem</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">UsedCrateSource</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">PostorderCnums</span>,
@@ -1478,6 +1452,9 @@
     [] <span class="ident">CodegenUnit</span>(<span class="ident">InternedString</span>),
     [] <span class="ident">CompileCodegenUnit</span>(<span class="ident">InternedString</span>),
     [] <span class="ident">OutputFilenames</span>,
+
+    <span class="comment">// We use this for most things when incr. comp. is turned off.</span>
+    [] <span class="ident">Null</span>,
 );
 
 <span class="kw">trait</span> <span class="ident">DepNodeParams</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> : <span class="ident">fmt</span>::<span class="ident">Debug</span> {
@@ -1574,42 +1551,8 @@
         <span class="kw">let</span> (<span class="ident">def_id_0</span>, <span class="ident">def_id_1</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
 
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;({}, {})&quot;</span>,
-                <span class="ident">tcx</span>.<span class="ident">def_path</span>(<span class="ident">def_id_0</span>).<span class="ident">to_string</span>(<span class="ident">tcx</span>),
-                <span class="ident">tcx</span>.<span class="ident">def_path</span>(<span class="ident">def_id_1</span>).<span class="ident">to_string</span>(<span class="ident">tcx</span>))
-    }
-}
-
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">DepNodeParams</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">DefIdList</span>,) {
-    <span class="kw">const</span> <span class="ident">CAN_RECONSTRUCT_QUERY_KEY</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">false</span>;
-
-    <span class="comment">// We actually would not need to specialize the implementation of this</span>
-    <span class="comment">// method but it&#39;s faster to combine the hashes than to instantiate a full</span>
-    <span class="comment">// hashing context and stable-hashing state.</span>
-    <span class="kw">fn</span> <span class="ident">to_fingerprint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) <span class="op">-&gt;</span> <span class="ident">Fingerprint</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fingerprint</span> <span class="op">=</span> <span class="ident">Fingerprint</span>::<span class="ident">zero</span>();
-
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">def_id</span> <span class="kw">in</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">iter</span>() {
-            <span class="kw">let</span> <span class="ident">def_path_hash</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">def_path_hash</span>(<span class="ident">def_id</span>);
-            <span class="ident">fingerprint</span> <span class="op">=</span> <span class="ident">fingerprint</span>.<span class="ident">combine</span>(<span class="ident">def_path_hash</span>.<span class="number">0</span>);
-        }
-
-        <span class="ident">fingerprint</span>
-    }
-
-    <span class="kw">fn</span> <span class="ident">to_debug_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
-        <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Write</span>;
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
-        <span class="macro">write</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">s</span>, <span class="string">&quot;[&quot;</span>).<span class="ident">unwrap</span>();
-
-        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">def_id</span> <span class="kw">in</span> <span class="self">self</span>.<span class="number">0</span>.<span class="ident">iter</span>() {
-            <span class="macro">write</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">s</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">def_path</span>(<span class="ident">def_id</span>).<span class="ident">to_string</span>(<span class="ident">tcx</span>)).<span class="ident">unwrap</span>();
-        }
-
-        <span class="macro">write</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">s</span>, <span class="string">&quot;]&quot;</span>).<span class="ident">unwrap</span>();
-
-        <span class="ident">s</span>
+                <span class="ident">tcx</span>.<span class="ident">def_path_debug_str</span>(<span class="ident">def_id_0</span>),
+                <span class="ident">tcx</span>.<span class="ident">def_path_debug_str</span>(<span class="ident">def_id_1</span>))
     }
 }
 
@@ -1671,7 +1614,6 @@
     <span class="ident">hash</span>
 });
 
-<span class="kw">type</span> <span class="ident">DefIdList</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DefId</span><span class="op">&gt;</span>;
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

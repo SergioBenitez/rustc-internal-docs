@@ -231,10 +231,6 @@
 <span id="186">186</span>
 <span id="187">187</span>
 <span id="188">188</span>
-<span id="189">189</span>
-<span id="190">190</span>
-<span id="191">191</span>
-<span id="192">192</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -315,11 +311,7 @@
     };
 
     <span class="ident">providers</span>.<span class="ident">is_exported_symbol</span> <span class="op">=</span> <span class="op">|</span><span class="ident">tcx</span>, <span class="ident">id</span><span class="op">|</span> {
-        <span class="comment">// FIXME(#42293) needs red/green to not break a bunch of incremental</span>
-        <span class="comment">// tests</span>
-        <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
-            <span class="ident">tcx</span>.<span class="ident">exported_symbol_ids</span>(<span class="ident">id</span>.<span class="ident">krate</span>).<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">id</span>)
-        })
+        <span class="ident">tcx</span>.<span class="ident">exported_symbol_ids</span>(<span class="ident">id</span>.<span class="ident">krate</span>).<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">id</span>)
     };
 
     <span class="ident">providers</span>.<span class="ident">exported_symbols</span> <span class="op">=</span> <span class="op">|</span><span class="ident">tcx</span>, <span class="ident">cnum</span><span class="op">|</span> {

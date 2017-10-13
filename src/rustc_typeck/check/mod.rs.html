@@ -5016,6 +5016,49 @@
 <span id="4971">4971</span>
 <span id="4972">4972</span>
 <span id="4973">4973</span>
+<span id="4974">4974</span>
+<span id="4975">4975</span>
+<span id="4976">4976</span>
+<span id="4977">4977</span>
+<span id="4978">4978</span>
+<span id="4979">4979</span>
+<span id="4980">4980</span>
+<span id="4981">4981</span>
+<span id="4982">4982</span>
+<span id="4983">4983</span>
+<span id="4984">4984</span>
+<span id="4985">4985</span>
+<span id="4986">4986</span>
+<span id="4987">4987</span>
+<span id="4988">4988</span>
+<span id="4989">4989</span>
+<span id="4990">4990</span>
+<span id="4991">4991</span>
+<span id="4992">4992</span>
+<span id="4993">4993</span>
+<span id="4994">4994</span>
+<span id="4995">4995</span>
+<span id="4996">4996</span>
+<span id="4997">4997</span>
+<span id="4998">4998</span>
+<span id="4999">4999</span>
+<span id="5000">5000</span>
+<span id="5001">5001</span>
+<span id="5002">5002</span>
+<span id="5003">5003</span>
+<span id="5004">5004</span>
+<span id="5005">5005</span>
+<span id="5006">5006</span>
+<span id="5007">5007</span>
+<span id="5008">5008</span>
+<span id="5009">5009</span>
+<span id="5010">5010</span>
+<span id="5011">5011</span>
+<span id="5012">5012</span>
+<span id="5013">5013</span>
+<span id="5014">5014</span>
+<span id="5015">5015</span>
+<span id="5016">5016</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -6056,7 +6099,8 @@ type parameter).
     <span class="comment">// Add formal parameters.</span>
     <span class="kw">for</span> (<span class="ident">arg_ty</span>, <span class="ident">arg</span>) <span class="kw">in</span> <span class="ident">fn_sig</span>.<span class="ident">inputs</span>().<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>.<span class="ident">arguments</span>) {
         <span class="comment">// Check the pattern.</span>
-        <span class="ident">fcx</span>.<span class="ident">check_pat_arg</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>.<span class="ident">pat</span>, <span class="ident">arg_ty</span>, <span class="bool-val">true</span>);
+        <span class="ident">fcx</span>.<span class="ident">check_pat_walk</span>(<span class="kw-2">&amp;</span><span class="ident">arg</span>.<span class="ident">pat</span>, <span class="ident">arg_ty</span>,
+            <span class="ident">ty</span>::<span class="ident">BindingMode</span>::<span class="ident">BindByValue</span>(<span class="ident">hir</span>::<span class="ident">Mutability</span>::<span class="ident">MutImmutable</span>), <span class="bool-val">true</span>);
 
         <span class="comment">// Check that argument is Sized.</span>
         <span class="comment">// The check for a non-trivial pattern is a hack to avoid duplicate warnings</span>
@@ -6267,6 +6311,7 @@ type parameter).
 
 <span class="kw">fn</span> <span class="ident">check_specialization_validity</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                            <span class="ident">trait_def</span>: <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">TraitDef</span>,
+                                           <span class="ident">trait_item</span>: <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">AssociatedItem</span>,
                                            <span class="ident">impl_id</span>: <span class="ident">DefId</span>,
                                            <span class="ident">impl_item</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">ImplItem</span>)
 {
@@ -6277,7 +6322,8 @@ type parameter).
         <span class="ident">hir</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(..) <span class="op">=&gt;</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Method</span>,
         <span class="ident">hir</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Type</span>(_) <span class="op">=&gt;</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span>
     };
-    <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="ident">ancestors</span>.<span class="ident">defs</span>(<span class="ident">tcx</span>, <span class="ident">impl_item</span>.<span class="ident">name</span>, <span class="ident">kind</span>).<span class="ident">skip</span>(<span class="number">1</span>).<span class="ident">next</span>()
+
+    <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="ident">ancestors</span>.<span class="ident">defs</span>(<span class="ident">tcx</span>, <span class="ident">trait_item</span>.<span class="ident">name</span>, <span class="ident">kind</span>, <span class="ident">trait_def</span>.<span class="ident">def_id</span>).<span class="ident">skip</span>(<span class="number">1</span>).<span class="ident">next</span>()
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">node_item</span><span class="op">|</span> <span class="ident">node_item</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">parent</span><span class="op">|</span> <span class="ident">parent</span>.<span class="ident">defaultness</span>));
 
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">parent</span>) <span class="op">=</span> <span class="ident">parent</span> {
@@ -6309,7 +6355,7 @@ type parameter).
     <span class="kw">for</span> <span class="ident">impl_item</span> <span class="kw">in</span> <span class="ident">impl_items</span>() {
         <span class="kw">let</span> <span class="ident">ty_impl_item</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_item</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">impl_item</span>.<span class="ident">id</span>));
         <span class="kw">let</span> <span class="ident">ty_trait_item</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>)
-            .<span class="ident">find</span>(<span class="op">|</span><span class="ident">ac</span><span class="op">|</span> <span class="ident">ac</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">ty_impl_item</span>.<span class="ident">name</span>);
+            .<span class="ident">find</span>(<span class="op">|</span><span class="ident">ac</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">ty_impl_item</span>.<span class="ident">name</span>, <span class="ident">ac</span>.<span class="ident">name</span>, <span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>));
 
         <span class="comment">// Check that impl definition matches trait definition</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ty_trait_item</span>) <span class="op">=</span> <span class="ident">ty_trait_item</span> {
@@ -6390,9 +6436,9 @@ type parameter).
                     }
                 }
             }
-        }
 
-        <span class="ident">check_specialization_validity</span>(<span class="ident">tcx</span>, <span class="ident">trait_def</span>, <span class="ident">impl_id</span>, <span class="ident">impl_item</span>);
+            <span class="ident">check_specialization_validity</span>(<span class="ident">tcx</span>, <span class="ident">trait_def</span>, <span class="kw-2">&amp;</span><span class="ident">ty_trait_item</span>, <span class="ident">impl_id</span>, <span class="ident">impl_item</span>);
+        }
     }
 
     <span class="comment">// Check for missing items from trait</span>
@@ -6401,7 +6447,7 @@ type parameter).
     <span class="kw">let</span> <span class="ident">associated_type_overridden</span> <span class="op">=</span> <span class="ident">overridden_associated_type</span>.<span class="ident">is_some</span>();
     <span class="kw">for</span> <span class="ident">trait_item</span> <span class="kw">in</span> <span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>) {
         <span class="kw">let</span> <span class="ident">is_implemented</span> <span class="op">=</span> <span class="ident">trait_def</span>.<span class="ident">ancestors</span>(<span class="ident">tcx</span>, <span class="ident">impl_id</span>)
-            .<span class="ident">defs</span>(<span class="ident">tcx</span>, <span class="ident">trait_item</span>.<span class="ident">name</span>, <span class="ident">trait_item</span>.<span class="ident">kind</span>)
+            .<span class="ident">defs</span>(<span class="ident">tcx</span>, <span class="ident">trait_item</span>.<span class="ident">name</span>, <span class="ident">trait_item</span>.<span class="ident">kind</span>, <span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>)
             .<span class="ident">next</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">node_item</span><span class="op">|</span> <span class="op">!</span><span class="ident">node_item</span>.<span class="ident">node</span>.<span class="ident">is_from_trait</span>())
             .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
@@ -7028,7 +7074,7 @@ type parameter).
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">node_ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">hir</span>::<span class="ident">HirId</span>) <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tables</span>.<span class="ident">borrow</span>().<span class="ident">node_types</span>().<span class="ident">get</span>(<span class="ident">id</span>) {
             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">t</span>,
-            <span class="prelude-val">None</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">err_count_since_creation</span>() <span class="op">!=</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">err</span>,
+            <span class="prelude-val">None</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_tainted_by_errors</span>() <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">err</span>,
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">definitions</span>().<span class="ident">find_node_for_hir_id</span>(<span class="ident">id</span>);
                 <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;no type for node {}: {} in fcx {}&quot;</span>,
@@ -9123,6 +9169,12 @@ type parameter).
                 (<span class="self">self</span>.<span class="ident">to_ty</span>(<span class="ident">qself</span>), <span class="ident">segment</span>)
             }
         };
+        <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cached_def</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tables</span>.<span class="ident">borrow</span>().<span class="ident">type_dependent_defs</span>().<span class="ident">get</span>(<span class="ident">hir_id</span>) {
+            <span class="comment">// Return directly on cache hit. This is useful to avoid doubly reporting</span>
+            <span class="comment">// errors with default match binding modes. See #44614.</span>
+            <span class="kw">return</span> (<span class="kw-2">*</span><span class="ident">cached_def</span>, <span class="prelude-val">Some</span>(<span class="ident">ty</span>), <span class="ident">slice</span>::<span class="ident">ref_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">item_segment</span>))
+        }
         <span class="kw">let</span> <span class="ident">item_name</span> <span class="op">=</span> <span class="ident">item_segment</span>.<span class="ident">name</span>;
         <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">resolve_ufcs</span>(<span class="ident">span</span>, <span class="ident">item_name</span>, <span class="ident">ty</span>, <span class="ident">node_id</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">def</span>) <span class="op">=&gt;</span> <span class="ident">def</span>,
@@ -9139,7 +9191,6 @@ type parameter).
         };
 
         <span class="comment">// Write back the new resolution.</span>
-        <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
         <span class="self">self</span>.<span class="ident">tables</span>.<span class="ident">borrow_mut</span>().<span class="ident">type_dependent_defs_mut</span>().<span class="ident">insert</span>(<span class="ident">hir_id</span>, <span class="ident">def</span>);
         (<span class="ident">def</span>, <span class="prelude-val">Some</span>(<span class="ident">ty</span>), <span class="ident">slice</span>::<span class="ident">ref_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">item_segment</span>))
     }
@@ -9149,7 +9200,9 @@ type parameter).
                                   <span class="ident">init</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">hir</span>::<span class="ident">Expr</span>) <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
         <span class="comment">// FIXME(tschottdorf): contains_explicit_ref_binding() must be removed</span>
-        <span class="comment">// for #42640.</span>
+        <span class="comment">// for #42640 (default match binding modes).</span>
+        <span class="comment">//</span>
+        <span class="comment">// See #44848.</span>
         <span class="kw">let</span> <span class="ident">ref_bindings</span> <span class="op">=</span> <span class="ident">local</span>.<span class="ident">pat</span>.<span class="ident">contains_explicit_ref_binding</span>();
 
         <span class="kw">let</span> <span class="ident">local_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">local_ty</span>(<span class="ident">init</span>.<span class="ident">span</span>, <span class="ident">local</span>.<span class="ident">id</span>);
@@ -9181,7 +9234,9 @@ type parameter).
             }
         }
 
-        <span class="self">self</span>.<span class="ident">check_pat</span>(<span class="kw-2">&amp;</span><span class="ident">local</span>.<span class="ident">pat</span>, <span class="ident">t</span>);
+        <span class="self">self</span>.<span class="ident">check_pat_walk</span>(<span class="kw-2">&amp;</span><span class="ident">local</span>.<span class="ident">pat</span>, <span class="ident">t</span>,
+                            <span class="ident">ty</span>::<span class="ident">BindingMode</span>::<span class="ident">BindByValue</span>(<span class="ident">hir</span>::<span class="ident">Mutability</span>::<span class="ident">MutImmutable</span>),
+                            <span class="bool-val">true</span>);
         <span class="kw">let</span> <span class="ident">pat_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">node_ty</span>(<span class="ident">local</span>.<span class="ident">pat</span>.<span class="ident">hir_id</span>);
         <span class="kw">if</span> <span class="ident">pat_ty</span>.<span class="ident">references_error</span>() {
             <span class="self">self</span>.<span class="ident">write_ty</span>(<span class="ident">local</span>.<span class="ident">hir_id</span>, <span class="ident">pat_ty</span>);
@@ -9666,6 +9721,7 @@ type parameter).
         <span class="comment">// a problem.</span>
         <span class="self">self</span>.<span class="ident">check_path_parameter_count</span>(<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">type_segment</span>, <span class="bool-val">false</span>);
         <span class="self">self</span>.<span class="ident">check_path_parameter_count</span>(<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fn_segment</span>, <span class="bool-val">false</span>);
+        <span class="self">self</span>.<span class="ident">check_impl_trait</span>(<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fn_segment</span>);
 
         <span class="kw">let</span> (<span class="ident">fn_start</span>, <span class="ident">has_self</span>) <span class="op">=</span> <span class="kw">match</span> (<span class="ident">type_segment</span>, <span class="ident">fn_segment</span>) {
             (_, <span class="prelude-val">Some</span>((_, <span class="ident">generics</span>))) <span class="op">=&gt;</span> {
@@ -9888,6 +9944,36 @@ type parameter).
                 .<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;expected {}&quot;</span>, <span class="ident">expected_text</span>))
                 .<span class="ident">emit</span>();
         }
+    }
+
+    <span class="doccomment">/// Report error if there is an explicit type parameter when using `impl Trait`.</span>
+    <span class="kw">fn</span> <span class="ident">check_impl_trait</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                        <span class="ident">span</span>: <span class="ident">Span</span>,
+                        <span class="ident">segment</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">PathSegment</span>, <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">Generics</span>)<span class="op">&gt;</span>) {
+        <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">SyntheticTyParamKind</span>::<span class="kw-2">*</span>;
+
+        <span class="ident">segment</span>.<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">path_segment</span>, <span class="ident">generics</span>)<span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">explicit</span> <span class="op">=</span> <span class="op">!</span><span class="ident">path_segment</span>.<span class="ident">infer_types</span>;
+            <span class="kw">let</span> <span class="ident">impl_trait</span> <span class="op">=</span> <span class="ident">generics</span>.<span class="ident">types</span>.<span class="ident">iter</span>()
+                                           .<span class="ident">any</span>(<span class="op">|</span><span class="ident">ty_param</span><span class="op">|</span> {
+                                               <span class="kw">match</span> <span class="ident">ty_param</span>.<span class="ident">synthetic</span> {
+                                                   <span class="prelude-val">Some</span>(<span class="ident">ImplTrait</span>) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                                                   _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                                               }
+                                           });
+
+            <span class="kw">if</span> <span class="ident">explicit</span> <span class="op">&amp;&amp;</span> <span class="ident">impl_trait</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span> {
+                    <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>,
+                    <span class="ident">span</span>,
+                    <span class="ident">E0632</span>,
+                    <span class="string">&quot;cannot provide explicit type parameters when `impl Trait` is \
+                    used in argument position.&quot;</span>
+                };
+
+                <span class="ident">err</span>.<span class="ident">emit</span>();
+            }
+        });
     }
 
     <span class="kw">fn</span> <span class="ident">structurally_resolve_type_or_else</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">f</span>: <span class="ident">F</span>)

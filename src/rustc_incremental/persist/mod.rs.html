@@ -93,7 +93,6 @@
 <span class="kw">mod</span> <span class="ident">dirty_clean</span>;
 <span class="kw">mod</span> <span class="ident">fs</span>;
 <span class="kw">mod</span> <span class="ident">load</span>;
-<span class="kw">mod</span> <span class="ident">preds</span>;
 <span class="kw">mod</span> <span class="ident">save</span>;
 <span class="kw">mod</span> <span class="ident">work_product</span>;
 <span class="kw">mod</span> <span class="ident">file_format</span>;
@@ -102,10 +101,11 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">fs</span>::<span class="ident">finalize_session_directory</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">fs</span>::<span class="ident">in_incr_comp_dir</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">load</span>::<span class="ident">load_dep_graph</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">load</span>::<span class="ident">load_dep_graph_new</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">load</span>::<span class="ident">dep_graph_tcx_init</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">save</span>::<span class="ident">save_dep_graph</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">save</span>::<span class="ident">save_work_products</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">work_product</span>::<span class="ident">save_trans_partition</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">work_product</span>::<span class="ident">delete_workproduct_files</span>;
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

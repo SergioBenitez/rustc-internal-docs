@@ -2577,7 +2577,7 @@ Available lint options:
                              <span class="ident">errors</span>::<span class="ident">Level</span>::<span class="ident">Note</span>);
             }
 
-            <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">io</span>::<span class="ident">stderr</span>(), <span class="string">&quot;{}&quot;</span>, <span class="ident">str</span>::<span class="ident">from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
+            <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">str</span>::<span class="ident">from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>());
         }
 
         <span class="ident">exit_on_err</span>();

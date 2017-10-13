@@ -788,6 +788,7 @@
 <span id="743">743</span>
 <span id="744">744</span>
 <span id="745">745</span>
+<span id="746">746</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1334,7 +1335,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Rng</span> <span class="kw">for</span> <span class="ident">Isaac64Rng</span> {
-    <span class="comment">// FIXME #7771: having next_u32 like this should be unnecessary</span>
+    <span class="comment">// FIXME(https://github.com/rust-lang/rfcs/issues/628)</span>
+    <span class="comment">// having next_u32 like this should be unnecessary</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">next_u32</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
         <span class="self">self</span>.<span class="ident">next_u64</span>() <span class="kw">as</span> <span class="ident">u32</span>

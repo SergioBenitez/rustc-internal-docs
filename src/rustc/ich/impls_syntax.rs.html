@@ -450,6 +450,9 @@
 <span id="405">405</span>
 <span id="406">406</span>
 <span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -725,6 +728,8 @@
         <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">Dot</span> <span class="op">|</span>
         <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">DotDot</span> <span class="op">|</span>
         <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">DotDotDot</span> <span class="op">|</span>
+        <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">DotDotEq</span> <span class="op">|</span>
+        <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">DotEq</span> <span class="op">|</span>
         <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">Comma</span> <span class="op">|</span>
         <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">Semi</span> <span class="op">|</span>
         <span class="ident">token</span>::<span class="ident">Token</span>::<span class="ident">Colon</span> <span class="op">|</span>
@@ -805,6 +810,7 @@
         <span class="kw">let</span> <span class="ident">FileMap</span> {
             <span class="kw-2">ref</span> <span class="ident">name</span>,
             <span class="ident">name_was_remapped</span>,
+            <span class="ident">unmapped_path</span>: _,
             <span class="ident">crate_of_origin</span>,
             <span class="comment">// Do not hash the source as it is not encoded</span>
             <span class="ident">src</span>: _,

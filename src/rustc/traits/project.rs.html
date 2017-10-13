@@ -1715,7 +1715,6 @@
 <span id="1670">1670</span>
 <span id="1671">1671</span>
 <span id="1672">1672</span>
-<span id="1673">1673</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1748,7 +1747,6 @@
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">type_variable</span>::<span class="ident">TypeVariableOrigin</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">snapshot_map</span>::{<span class="ident">Snapshot</span>, <span class="ident">SnapshotMap</span>};
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Subst</span>, <span class="ident">Substs</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">ToPredicate</span>, <span class="ident">ToPolyTraitRef</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
@@ -2358,7 +2356,7 @@
                   <span class="comment">// but we have `T: Foo&lt;X = ?1&gt;` and `?1: Bar&lt;X =</span>
                   <span class="comment">// ?0&gt;`).</span>
                   <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span>
-                      <span class="op">!</span><span class="ident">infcx</span>.<span class="ident">any_unresolved_type_vars</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">ty</span>()),
+                      <span class="ident">infcx</span>.<span class="ident">any_unresolved_type_vars</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>.<span class="ident">ty</span>()),
 
                   <span class="comment">// We are only interested in `T: Foo&lt;X = U&gt;` predicates, whre</span>
                   <span class="comment">// `U` references one of `unresolved_type_vars`. =)</span>
@@ -2763,10 +2761,9 @@
                 <span class="comment">// In either case, we handle this by not adding a</span>
                 <span class="comment">// candidate for an impl if it contains a `default`</span>
                 <span class="comment">// type.</span>
-                <span class="kw">let</span> <span class="ident">item_name</span> <span class="op">=</span> <span class="ident">selcx</span>.<span class="ident">tcx</span>().<span class="ident">associated_item</span>(<span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">item_def_id</span>).<span class="ident">name</span>;
                 <span class="kw">let</span> <span class="ident">node_item</span> <span class="op">=</span> <span class="ident">assoc_ty_def</span>(<span class="ident">selcx</span>,
                                              <span class="ident">impl_data</span>.<span class="ident">impl_def_id</span>,
-                                             <span class="ident">item_name</span>);
+                                             <span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">item_def_id</span>);
 
                 <span class="kw">let</span> <span class="ident">is_default</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">node_item</span>.<span class="ident">node</span>.<span class="ident">is_from_trait</span>() {
                     <span class="comment">// If true, the impl inherited a `type Foo = Bar`</span>
@@ -3160,8 +3157,7 @@
 
     <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="ident">selcx</span>.<span class="ident">tcx</span>();
     <span class="kw">let</span> <span class="ident">param_env</span> <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">param_env</span>;
-    <span class="kw">let</span> <span class="ident">assoc_ty</span> <span class="op">=</span> <span class="ident">assoc_ty_def</span>(<span class="ident">selcx</span>, <span class="ident">impl_def_id</span>,
-        <span class="ident">tcx</span>.<span class="ident">associated_item</span>(<span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">item_def_id</span>).<span class="ident">name</span>);
+    <span class="kw">let</span> <span class="ident">assoc_ty</span> <span class="op">=</span> <span class="ident">assoc_ty_def</span>(<span class="ident">selcx</span>, <span class="ident">impl_def_id</span>, <span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">item_def_id</span>);
 
     <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">assoc_ty</span>.<span class="ident">item</span>.<span class="ident">defaultness</span>.<span class="ident">has_value</span>() {
         <span class="comment">// This means that the impl is missing a definition for the</span>
@@ -3190,10 +3186,11 @@
 <span class="kw">fn</span> <span class="ident">assoc_ty_def</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(
     <span class="ident">selcx</span>: <span class="kw-2">&amp;</span><span class="ident">SelectionContext</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">impl_def_id</span>: <span class="ident">DefId</span>,
-    <span class="ident">assoc_ty_name</span>: <span class="ident">ast</span>::<span class="ident">Name</span>)
+    <span class="ident">assoc_ty_def_id</span>: <span class="ident">DefId</span>)
     <span class="op">-&gt;</span> <span class="ident">specialization_graph</span>::<span class="ident">NodeItem</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">AssociatedItem</span><span class="op">&gt;</span>
 {
     <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="ident">selcx</span>.<span class="ident">tcx</span>();
+    <span class="kw">let</span> <span class="ident">assoc_ty_name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_item</span>(<span class="ident">assoc_ty_def_id</span>).<span class="ident">name</span>;
     <span class="kw">let</span> <span class="ident">trait_def_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">impl_trait_ref</span>(<span class="ident">impl_def_id</span>).<span class="ident">unwrap</span>().<span class="ident">def_id</span>;
     <span class="kw">let</span> <span class="ident">trait_def</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">trait_def</span>(<span class="ident">trait_def_id</span>);
 
@@ -3205,7 +3202,8 @@
     <span class="comment">// cycle error if the specialization graph is currently being built.</span>
     <span class="kw">let</span> <span class="ident">impl_node</span> <span class="op">=</span> <span class="ident">specialization_graph</span>::<span class="ident">Node</span>::<span class="ident">Impl</span>(<span class="ident">impl_def_id</span>);
     <span class="kw">for</span> <span class="ident">item</span> <span class="kw">in</span> <span class="ident">impl_node</span>.<span class="ident">items</span>(<span class="ident">tcx</span>) {
-        <span class="kw">if</span> <span class="ident">item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span> <span class="op">&amp;&amp;</span> <span class="ident">item</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">assoc_ty_name</span> {
+        <span class="kw">if</span> <span class="ident">item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span> <span class="op">&amp;&amp;</span>
+                <span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">item</span>.<span class="ident">name</span>, <span class="ident">assoc_ty_name</span>, <span class="ident">trait_def_id</span>) {
             <span class="kw">return</span> <span class="ident">specialization_graph</span>::<span class="ident">NodeItem</span> {
                 <span class="ident">node</span>: <span class="ident">specialization_graph</span>::<span class="ident">Node</span>::<span class="ident">Impl</span>(<span class="ident">impl_def_id</span>),
                 <span class="ident">item</span>,
@@ -3215,7 +3213,7 @@
 
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">assoc_item</span>) <span class="op">=</span> <span class="ident">trait_def</span>
         .<span class="ident">ancestors</span>(<span class="ident">tcx</span>, <span class="ident">impl_def_id</span>)
-        .<span class="ident">defs</span>(<span class="ident">tcx</span>, <span class="ident">assoc_ty_name</span>, <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span>)
+        .<span class="ident">defs</span>(<span class="ident">tcx</span>, <span class="ident">assoc_ty_name</span>, <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span>, <span class="ident">trait_def_id</span>)
         .<span class="ident">next</span>() {
         <span class="ident">assoc_item</span>
     } <span class="kw">else</span> {

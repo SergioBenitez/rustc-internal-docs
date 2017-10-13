@@ -820,20 +820,6 @@
 <span id="775">775</span>
 <span id="776">776</span>
 <span id="777">777</span>
-<span id="778">778</span>
-<span id="779">779</span>
-<span id="780">780</span>
-<span id="781">781</span>
-<span id="782">782</span>
-<span id="783">783</span>
-<span id="784">784</span>
-<span id="785">785</span>
-<span id="786">786</span>
-<span id="787">787</span>
-<span id="788">788</span>
-<span id="789">789</span>
-<span id="790">790</span>
-<span id="791">791</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1191,13 +1177,13 @@
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Select</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Select {{ .. }}&quot;</span>)
+        <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;Select&quot;</span>).<span class="ident">finish</span>()
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;rx</span>, <span class="ident">T</span>:<span class="ident">Send</span><span class="op">+</span><span class="lifetime">&#39;rx</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Handle</span><span class="op">&lt;</span><span class="lifetime">&#39;rx</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Handle {{ .. }}&quot;</span>)
+        <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;Handle&quot;</span>).<span class="ident">finish</span>()
     }
 }
 
@@ -1610,20 +1596,6 @@
                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">rx1</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
             }
         }
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">fmt_debug_select</span>() {
-        <span class="kw">let</span> <span class="ident">sel</span> <span class="op">=</span> <span class="ident">Select</span>::<span class="ident">new</span>();
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">sel</span>), <span class="string">&quot;Select { .. }&quot;</span>);
-    }
-
-    <span class="attribute">#[<span class="ident">test</span>]</span>
-    <span class="kw">fn</span> <span class="ident">fmt_debug_handle</span>() {
-        <span class="kw">let</span> (_, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">channel</span>::<span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>();
-        <span class="kw">let</span> <span class="ident">sel</span> <span class="op">=</span> <span class="ident">Select</span>::<span class="ident">new</span>();
-        <span class="kw">let</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">sel</span>.<span class="ident">handle</span>(<span class="kw-2">&amp;</span><span class="ident">rx</span>);
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">handle</span>), <span class="string">&quot;Handle { .. }&quot;</span>);
     }
 }
 </pre>

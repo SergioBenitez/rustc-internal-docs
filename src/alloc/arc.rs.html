@@ -1902,6 +1902,8 @@
 <span id="1857">1857</span>
 <span id="1858">1858</span>
 <span id="1859">1859</span>
+<span id="1860">1860</span>
+<span id="1861">1861</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1957,8 +1959,10 @@
 <span class="doccomment">/// also destroyed.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Shared references in Rust disallow mutation by default, and `Arc` is no</span>
-<span class="doccomment">/// exception. If you need to mutate through an `Arc`, use [`Mutex`][mutex],</span>
-<span class="doccomment">/// [`RwLock`][rwlock], or one of the [`Atomic`][atomic] types.</span>
+<span class="doccomment">/// exception: you cannot generally obtain a mutable reference to something</span>
+<span class="doccomment">/// inside an `Arc`. If you need to mutate through an `Arc`, use</span>
+<span class="doccomment">/// [`Mutex`][mutex], [`RwLock`][rwlock], or one of the [`Atomic`][atomic]</span>
+<span class="doccomment">/// types.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ## Thread Safety</span>
 <span class="doccomment">///</span>

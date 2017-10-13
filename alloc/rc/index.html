@@ -58,7 +58,7 @@ pointer to the same value in the heap. When the last <a href="struct.Rc.html"><c
 given value is destroyed, the pointed-to value is also destroyed.</p>
 
 <p>Shared references in Rust disallow mutation by default, and <a href="struct.Rc.html"><code>Rc</code></a>
-is no exception: you cannot obtain a mutable reference to
+is no exception: you cannot generally obtain a mutable reference to
 something inside an <a href="struct.Rc.html"><code>Rc</code></a>. If you need mutability, put a <a href="../../std/cell/struct.Cell.html"><code>Cell</code></a>
 or <a href="../../std/cell/struct.RefCell.html"><code>RefCell</code></a> inside the <a href="struct.Rc.html"><code>Rc</code></a>; see <a href="../../std/cell/index.html#introducing-mutability-inside-of-something-immutable">an example of mutability
 inside an Rc</a>.</p>

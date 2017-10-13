@@ -1596,10 +1596,10 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">ModuleTranslation</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">ModuleKind</span>;
 
-<span class="kw">use</span> <span class="ident">assert_module_sources</span>::{<span class="self">self</span>, <span class="ident">Disposition</span>};
+<span class="kw">use</span> <span class="ident">assert_module_sources</span>;
 <span class="kw">use</span> <span class="ident">back</span>::<span class="ident">link</span>;
 <span class="kw">use</span> <span class="ident">back</span>::<span class="ident">symbol_export</span>;
-<span class="kw">use</span> <span class="ident">back</span>::<span class="ident">write</span>::{<span class="self">self</span>, <span class="ident">OngoingCrateTranslation</span>};
+<span class="kw">use</span> <span class="ident">back</span>::<span class="ident">write</span>::{<span class="self">self</span>, <span class="ident">OngoingCrateTranslation</span>, <span class="ident">create_target_machine</span>};
 <span class="kw">use</span> <span class="ident">llvm</span>::{<span class="ident">ContextRef</span>, <span class="ident">ModuleRef</span>, <span class="ident">ValueRef</span>, <span class="ident">Vector</span>, <span class="ident">get_param</span>};
 <span class="kw">use</span> <span class="ident">llvm</span>;
 <span class="kw">use</span> <span class="ident">metadata</span>;
@@ -1609,7 +1609,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">cstore</span>::{<span class="ident">EncodedMetadata</span>, <span class="ident">EncodedMetadataHashes</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">dep_graph</span>::{<span class="ident">DepNode</span>, <span class="ident">DepKind</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">dep_graph</span>::{<span class="ident">DepNode</span>, <span class="ident">DepKind</span>, <span class="ident">DepConstructor</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">cstore</span>::{<span class="self">self</span>, <span class="ident">LinkMeta</span>, <span class="ident">LinkagePreference</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">common</span>::{<span class="ident">time</span>, <span class="ident">print_time_passes_entry</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">config</span>::{<span class="self">self</span>, <span class="ident">NoDebugInfo</span>};
@@ -1645,9 +1645,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">NodeSet</span>, <span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>, <span class="ident">DefIdSet</span>};
 <span class="kw">use</span> <span class="ident">CrateInfo</span>;
 
-<span class="kw">use</span> <span class="ident">libc</span>::<span class="ident">c_uint</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">any</span>::<span class="ident">Any</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::<span class="ident">RefCell</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::{<span class="ident">CStr</span>, <span class="ident">CString</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
@@ -2260,7 +2258,8 @@
                        <span class="ident">sp</span>: <span class="ident">Span</span>,
                        <span class="ident">rust_main</span>: <span class="ident">ValueRef</span>,
                        <span class="ident">use_start_lang_item</span>: <span class="ident">bool</span>) {
-        <span class="kw">let</span> <span class="ident">llfty</span> <span class="op">=</span> <span class="ident">Type</span>::<span class="ident">func</span>(<span class="kw-2">&amp;</span>[<span class="ident">ccx</span>.<span class="ident">isize_ty</span>(), <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">ccx</span>).<span class="ident">ptr_to</span>()], <span class="kw-2">&amp;</span><span class="ident">ccx</span>.<span class="ident">isize_ty</span>());
+        <span class="comment">// Signature of native main(), corresponding to C&#39;s `int main(int, char **)`</span>
+        <span class="kw">let</span> <span class="ident">llfty</span> <span class="op">=</span> <span class="ident">Type</span>::<span class="ident">func</span>(<span class="kw-2">&amp;</span>[<span class="ident">Type</span>::<span class="ident">c_int</span>(<span class="ident">ccx</span>), <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">ccx</span>).<span class="ident">ptr_to</span>()], <span class="kw-2">&amp;</span><span class="ident">Type</span>::<span class="ident">c_int</span>(<span class="ident">ccx</span>));
 
         <span class="kw">if</span> <span class="ident">declare</span>::<span class="ident">get_defined_value</span>(<span class="ident">ccx</span>, <span class="string">&quot;main&quot;</span>).<span class="ident">is_some</span>() {
             <span class="comment">// FIXME: We should be smart and show a better diagnostic here.</span>
@@ -2279,19 +2278,27 @@
 
         <span class="ident">debuginfo</span>::<span class="ident">gdb</span>::<span class="ident">insert_reference_to_gdb_debug_scripts_section_global</span>(<span class="ident">ccx</span>, <span class="kw-2">&amp;</span><span class="ident">bld</span>);
 
+        <span class="comment">// Params from native main() used as args for rust start function</span>
+        <span class="kw">let</span> <span class="ident">param_argc</span> <span class="op">=</span> <span class="ident">get_param</span>(<span class="ident">llfn</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">param_argv</span> <span class="op">=</span> <span class="ident">get_param</span>(<span class="ident">llfn</span>, <span class="number">1</span>);
+        <span class="kw">let</span> <span class="ident">arg_argc</span> <span class="op">=</span> <span class="ident">bld</span>.<span class="ident">intcast</span>(<span class="ident">param_argc</span>, <span class="ident">ccx</span>.<span class="ident">isize_ty</span>(), <span class="bool-val">true</span>);
+        <span class="kw">let</span> <span class="ident">arg_argv</span> <span class="op">=</span> <span class="ident">param_argv</span>;
+
         <span class="kw">let</span> (<span class="ident">start_fn</span>, <span class="ident">args</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">use_start_lang_item</span> {
             <span class="kw">let</span> <span class="ident">start_def_id</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">require_lang_item</span>(<span class="ident">StartFnLangItem</span>);
             <span class="kw">let</span> <span class="ident">start_instance</span> <span class="op">=</span> <span class="ident">Instance</span>::<span class="ident">mono</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="ident">start_def_id</span>);
             <span class="kw">let</span> <span class="ident">start_fn</span> <span class="op">=</span> <span class="ident">callee</span>::<span class="ident">get_fn</span>(<span class="ident">ccx</span>, <span class="ident">start_instance</span>);
-            (<span class="ident">start_fn</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">bld</span>.<span class="ident">pointercast</span>(<span class="ident">rust_main</span>, <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">ccx</span>).<span class="ident">ptr_to</span>()), <span class="ident">get_param</span>(<span class="ident">llfn</span>, <span class="number">0</span>),
-                <span class="ident">get_param</span>(<span class="ident">llfn</span>, <span class="number">1</span>)])
+            (<span class="ident">start_fn</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">bld</span>.<span class="ident">pointercast</span>(<span class="ident">rust_main</span>, <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">ccx</span>).<span class="ident">ptr_to</span>()),
+                            <span class="ident">arg_argc</span>, <span class="ident">arg_argv</span>])
         } <span class="kw">else</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;using user-defined start fn&quot;</span>);
-            (<span class="ident">rust_main</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">get_param</span>(<span class="ident">llfn</span>, <span class="number">0</span> <span class="kw">as</span> <span class="ident">c_uint</span>), <span class="ident">get_param</span>(<span class="ident">llfn</span>, <span class="number">1</span> <span class="kw">as</span> <span class="ident">c_uint</span>)])
+            (<span class="ident">rust_main</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">arg_argc</span>, <span class="ident">arg_argv</span>])
         };
 
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">bld</span>.<span class="ident">call</span>(<span class="ident">start_fn</span>, <span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="prelude-val">None</span>);
-        <span class="ident">bld</span>.<span class="ident">ret</span>(<span class="ident">result</span>);
+
+        <span class="comment">// Return rust start function&#39;s result from native main()</span>
+        <span class="ident">bld</span>.<span class="ident">ret</span>(<span class="ident">bld</span>.<span class="ident">intcast</span>(<span class="ident">result</span>, <span class="ident">Type</span>::<span class="ident">c_int</span>(<span class="ident">ccx</span>), <span class="bool-val">true</span>));
     }
 }
 
@@ -2300,6 +2307,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">write_metadata</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
+                            <span class="ident">llmod_id</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
                             <span class="ident">link_meta</span>: <span class="kw-2">&amp;</span><span class="ident">LinkMeta</span>,
                             <span class="ident">exported_symbols</span>: <span class="kw-2">&amp;</span><span class="ident">NodeSet</span>)
                             <span class="op">-&gt;</span> (<span class="ident">ContextRef</span>, <span class="ident">ModuleRef</span>,
@@ -2309,7 +2317,7 @@
     <span class="kw">use</span> <span class="ident">flate2</span>::<span class="ident">write</span>::<span class="ident">DeflateEncoder</span>;
 
     <span class="kw">let</span> (<span class="ident">metadata_llcx</span>, <span class="ident">metadata_llmod</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
-        <span class="ident">context</span>::<span class="ident">create_context_and_module</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="string">&quot;metadata&quot;</span>)
+        <span class="ident">context</span>::<span class="ident">create_context_and_module</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">llmod_id</span>)
     };
 
     <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
@@ -2446,6 +2454,11 @@
 
     <span class="ident">check_for_rustc_errors_attr</span>(<span class="ident">tcx</span>);
 
+    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">thinlto</span> {
+        <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="op">!</span><span class="ident">llvm</span>::<span class="ident">LLVMRustThinLTOAvailable</span>() } {
+            <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">fatal</span>(<span class="string">&quot;this compiler&#39;s LLVM does not support ThinLTO&quot;</span>);
+        }
+    }
 
     <span class="kw">let</span> <span class="ident">crate_hash</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>
                         .<span class="ident">fingerprint_of</span>(<span class="kw-2">&amp;</span><span class="ident">DepNode</span>::<span class="ident">new_no_params</span>(<span class="ident">DepKind</span>::<span class="ident">Krate</span>));
@@ -2454,17 +2467,19 @@
 
     <span class="kw">let</span> <span class="ident">shared_ccx</span> <span class="op">=</span> <span class="ident">SharedCrateContext</span>::<span class="ident">new</span>(<span class="ident">tcx</span>);
     <span class="comment">// Translate the metadata.</span>
+    <span class="kw">let</span> <span class="ident">llmod_id</span> <span class="op">=</span> <span class="string">&quot;metadata&quot;</span>;
     <span class="kw">let</span> (<span class="ident">metadata_llcx</span>, <span class="ident">metadata_llmod</span>, <span class="ident">metadata</span>, <span class="ident">metadata_incr_hashes</span>) <span class="op">=</span>
         <span class="ident">time</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">time_passes</span>(), <span class="string">&quot;write metadata&quot;</span>, <span class="op">||</span> {
-            <span class="ident">write_metadata</span>(<span class="ident">tcx</span>, <span class="kw-2">&amp;</span><span class="ident">link_meta</span>, <span class="kw-2">&amp;</span><span class="ident">exported_symbol_node_ids</span>)
+            <span class="ident">write_metadata</span>(<span class="ident">tcx</span>, <span class="ident">llmod_id</span>, <span class="kw-2">&amp;</span><span class="ident">link_meta</span>, <span class="kw-2">&amp;</span><span class="ident">exported_symbol_node_ids</span>)
         });
 
     <span class="kw">let</span> <span class="ident">metadata_module</span> <span class="op">=</span> <span class="ident">ModuleTranslation</span> {
         <span class="ident">name</span>: <span class="ident">link</span>::<span class="ident">METADATA_MODULE_NAME</span>.<span class="ident">to_string</span>(),
-        <span class="ident">symbol_name_hash</span>: <span class="number">0</span>, <span class="comment">// we always rebuild metadata, at least for now</span>
+        <span class="ident">llmod_id</span>: <span class="ident">llmod_id</span>.<span class="ident">to_string</span>(),
         <span class="ident">source</span>: <span class="ident">ModuleSource</span>::<span class="ident">Translated</span>(<span class="ident">ModuleLlvm</span> {
             <span class="ident">llcx</span>: <span class="ident">metadata_llcx</span>,
             <span class="ident">llmod</span>: <span class="ident">metadata_llmod</span>,
+            <span class="ident">tm</span>: <span class="ident">create_target_machine</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>),
         }),
         <span class="ident">kind</span>: <span class="ident">ModuleKind</span>::<span class="ident">Metadata</span>,
     };
@@ -2483,7 +2498,8 @@
             <span class="ident">time_graph</span>.<span class="ident">clone</span>(),
             <span class="ident">link_meta</span>,
             <span class="ident">metadata</span>,
-            <span class="ident">rx</span>);
+            <span class="ident">rx</span>,
+            <span class="number">1</span>);
 
         <span class="ident">ongoing_translation</span>.<span class="ident">submit_pre_translated_module_to_llvm</span>(<span class="ident">tcx</span>, <span class="ident">metadata_module</span>);
         <span class="ident">ongoing_translation</span>.<span class="ident">translation_finished</span>(<span class="ident">tcx</span>);
@@ -2503,34 +2519,35 @@
         <span class="ident">shared_ccx</span>.<span class="ident">tcx</span>().<span class="ident">collect_and_partition_translation_items</span>(<span class="ident">LOCAL_CRATE</span>).<span class="number">1</span>;
     <span class="kw">let</span> <span class="ident">codegen_units</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="ident">codegen_units</span>).<span class="ident">clone</span>();
 
-    <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">codegen_units</span>.<span class="ident">len</span>() <span class="op">&lt;=</span> <span class="number">1</span> <span class="op">||</span> <span class="op">!</span><span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">lto</span>());
+    <span class="comment">// Force all codegen_unit queries so they are already either red or green</span>
+    <span class="comment">// when compile_codegen_unit accesses them. We are not able to re-execute</span>
+    <span class="comment">// the codegen_unit query from just the DepNode, so an unknown color would</span>
+    <span class="comment">// lead to having to re-execute compile_codegen_unit, possibly</span>
+    <span class="comment">// unnecessarily.</span>
+    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">is_fully_enabled</span>() {
+        <span class="kw">for</span> <span class="ident">cgu</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">codegen_units</span> {
+            <span class="ident">tcx</span>.<span class="ident">codegen_unit</span>(<span class="ident">cgu</span>.<span class="ident">name</span>().<span class="ident">clone</span>());
+        }
+    }
 
     <span class="kw">let</span> <span class="ident">ongoing_translation</span> <span class="op">=</span> <span class="ident">write</span>::<span class="ident">start_async_translation</span>(
         <span class="ident">tcx</span>,
         <span class="ident">time_graph</span>.<span class="ident">clone</span>(),
         <span class="ident">link_meta</span>,
         <span class="ident">metadata</span>,
-        <span class="ident">rx</span>);
+        <span class="ident">rx</span>,
+        <span class="ident">codegen_units</span>.<span class="ident">len</span>());
 
     <span class="comment">// Translate an allocator shim, if any</span>
-    <span class="comment">//</span>
-    <span class="comment">// If LTO is enabled and we&#39;ve got some previous LLVM module we translated</span>
-    <span class="comment">// above, then we can just translate directly into that LLVM module. If not,</span>
-    <span class="comment">// however, we need to create a separate module and trans into that. Note</span>
-    <span class="comment">// that the separate translation is critical for the standard library where</span>
-    <span class="comment">// the rlib&#39;s object file doesn&#39;t have allocator functions but the dylib</span>
-    <span class="comment">// links in an object file that has allocator functions. When we&#39;re</span>
-    <span class="comment">// compiling a final LTO artifact, though, there&#39;s no need to worry about</span>
-    <span class="comment">// this as we&#39;re not working with this dual &quot;rlib/dylib&quot; functionality.</span>
-    <span class="kw">let</span> <span class="ident">allocator_module</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">lto</span>() {
-        <span class="prelude-val">None</span>
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">kind</span>) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">allocator_kind</span>.<span class="ident">get</span>() {
+    <span class="kw">let</span> <span class="ident">allocator_module</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">kind</span>) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">allocator_kind</span>.<span class="ident">get</span>() {
         <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">llmod_id</span> <span class="op">=</span> <span class="string">&quot;allocator&quot;</span>;
             <span class="kw">let</span> (<span class="ident">llcx</span>, <span class="ident">llmod</span>) <span class="op">=</span>
-                <span class="ident">context</span>::<span class="ident">create_context_and_module</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="string">&quot;allocator&quot;</span>);
+                <span class="ident">context</span>::<span class="ident">create_context_and_module</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">llmod_id</span>);
             <span class="kw">let</span> <span class="ident">modules</span> <span class="op">=</span> <span class="ident">ModuleLlvm</span> {
                 <span class="ident">llmod</span>,
                 <span class="ident">llcx</span>,
+                <span class="ident">tm</span>: <span class="ident">create_target_machine</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>),
             };
             <span class="ident">time</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">time_passes</span>(), <span class="string">&quot;write allocator module&quot;</span>, <span class="op">||</span> {
                 <span class="ident">allocator</span>::<span class="ident">trans</span>(<span class="ident">tcx</span>, <span class="kw-2">&amp;</span><span class="ident">modules</span>, <span class="ident">kind</span>)
@@ -2538,7 +2555,7 @@
 
             <span class="prelude-val">Some</span>(<span class="ident">ModuleTranslation</span> {
                 <span class="ident">name</span>: <span class="ident">link</span>::<span class="ident">ALLOCATOR_MODULE_NAME</span>.<span class="ident">to_string</span>(),
-                <span class="ident">symbol_name_hash</span>: <span class="number">0</span>, <span class="comment">// we always rebuild allocator shims</span>
+                <span class="ident">llmod_id</span>: <span class="ident">llmod_id</span>.<span class="ident">to_string</span>(),
                 <span class="ident">source</span>: <span class="ident">ModuleSource</span>::<span class="ident">Translated</span>(<span class="ident">modules</span>),
                 <span class="ident">kind</span>: <span class="ident">ModuleKind</span>::<span class="ident">Allocator</span>,
             })
@@ -2570,10 +2587,55 @@
         <span class="ident">ongoing_translation</span>.<span class="ident">wait_for_signal_to_translate_item</span>();
         <span class="ident">ongoing_translation</span>.<span class="ident">check_for_errors</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>);
 
-        <span class="kw">let</span> <span class="ident">_timing_guard</span> <span class="op">=</span> <span class="ident">time_graph</span>
-            .<span class="ident">as_ref</span>()
-            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">time_graph</span><span class="op">|</span> <span class="ident">time_graph</span>.<span class="ident">start</span>(<span class="ident">write</span>::<span class="ident">TRANS_WORKER_TIMELINE</span>,
-                                               <span class="ident">write</span>::<span class="ident">TRANS_WORK_PACKAGE_KIND</span>));
+        <span class="comment">// First, if incremental compilation is enabled, we try to re-use the</span>
+        <span class="comment">// codegen unit from the cache.</span>
+        <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">is_fully_enabled</span>() {
+            <span class="kw">let</span> <span class="ident">cgu_id</span> <span class="op">=</span> <span class="ident">cgu</span>.<span class="ident">work_product_id</span>();
+
+            <span class="comment">// Check whether there is a previous work-product we can</span>
+            <span class="comment">// re-use.  Not only must the file exist, and the inputs not</span>
+            <span class="comment">// be dirty, but the hash of the symbols we will generate must</span>
+            <span class="comment">// be the same.</span>
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">buf</span>) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">previous_work_product</span>(<span class="kw-2">&amp;</span><span class="ident">cgu_id</span>) {
+                <span class="kw">let</span> <span class="ident">dep_node</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">DepNode</span>::<span class="ident">new</span>(<span class="ident">tcx</span>,
+                    <span class="ident">DepConstructor</span>::<span class="ident">CompileCodegenUnit</span>(<span class="ident">cgu</span>.<span class="ident">name</span>().<span class="ident">clone</span>()));
+
+                <span class="comment">// We try to mark the DepNode::CompileCodegenUnit green. If we</span>
+                <span class="comment">// succeed it means that none of the dependencies has changed</span>
+                <span class="comment">// and we can safely re-use.</span>
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">dep_node_index</span>) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">try_mark_green</span>(<span class="ident">tcx</span>, <span class="ident">dep_node</span>) {
+                    <span class="comment">// Append &quot;.rs&quot; to LLVM module identifier.</span>
+                    <span class="comment">//</span>
+                    <span class="comment">// LLVM code generator emits a &quot;.file filename&quot; directive</span>
+                    <span class="comment">// for ELF backends. Value of the &quot;filename&quot; is set as the</span>
+                    <span class="comment">// LLVM module identifier.  Due to a LLVM MC bug[1], LLVM</span>
+                    <span class="comment">// crashes if the module identifier is same as other symbols</span>
+                    <span class="comment">// such as a function name in the module.</span>
+                    <span class="comment">// 1. http://llvm.org/bugs/show_bug.cgi?id=11479</span>
+                    <span class="kw">let</span> <span class="ident">llmod_id</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}.rs&quot;</span>, <span class="ident">cgu</span>.<span class="ident">name</span>());
+
+                    <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">ModuleTranslation</span> {
+                        <span class="ident">name</span>: <span class="ident">cgu</span>.<span class="ident">name</span>().<span class="ident">to_string</span>(),
+                        <span class="ident">source</span>: <span class="ident">ModuleSource</span>::<span class="ident">Preexisting</span>(<span class="ident">buf</span>),
+                        <span class="ident">kind</span>: <span class="ident">ModuleKind</span>::<span class="ident">Regular</span>,
+                        <span class="ident">llmod_id</span>,
+                    };
+                    <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">mark_loaded_from_cache</span>(<span class="ident">dep_node_index</span>, <span class="bool-val">true</span>);
+                    <span class="ident">write</span>::<span class="ident">submit_translated_module_to_llvm</span>(<span class="ident">tcx</span>, <span class="ident">module</span>, <span class="number">0</span>);
+                    <span class="comment">// Continue to next cgu, this one is done.</span>
+                    <span class="kw">continue</span>
+                }
+            } <span class="kw">else</span> {
+                <span class="comment">// This can happen if files were  deleted from the cache</span>
+                <span class="comment">// directory for some reason. We just re-compile then.</span>
+            }
+        }
+
+        <span class="kw">let</span> <span class="ident">_timing_guard</span> <span class="op">=</span> <span class="ident">time_graph</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">time_graph</span><span class="op">|</span> {
+            <span class="ident">time_graph</span>.<span class="ident">start</span>(<span class="ident">write</span>::<span class="ident">TRANS_WORKER_TIMELINE</span>,
+                             <span class="ident">write</span>::<span class="ident">TRANS_WORK_PACKAGE_KIND</span>,
+                             <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;codegen {}&quot;</span>, <span class="ident">cgu</span>.<span class="ident">name</span>()))
+        });
         <span class="kw">let</span> <span class="ident">start_time</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
         <span class="ident">all_stats</span>.<span class="ident">extend</span>(<span class="ident">tcx</span>.<span class="ident">compile_codegen_unit</span>(<span class="kw-2">*</span><span class="ident">cgu</span>.<span class="ident">name</span>()));
         <span class="ident">total_trans_time</span> <span class="op">+=</span> <span class="ident">start_time</span>.<span class="ident">elapsed</span>();
@@ -2589,9 +2651,7 @@
                             <span class="ident">total_trans_time</span>);
 
     <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">incremental</span>.<span class="ident">is_some</span>() {
-        <span class="ident">DISPOSITIONS</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> {
-            <span class="ident">assert_module_sources</span>::<span class="ident">assert_module_sources</span>(<span class="ident">tcx</span>, <span class="kw-2">&amp;</span><span class="ident">d</span>.<span class="ident">borrow</span>());
-        });
+        <span class="ident">assert_module_sources</span>::<span class="ident">assert_module_sources</span>(<span class="ident">tcx</span>);
     }
 
     <span class="ident">symbol_names_test</span>::<span class="ident">report_symbol_names</span>(<span class="ident">tcx</span>);
@@ -2625,10 +2685,6 @@
                               <span class="ident">link_meta</span>);
     <span class="ident">ongoing_translation</span>
 }
-
-<span class="comment">// FIXME(#42293) hopefully once red/green is enabled we&#39;re testing everything</span>
-<span class="comment">// via a method that doesn&#39;t require this!</span>
-<span class="macro">thread_local</span><span class="macro">!</span>(<span class="kw">static</span> <span class="ident">DISPOSITIONS</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">Disposition</span>)<span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>());
 
 <span class="kw">fn</span> <span class="ident">assert_and_save_dep_graph</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                        <span class="ident">metadata_incr_hashes</span>: <span class="ident">EncodedMetadataHashes</span>,
@@ -2730,7 +2786,7 @@
     <span class="kw">let</span> <span class="ident">strategy</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental</span>.<span class="ident">is_some</span>() {
         <span class="ident">PartitioningStrategy</span>::<span class="ident">PerModule</span>
     } <span class="kw">else</span> {
-        <span class="ident">PartitioningStrategy</span>::<span class="ident">FixedUnitCount</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">codegen_units</span>)
+        <span class="ident">PartitioningStrategy</span>::<span class="ident">FixedUnitCount</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">codegen_units</span>)
     };
 
     <span class="kw">let</span> <span class="ident">codegen_units</span> <span class="op">=</span> <span class="ident">time</span>(<span class="ident">time_passes</span>, <span class="string">&quot;codegen unit partitioning&quot;</span>, <span class="op">||</span> {
@@ -2742,9 +2798,6 @@
             .<span class="ident">map</span>(<span class="ident">Arc</span>::<span class="ident">new</span>)
             .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()
     });
-
-    <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">codegen_units</span> <span class="op">==</span> <span class="ident">codegen_units</span>.<span class="ident">len</span>() <span class="op">||</span>
-            <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental</span>.<span class="ident">is_some</span>());
 
     <span class="kw">let</span> <span class="ident">translation_items</span>: <span class="ident">DefIdSet</span> <span class="op">=</span> <span class="ident">items</span>.<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">trans_item</span><span class="op">|</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">trans_item</span> {
@@ -2853,37 +2906,18 @@
 }
 
 <span class="kw">fn</span> <span class="ident">is_translated_function</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="comment">// FIXME(#42293) needs red/green tracking to avoid failing a bunch of</span>
-    <span class="comment">// existing tests</span>
-    <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
-        <span class="kw">let</span> (<span class="ident">all_trans_items</span>, _) <span class="op">=</span>
-            <span class="ident">tcx</span>.<span class="ident">collect_and_partition_translation_items</span>(<span class="ident">LOCAL_CRATE</span>);
-        <span class="ident">all_trans_items</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">id</span>)
-    })
+    <span class="kw">let</span> (<span class="ident">all_trans_items</span>, _) <span class="op">=</span>
+        <span class="ident">tcx</span>.<span class="ident">collect_and_partition_translation_items</span>(<span class="ident">LOCAL_CRATE</span>);
+    <span class="ident">all_trans_items</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">id</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">compile_codegen_unit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                   <span class="ident">cgu</span>: <span class="ident">InternedString</span>) <span class="op">-&gt;</span> <span class="ident">Stats</span> {
-    <span class="comment">// FIXME(#42293) needs red/green tracking to avoid failing a bunch of</span>
-    <span class="comment">// existing tests</span>
-    <span class="kw">let</span> <span class="ident">cgu</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
-        <span class="ident">tcx</span>.<span class="ident">codegen_unit</span>(<span class="ident">cgu</span>)
-    });
+    <span class="kw">let</span> <span class="ident">cgu</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">codegen_unit</span>(<span class="ident">cgu</span>);
 
     <span class="kw">let</span> <span class="ident">start_time</span> <span class="op">=</span> <span class="ident">Instant</span>::<span class="ident">now</span>();
-    <span class="kw">let</span> <span class="ident">dep_node</span> <span class="op">=</span> <span class="ident">cgu</span>.<span class="ident">work_product_dep_node</span>();
-    <span class="kw">let</span> ((<span class="ident">stats</span>, <span class="ident">module</span>), _) <span class="op">=</span>
-        <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_task</span>(<span class="ident">dep_node</span>,
-                                <span class="ident">tcx</span>,
-                                <span class="ident">cgu</span>,
-                                <span class="ident">module_translation</span>);
+    <span class="kw">let</span> (<span class="ident">stats</span>, <span class="ident">module</span>) <span class="op">=</span> <span class="ident">module_translation</span>(<span class="ident">tcx</span>, <span class="ident">cgu</span>);
     <span class="kw">let</span> <span class="ident">time_to_translate</span> <span class="op">=</span> <span class="ident">start_time</span>.<span class="ident">elapsed</span>();
-
-    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">incremental</span>.<span class="ident">is_some</span>() {
-        <span class="ident">DISPOSITIONS</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> {
-            <span class="ident">d</span>.<span class="ident">borrow_mut</span>().<span class="ident">push</span>(<span class="ident">module</span>.<span class="ident">disposition</span>());
-        });
-    }
 
     <span class="comment">// We assume that the cost to run LLVM on a CGU is proportional to</span>
     <span class="comment">// the time we needed for translating it.</span>
@@ -2901,45 +2935,22 @@
         <span class="op">-&gt;</span> (<span class="ident">Stats</span>, <span class="ident">ModuleTranslation</span>)
     {
         <span class="kw">let</span> <span class="ident">cgu_name</span> <span class="op">=</span> <span class="ident">cgu</span>.<span class="ident">name</span>().<span class="ident">to_string</span>();
-        <span class="kw">let</span> <span class="ident">cgu_id</span> <span class="op">=</span> <span class="ident">cgu</span>.<span class="ident">work_product_id</span>();
-        <span class="kw">let</span> <span class="ident">symbol_name_hash</span> <span class="op">=</span> <span class="ident">cgu</span>.<span class="ident">compute_symbol_name_hash</span>(<span class="ident">tcx</span>);
 
-        <span class="comment">// Check whether there is a previous work-product we can</span>
-        <span class="comment">// re-use.  Not only must the file exist, and the inputs not</span>
-        <span class="comment">// be dirty, but the hash of the symbols we will generate must</span>
-        <span class="comment">// be the same.</span>
-        <span class="kw">let</span> <span class="ident">previous_work_product</span> <span class="op">=</span>
-            <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">previous_work_product</span>(<span class="kw-2">&amp;</span><span class="ident">cgu_id</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">work_product</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="ident">work_product</span>.<span class="ident">input_hash</span> <span class="op">==</span> <span class="ident">symbol_name_hash</span> {
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trans_reuse_previous_work_products: reusing {:?}&quot;</span>, <span class="ident">work_product</span>);
-                    <span class="prelude-val">Some</span>(<span class="ident">work_product</span>)
-                } <span class="kw">else</span> {
-                    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental_info</span> {
-                        <span class="macro">eprintln</span><span class="macro">!</span>(<span class="string">&quot;incremental: CGU `{}` invalidated because of \
-                                   changed partitioning hash.&quot;</span>,
-                                   <span class="ident">cgu</span>.<span class="ident">name</span>());
-                    }
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trans_reuse_previous_work_products: \
-                            not reusing {:?} because hash changed to {:?}&quot;</span>,
-                           <span class="ident">work_product</span>, <span class="ident">symbol_name_hash</span>);
-                    <span class="prelude-val">None</span>
-                }
-            });
-
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">buf</span>) <span class="op">=</span> <span class="ident">previous_work_product</span> {
-            <span class="comment">// Don&#39;t need to translate this module.</span>
-            <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">ModuleTranslation</span> {
-                <span class="ident">name</span>: <span class="ident">cgu_name</span>,
-                <span class="ident">symbol_name_hash</span>,
-                <span class="ident">source</span>: <span class="ident">ModuleSource</span>::<span class="ident">Preexisting</span>(<span class="ident">buf</span>.<span class="ident">clone</span>()),
-                <span class="ident">kind</span>: <span class="ident">ModuleKind</span>::<span class="ident">Regular</span>,
-            };
-            <span class="kw">return</span> (<span class="ident">Stats</span>::<span class="ident">default</span>(), <span class="ident">module</span>);
-        }
+        <span class="comment">// Append &quot;.rs&quot; to LLVM module identifier.</span>
+        <span class="comment">//</span>
+        <span class="comment">// LLVM code generator emits a &quot;.file filename&quot; directive</span>
+        <span class="comment">// for ELF backends. Value of the &quot;filename&quot; is set as the</span>
+        <span class="comment">// LLVM module identifier.  Due to a LLVM MC bug[1], LLVM</span>
+        <span class="comment">// crashes if the module identifier is same as other symbols</span>
+        <span class="comment">// such as a function name in the module.</span>
+        <span class="comment">// 1. http://llvm.org/bugs/show_bug.cgi?id=11479</span>
+        <span class="kw">let</span> <span class="ident">llmod_id</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}-{}.rs&quot;</span>,
+                               <span class="ident">cgu</span>.<span class="ident">name</span>(),
+                               <span class="ident">tcx</span>.<span class="ident">crate_disambiguator</span>(<span class="ident">LOCAL_CRATE</span>));
 
         <span class="comment">// Instantiate translation items without filling out definitions yet...</span>
         <span class="kw">let</span> <span class="ident">scx</span> <span class="op">=</span> <span class="ident">SharedCrateContext</span>::<span class="ident">new</span>(<span class="ident">tcx</span>);
-        <span class="kw">let</span> <span class="ident">lcx</span> <span class="op">=</span> <span class="ident">LocalCrateContext</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">scx</span>, <span class="ident">cgu</span>);
+        <span class="kw">let</span> <span class="ident">lcx</span> <span class="op">=</span> <span class="ident">LocalCrateContext</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">scx</span>, <span class="ident">cgu</span>, <span class="kw-2">&amp;</span><span class="ident">llmod_id</span>);
         <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">ccx</span> <span class="op">=</span> <span class="ident">CrateContext</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">scx</span>, <span class="kw-2">&amp;</span><span class="ident">lcx</span>);
             <span class="kw">let</span> <span class="ident">trans_items</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">codegen_unit</span>()
@@ -2991,19 +3002,8 @@
             <span class="kw">let</span> <span class="ident">llvm_module</span> <span class="op">=</span> <span class="ident">ModuleLlvm</span> {
                 <span class="ident">llcx</span>: <span class="ident">ccx</span>.<span class="ident">llcx</span>(),
                 <span class="ident">llmod</span>: <span class="ident">ccx</span>.<span class="ident">llmod</span>(),
+                <span class="ident">tm</span>: <span class="ident">create_target_machine</span>(<span class="ident">ccx</span>.<span class="ident">sess</span>()),
             };
-
-            <span class="comment">// In LTO mode we inject the allocator shim into the existing</span>
-            <span class="comment">// module.</span>
-            <span class="kw">if</span> <span class="ident">ccx</span>.<span class="ident">sess</span>().<span class="ident">lto</span>() {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">kind</span>) <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">sess</span>().<span class="ident">allocator_kind</span>.<span class="ident">get</span>() {
-                    <span class="ident">time</span>(<span class="ident">ccx</span>.<span class="ident">sess</span>().<span class="ident">time_passes</span>(), <span class="string">&quot;write allocator module&quot;</span>, <span class="op">||</span> {
-                        <span class="kw">unsafe</span> {
-                            <span class="ident">allocator</span>::<span class="ident">trans</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">llvm_module</span>, <span class="ident">kind</span>);
-                        }
-                    });
-                }
-            }
 
             <span class="comment">// Adjust exported symbols for MSVC dllimport</span>
             <span class="kw">if</span> <span class="ident">ccx</span>.<span class="ident">sess</span>().<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">is_like_msvc</span> <span class="op">&amp;&amp;</span>
@@ -3013,9 +3013,9 @@
 
             <span class="ident">ModuleTranslation</span> {
                 <span class="ident">name</span>: <span class="ident">cgu_name</span>,
-                <span class="ident">symbol_name_hash</span>,
                 <span class="ident">source</span>: <span class="ident">ModuleSource</span>::<span class="ident">Translated</span>(<span class="ident">llvm_module</span>),
                 <span class="ident">kind</span>: <span class="ident">ModuleKind</span>::<span class="ident">Regular</span>,
+                <span class="ident">llmod_id</span>,
             }
         };
 

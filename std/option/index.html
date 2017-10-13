@@ -192,6 +192,16 @@ in Rust are stored as efficiently as any other pointer type.</p>
                            <td class='docblock-short'>
                                 <p>An iterator over a mutable reference to the <a href="enum.Option.html#variant.Some"><code>Some</code></a> variant of an <a href="enum.Option.html"><code>Option</code></a>.</p>
                            </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="struct" href="struct.NoneError.html"
+                                  title='struct std::option::NoneError'>NoneError</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>The error type that results from applying the try operator (<code>?</code>) to a <code>None</code> value. If you wish
+to allow <code>x?</code> (where <code>x</code> is an <code>Option&lt;T&gt;</code>) to be converted into your error type, you can
+implement <code>impl From&lt;NoneError&gt;</code> for <code>YourErrorType</code>. In that case, <code>x?</code> within a function that
+returns <code>Result&lt;_, YourErrorType&gt;</code> will translate a <code>None</code> value into an <code>Err</code> result.</p>
+                           </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
                        <tr class=' module-item'>

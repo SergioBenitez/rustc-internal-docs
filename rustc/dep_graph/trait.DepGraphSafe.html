@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../../src/rustc/dep_graph/safe.rs.html#23-24' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait DepGraphSafe { }</pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, and unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
+<pre class='rust trait'>pub trait DepGraphSafe { }</pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>The <code>DepGraphSafe</code> trait is used to specify what kinds of values
 are safe to &quot;leak&quot; into a task. The idea is that this should be
 only be implemented for things like the tcx as well as various id
@@ -76,11 +76,11 @@ on-demand queries, all of which create reads.</p>
           Implementors<a href='#implementors' class='anchor'></a>
         </h2>
         <ul class='item-list' id='implementors-list'>
-    <li><code>impl DepGraphSafe for <a class="struct" href="../../rustc/hir/struct.BodyId.html" title="struct rustc::hir::BodyId">BodyId</a></code></li>
-<li><code>impl DepGraphSafe for <a class="struct" href="../../rustc/hir/def_id/struct.DefId.html" title="struct rustc::hir::def_id::DefId">DefId</a></code></li>
-<li><code>impl&lt;'a, 'gcx, 'tcx&gt; DepGraphSafe for <a class="struct" href="../../rustc/ty/struct.TyCtxt.html" title="struct rustc::ty::TyCtxt">TyCtxt</a>&lt;'a, 'gcx, 'tcx&gt;</code></li>
-<li><code>impl&lt;T&gt; DepGraphSafe for <a class="struct" href="../../rustc/dep_graph/struct.AssertDepGraphSafe.html" title="struct rustc::dep_graph::AssertDepGraphSafe">AssertDepGraphSafe</a>&lt;T&gt;</code></li>
-<li><code>impl&lt;'gcx&gt; DepGraphSafe for <a class="struct" href="../../rustc/ich/struct.StableHashingContext.html" title="struct rustc::ich::StableHashingContext">StableHashingContext</a>&lt;'gcx&gt;</code></li>
+    <li><div class='out-of-band'><a class='srclink' href='../../src/rustc/dep_graph/safe.rs.html#29-30' title='goto source code'>[src]</a></div><code>impl DepGraphSafe for <a class="struct" href="../../rustc/hir/struct.BodyId.html" title="struct rustc::hir::BodyId">BodyId</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/rustc/dep_graph/safe.rs.html#41-42' title='goto source code'>[src]</a></div><code>impl DepGraphSafe for <a class="struct" href="../../rustc/hir/def_id/struct.DefId.html" title="struct rustc::hir::def_id::DefId">DefId</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/rustc/dep_graph/safe.rs.html#46-47' title='goto source code'>[src]</a></div><code>impl&lt;'a, 'gcx, 'tcx&gt; DepGraphSafe for <a class="struct" href="../../rustc/ty/struct.TyCtxt.html" title="struct rustc::ty::TyCtxt">TyCtxt</a>&lt;'a, 'gcx, 'tcx&gt;</code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/rustc/dep_graph/safe.rs.html#77-78' title='goto source code'>[src]</a></div><code>impl&lt;T&gt; DepGraphSafe for <a class="struct" href="../../rustc/dep_graph/struct.AssertDepGraphSafe.html" title="struct rustc::dep_graph::AssertDepGraphSafe">AssertDepGraphSafe</a>&lt;T&gt;</code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/rustc/ich/hcx.rs.html#276-277' title='goto source code'>[src]</a></div><code>impl&lt;'gcx&gt; DepGraphSafe for <a class="struct" href="../../rustc/ich/struct.StableHashingContext.html" title="struct rustc::ich::StableHashingContext">StableHashingContext</a>&lt;'gcx&gt;</code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/rustc/dep_graph/trait.DepGraphSafe.js">
                  </script></section>

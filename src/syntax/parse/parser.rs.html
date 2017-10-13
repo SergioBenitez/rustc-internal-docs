@@ -6364,6 +6364,47 @@
 <span id="6319">6319</span>
 <span id="6320">6320</span>
 <span id="6321">6321</span>
+<span id="6322">6322</span>
+<span id="6323">6323</span>
+<span id="6324">6324</span>
+<span id="6325">6325</span>
+<span id="6326">6326</span>
+<span id="6327">6327</span>
+<span id="6328">6328</span>
+<span id="6329">6329</span>
+<span id="6330">6330</span>
+<span id="6331">6331</span>
+<span id="6332">6332</span>
+<span id="6333">6333</span>
+<span id="6334">6334</span>
+<span id="6335">6335</span>
+<span id="6336">6336</span>
+<span id="6337">6337</span>
+<span id="6338">6338</span>
+<span id="6339">6339</span>
+<span id="6340">6340</span>
+<span id="6341">6341</span>
+<span id="6342">6342</span>
+<span id="6343">6343</span>
+<span id="6344">6344</span>
+<span id="6345">6345</span>
+<span id="6346">6346</span>
+<span id="6347">6347</span>
+<span id="6348">6348</span>
+<span id="6349">6349</span>
+<span id="6350">6350</span>
+<span id="6351">6351</span>
+<span id="6352">6352</span>
+<span id="6353">6353</span>
+<span id="6354">6354</span>
+<span id="6355">6355</span>
+<span id="6356">6356</span>
+<span id="6357">6357</span>
+<span id="6358">6358</span>
+<span id="6359">6359</span>
+<span id="6360">6360</span>
+<span id="6361">6361</span>
+<span id="6362">6362</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -6405,7 +6446,7 @@
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">ViewPath</span>, <span class="ident">ViewPathGlob</span>, <span class="ident">ViewPathList</span>, <span class="ident">ViewPathSimple</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Visibility</span>, <span class="ident">WhereClause</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">BinOpKind</span>, <span class="ident">UnOp</span>};
-<span class="kw">use</span> <span class="ident">ast</span>::<span class="ident">RangeEnd</span>;
+<span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">RangeEnd</span>, <span class="ident">RangeSyntax</span>};
 <span class="kw">use</span> {<span class="ident">ast</span>, <span class="ident">attr</span>};
 <span class="kw">use</span> <span class="ident">codemap</span>::{<span class="self">self</span>, <span class="ident">CodeMap</span>, <span class="ident">Spanned</span>, <span class="ident">respan</span>};
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">Span</span>, <span class="ident">BytePos</span>};
@@ -6799,7 +6840,7 @@
             <span class="ident">Error</span>::<span class="ident">InclusiveRangeWithNoEnd</span> <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="ident">handler</span>, <span class="ident">sp</span>, <span class="ident">E0586</span>,
                                                <span class="string">&quot;inclusive range with no end&quot;</span>);
-                <span class="ident">err</span>.<span class="ident">help</span>(<span class="string">&quot;inclusive ranges must be bounded at the end (`...b` or `a...b`)&quot;</span>);
+                <span class="ident">err</span>.<span class="ident">help</span>(<span class="string">&quot;inclusive ranges must be bounded at the end (`..=b` or `a..=b`)&quot;</span>);
                 <span class="ident">err</span>
             }
         }
@@ -6892,7 +6933,7 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=</span> <span class="ident">directory</span> {
             <span class="ident">parser</span>.<span class="ident">directory</span> <span class="op">=</span> <span class="ident">directory</span>;
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">parser</span>.<span class="ident">span</span> <span class="op">!=</span> <span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span> {
-            <span class="ident">parser</span>.<span class="ident">directory</span>.<span class="ident">path</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_filename</span>(<span class="ident">parser</span>.<span class="ident">span</span>));
+            <span class="ident">parser</span>.<span class="ident">directory</span>.<span class="ident">path</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_unmapped_path</span>(<span class="ident">parser</span>.<span class="ident">span</span>);
             <span class="ident">parser</span>.<span class="ident">directory</span>.<span class="ident">path</span>.<span class="ident">pop</span>();
         }
 
@@ -9077,7 +9118,7 @@
                 <span class="ident">LhsExpr</span>::<span class="ident">AttributesParsed</span>(<span class="ident">attrs</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">attrs</span>),
                 _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
             };
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">||</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">DotDotDot</span> {
+            <span class="kw">if</span> [<span class="ident">token</span>::<span class="ident">DotDot</span>, <span class="ident">token</span>::<span class="ident">DotDotDot</span>, <span class="ident">token</span>::<span class="ident">DotDotEq</span>].<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token</span>) {
                 <span class="kw">return</span> <span class="self">self</span>.<span class="ident">parse_prefix_range_expr</span>(<span class="ident">attrs</span>);
             } <span class="kw">else</span> {
                 <span class="self">self</span>.<span class="ident">parse_prefix_expr</span>(<span class="ident">attrs</span>)<span class="question-mark">?</span>
@@ -9111,6 +9152,10 @@
             <span class="kw">if</span> <span class="ident">op</span>.<span class="ident">precedence</span>() <span class="op">&lt;</span> <span class="ident">min_prec</span> {
                 <span class="kw">break</span>;
             }
+            <span class="comment">// Warn about deprecated ... syntax (until SNAP)</span>
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">DotDotDot</span> {
+                <span class="self">self</span>.<span class="ident">warn_dotdoteq</span>(<span class="self">self</span>.<span class="ident">span</span>);
+            }
             <span class="self">self</span>.<span class="ident">bump</span>();
             <span class="kw">if</span> <span class="ident">op</span>.<span class="ident">is_comparison</span>() {
                 <span class="self">self</span>.<span class="ident">check_no_chained_comparison</span>(<span class="kw-2">&amp;</span><span class="ident">lhs</span>, <span class="kw-2">&amp;</span><span class="ident">op</span>);
@@ -9137,12 +9182,13 @@
                     }
                 };
                 <span class="kw">continue</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">op</span> <span class="op">==</span> <span class="ident">AssocOp</span>::<span class="ident">DotDot</span> <span class="op">||</span> <span class="ident">op</span> <span class="op">==</span> <span class="ident">AssocOp</span>::<span class="ident">DotDotDot</span> {
-                <span class="comment">// If we didn’t have to handle `x..`/`x...`, it would be pretty easy to</span>
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">op</span> <span class="op">==</span> <span class="ident">AssocOp</span>::<span class="ident">DotDot</span> <span class="op">||</span> <span class="ident">op</span> <span class="op">==</span> <span class="ident">AssocOp</span>::<span class="ident">DotDotEq</span> {
+                <span class="comment">// If we didn’t have to handle `x..`/`x..=`, it would be pretty easy to</span>
                 <span class="comment">// generalise it to the Fixity::None code.</span>
                 <span class="comment">//</span>
-                <span class="comment">// We have 2 alternatives here: `x..y`/`x...y` and `x..`/`x...` The other</span>
+                <span class="comment">// We have 2 alternatives here: `x..y`/`x..=y` and `x..`/`x..=` The other</span>
                 <span class="comment">// two variants are handled with `parse_prefix_range_expr` call above.</span>
+                <span class="comment">// (and `x...y`/`x...` until SNAP)</span>
                 <span class="kw">let</span> <span class="ident">rhs</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_at_start_of_range_notation_rhs</span>() {
                     <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">parse_assoc_expr_with</span>(<span class="ident">op</span>.<span class="ident">precedence</span>() <span class="op">+</span> <span class="number">1</span>,
                                                     <span class="ident">LhsExpr</span>::<span class="ident">NotYetParsed</span>)<span class="question-mark">?</span>)
@@ -9219,8 +9265,8 @@
                     <span class="kw">let</span> <span class="ident">aopexpr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mk_assign_op</span>(<span class="ident">codemap</span>::<span class="ident">respan</span>(<span class="ident">cur_op_span</span>, <span class="ident">aop</span>), <span class="ident">lhs</span>, <span class="ident">rhs</span>);
                     <span class="self">self</span>.<span class="ident">mk_expr</span>(<span class="ident">span</span>, <span class="ident">aopexpr</span>, <span class="ident">ThinVec</span>::<span class="ident">new</span>())
                 }
-                <span class="ident">AssocOp</span>::<span class="ident">As</span> <span class="op">|</span> <span class="ident">AssocOp</span>::<span class="ident">Colon</span> <span class="op">|</span> <span class="ident">AssocOp</span>::<span class="ident">DotDot</span> <span class="op">|</span> <span class="ident">AssocOp</span>::<span class="ident">DotDotDot</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">bug</span>(<span class="string">&quot;As, Colon, DotDot or DotDotDot branch reached&quot;</span>)
+                <span class="ident">AssocOp</span>::<span class="ident">As</span> <span class="op">|</span> <span class="ident">AssocOp</span>::<span class="ident">Colon</span> <span class="op">|</span> <span class="ident">AssocOp</span>::<span class="ident">DotDot</span> <span class="op">|</span> <span class="ident">AssocOp</span>::<span class="ident">DotDotEq</span> <span class="op">=&gt;</span> {
+                    <span class="self">self</span>.<span class="ident">bug</span>(<span class="string">&quot;AssocOp should have been handled by special case&quot;</span>)
                 }
             };
 
@@ -9252,17 +9298,30 @@
 
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">parse_path</span>(<span class="ident">PathStyle</span>::<span class="ident">Expr</span>) {
                     <span class="prelude-val">Ok</span>(<span class="ident">path</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">let</span> (<span class="ident">op_noun</span>, <span class="ident">op_verb</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">token</span> {
+                            <span class="ident">token</span>::<span class="ident">Lt</span> <span class="op">=&gt;</span> (<span class="string">&quot;comparison&quot;</span>, <span class="string">&quot;comparing&quot;</span>),
+                            <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Shl</span>) <span class="op">=&gt;</span> (<span class="string">&quot;shift&quot;</span>, <span class="string">&quot;shifting&quot;</span>),
+                            _ <span class="op">=&gt;</span> {
+                                <span class="comment">// We can end up here even without `&lt;` being the next token, for</span>
+                                <span class="comment">// example because `parse_ty_no_plus` returns `Err` on keywords,</span>
+                                <span class="comment">// but `parse_path` returns `Ok` on them due to error recovery.</span>
+                                <span class="comment">// Return original error and parser state.</span>
+                                <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="self">self</span>, <span class="ident">parser_snapshot_after_type</span>);
+                                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">type_err</span>);
+                            }
+                        };
+
                         <span class="comment">// Successfully parsed the type path leaving a `&lt;` yet to parse.</span>
                         <span class="ident">type_err</span>.<span class="ident">cancel</span>();
 
                         <span class="comment">// Report non-fatal diagnostics, keep `x as usize` as an expression</span>
                         <span class="comment">// in AST and continue parsing.</span>
                         <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;`&lt;` is interpreted as a start of generic \
-                                           arguments for `{}`, not a comparison&quot;</span>, <span class="ident">path</span>);
+                                           arguments for `{}`, not a {}&quot;</span>, <span class="ident">path</span>, <span class="ident">op_noun</span>);
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">span_diagnostic</span>.<span class="ident">struct_span_err</span>(<span class="self">self</span>.<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
                         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="self">self</span>.<span class="ident">look_ahead_span</span>(<span class="number">1</span>).<span class="ident">to</span>(<span class="ident">parser_snapshot_after_type</span>.<span class="ident">span</span>),
                                        <span class="string">&quot;interpreted as generic arguments&quot;</span>);
-                        <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="self">self</span>.<span class="ident">span</span>, <span class="string">&quot;not interpreted as comparison&quot;</span>);
+                        <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="self">self</span>.<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;not interpreted as {}&quot;</span>, <span class="ident">op_noun</span>));
 
                         <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="ident">mk_expr</span>(<span class="self">self</span>, <span class="ident">P</span>(<span class="ident">Ty</span> {
                             <span class="ident">span</span>: <span class="ident">path</span>.<span class="ident">span</span>,
@@ -9273,7 +9332,7 @@
                         <span class="kw">let</span> <span class="ident">expr_str</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_snippet</span>(<span class="ident">expr</span>.<span class="ident">span</span>)
                                                 .<span class="ident">unwrap_or</span>(<span class="ident">pprust</span>::<span class="ident">expr_to_string</span>(<span class="kw-2">&amp;</span><span class="ident">expr</span>));
                         <span class="ident">err</span>.<span class="ident">span_suggestion</span>(<span class="ident">expr</span>.<span class="ident">span</span>,
-                                            <span class="string">&quot;try comparing the casted value&quot;</span>,
+                                            <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;try {} the casted value&quot;</span>, <span class="ident">op_verb</span>),
                                             <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;({})&quot;</span>, <span class="ident">expr_str</span>));
                         <span class="ident">err</span>.<span class="ident">emit</span>();
 
@@ -9316,17 +9375,22 @@
         }
     }
 
-    <span class="doccomment">/// Parse prefix-forms of range notation: `..expr`, `..`, `...expr`</span>
+    <span class="doccomment">/// Parse prefix-forms of range notation: `..expr`, `..`, `..=expr` (and `...expr` until SNAP)</span>
     <span class="kw">fn</span> <span class="ident">parse_prefix_range_expr</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                <span class="ident">already_parsed_attrs</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ThinVec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;&gt;</span>)
                                <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;&gt;</span> {
-        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">||</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">DotDotDot</span>,
-                      <span class="string">&quot;parse_prefix_range_expr: token {:?} is not DotDot or DotDotDot&quot;</span>,
+        <span class="comment">// SNAP remove DotDotDot</span>
+        <span class="macro">debug_assert</span><span class="macro">!</span>([<span class="ident">token</span>::<span class="ident">DotDot</span>, <span class="ident">token</span>::<span class="ident">DotDotDot</span>, <span class="ident">token</span>::<span class="ident">DotDotEq</span>].<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token</span>),
+                      <span class="string">&quot;parse_prefix_range_expr: token {:?} is not DotDot/DotDotDot/DotDotEq&quot;</span>,
                       <span class="self">self</span>.<span class="ident">token</span>);
         <span class="kw">let</span> <span class="ident">tok</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">clone</span>();
         <span class="kw">let</span> <span class="ident">attrs</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_or_use_outer_attributes</span>(<span class="ident">already_parsed_attrs</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
+        <span class="comment">// Warn about deprecated ... syntax (until SNAP)</span>
+        <span class="kw">if</span> <span class="ident">tok</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">DotDotDot</span> {
+            <span class="self">self</span>.<span class="ident">warn_dotdoteq</span>(<span class="self">self</span>.<span class="ident">span</span>);
+        }
         <span class="self">self</span>.<span class="ident">bump</span>();
         <span class="kw">let</span> <span class="ident">opt_end</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_at_start_of_range_notation_rhs</span>() {
             <span class="comment">// RHS must be parsed with more associativity than the dots.</span>
@@ -9817,7 +9881,7 @@
     <span class="kw">fn</span> <span class="ident">parse_as_ident</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">t</span> {
             <span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>) <span class="op">|</span> <span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>) <span class="op">|</span>
-            <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">ModSep</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">Not</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
+            <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">DotDotEq</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">ModSep</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">Not</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="bool-val">false</span>),
             <span class="comment">// ensure slice patterns [a, b.., c] and [a, b, c..] don&#39;t go into the</span>
             <span class="comment">// range pattern branch</span>
             <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
@@ -9911,11 +9975,13 @@
                         <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">respan</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>), <span class="ident">Mac_</span> { <span class="ident">path</span>: <span class="ident">path</span>, <span class="ident">tts</span>: <span class="ident">tts</span> });
                         <span class="ident">pat</span> <span class="op">=</span> <span class="ident">PatKind</span>::<span class="ident">Mac</span>(<span class="ident">mac</span>);
                     }
-                    <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">=&gt;</span> {
+                    <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">DotDotEq</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">=&gt;</span> {
                         <span class="kw">let</span> <span class="ident">end_kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">token</span> {
                             <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">=&gt;</span> <span class="ident">RangeEnd</span>::<span class="ident">Excluded</span>,
-                            <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">=&gt;</span> <span class="ident">RangeEnd</span>::<span class="ident">Included</span>,
-                            _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;can only parse `..` or `...` for ranges (checked above)&quot;</span>),
+                            <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">=&gt;</span> <span class="ident">RangeEnd</span>::<span class="ident">Included</span>(<span class="ident">RangeSyntax</span>::<span class="ident">DotDotDot</span>),
+                            <span class="ident">token</span>::<span class="ident">DotDotEq</span> <span class="op">=&gt;</span> <span class="ident">RangeEnd</span>::<span class="ident">Included</span>(<span class="ident">RangeSyntax</span>::<span class="ident">DotDotEq</span>),
+                            _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;can only parse `..`/`...`/`..=` for ranges \
+                                         (checked above)&quot;</span>),
                         };
                         <span class="comment">// Parse range</span>
                         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>);
@@ -9956,7 +10022,12 @@
                     <span class="prelude-val">Ok</span>(<span class="ident">begin</span>) <span class="op">=&gt;</span> {
                         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">DotDotDot</span>) {
                             <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat_range_end</span>()<span class="question-mark">?</span>;
-                            <span class="ident">pat</span> <span class="op">=</span> <span class="ident">PatKind</span>::<span class="ident">Range</span>(<span class="ident">begin</span>, <span class="ident">end</span>, <span class="ident">RangeEnd</span>::<span class="ident">Included</span>);
+                            <span class="ident">pat</span> <span class="op">=</span> <span class="ident">PatKind</span>::<span class="ident">Range</span>(<span class="ident">begin</span>, <span class="ident">end</span>,
+                                    <span class="ident">RangeEnd</span>::<span class="ident">Included</span>(<span class="ident">RangeSyntax</span>::<span class="ident">DotDotDot</span>));
+                        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">DotDotEq</span>) {
+                            <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat_range_end</span>()<span class="question-mark">?</span>;
+                            <span class="ident">pat</span> <span class="op">=</span> <span class="ident">PatKind</span>::<span class="ident">Range</span>(<span class="ident">begin</span>, <span class="ident">end</span>,
+                                    <span class="ident">RangeEnd</span>::<span class="ident">Included</span>(<span class="ident">RangeSyntax</span>::<span class="ident">DotDotEq</span>));
                         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">DotDot</span>) {
                             <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat_range_end</span>()<span class="question-mark">?</span>;
                             <span class="ident">pat</span> <span class="op">=</span> <span class="ident">PatKind</span>::<span class="ident">Range</span>(<span class="ident">begin</span>, <span class="ident">end</span>, <span class="ident">RangeEnd</span>::<span class="ident">Excluded</span>);
@@ -10021,12 +10092,17 @@
             <span class="prelude-val">None</span>
         };
         <span class="kw">let</span> <span class="ident">init</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_initializer</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">hi</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">Semi</span> {
+            <span class="self">self</span>.<span class="ident">span</span>
+        } <span class="kw">else</span> {
+            <span class="self">self</span>.<span class="ident">prev_span</span>
+        };
         <span class="prelude-val">Ok</span>(<span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">Local</span> {
             <span class="ident">ty</span>,
             <span class="ident">pat</span>,
             <span class="ident">init</span>,
             <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>,
-            <span class="ident">span</span>: <span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>),
+            <span class="ident">span</span>: <span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">hi</span>),
             <span class="ident">attrs</span>,
         }))
     }
@@ -10340,7 +10416,7 @@
                     <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Minus</span>) <span class="op">|</span> <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Star</span>) <span class="op">|</span>
                     <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">And</span>) <span class="op">|</span> <span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Or</span>) <span class="op">|</span>
                     <span class="ident">token</span>::<span class="ident">AndAnd</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">OrOr</span> <span class="op">|</span>
-                    <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                    <span class="ident">token</span>::<span class="ident">DotDot</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">token</span>::<span class="ident">DotDotEq</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
                     _ <span class="op">=&gt;</span> <span class="bool-val">true</span>,
                 } {
                     <span class="self">self</span>.<span class="ident">warn_missing_semicolon</span>();
@@ -10559,6 +10635,12 @@
             <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;expected `;`, found `{}`&quot;</span>, <span class="self">self</span>.<span class="ident">this_token_to_string</span>())
         }).<span class="ident">note</span>({
             <span class="string">&quot;This was erroneously allowed and will become a hard error in a future release&quot;</span>
+        }).<span class="ident">emit</span>();
+    }
+
+    <span class="kw">fn</span> <span class="ident">warn_dotdoteq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>) {
+        <span class="self">self</span>.<span class="ident">diagnostic</span>().<span class="ident">struct_span_warn</span>(<span class="ident">span</span>, {
+            <span class="string">&quot;`...` is being replaced by `..=`&quot;</span>
         }).<span class="ident">emit</span>();
     }
 

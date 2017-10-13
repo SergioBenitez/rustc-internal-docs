@@ -1563,6 +1563,56 @@
 <span id="1518">1518</span>
 <span id="1519">1519</span>
 <span id="1520">1520</span>
+<span id="1521">1521</span>
+<span id="1522">1522</span>
+<span id="1523">1523</span>
+<span id="1524">1524</span>
+<span id="1525">1525</span>
+<span id="1526">1526</span>
+<span id="1527">1527</span>
+<span id="1528">1528</span>
+<span id="1529">1529</span>
+<span id="1530">1530</span>
+<span id="1531">1531</span>
+<span id="1532">1532</span>
+<span id="1533">1533</span>
+<span id="1534">1534</span>
+<span id="1535">1535</span>
+<span id="1536">1536</span>
+<span id="1537">1537</span>
+<span id="1538">1538</span>
+<span id="1539">1539</span>
+<span id="1540">1540</span>
+<span id="1541">1541</span>
+<span id="1542">1542</span>
+<span id="1543">1543</span>
+<span id="1544">1544</span>
+<span id="1545">1545</span>
+<span id="1546">1546</span>
+<span id="1547">1547</span>
+<span id="1548">1548</span>
+<span id="1549">1549</span>
+<span id="1550">1550</span>
+<span id="1551">1551</span>
+<span id="1552">1552</span>
+<span id="1553">1553</span>
+<span id="1554">1554</span>
+<span id="1555">1555</span>
+<span id="1556">1556</span>
+<span id="1557">1557</span>
+<span id="1558">1558</span>
+<span id="1559">1559</span>
+<span id="1560">1560</span>
+<span id="1561">1561</span>
+<span id="1562">1562</span>
+<span id="1563">1563</span>
+<span id="1564">1564</span>
+<span id="1565">1565</span>
+<span id="1566">1566</span>
+<span id="1567">1567</span>
+<span id="1568">1568</span>
+<span id="1569">1569</span>
+<span id="1570">1570</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2660,7 +2710,7 @@
     }
 
     <span class="comment">// FIXME(#19596) This is a workaround, but there should be a better way to do this</span>
-    <span class="kw">fn</span> <span class="ident">cat_pattern_</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cmt</span>: <span class="ident">cmt</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">pat</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Pat</span>, <span class="ident">op</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">McResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
+    <span class="kw">fn</span> <span class="ident">cat_pattern_</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">cmt</span>: <span class="ident">cmt</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">pat</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Pat</span>, <span class="ident">op</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">McResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
         <span class="kw">where</span> <span class="ident">F</span> : <span class="ident">FnMut</span>(<span class="ident">cmt</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Pat</span>)
     {
         <span class="comment">// Here, `cmt` is the categorization for the value being</span>
@@ -2710,6 +2760,56 @@
 
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;cat_pattern: {:?} cmt={:?}&quot;</span>, <span class="ident">pat</span>, <span class="ident">cmt</span>);
 
+        <span class="comment">// If (pattern) adjustments are active for this pattern, adjust the `cmt` correspondingly.</span>
+        <span class="comment">// `cmt`s are constructed differently from patterns. For example, in</span>
+        <span class="comment">//</span>
+        <span class="comment">// ```</span>
+        <span class="comment">// match foo {</span>
+        <span class="comment">//     &amp;&amp;Some(x, ) =&gt; { ... },</span>
+        <span class="comment">//     _ =&gt; { ... },</span>
+        <span class="comment">// }</span>
+        <span class="comment">// ```</span>
+        <span class="comment">//</span>
+        <span class="comment">// the pattern `&amp;&amp;Some(x,)` is represented as `Ref { Ref { TupleStruct }}`. To build the</span>
+        <span class="comment">// corresponding `cmt` we start with a `cmt` for `foo`, and then, by traversing the</span>
+        <span class="comment">// pattern, try to answer the question: given the address of `foo`, how is `x` reached?</span>
+        <span class="comment">//</span>
+        <span class="comment">// `&amp;&amp;Some(x,)` `cmt_foo`</span>
+        <span class="comment">//  `&amp;Some(x,)` `deref { cmt_foo}`</span>
+        <span class="comment">//   `Some(x,)` `deref { deref { cmt_foo }}`</span>
+        <span class="comment">//        (x,)` `field0 { deref { deref { cmt_foo }}}` &lt;- resulting cmt</span>
+        <span class="comment">//</span>
+        <span class="comment">// The above example has no adjustments. If the code were instead the (after adjustments,</span>
+        <span class="comment">// equivalent) version</span>
+        <span class="comment">//</span>
+        <span class="comment">// ```</span>
+        <span class="comment">// match foo {</span>
+        <span class="comment">//     Some(x, ) =&gt; { ... },</span>
+        <span class="comment">//     _ =&gt; { ... },</span>
+        <span class="comment">// }</span>
+        <span class="comment">// ```</span>
+        <span class="comment">//</span>
+        <span class="comment">// Then we see that to get the same result, we must start with `deref { deref { cmt_foo }}`</span>
+        <span class="comment">// instead of `cmt_foo` since the pattern is now `Some(x,)` and not `&amp;&amp;Some(x,)`, even</span>
+        <span class="comment">// though its assigned type is that of `&amp;&amp;Some(x,)`.</span>
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">tables</span>
+                        .<span class="ident">pat_adjustments</span>()
+                        .<span class="ident">get</span>(<span class="ident">pat</span>.<span class="ident">hir_id</span>)
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="ident">v</span>.<span class="ident">len</span>())
+                        .<span class="ident">unwrap_or</span>(<span class="number">0</span>) {
+            <span class="ident">cmt</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cat_deref</span>(<span class="ident">pat</span>, <span class="ident">cmt</span>, <span class="bool-val">true</span> <span class="comment">/* implicit */</span>)<span class="question-mark">?</span>;
+        }
+        <span class="kw">let</span> <span class="ident">cmt</span> <span class="op">=</span> <span class="ident">cmt</span>; <span class="comment">// lose mutability</span>
+
+        <span class="comment">// Invoke the callback, but only now, after the `cmt` has adjusted.</span>
+        <span class="comment">//</span>
+        <span class="comment">// To see that this makes sense, consider `match &amp;Some(3) { Some(x) =&gt; { ... }}`. In that</span>
+        <span class="comment">// case, the initial `cmt` will be that for `&amp;Some(3)` and the pattern is `Some(x)`. We</span>
+        <span class="comment">// don&#39;t want to call `op` with these incompatible values. As written, what happens instead</span>
+        <span class="comment">// is that `op` is called with the adjusted cmt (that for `*&amp;Some(3)`) and the pattern</span>
+        <span class="comment">// `Some(x)` (which matches). Recursing once more, `*&amp;Some(3)` and the pattern `Some(x)`</span>
+        <span class="comment">// result in the cmt `Downcast&lt;Some&gt;(*&amp;Some(3)).0` associated to `x` and invoke `op` with</span>
+        <span class="comment">// that (where the `ref` on `x` is implied).</span>
         <span class="ident">op</span>(<span class="ident">cmt</span>.<span class="ident">clone</span>(), <span class="ident">pat</span>);
 
         <span class="kw">match</span> <span class="ident">pat</span>.<span class="ident">node</span> {

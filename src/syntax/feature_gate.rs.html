@@ -1802,6 +1802,23 @@
 <span id="1757">1757</span>
 <span id="1758">1758</span>
 <span id="1759">1759</span>
+<span id="1760">1760</span>
+<span id="1761">1761</span>
+<span id="1762">1762</span>
+<span id="1763">1763</span>
+<span id="1764">1764</span>
+<span id="1765">1765</span>
+<span id="1766">1766</span>
+<span id="1767">1767</span>
+<span id="1768">1768</span>
+<span id="1769">1769</span>
+<span id="1770">1770</span>
+<span id="1771">1771</span>
+<span id="1772">1772</span>
+<span id="1773">1773</span>
+<span id="1774">1774</span>
+<span id="1775">1775</span>
+<span id="1776">1776</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1831,7 +1848,7 @@
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">AttributeGate</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">abi</span>::<span class="ident">Abi</span>;
-<span class="kw">use</span> <span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">NodeId</span>, <span class="ident">PatKind</span>, <span class="ident">RangeEnd</span>};
+<span class="kw">use</span> <span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">NodeId</span>, <span class="ident">PatKind</span>, <span class="ident">RangeEnd</span>, <span class="ident">RangeSyntax</span>};
 <span class="kw">use</span> <span class="ident">attr</span>;
 <span class="kw">use</span> <span class="ident">codemap</span>::<span class="ident">Spanned</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
@@ -2066,7 +2083,7 @@
     <span class="comment">// rustc internal</span>
     (<span class="ident">active</span>, <span class="ident">abi_vectorcall</span>, <span class="string">&quot;1.7.0&quot;</span>, <span class="prelude-val">None</span>),
 
-    <span class="comment">// a...b and ...b</span>
+    <span class="comment">// a..=b and ..=b</span>
     (<span class="ident">active</span>, <span class="ident">inclusive_range_syntax</span>, <span class="string">&quot;1.7.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">28237</span>)),
 
     <span class="comment">// X..Y patterns</span>
@@ -2183,7 +2200,7 @@
     <span class="comment">// #[doc(cfg(...))]</span>
     (<span class="ident">active</span>, <span class="ident">doc_cfg</span>, <span class="string">&quot;1.21.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">43781</span>)),
     <span class="comment">// #[doc(masked)]</span>
-    (<span class="ident">active</span>, <span class="ident">doc_masked</span>, <span class="string">&quot;1.21.0&quot;</span>, <span class="prelude-val">None</span>),
+    (<span class="ident">active</span>, <span class="ident">doc_masked</span>, <span class="string">&quot;1.21.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">44027</span>)),
 
     <span class="comment">// allow `#[must_use]` on functions and comparison operators (RFC 1940)</span>
     (<span class="ident">active</span>, <span class="ident">fn_must_use</span>, <span class="string">&quot;1.21.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">43302</span>)),
@@ -2197,6 +2214,12 @@
 
     <span class="comment">// allow `&#39;_` placeholder lifetimes</span>
     (<span class="ident">active</span>, <span class="ident">underscore_lifetimes</span>, <span class="string">&quot;1.22.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">44524</span>)),
+
+    <span class="comment">// allow `..=` in patterns (RFC 1192)</span>
+    (<span class="ident">active</span>, <span class="ident">dotdoteq_in_patterns</span>, <span class="string">&quot;1.22.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">28237</span>)),
+
+    <span class="comment">// Default match binding modes (RFC 2005)</span>
+    (<span class="ident">active</span>, <span class="ident">match_default_bindings</span>, <span class="string">&quot;1.22.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">42640</span>)),
 );
 
 <span class="macro">declare_features</span><span class="macro">!</span> (
@@ -2529,6 +2552,12 @@
                                                        is just used for rustc unit tests \
                                                        and will never be stable&quot;</span>,
                                                       <span class="macro">cfg_fn</span><span class="macro">!</span>(<span class="ident">rustc_attrs</span>))),
+    (<span class="string">&quot;rustc_synthetic&quot;</span>, <span class="ident">Whitelisted</span>, <span class="ident">Gated</span>(<span class="ident">Stability</span>::<span class="ident">Unstable</span>,
+                                                      <span class="string">&quot;rustc_attrs&quot;</span>,
+                                                      <span class="string">&quot;this attribute \
+                                                       is just used for rustc unit tests \
+                                                       and will never be stable&quot;</span>,
+                                                      <span class="macro">cfg_fn</span><span class="macro">!</span>(<span class="ident">rustc_attrs</span>))),
     (<span class="string">&quot;rustc_symbol_name&quot;</span>, <span class="ident">Whitelisted</span>, <span class="ident">Gated</span>(<span class="ident">Stability</span>::<span class="ident">Unstable</span>,
                                              <span class="string">&quot;rustc_attrs&quot;</span>,
                                              <span class="string">&quot;internal rustc attributes will never be stable&quot;</span>,
@@ -2620,7 +2649,8 @@
     (<span class="string">&quot;no_debug&quot;</span>, <span class="ident">Whitelisted</span>, <span class="ident">Gated</span>(
         <span class="ident">Stability</span>::<span class="ident">Deprecated</span>(<span class="string">&quot;https://github.com/rust-lang/rust/issues/29721&quot;</span>),
         <span class="string">&quot;no_debug&quot;</span>,
-        <span class="string">&quot;the `#[no_debug]` attribute is an experimental feature&quot;</span>,
+        <span class="string">&quot;the `#[no_debug]` attribute was an experimental feature that has been \
+         deprecated due to lack of demand&quot;</span>,
         <span class="macro">cfg_fn</span><span class="macro">!</span>(<span class="ident">no_debug</span>))),
     (<span class="string">&quot;omit_gdb_pretty_printer_section&quot;</span>, <span class="ident">Whitelisted</span>, <span class="ident">Gated</span>(<span class="ident">Stability</span>::<span class="ident">Unstable</span>,
                                                        <span class="string">&quot;omit_gdb_pretty_printer_section&quot;</span>,
@@ -3295,6 +3325,10 @@
             <span class="ident">PatKind</span>::<span class="ident">Range</span>(_, _, <span class="ident">RangeEnd</span>::<span class="ident">Excluded</span>) <span class="op">=&gt;</span> {
                 <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">exclusive_range_pattern</span>, <span class="ident">pattern</span>.<span class="ident">span</span>,
                                    <span class="string">&quot;exclusive range pattern syntax is experimental&quot;</span>);
+            }
+            <span class="ident">PatKind</span>::<span class="ident">Range</span>(_, _, <span class="ident">RangeEnd</span>::<span class="ident">Included</span>(<span class="ident">RangeSyntax</span>::<span class="ident">DotDotEq</span>)) <span class="op">=&gt;</span> {
+                <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dotdoteq_in_patterns</span>, <span class="ident">pattern</span>.<span class="ident">span</span>,
+                                   <span class="string">&quot;`..=` syntax in patterns is experimental&quot;</span>);
             }
             _ <span class="op">=&gt;</span> {}
         }

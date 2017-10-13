@@ -1971,6 +1971,9 @@
 <span id="1926">1926</span>
 <span id="1927">1927</span>
 <span id="1928">1928</span>
+<span id="1929">1929</span>
+<span id="1930">1930</span>
+<span id="1931">1931</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3105,6 +3108,9 @@
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ch_is</span>(<span class="string">&#39;.&#39;</span>) {
                         <span class="self">self</span>.<span class="ident">bump</span>();
                         <span class="prelude-val">Ok</span>(<span class="ident">token</span>::<span class="ident">DotDotDot</span>)
+                    } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ch_is</span>(<span class="string">&#39;=&#39;</span>) {
+                        <span class="self">self</span>.<span class="ident">bump</span>();
+                        <span class="prelude-val">Ok</span>(<span class="ident">token</span>::<span class="ident">DotDotEq</span>)
                     } <span class="kw">else</span> {
                         <span class="prelude-val">Ok</span>(<span class="ident">token</span>::<span class="ident">DotDot</span>)
                     }

@@ -776,6 +776,12 @@
 <span id="731">731</span>
 <span id="732">732</span>
 <span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
+<span id="736">736</span>
+<span id="737">737</span>
+<span id="738">738</span>
+<span id="739">739</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -797,7 +803,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">Instance</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Subst</span>,<span class="ident">Substs</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">VecDeque</span>;
@@ -857,7 +863,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">callsites</span> <span class="op">=</span> <span class="ident">VecDeque</span>::<span class="ident">new</span>();
 
         <span class="comment">// Only do inlining into fn bodies.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">MirSource</span>::<span class="ident">Fn</span>(_) <span class="op">=</span> <span class="self">self</span>.<span class="ident">source</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">MirSource</span>::<span class="ident">Fn</span>(<span class="ident">caller_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">source</span> {
             <span class="kw">for</span> (<span class="ident">bb</span>, <span class="ident">bb_data</span>) <span class="kw">in</span> <span class="ident">caller_mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">iter_enumerated</span>() {
                 <span class="comment">// Don&#39;t inline calls that are in cleanup blocks.</span>
                 <span class="kw">if</span> <span class="ident">bb_data</span>.<span class="ident">is_cleanup</span> { <span class="kw">continue</span>; }
@@ -866,17 +872,23 @@
                 <span class="kw">let</span> <span class="ident">terminator</span> <span class="op">=</span> <span class="ident">bb_data</span>.<span class="ident">terminator</span>();
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TerminatorKind</span>::<span class="ident">Call</span> {
                     <span class="ident">func</span>: <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw-2">ref</span> <span class="ident">f</span>), .. } <span class="op">=</span> <span class="ident">terminator</span>.<span class="ident">kind</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyFnDef</span>(<span class="ident">callee_def_id</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ty</span>.<span class="ident">sty</span> {
-                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">trait_of_item</span>(<span class="ident">callee_def_id</span>).<span class="ident">is_none</span>() {
-                            <span class="ident">callsites</span>.<span class="ident">push_back</span>(<span class="ident">CallSite</span> {
-                                <span class="ident">callee</span>: <span class="ident">callee_def_id</span>,
-                                <span class="ident">substs</span>,
-                                <span class="ident">bb</span>,
-                                <span class="ident">location</span>: <span class="ident">terminator</span>.<span class="ident">source_info</span>
-                            });
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyFnDef</span>(<span class="ident">callee_def_id</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="ident">f</span>.<span class="ident">ty</span>.<span class="ident">sty</span> {
+                            <span class="kw">let</span> <span class="ident">caller_def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">caller_id</span>);
+                            <span class="kw">let</span> <span class="ident">param_env</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">param_env</span>(<span class="ident">caller_def_id</span>);
+
+                            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">instance</span>) <span class="op">=</span> <span class="ident">Instance</span>::<span class="ident">resolve</span>(<span class="self">self</span>.<span class="ident">tcx</span>,
+                                                                      <span class="ident">param_env</span>,
+                                                                      <span class="ident">callee_def_id</span>,
+                                                                      <span class="ident">substs</span>) {
+                                <span class="ident">callsites</span>.<span class="ident">push_back</span>(<span class="ident">CallSite</span> {
+                                    <span class="ident">callee</span>: <span class="ident">instance</span>.<span class="ident">def_id</span>(),
+                                    <span class="ident">substs</span>: <span class="ident">instance</span>.<span class="ident">substs</span>,
+                                    <span class="ident">bb</span>,
+                                    <span class="ident">location</span>: <span class="ident">terminator</span>.<span class="ident">source_info</span>
+                                });
+                            }
                         }
                     }
-                }
             }
         }
 

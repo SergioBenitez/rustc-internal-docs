@@ -983,6 +983,10 @@
 <span id="938">938</span>
 <span id="939">939</span>
 <span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1139,6 +1143,7 @@
     (<span class="string">&quot;armv7-unknown-linux-gnueabihf&quot;</span>, <span class="ident">armv7_unknown_linux_gnueabihf</span>),
     (<span class="string">&quot;armv7-unknown-linux-musleabihf&quot;</span>, <span class="ident">armv7_unknown_linux_musleabihf</span>),
     (<span class="string">&quot;aarch64-unknown-linux-gnu&quot;</span>, <span class="ident">aarch64_unknown_linux_gnu</span>),
+    (<span class="string">&quot;aarch64-unknown-linux-musl&quot;</span>, <span class="ident">aarch64_unknown_linux_musl</span>),
     (<span class="string">&quot;x86_64-unknown-linux-musl&quot;</span>, <span class="ident">x86_64_unknown_linux_musl</span>),
     (<span class="string">&quot;i686-unknown-linux-musl&quot;</span>, <span class="ident">i686_unknown_linux_musl</span>),
     (<span class="string">&quot;mips-unknown-linux-musl&quot;</span>, <span class="ident">mips_unknown_linux_musl</span>),
@@ -1200,7 +1205,6 @@
     (<span class="string">&quot;i686-pc-windows-msvc&quot;</span>, <span class="ident">i686_pc_windows_msvc</span>),
     (<span class="string">&quot;i586-pc-windows-msvc&quot;</span>, <span class="ident">i586_pc_windows_msvc</span>),
 
-    (<span class="string">&quot;le32-unknown-nacl&quot;</span>, <span class="ident">le32_unknown_nacl</span>),
     (<span class="string">&quot;asmjs-unknown-emscripten&quot;</span>, <span class="ident">asmjs_unknown_emscripten</span>),
     (<span class="string">&quot;wasm32-unknown-emscripten&quot;</span>, <span class="ident">wasm32_unknown_emscripten</span>),
     (<span class="string">&quot;wasm32-experimental-emscripten&quot;</span>, <span class="ident">wasm32_experimental_emscripten</span>),
@@ -1224,6 +1228,8 @@
     <span class="kw">pub</span> <span class="ident">target_endian</span>: <span class="ident">String</span>,
     <span class="doccomment">/// String to use as the `target_pointer_width` `cfg` variable.</span>
     <span class="kw">pub</span> <span class="ident">target_pointer_width</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// Width of c_int type</span>
+    <span class="kw">pub</span> <span class="ident">target_c_int_width</span>: <span class="ident">String</span>,
     <span class="doccomment">/// OS name to use for conditional compilation.</span>
     <span class="kw">pub</span> <span class="ident">target_os</span>: <span class="ident">String</span>,
     <span class="doccomment">/// Environment name to use for conditional compilation.</span>
@@ -1541,6 +1547,7 @@
             <span class="ident">llvm_target</span>: <span class="ident">get_req_field</span>(<span class="string">&quot;llvm-target&quot;</span>)<span class="question-mark">?</span>,
             <span class="ident">target_endian</span>: <span class="ident">get_req_field</span>(<span class="string">&quot;target-endian&quot;</span>)<span class="question-mark">?</span>,
             <span class="ident">target_pointer_width</span>: <span class="ident">get_req_field</span>(<span class="string">&quot;target-pointer-width&quot;</span>)<span class="question-mark">?</span>,
+            <span class="ident">target_c_int_width</span>: <span class="ident">get_req_field</span>(<span class="string">&quot;target-c-int-width&quot;</span>)<span class="question-mark">?</span>,
             <span class="ident">data_layout</span>: <span class="ident">get_req_field</span>(<span class="string">&quot;data-layout&quot;</span>)<span class="question-mark">?</span>,
             <span class="ident">arch</span>: <span class="ident">get_req_field</span>(<span class="string">&quot;arch&quot;</span>)<span class="question-mark">?</span>,
             <span class="ident">target_os</span>: <span class="ident">get_req_field</span>(<span class="string">&quot;os&quot;</span>)<span class="question-mark">?</span>,
@@ -1845,6 +1852,7 @@
         <span class="macro">target_val</span><span class="macro">!</span>(<span class="ident">llvm_target</span>);
         <span class="macro">target_val</span><span class="macro">!</span>(<span class="ident">target_endian</span>);
         <span class="macro">target_val</span><span class="macro">!</span>(<span class="ident">target_pointer_width</span>);
+        <span class="macro">target_val</span><span class="macro">!</span>(<span class="ident">target_c_int_width</span>);
         <span class="macro">target_val</span><span class="macro">!</span>(<span class="ident">arch</span>);
         <span class="macro">target_val</span><span class="macro">!</span>(<span class="ident">target_os</span>, <span class="string">&quot;os&quot;</span>);
         <span class="macro">target_val</span><span class="macro">!</span>(<span class="ident">target_env</span>, <span class="string">&quot;env&quot;</span>);

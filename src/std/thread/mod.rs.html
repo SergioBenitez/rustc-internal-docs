@@ -1580,6 +1580,8 @@
 <span id="1535">1535</span>
 <span id="1536">1536</span>
 <span id="1537">1537</span>
+<span id="1538">1538</span>
+<span id="1539">1539</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2068,15 +2070,17 @@
 <span class="doccomment">/// let (tx, rx) = channel();</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let sender = thread::spawn(move || {</span>
-<span class="doccomment">///     let _ = tx.send(&quot;Hello, thread&quot;.to_owned());</span>
+<span class="doccomment">///     tx.send(&quot;Hello, thread&quot;.to_owned())</span>
+<span class="doccomment">///         .expect(&quot;Unable to send on channel&quot;);</span>
 <span class="doccomment">/// });</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let receiver = thread::spawn(move || {</span>
-<span class="doccomment">///     println!(&quot;{}&quot;, rx.recv().unwrap());</span>
+<span class="doccomment">///     let value = rx.recv().expect(&quot;Unable to receive from channel&quot;);</span>
+<span class="doccomment">///     println!(&quot;{}&quot;, value);</span>
 <span class="doccomment">/// });</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let _ = sender.join();</span>
-<span class="doccomment">/// let _ = receiver.join();</span>
+<span class="doccomment">/// sender.join().expect(&quot;The sender thread has panicked&quot;);</span>
+<span class="doccomment">/// receiver.join().expect(&quot;The receiver thread has panicked&quot;);</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// A thread can also return a value through its [`JoinHandle`], you can use</span>
@@ -2775,7 +2779,7 @@
 <span class="doccomment">///     });</span>
 <span class="doccomment">/// });</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let _ = original_thread.join();</span>
+<span class="doccomment">/// original_thread.join().expect(&quot;The thread being joined has panicked&quot;);</span>
 <span class="doccomment">/// println!(&quot;Original thread is joined.&quot;);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // We make sure that the new thread has time to run, before the main</span>

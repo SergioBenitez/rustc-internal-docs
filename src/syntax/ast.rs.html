@@ -2054,6 +2054,10 @@
 <span id="2009">2009</span>
 <span id="2010">2010</span>
 <span id="2011">2011</span>
+<span id="2012">2012</span>
+<span id="2013">2013</span>
+<span id="2014">2014</span>
+<span id="2015">2015</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2595,8 +2599,14 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RangeEnd</span> {
-    <span class="ident">Included</span>,
+    <span class="ident">Included</span>(<span class="ident">RangeSyntax</span>),
     <span class="ident">Excluded</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RangeSyntax</span> {
+    <span class="ident">DotDotDot</span>,
+    <span class="ident">DotDotEq</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
@@ -2635,7 +2645,7 @@
     <span class="ident">Ref</span>(<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Pat</span><span class="op">&gt;</span>, <span class="ident">Mutability</span>),
     <span class="doccomment">/// A literal</span>
     <span class="ident">Lit</span>(<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>),
-    <span class="doccomment">/// A range pattern, e.g. `1...2` or `1..2`</span>
+    <span class="doccomment">/// A range pattern, e.g. `1...2`, `1..=2` or `1..2`</span>
     <span class="ident">Range</span>(<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>, <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>, <span class="ident">RangeEnd</span>),
     <span class="doccomment">/// `[a, b, ..i, y, z]` is represented as:</span>
     <span class="doccomment">///     `PatKind::Slice(box [a, b], Some(i), box [y, z])`</span>
@@ -2837,8 +2847,6 @@
     <span class="ident">NoBraces</span>,
 }
 
-<span class="comment">// FIXME (pending discussion of #1697, #2178...): local should really be</span>
-<span class="comment">// a refinement on pat.</span>
 <span class="doccomment">/// Local represents a `let` statement, e.g., `let &lt;pat&gt;:&lt;ty&gt; = &lt;expr&gt;;`</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Local</span> {
@@ -3978,7 +3986,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `trait Foo { .. }` or `trait Foo&lt;T&gt; { .. }`</span>
     <span class="ident">Trait</span>(<span class="ident">Unsafety</span>, <span class="ident">Generics</span>, <span class="ident">TyParamBounds</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TraitItem</span><span class="op">&gt;</span>),
-    <span class="comment">// Default trait implementation.</span>
+    <span class="doccomment">/// Auto trait implementation.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `impl Trait for .. {}` or `impl&lt;T&gt; Trait&lt;T&gt; for .. {}`</span>
     <span class="ident">DefaultImpl</span>(<span class="ident">Unsafety</span>, <span class="ident">TraitRef</span>),

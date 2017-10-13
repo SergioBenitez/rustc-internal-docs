@@ -509,8 +509,8 @@
             <span class="kw-2">*</span><span class="ident">sys</span>::<span class="ident">os</span>::<span class="ident">environ</span>() <span class="op">=</span> <span class="ident">envp</span>.<span class="ident">as_ptr</span>();
         }
 
-        <span class="comment">// NaCl has no signal support.</span>
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;nacl&quot;</span>, <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>)))]</span>
+        <span class="comment">// emscripten has no signal support.</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;emscripten&quot;</span>)))]</span>
         {
             <span class="kw">use</span> <span class="ident">mem</span>;
             <span class="comment">// Reset signal handling so the child process starts in a</span>

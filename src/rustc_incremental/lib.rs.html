@@ -84,6 +84,7 @@
 <span id="39">39</span>
 <span id="40">40</span>
 <span id="41">41</span>
+<span id="42">42</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -119,13 +120,14 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">assert_dep_graph</span>::<span class="ident">assert_dep_graph</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">load_dep_graph</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">load_dep_graph_new</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">dep_graph_tcx_init</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">save_dep_graph</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">save_trans_partition</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">save_work_products</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">in_incr_comp_dir</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">prepare_session_directory</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">finalize_session_directory</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">persist</span>::<span class="ident">delete_workproduct_files</span>;
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

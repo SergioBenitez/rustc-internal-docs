@@ -2635,6 +2635,77 @@
 <span id="2590">2590</span>
 <span id="2591">2591</span>
 <span id="2592">2592</span>
+<span id="2593">2593</span>
+<span id="2594">2594</span>
+<span id="2595">2595</span>
+<span id="2596">2596</span>
+<span id="2597">2597</span>
+<span id="2598">2598</span>
+<span id="2599">2599</span>
+<span id="2600">2600</span>
+<span id="2601">2601</span>
+<span id="2602">2602</span>
+<span id="2603">2603</span>
+<span id="2604">2604</span>
+<span id="2605">2605</span>
+<span id="2606">2606</span>
+<span id="2607">2607</span>
+<span id="2608">2608</span>
+<span id="2609">2609</span>
+<span id="2610">2610</span>
+<span id="2611">2611</span>
+<span id="2612">2612</span>
+<span id="2613">2613</span>
+<span id="2614">2614</span>
+<span id="2615">2615</span>
+<span id="2616">2616</span>
+<span id="2617">2617</span>
+<span id="2618">2618</span>
+<span id="2619">2619</span>
+<span id="2620">2620</span>
+<span id="2621">2621</span>
+<span id="2622">2622</span>
+<span id="2623">2623</span>
+<span id="2624">2624</span>
+<span id="2625">2625</span>
+<span id="2626">2626</span>
+<span id="2627">2627</span>
+<span id="2628">2628</span>
+<span id="2629">2629</span>
+<span id="2630">2630</span>
+<span id="2631">2631</span>
+<span id="2632">2632</span>
+<span id="2633">2633</span>
+<span id="2634">2634</span>
+<span id="2635">2635</span>
+<span id="2636">2636</span>
+<span id="2637">2637</span>
+<span id="2638">2638</span>
+<span id="2639">2639</span>
+<span id="2640">2640</span>
+<span id="2641">2641</span>
+<span id="2642">2642</span>
+<span id="2643">2643</span>
+<span id="2644">2644</span>
+<span id="2645">2645</span>
+<span id="2646">2646</span>
+<span id="2647">2647</span>
+<span id="2648">2648</span>
+<span id="2649">2649</span>
+<span id="2650">2650</span>
+<span id="2651">2651</span>
+<span id="2652">2652</span>
+<span id="2653">2653</span>
+<span id="2654">2654</span>
+<span id="2655">2655</span>
+<span id="2656">2656</span>
+<span id="2657">2657</span>
+<span id="2658">2658</span>
+<span id="2659">2659</span>
+<span id="2660">2660</span>
+<span id="2661">2661</span>
+<span id="2662">2662</span>
+<span id="2663">2663</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3313,6 +3384,8 @@
     <span class="doccomment">/// on generic parameter `T`, asserts data behind the parameter</span>
     <span class="doccomment">/// `T` won&#39;t be accessed during the parent type&#39;s `Drop` impl.</span>
     <span class="kw">pub</span> <span class="ident">pure_wrt_drop</span>: <span class="ident">bool</span>,
+
+    <span class="kw">pub</span> <span class="ident">synthetic</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">SyntheticTyParamKind</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
@@ -3349,6 +3422,13 @@
 
 <span class="doccomment">/// Information about the formal type/lifetime parameters associated</span>
 <span class="doccomment">/// with an item or method. Analogous to hir::Generics.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Note that in the presence of a `Self` parameter, the ordering here</span>
+<span class="doccomment">/// is different from the ordering in a Substs. Substs are ordered as</span>
+<span class="doccomment">///     Self, *Regions, *Other Type Params, (...child generics)</span>
+<span class="doccomment">/// while this struct is ordered as</span>
+<span class="doccomment">///     regions = Regions</span>
+<span class="doccomment">///     types = [Self, *Other Type Params]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Generics</span> {
     <span class="kw">pub</span> <span class="ident">parent</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DefId</span><span class="op">&gt;</span>,
@@ -3365,7 +3445,7 @@
     <span class="kw">pub</span> <span class="ident">has_late_bound_regions</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">Generics</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Generics</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parent_count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">parent_regions</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">parent_types</span> <span class="kw">as</span> <span class="ident">usize</span>
     }
@@ -3378,14 +3458,52 @@
         <span class="self">self</span>.<span class="ident">parent_count</span>() <span class="op">+</span> <span class="self">self</span>.<span class="ident">own_count</span>()
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">region_param</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">param</span>: <span class="kw-2">&amp;</span><span class="ident">EarlyBoundRegion</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">RegionParameterDef</span> {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">parent_count</span>(), <span class="number">0</span>);
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">regions</span>[<span class="ident">param</span>.<span class="ident">index</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">has_self</span> <span class="kw">as</span> <span class="ident">usize</span>]
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">region_param</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="self">self</span>,
+                        <span class="ident">param</span>: <span class="kw-2">&amp;</span><span class="ident">EarlyBoundRegion</span>,
+                        <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                        <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">RegionParameterDef</span>
+    {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="ident">param</span>.<span class="ident">index</span>.<span class="ident">checked_sub</span>(<span class="self">self</span>.<span class="ident">parent_count</span>() <span class="kw">as</span> <span class="ident">u32</span>) {
+            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">regions</span>[<span class="ident">index</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">has_self</span> <span class="kw">as</span> <span class="ident">usize</span>]
+        } <span class="kw">else</span> {
+            <span class="ident">tcx</span>.<span class="ident">generics_of</span>(<span class="self">self</span>.<span class="ident">parent</span>.<span class="ident">expect</span>(<span class="string">&quot;parent_count&gt;0 but no parent?&quot;</span>))
+                .<span class="ident">region_param</span>(<span class="ident">param</span>, <span class="ident">tcx</span>)
+        }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_param</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">param</span>: <span class="kw-2">&amp;</span><span class="ident">ParamTy</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">TypeParameterDef</span> {
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">parent_count</span>(), <span class="number">0</span>);
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">types</span>[<span class="ident">param</span>.<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">has_self</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">regions</span>.<span class="ident">len</span>()]
+    <span class="doccomment">/// Returns the `TypeParameterDef` associated with this `ParamTy`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_param</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="self">self</span>,
+                      <span class="ident">param</span>: <span class="kw-2">&amp;</span><span class="ident">ParamTy</span>,
+                      <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                      <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">TypeParameterDef</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">idx</span>) <span class="op">=</span> <span class="ident">param</span>.<span class="ident">idx</span>.<span class="ident">checked_sub</span>(<span class="self">self</span>.<span class="ident">parent_count</span>() <span class="kw">as</span> <span class="ident">u32</span>) {
+            <span class="comment">// non-Self type parameters are always offset by exactly</span>
+            <span class="comment">// `self.regions.len()`. In the absence of a Self, this is obvious,</span>
+            <span class="comment">// but even in the absence of a `Self` we just have to &quot;compensate&quot;</span>
+            <span class="comment">// for the regions:</span>
+            <span class="comment">//</span>
+            <span class="comment">// For example, for `trait Foo&lt;&#39;a, &#39;b, T1, T2&gt;`, the</span>
+            <span class="comment">// situation is:</span>
+            <span class="comment">//     Substs:</span>
+            <span class="comment">//         0   1  2  3  4</span>
+            <span class="comment">//       Self &#39;a &#39;b  T1 T2</span>
+            <span class="comment">//     generics.types:</span>
+            <span class="comment">//         0  1  2</span>
+            <span class="comment">//       Self T1 T2</span>
+            <span class="comment">// And it can be seen that to move from a substs offset to a</span>
+            <span class="comment">// generics offset you just have to offset by the number of regions.</span>
+            <span class="kw">let</span> <span class="ident">type_param_offset</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">regions</span>.<span class="ident">len</span>();
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">idx</span>) <span class="op">=</span> (<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">checked_sub</span>(<span class="ident">type_param_offset</span>) {
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span>(<span class="self">self</span>.<span class="ident">has_self</span> <span class="op">&amp;&amp;</span> <span class="ident">idx</span> <span class="op">==</span> <span class="number">0</span>));
+                <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">types</span>[<span class="ident">idx</span>]
+            } <span class="kw">else</span> {
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">has_self</span> <span class="op">&amp;&amp;</span> <span class="ident">idx</span> <span class="op">==</span> <span class="number">0</span>);
+                <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">types</span>[<span class="number">0</span>]
+            }
+        } <span class="kw">else</span> {
+            <span class="ident">tcx</span>.<span class="ident">generics_of</span>(<span class="self">self</span>.<span class="ident">parent</span>.<span class="ident">expect</span>(<span class="string">&quot;parent_count&gt;0 but no parent?&quot;</span>))
+                .<span class="ident">type_param</span>(<span class="ident">param</span>, <span class="ident">tcx</span>)
+        }
     }
 }
 
@@ -3886,6 +4004,22 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_parts</span>(<span class="self">self</span>) <span class="op">-&gt;</span> (<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">T</span>) {
         (<span class="self">self</span>.<span class="ident">param_env</span>, <span class="self">self</span>.<span class="ident">value</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="ident">T</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span>
+{
+    <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
+                                          <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
+        <span class="kw">let</span> <span class="ident">ParamEnvAnd</span> {
+            <span class="kw-2">ref</span> <span class="ident">param_env</span>,
+            <span class="kw-2">ref</span> <span class="ident">value</span>
+        } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
+
+        <span class="ident">param_env</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
+        <span class="ident">value</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
     }
 }
 
@@ -4920,6 +5054,13 @@
         }
     }
 
+    <span class="comment">// Hygienically compare a use-site name (`use_name`) for a field or an associated item with its</span>
+    <span class="comment">// supposed definition name (`def_name`). The method also needs `DefId` of the supposed</span>
+    <span class="comment">// definition&#39;s parent/scope to perform comparison.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hygienic_eq</span>(<span class="self">self</span>, <span class="ident">use_name</span>: <span class="ident">Name</span>, <span class="ident">def_name</span>: <span class="ident">Name</span>, <span class="ident">def_parent_def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">adjust</span>(<span class="ident">use_name</span>, <span class="ident">def_parent_def_id</span>, <span class="ident">DUMMY_NODE_ID</span>).<span class="number">0</span> <span class="op">==</span> <span class="ident">def_name</span>.<span class="ident">to_ident</span>()
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">adjust</span>(<span class="self">self</span>, <span class="ident">name</span>: <span class="ident">Name</span>, <span class="ident">scope</span>: <span class="ident">DefId</span>, <span class="ident">block</span>: <span class="ident">NodeId</span>) <span class="op">-&gt;</span> (<span class="ident">Ident</span>, <span class="ident">DefId</span>) {
         <span class="self">self</span>.<span class="ident">adjust_ident</span>(<span class="ident">name</span>.<span class="ident">to_ident</span>(), <span class="ident">scope</span>, <span class="ident">block</span>)
     }
@@ -4931,6 +5072,7 @@
         };
         <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ident</span>.<span class="ident">ctxt</span>.<span class="ident">adjust</span>(<span class="ident">expansion</span>) {
             <span class="prelude-val">Some</span>(<span class="ident">macro_def</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">definitions</span>().<span class="ident">macro_def_scope</span>(<span class="ident">macro_def</span>),
+            <span class="prelude-val">None</span> <span class="kw">if</span> <span class="ident">block</span> <span class="op">==</span> <span class="ident">DUMMY_NODE_ID</span> <span class="op">=&gt;</span> <span class="ident">DefId</span>::<span class="ident">local</span>(<span class="ident">CRATE_DEF_INDEX</span>), <span class="comment">// Dummy DefId</span>
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">get_module_parent</span>(<span class="ident">block</span>),
         };
         (<span class="ident">ident</span>, <span class="ident">scope</span>)

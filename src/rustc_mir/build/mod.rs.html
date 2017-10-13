@@ -677,18 +677,6 @@
 <span id="632">632</span>
 <span id="633">633</span>
 <span id="634">634</span>
-<span id="635">635</span>
-<span id="636">636</span>
-<span id="637">637</span>
-<span id="638">638</span>
-<span id="639">639</span>
-<span id="640">640</span>
-<span id="641">641</span>
-<span id="642">642</span>
-<span id="643">643</span>
-<span id="644">644</span>
-<span id="645">645</span>
-<span id="646">646</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1003,19 +991,7 @@
     <span class="ident">basic_blocks</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">BasicBlock</span>, <span class="ident">BasicBlockData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ScopeId</span>(<span class="ident">u32</span>);
-
-<span class="kw">impl</span> <span class="ident">Idx</span> <span class="kw">for</span> <span class="ident">ScopeId</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ScopeId</span> {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">index</span> <span class="op">&lt;</span> (<span class="ident">u32</span>::<span class="ident">MAX</span> <span class="kw">as</span> <span class="ident">usize</span>));
-        <span class="ident">ScopeId</span>(<span class="ident">index</span> <span class="kw">as</span> <span class="ident">u32</span>)
-    }
-
-    <span class="kw">fn</span> <span class="ident">index</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>
-    }
-}
+<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">ScopeId</span>);
 
 <span class="comment">///////////////////////////////////////////////////////////////////////////</span>
 <span class="doccomment">/// The `BlockAnd` &quot;monad&quot; packages up the new basic block along with a</span>

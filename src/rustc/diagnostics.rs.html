@@ -2035,73 +2035,6 @@
 <span id="1990">1990</span>
 <span id="1991">1991</span>
 <span id="1992">1992</span>
-<span id="1993">1993</span>
-<span id="1994">1994</span>
-<span id="1995">1995</span>
-<span id="1996">1996</span>
-<span id="1997">1997</span>
-<span id="1998">1998</span>
-<span id="1999">1999</span>
-<span id="2000">2000</span>
-<span id="2001">2001</span>
-<span id="2002">2002</span>
-<span id="2003">2003</span>
-<span id="2004">2004</span>
-<span id="2005">2005</span>
-<span id="2006">2006</span>
-<span id="2007">2007</span>
-<span id="2008">2008</span>
-<span id="2009">2009</span>
-<span id="2010">2010</span>
-<span id="2011">2011</span>
-<span id="2012">2012</span>
-<span id="2013">2013</span>
-<span id="2014">2014</span>
-<span id="2015">2015</span>
-<span id="2016">2016</span>
-<span id="2017">2017</span>
-<span id="2018">2018</span>
-<span id="2019">2019</span>
-<span id="2020">2020</span>
-<span id="2021">2021</span>
-<span id="2022">2022</span>
-<span id="2023">2023</span>
-<span id="2024">2024</span>
-<span id="2025">2025</span>
-<span id="2026">2026</span>
-<span id="2027">2027</span>
-<span id="2028">2028</span>
-<span id="2029">2029</span>
-<span id="2030">2030</span>
-<span id="2031">2031</span>
-<span id="2032">2032</span>
-<span id="2033">2033</span>
-<span id="2034">2034</span>
-<span id="2035">2035</span>
-<span id="2036">2036</span>
-<span id="2037">2037</span>
-<span id="2038">2038</span>
-<span id="2039">2039</span>
-<span id="2040">2040</span>
-<span id="2041">2041</span>
-<span id="2042">2042</span>
-<span id="2043">2043</span>
-<span id="2044">2044</span>
-<span id="2045">2045</span>
-<span id="2046">2046</span>
-<span id="2047">2047</span>
-<span id="2048">2048</span>
-<span id="2049">2049</span>
-<span id="2050">2050</span>
-<span id="2051">2051</span>
-<span id="2052">2052</span>
-<span id="2053">2053</span>
-<span id="2054">2054</span>
-<span id="2055">2055</span>
-<span id="2056">2056</span>
-<span id="2057">2057</span>
-<span id="2058">2058</span>
-<span id="2059">2059</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3456,74 +3389,6 @@ struct Foo&lt;T: &#39;static&gt; {
 ```
 &quot;##</span>,
 
-<span class="ident">E0312</span>: <span class="string">r##&quot;
-A lifetime of reference outlives lifetime of borrowed content.
-
-Erroneous code example:
-
-```compile_fail,E0312
-fn make_child&lt;&#39;tree, &#39;human&gt;(
-  x: &amp;&#39;human i32,
-  y: &amp;&#39;tree i32
-) -&gt; &amp;&#39;human i32 {
-    if x &gt; y
-       { x }
-    else
-       { y }
-       // error: lifetime of reference outlives lifetime of borrowed content
-}
-```
-
-The function declares that it returns a reference with the `&#39;human`
-lifetime, but it may return data with the `&#39;tree` lifetime. As neither
-lifetime is declared longer than the other, this results in an
-error. Sometimes, this error is because the function *body* is
-incorrect -- that is, maybe you did not *mean* to return data from
-`y`. In that case, you should fix the function body.
-
-Often, however, the body is correct. In that case, the function
-signature needs to be altered to match the body, so that the caller
-understands that data from either `x` or `y` may be returned. The
-simplest way to do this is to give both function parameters the *same*
-named lifetime:
-
-```
-fn make_child&lt;&#39;human&gt;(
-  x: &amp;&#39;human i32,
-  y: &amp;&#39;human i32
-) -&gt; &amp;&#39;human i32 {
-    if x &gt; y
-       { x }
-    else
-       { y } // ok!
-}
-```
-
-However, in some cases, you may prefer to explicitly declare that one lifetime
-outlives another using a `where` clause:
-
-```
-fn make_child&lt;&#39;tree, &#39;human&gt;(
-  x: &amp;&#39;human i32,
-  y: &amp;&#39;tree i32
-) -&gt; &amp;&#39;human i32
-where
-  &#39;tree: &#39;human
-{
-    if x &gt; y
-       { x }
-    else
-       { y } // ok!
-}
-```
-
-Here, the where clause `&#39;tree: &#39;human` can be read as &quot;the lifetime
-&#39;tree outlives the lifetime &#39;human&quot; -- meaning, references with the
-`&#39;tree` lifetime live *at least as long as* references with the
-`&#39;human` lifetime. Therefore, it is safe to return data with lifetime
-`&#39;tree` when data with the lifetime `&#39;human` is needed.
-&quot;##</span>,
-
 <span class="ident">E0317</span>: <span class="string">r##&quot;
 This error occurs when an `if` expression without an `else` block is used in a
 context where a type other than `()` is expected, for example a `let`
@@ -4133,6 +3998,7 @@ fn foo&lt;&#39;a&gt;(x: &amp;&#39;a i32, y: &amp;i32) -&gt; &amp;&#39;a i32 {
 <span class="comment">//  E0304, // expected signed integer constant</span>
 <span class="comment">//  E0305, // expected constant</span>
     <span class="ident">E0311</span>, <span class="comment">// thing may not live long enough</span>
+    <span class="ident">E0312</span>, <span class="comment">// lifetime of reference outlives lifetime of borrowed content</span>
     <span class="ident">E0313</span>, <span class="comment">// lifetime of borrowed pointer outlives lifetime of captured variable</span>
     <span class="ident">E0314</span>, <span class="comment">// closure outlives stack frame</span>
     <span class="ident">E0315</span>, <span class="comment">// cannot invoke closure outside of its lifetime</span>

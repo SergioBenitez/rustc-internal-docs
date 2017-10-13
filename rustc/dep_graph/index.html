@@ -48,8 +48,8 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rustc/dep_graph/mod.rs.html#11-29' title='goto source code'>[src]</a></span></h1>
-<div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, and unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
+               </span><a class='srclink' href='../../src/rustc/dep_graph/mod.rs.html#11-28' title='goto source code'>[src]</a></span></h1>
+<div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class='unstable module-item'>
@@ -94,10 +94,7 @@ it makes sense (or how it could be refactored away in the future).</p>
                            <td><a class="struct" href="struct.DepNodeIndex.html"
                                   title='struct rustc::dep_graph::DepNodeIndex'>DepNodeIndex</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] <p>As a temporary measure, while transitioning to the new DepGraph
-implementation, we maintain the old and the new dep-graph encoding in
-parallel, so a DepNodeIndex actually contains two indices, one for each
-version.</p>
+                               [<div class='stab unstable'>Experimental</div>] 
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
@@ -155,6 +152,13 @@ them even in the absence of a tcx.)</p>
                        <tr class='unstable module-item'>
                            <td><a class="enum" href="enum.DepKind.html"
                                   title='enum rustc::dep_graph::DepKind'>DepKind</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="enum" href="enum.DepNodeColor.html"
+                                  title='enum rustc::dep_graph::DepNodeColor'>DepNodeColor</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] 
                            </td>

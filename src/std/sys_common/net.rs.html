@@ -687,6 +687,11 @@
 <span id="642">642</span>
 <span id="643">643</span>
 <span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -865,10 +870,15 @@
             },
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">unix</span>)]</span>
             <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
-                <span class="comment">// The lookup failure could be caused by using a stale /etc/resolv.conf.</span>
-                <span class="comment">// See https://github.com/rust-lang/rust/issues/41570.</span>
-                <span class="comment">// We therefore force a reload of the nameserver information.</span>
-                <span class="ident">c</span>::<span class="ident">res_init</span>();
+                <span class="comment">// If we&#39;re running glibc prior to version 2.26, the lookup</span>
+                <span class="comment">// failure could be caused by caching a stale /etc/resolv.conf.</span>
+                <span class="comment">// We need to call libc::res_init() to clear the cache. But we</span>
+                <span class="comment">// shouldn&#39;t call it in on any other platform, because other</span>
+                <span class="comment">// res_init implementations aren&#39;t thread-safe. See</span>
+                <span class="comment">// https://github.com/rust-lang/rust/issues/41570 and</span>
+                <span class="comment">// https://github.com/rust-lang/rust/issues/43592.</span>
+                <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">net</span>::<span class="ident">res_init_if_glibc_before_2_26</span>;
+                <span class="kw">let</span> _ <span class="op">=</span> <span class="ident">res_init_if_glibc_before_2_26</span>();
                 <span class="prelude-val">Err</span>(<span class="ident">e</span>)
             },
             <span class="comment">// the cfg is needed here to avoid an &quot;unreachable pattern&quot; warning</span>

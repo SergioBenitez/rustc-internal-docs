@@ -372,8 +372,6 @@
 <span id="327">327</span>
 <span id="328">328</span>
 <span id="329">329</span>
-<span id="330">330</span>
-<span id="331">331</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -394,6 +392,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ptr</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>;
 
+<span class="kw">use</span> <span class="ident">back</span>::<span class="ident">bytecode</span>::<span class="ident">RLIB_BYTECODE_EXTENSION</span>;
 <span class="kw">use</span> <span class="ident">libc</span>;
 <span class="kw">use</span> <span class="ident">llvm</span>::<span class="ident">archive_ro</span>::{<span class="ident">ArchiveRO</span>, <span class="ident">Child</span>};
 <span class="kw">use</span> <span class="ident">llvm</span>::{<span class="self">self</span>, <span class="ident">ArchiveKind</span>};
@@ -531,12 +530,9 @@
         <span class="comment">// might be also an extra name suffix</span>
         <span class="kw">let</span> <span class="ident">obj_start</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">name</span>);
 
-        <span class="comment">// Ignoring all bytecode files, no matter of</span>
-        <span class="comment">// name</span>
-        <span class="kw">let</span> <span class="ident">bc_ext</span> <span class="op">=</span> <span class="string">&quot;.bytecode.deflate&quot;</span>;
-
         <span class="self">self</span>.<span class="ident">add_archive</span>(<span class="ident">rlib</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">fname</span>: <span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="ident">fname</span>.<span class="ident">ends_with</span>(<span class="ident">bc_ext</span>) <span class="op">||</span> <span class="ident">fname</span> <span class="op">==</span> <span class="ident">METADATA_FILENAME</span> {
+            <span class="comment">// Ignore bytecode/metadata files, no matter the name.</span>
+            <span class="kw">if</span> <span class="ident">fname</span>.<span class="ident">ends_with</span>(<span class="ident">RLIB_BYTECODE_EXTENSION</span>) <span class="op">||</span> <span class="ident">fname</span> <span class="op">==</span> <span class="ident">METADATA_FILENAME</span> {
                 <span class="kw">return</span> <span class="bool-val">true</span>
             }
 

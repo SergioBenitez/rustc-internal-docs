@@ -1558,20 +1558,6 @@
 <span id="1513">1513</span>
 <span id="1514">1514</span>
 <span id="1515">1515</span>
-<span id="1516">1516</span>
-<span id="1517">1517</span>
-<span id="1518">1518</span>
-<span id="1519">1519</span>
-<span id="1520">1520</span>
-<span id="1521">1521</span>
-<span id="1522">1522</span>
-<span id="1523">1523</span>
-<span id="1524">1524</span>
-<span id="1525">1525</span>
-<span id="1526">1526</span>
-<span id="1527">1527</span>
-<span id="1528">1528</span>
-<span id="1529">1529</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1931,9 +1917,7 @@
         <span class="ident">poly_projections</span>.<span class="ident">extend</span>(<span class="ident">assoc_bindings</span>.<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">binding</span><span class="op">|</span> {
             <span class="comment">// specify type to assert that error was already reported in Err case:</span>
             <span class="kw">let</span> <span class="ident">predicate</span>: <span class="prelude-ty">Result</span><span class="op">&lt;</span>_, <span class="ident">ErrorReported</span><span class="op">&gt;</span> <span class="op">=</span>
-                <span class="self">self</span>.<span class="ident">ast_type_binding_to_poly_projection_predicate</span>(<span class="ident">trait_ref</span>.<span class="ident">ref_id</span>,
-                                                                   <span class="ident">poly_trait_ref</span>,
-                                                                   <span class="ident">binding</span>);
+                <span class="self">self</span>.<span class="ident">ast_type_binding_to_poly_projection_predicate</span>(<span class="ident">poly_trait_ref</span>, <span class="ident">binding</span>);
             <span class="ident">predicate</span>.<span class="ident">ok</span>() <span class="comment">// ok to ignore Err() because ErrorReported (see above)</span>
         }));
 
@@ -1998,13 +1982,13 @@
                                            <span class="op">-&gt;</span> <span class="ident">bool</span>
     {
         <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">associated_items</span>(<span class="ident">trait_def_id</span>).<span class="ident">any</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> {
-            <span class="ident">item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span> <span class="op">&amp;&amp;</span> <span class="ident">item</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">assoc_name</span>
+            <span class="ident">item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span> <span class="op">&amp;&amp;</span>
+            <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">hygienic_eq</span>(<span class="ident">assoc_name</span>, <span class="ident">item</span>.<span class="ident">name</span>, <span class="ident">trait_def_id</span>)
         })
     }
 
     <span class="kw">fn</span> <span class="ident">ast_type_binding_to_poly_projection_predicate</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">_path_id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
         <span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">binding</span>: <span class="kw-2">&amp;</span><span class="ident">ConvertedBinding</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyProjectionPredicate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ErrorReported</span><span class="op">&gt;</span>
@@ -2079,7 +2063,7 @@
 
         <span class="kw">let</span> <span class="ident">candidate</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">one_bound_for_assoc_type</span>(<span class="ident">candidates</span>,
                                                       <span class="kw-2">&amp;</span><span class="ident">trait_ref</span>.<span class="ident">to_string</span>(),
-                                                      <span class="kw-2">&amp;</span><span class="ident">binding</span>.<span class="ident">item_name</span>.<span class="ident">as_str</span>(),
+                                                      <span class="ident">binding</span>.<span class="ident">item_name</span>,
                                                       <span class="ident">binding</span>.<span class="ident">span</span>)<span class="question-mark">?</span>;
 
         <span class="prelude-val">Ok</span>(<span class="ident">candidate</span>.<span class="ident">map_bound</span>(<span class="op">|</span><span class="ident">trait_ref</span><span class="op">|</span> {
@@ -2277,7 +2261,7 @@
         <span class="kw">let</span> <span class="ident">param_name</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">ty_param_name</span>(<span class="ident">param_node_id</span>);
         <span class="self">self</span>.<span class="ident">one_bound_for_assoc_type</span>(<span class="ident">suitable_bounds</span>,
                                       <span class="kw-2">&amp;</span><span class="ident">param_name</span>.<span class="ident">as_str</span>(),
-                                      <span class="kw-2">&amp;</span><span class="ident">assoc_name</span>.<span class="ident">as_str</span>(),
+                                      <span class="ident">assoc_name</span>,
                                       <span class="ident">span</span>)
     }
 
@@ -2287,7 +2271,7 @@
     <span class="kw">fn</span> <span class="ident">one_bound_for_assoc_type</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                 <span class="kw-2">mut</span> <span class="ident">bounds</span>: <span class="ident">I</span>,
                                 <span class="ident">ty_param_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-                                <span class="ident">assoc_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+                                <span class="ident">assoc_name</span>: <span class="ident">ast</span>::<span class="ident">Name</span>,
                                 <span class="ident">span</span>: <span class="ident">Span</span>)
         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ErrorReported</span><span class="op">&gt;</span>
         <span class="kw">where</span> <span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span><span class="op">=</span><span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
@@ -2316,7 +2300,8 @@
 
             <span class="kw">for</span> <span class="ident">bound</span> <span class="kw">in</span> <span class="ident">bounds</span> {
                 <span class="kw">let</span> <span class="ident">bound_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">associated_items</span>(<span class="ident">bound</span>.<span class="ident">def_id</span>()).<span class="ident">find</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> {
-                    <span class="ident">item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span> <span class="op">&amp;&amp;</span> <span class="ident">item</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">assoc_name</span>
+                    <span class="ident">item</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">AssociatedKind</span>::<span class="ident">Type</span> <span class="op">&amp;&amp;</span>
+                    <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">hygienic_eq</span>(<span class="ident">assoc_name</span>, <span class="ident">item</span>.<span class="ident">name</span>, <span class="ident">bound</span>.<span class="ident">def_id</span>())
                 })
                 .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">span_if_local</span>(<span class="ident">item</span>.<span class="ident">def_id</span>));
 
@@ -2377,10 +2362,7 @@
                     .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">trait_defines_associated_type_named</span>(<span class="ident">r</span>.<span class="ident">def_id</span>(),
                                                                          <span class="ident">assoc_name</span>));
 
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">one_bound_for_assoc_type</span>(<span class="ident">candidates</span>,
-                                                    <span class="string">&quot;Self&quot;</span>,
-                                                    <span class="kw-2">&amp;</span><span class="ident">assoc_name</span>.<span class="ident">as_str</span>(),
-                                                    <span class="ident">span</span>) {
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">one_bound_for_assoc_type</span>(<span class="ident">candidates</span>, <span class="string">&quot;Self&quot;</span>, <span class="ident">assoc_name</span>, <span class="ident">span</span>) {
                     <span class="prelude-val">Ok</span>(<span class="ident">bound</span>) <span class="op">=&gt;</span> <span class="ident">bound</span>,
                     <span class="prelude-val">Err</span>(<span class="ident">ErrorReported</span>) <span class="op">=&gt;</span> <span class="kw">return</span> (<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">err</span>, <span class="ident">Def</span>::<span class="prelude-val">Err</span>),
                 }
@@ -2405,14 +2387,14 @@
         };
 
         <span class="kw">let</span> <span class="ident">trait_did</span> <span class="op">=</span> <span class="ident">bound</span>.<span class="number">0</span>.<span class="ident">def_id</span>;
-        <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">trait_did</span>).<span class="ident">find</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">assoc_name</span>)
+        <span class="kw">let</span> (<span class="ident">assoc_ident</span>, <span class="ident">def_scope</span>) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">adjust</span>(<span class="ident">assoc_name</span>, <span class="ident">trait_did</span>, <span class="ident">ref_id</span>);
+        <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">trait_did</span>).<span class="ident">find</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">i</span>.<span class="ident">name</span>.<span class="ident">to_ident</span>() <span class="op">==</span> <span class="ident">assoc_ident</span>)
                                                   .<span class="ident">expect</span>(<span class="string">&quot;missing associated type&quot;</span>);
 
         <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">projected_ty_from_poly_trait_ref</span>(<span class="ident">span</span>, <span class="ident">item</span>.<span class="ident">def_id</span>, <span class="ident">bound</span>);
         <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">normalize_ty</span>(<span class="ident">span</span>, <span class="ident">ty</span>);
 
         <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">Def</span>::<span class="ident">AssociatedTy</span>(<span class="ident">item</span>.<span class="ident">def_id</span>);
-        <span class="kw">let</span> <span class="ident">def_scope</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">adjust</span>(<span class="ident">assoc_name</span>, <span class="ident">item</span>.<span class="ident">container</span>.<span class="ident">id</span>(), <span class="ident">ref_id</span>).<span class="number">1</span>;
         <span class="kw">if</span> <span class="op">!</span><span class="ident">item</span>.<span class="ident">vis</span>.<span class="ident">is_accessible_from</span>(<span class="ident">def_scope</span>, <span class="ident">tcx</span>) {
             <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{} `{}` is private&quot;</span>, <span class="ident">def</span>.<span class="ident">kind_name</span>(), <span class="ident">assoc_name</span>);
             <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">span_err</span>(<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
@@ -2563,16 +2545,6 @@
                 }
             }
             <span class="ident">Def</span>::<span class="prelude-val">Err</span> <span class="op">=&gt;</span> {
-                <span class="kw">for</span> <span class="ident">segment</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">path</span>.<span class="ident">segments</span> {
-                    <span class="ident">segment</span>.<span class="ident">with_parameters</span>(<span class="op">|</span><span class="ident">parameters</span><span class="op">|</span> {
-                        <span class="kw">for</span> <span class="ident">ty</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">parameters</span>.<span class="ident">types</span> {
-                            <span class="self">self</span>.<span class="ident">ast_ty_to_ty</span>(<span class="ident">ty</span>);
-                        }
-                        <span class="kw">for</span> <span class="ident">binding</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">parameters</span>.<span class="ident">bindings</span> {
-                            <span class="self">self</span>.<span class="ident">ast_ty_to_ty</span>(<span class="kw-2">&amp;</span><span class="ident">binding</span>.<span class="ident">ty</span>);
-                        }
-                    });
-                }
                 <span class="self">self</span>.<span class="ident">set_tainted_by_errors</span>();
                 <span class="kw">return</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">types</span>.<span class="ident">err</span>;
             }
@@ -3053,7 +3025,7 @@
     <span class="doccomment">/// declaration like `self: SomeType` into either `self`,</span>
     <span class="doccomment">/// `&amp;self`, `&amp;mut self`, or `Box&lt;self&gt;`. We do this here</span>
     <span class="doccomment">/// by some simple pattern matching. A more precise check</span>
-    <span class="doccomment">/// is done later in `check_method_self_type()`.</span>
+    <span class="doccomment">/// is done later in `check_method_receiver()`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Examples:</span>
     <span class="doccomment">///</span>
@@ -3064,7 +3036,7 @@
     <span class="doccomment">///     fn method2(self: &amp;T); // ExplicitSelf::ByValue</span>
     <span class="doccomment">///     fn method3(self: Box&lt;&amp;T&gt;); // ExplicitSelf::ByBox</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">///     // Invalid cases will be caught later by `check_method_self_type`:</span>
+    <span class="doccomment">///     // Invalid cases will be caught later by `check_method_receiver`:</span>
     <span class="doccomment">///     fn method_err1(self: &amp;mut T); // ExplicitSelf::ByReference</span>
     <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>

@@ -3197,6 +3197,9 @@
 <span id="3152">3152</span>
 <span id="3153">3153</span>
 <span id="3154">3154</span>
+<span id="3155">3155</span>
+<span id="3156">3156</span>
+<span id="3157">3157</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3211,7 +3214,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">AnnNode</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">abi</span>::{<span class="self">self</span>, <span class="ident">Abi</span>};
-<span class="kw">use</span> <span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">BlockCheckMode</span>, <span class="ident">PatKind</span>, <span class="ident">RangeEnd</span>};
+<span class="kw">use</span> <span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">BlockCheckMode</span>, <span class="ident">PatKind</span>, <span class="ident">RangeEnd</span>, <span class="ident">RangeSyntax</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">SelfKind</span>, <span class="ident">RegionTyParamBound</span>, <span class="ident">TraitTyParamBound</span>, <span class="ident">TraitBoundModifier</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::<span class="ident">Attribute</span>;
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">parser</span>::{<span class="self">self</span>, <span class="ident">AssocOp</span>, <span class="ident">Fixity</span>};
@@ -3403,6 +3406,8 @@
         <span class="ident">token</span>::<span class="ident">Dot</span>                  <span class="op">=&gt;</span> <span class="string">&quot;.&quot;</span>.<span class="ident">to_string</span>(),
         <span class="ident">token</span>::<span class="ident">DotDot</span>               <span class="op">=&gt;</span> <span class="string">&quot;..&quot;</span>.<span class="ident">to_string</span>(),
         <span class="ident">token</span>::<span class="ident">DotDotDot</span>            <span class="op">=&gt;</span> <span class="string">&quot;...&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="ident">token</span>::<span class="ident">DotDotEq</span>             <span class="op">=&gt;</span> <span class="string">&quot;..=&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="ident">token</span>::<span class="ident">DotEq</span>                <span class="op">=&gt;</span> <span class="string">&quot;.=&quot;</span>.<span class="ident">to_string</span>(),
         <span class="ident">token</span>::<span class="ident">Comma</span>                <span class="op">=&gt;</span> <span class="string">&quot;,&quot;</span>.<span class="ident">to_string</span>(),
         <span class="ident">token</span>::<span class="ident">Semi</span>                 <span class="op">=&gt;</span> <span class="string">&quot;;&quot;</span>.<span class="ident">to_string</span>(),
         <span class="ident">token</span>::<span class="ident">Colon</span>                <span class="op">=&gt;</span> <span class="string">&quot;:&quot;</span>.<span class="ident">to_string</span>(),
@@ -5788,7 +5793,8 @@
                 <span class="self">self</span>.<span class="ident">print_expr</span>(<span class="ident">begin</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">s</span>.<span class="ident">space</span>()<span class="question-mark">?</span>;
                 <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">end_kind</span> {
-                    <span class="ident">RangeEnd</span>::<span class="ident">Included</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">s</span>.<span class="ident">word</span>(<span class="string">&quot;...&quot;</span>)<span class="question-mark">?</span>,
+                    <span class="ident">RangeEnd</span>::<span class="ident">Included</span>(<span class="ident">RangeSyntax</span>::<span class="ident">DotDotDot</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">s</span>.<span class="ident">word</span>(<span class="string">&quot;...&quot;</span>)<span class="question-mark">?</span>,
+                    <span class="ident">RangeEnd</span>::<span class="ident">Included</span>(<span class="ident">RangeSyntax</span>::<span class="ident">DotDotEq</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">s</span>.<span class="ident">word</span>(<span class="string">&quot;..=&quot;</span>)<span class="question-mark">?</span>,
                     <span class="ident">RangeEnd</span>::<span class="ident">Excluded</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">s</span>.<span class="ident">word</span>(<span class="string">&quot;..&quot;</span>)<span class="question-mark">?</span>,
                 }
                 <span class="self">self</span>.<span class="ident">print_expr</span>(<span class="ident">end</span>)<span class="question-mark">?</span>;
