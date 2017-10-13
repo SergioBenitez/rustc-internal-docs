@@ -948,6 +948,43 @@
 <span id="903">903</span>
 <span id="904">904</span>
 <span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1586,6 +1623,43 @@
             _ <span class="op">=&gt;</span> {}
         }
         <span class="ident">ret</span>
+    }
+
+    <span class="doccomment">/// Returns the number of codegen units that should be used for this</span>
+    <span class="doccomment">/// compilation</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">codegen_units</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">n</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">cli_forced_codegen_units</span> {
+            <span class="kw">return</span> <span class="ident">n</span>
+        }
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">n</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">default_codegen_units</span> {
+            <span class="kw">return</span> <span class="ident">n</span> <span class="kw">as</span> <span class="ident">usize</span>
+        }
+
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">optimize</span> {
+            <span class="comment">// If we&#39;re compiling at `-O0` then default to 16 codegen units.</span>
+            <span class="comment">// The number here shouldn&#39;t matter too too much as debug mode</span>
+            <span class="comment">// builds don&#39;t rely on performance at all, meaning that lost</span>
+            <span class="comment">// opportunities for inlining through multiple codegen units is</span>
+            <span class="comment">// a non-issue.</span>
+            <span class="comment">//</span>
+            <span class="comment">// Note that the high number here doesn&#39;t mean that we&#39;ll be</span>
+            <span class="comment">// spawning a large number of threads in parallel. The backend</span>
+            <span class="comment">// of rustc contains global rate limiting through the</span>
+            <span class="comment">// `jobserver` crate so we&#39;ll never overload the system with too</span>
+            <span class="comment">// much work, but rather we&#39;ll only be optimizing when we&#39;re</span>
+            <span class="comment">// otherwise cooperating with other instances of rustc.</span>
+            <span class="comment">//</span>
+            <span class="comment">// Rather the high number here means that we should be able to</span>
+            <span class="comment">// keep a lot of idle cpus busy. By ensuring that no codegen</span>
+            <span class="comment">// unit takes *too* long to build we&#39;ll be guaranteed that all</span>
+            <span class="comment">// cpus will finish pretty closely to one another and we should</span>
+            <span class="comment">// make relatively optimal use of system resources</span>
+            <span class="ident">config</span>::<span class="ident">OptLevel</span>::<span class="ident">No</span> <span class="op">=&gt;</span> <span class="number">16</span>,
+
+            <span class="comment">// All other optimization levels default use one codegen unit,</span>
+            <span class="comment">// the historical default in Rust for a Long Time.</span>
+            _ <span class="op">=&gt;</span> <span class="number">1</span>,
+        }
     }
 }
 

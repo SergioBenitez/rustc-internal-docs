@@ -232,6 +232,9 @@
 <span id="187">187</span>
 <span id="188">188</span>
 <span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -259,6 +262,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TypeFoldable</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">traits</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
+<span class="kw">use</span> <span class="ident">rustc_back</span>::<span class="ident">PanicStrategy</span>;
 <span class="kw">use</span> <span class="ident">type_of</span>;
 
 <span class="doccomment">/// Translates a reference to a fn/method item, monomorphizing and</span>
@@ -340,8 +344,10 @@
         <span class="comment">// *in Rust code* may unwind. Foreign items like `extern &quot;C&quot; {</span>
         <span class="comment">// fn foo(); }` are assumed not to unwind **unless** they have</span>
         <span class="comment">// a `#[unwind]` attribute.</span>
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">tcx</span>.<span class="ident">is_foreign_item</span>(<span class="ident">instance_def_id</span>) {
-            <span class="ident">attributes</span>::<span class="ident">unwind</span>(<span class="ident">llfn</span>, <span class="bool-val">true</span>);
+        <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">panic_strategy</span>() <span class="op">==</span> <span class="ident">PanicStrategy</span>::<span class="ident">Unwind</span> {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">tcx</span>.<span class="ident">is_foreign_item</span>(<span class="ident">instance_def_id</span>) {
+                <span class="ident">attributes</span>::<span class="ident">unwind</span>(<span class="ident">llfn</span>, <span class="bool-val">true</span>);
+            }
         }
 
         <span class="comment">// Apply an appropriate linkage/visibility value to our item that we</span>

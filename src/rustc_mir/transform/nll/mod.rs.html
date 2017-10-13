@@ -201,6 +201,26 @@
 <span id="156">156</span>
 <span id="157">157</span>
 <span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -223,6 +243,10 @@
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::{<span class="ident">IndexVec</span>, <span class="ident">Idx</span>};
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
+
+<span class="kw">use</span> <span class="ident">util</span> <span class="kw">as</span> <span class="ident">mir_util</span>;
+<span class="kw">use</span> <span class="self">self</span>::<span class="ident">mir_util</span>::<span class="ident">PassWhere</span>;
 
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
 <span class="kw">struct</span> <span class="ident">NLLVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;a</span> <span class="op">+</span> <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
@@ -338,7 +362,7 @@
 <span class="kw">impl</span> <span class="ident">MirPass</span> <span class="kw">for</span> <span class="ident">NLL</span> {
     <span class="kw">fn</span> <span class="ident">run_pass</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                           <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                          _: <span class="ident">MirSource</span>,
+                          <span class="ident">source</span>: <span class="ident">MirSource</span>,
                           <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">nll</span> {
             <span class="kw">return</span>;
@@ -349,15 +373,31 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">renumbered_mir</span> <span class="op">=</span> <span class="ident">mir</span>.<span class="ident">clone</span>();
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">visitor</span> <span class="op">=</span> <span class="ident">NLLVisitor</span>::<span class="ident">new</span>(<span class="ident">infcx</span>);
             <span class="ident">visitor</span>.<span class="ident">visit_mir</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">renumbered_mir</span>);
+            <span class="ident">mir_util</span>::<span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="prelude-val">None</span>, <span class="string">&quot;nll&quot;</span>, <span class="kw-2">&amp;</span><span class="number">0</span>, <span class="ident">source</span>, <span class="ident">mir</span>, <span class="op">|</span><span class="ident">pass_where</span>, <span class="ident">out</span><span class="op">|</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">PassWhere</span>::<span class="ident">BeforeCFG</span> <span class="op">=</span> <span class="ident">pass_where</span> {
+                    <span class="kw">for</span> (<span class="ident">index</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">visitor</span>.<span class="ident">regions</span>.<span class="ident">iter_enumerated</span>() {
+                        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">out</span>, <span class="string">&quot;// R{:03}: {:?}&quot;</span>, <span class="ident">index</span>.<span class="number">0</span>, <span class="ident">value</span>)<span class="question-mark">?</span>;
+                    }
+                }
+                <span class="prelude-val">Ok</span>(())
+            });
             <span class="kw">let</span> <span class="ident">_results</span> <span class="op">=</span> <span class="ident">visitor</span>.<span class="ident">into_results</span>();
         })
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">struct</span> <span class="ident">Region</span> {
     <span class="ident">points</span>: <span class="ident">FxHashSet</span><span class="op">&lt;</span><span class="ident">Location</span><span class="op">&gt;</span>,
 }
+
+<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Region</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">fmt</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">formatter</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">points</span>)
+    }
+}
+
+
 
 <span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">RegionIndex</span>);
 </pre>

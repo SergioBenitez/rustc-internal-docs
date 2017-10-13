@@ -261,6 +261,11 @@
 <span id="216">216</span>
 <span id="217">217</span>
 <span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -288,6 +293,7 @@
 <span class="kw">use</span> <span class="ident">llvm</span>::<span class="ident">AttributePlace</span>::<span class="ident">Function</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">Ty</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">config</span>::<span class="ident">Sanitizer</span>;
+<span class="kw">use</span> <span class="ident">rustc_back</span>::<span class="ident">PanicStrategy</span>;
 <span class="kw">use</span> <span class="ident">abi</span>::{<span class="ident">Abi</span>, <span class="ident">FnType</span>};
 <span class="kw">use</span> <span class="ident">attributes</span>;
 <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">CrateContext</span>;
@@ -360,6 +366,10 @@
             <span class="ident">llvm</span>::<span class="ident">Attribute</span>::<span class="ident">OptimizeForSize</span>.<span class="ident">apply_llfn</span>(<span class="ident">Function</span>, <span class="ident">llfn</span>);
         },
         _ <span class="op">=&gt;</span> {},
+    }
+
+    <span class="kw">if</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">sess</span>.<span class="ident">panic_strategy</span>() <span class="op">!=</span> <span class="ident">PanicStrategy</span>::<span class="ident">Unwind</span> {
+        <span class="ident">attributes</span>::<span class="ident">unwind</span>(<span class="ident">llfn</span>, <span class="bool-val">false</span>);
     }
 
     <span class="ident">llfn</span>

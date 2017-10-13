@@ -2704,48 +2704,6 @@
 <span id="2659">2659</span>
 <span id="2660">2660</span>
 <span id="2661">2661</span>
-<span id="2662">2662</span>
-<span id="2663">2663</span>
-<span id="2664">2664</span>
-<span id="2665">2665</span>
-<span id="2666">2666</span>
-<span id="2667">2667</span>
-<span id="2668">2668</span>
-<span id="2669">2669</span>
-<span id="2670">2670</span>
-<span id="2671">2671</span>
-<span id="2672">2672</span>
-<span id="2673">2673</span>
-<span id="2674">2674</span>
-<span id="2675">2675</span>
-<span id="2676">2676</span>
-<span id="2677">2677</span>
-<span id="2678">2678</span>
-<span id="2679">2679</span>
-<span id="2680">2680</span>
-<span id="2681">2681</span>
-<span id="2682">2682</span>
-<span id="2683">2683</span>
-<span id="2684">2684</span>
-<span id="2685">2685</span>
-<span id="2686">2686</span>
-<span id="2687">2687</span>
-<span id="2688">2688</span>
-<span id="2689">2689</span>
-<span id="2690">2690</span>
-<span id="2691">2691</span>
-<span id="2692">2692</span>
-<span id="2693">2693</span>
-<span id="2694">2694</span>
-<span id="2695">2695</span>
-<span id="2696">2696</span>
-<span id="2697">2697</span>
-<span id="2698">2698</span>
-<span id="2699">2699</span>
-<span id="2700">2700</span>
-<span id="2701">2701</span>
-<span id="2702">2702</span>
-<span id="2703">2703</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3101,7 +3059,7 @@
         <span class="ident">actually_rustdoc</span>: <span class="ident">bool</span> [<span class="ident">TRACKED</span>],
 
         <span class="comment">// Number of object files/codegen units to produce on the backend</span>
-        <span class="ident">codegen_units</span>: <span class="ident">usize</span> [<span class="ident">UNTRACKED</span>],
+        <span class="ident">cli_forced_codegen_units</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> [<span class="ident">UNTRACKED</span>],
     }
 );
 
@@ -3254,7 +3212,7 @@
         <span class="ident">unstable_features</span>: <span class="ident">UnstableFeatures</span>::<span class="ident">Disallow</span>,
         <span class="ident">debug_assertions</span>: <span class="bool-val">true</span>,
         <span class="ident">actually_rustdoc</span>: <span class="bool-val">false</span>,
-        <span class="ident">codegen_units</span>: <span class="number">1</span>,
+        <span class="ident">cli_forced_codegen_units</span>: <span class="prelude-val">None</span>,
     }
 }
 
@@ -4460,48 +4418,6 @@
 
     <span class="kw">let</span> <span class="ident">incremental</span> <span class="op">=</span> <span class="ident">debugging_opts</span>.<span class="ident">incremental</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">m</span>));
 
-    <span class="kw">let</span> <span class="ident">codegen_units</span> <span class="op">=</span> <span class="ident">codegen_units</span>.<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
-        <span class="kw">match</span> <span class="ident">opt_level</span> {
-            <span class="comment">// If we&#39;re compiling at `-O0` then default to 16 codegen units.</span>
-            <span class="comment">// The number here shouldn&#39;t matter too too much as debug mode</span>
-            <span class="comment">// builds don&#39;t rely on performance at all, meaning that lost</span>
-            <span class="comment">// opportunities for inlining through multiple codegen units is</span>
-            <span class="comment">// a non-issue.</span>
-            <span class="comment">//</span>
-            <span class="comment">// Note that the high number here doesn&#39;t mean that we&#39;ll be</span>
-            <span class="comment">// spawning a large number of threads in parallel. The backend</span>
-            <span class="comment">// of rustc contains global rate limiting through the</span>
-            <span class="comment">// `jobserver` crate so we&#39;ll never overload the system with too</span>
-            <span class="comment">// much work, but rather we&#39;ll only be optimizing when we&#39;re</span>
-            <span class="comment">// otherwise cooperating with other instances of rustc.</span>
-            <span class="comment">//</span>
-            <span class="comment">// Rather the high number here means that we should be able to</span>
-            <span class="comment">// keep a lot of idle cpus busy. By ensuring that no codegen</span>
-            <span class="comment">// unit takes *too* long to build we&#39;ll be guaranteed that all</span>
-            <span class="comment">// cpus will finish pretty closely to one another and we should</span>
-            <span class="comment">// make relatively optimal use of system resources</span>
-            <span class="comment">//</span>
-            <span class="comment">// Another note worth mentioning here, however, is that this number</span>
-            <span class="comment">// isn&#39;t *too* high. When codegen units are increased that means we</span>
-            <span class="comment">// currently have to codegen `#[inline]` functions into each codegen</span>
-            <span class="comment">// unit, which means the more codegen units we&#39;re using the more we</span>
-            <span class="comment">// may be generating. In other words, increasing codegen units may</span>
-            <span class="comment">// increase the overall work the compiler does. If we don&#39;t have</span>
-            <span class="comment">// enough cores to make up for this loss then increasing the number</span>
-            <span class="comment">// of codegen units could become an overall loss!</span>
-            <span class="comment">//</span>
-            <span class="comment">// As a result we choose a hopefully conservative value 16, which</span>
-            <span class="comment">// should be more than the number of cpus of most hardware compiling</span>
-            <span class="comment">// Rust but also not too much for 2-4 core machines to have too much</span>
-            <span class="comment">// loss of compile time.</span>
-            <span class="ident">OptLevel</span>::<span class="ident">No</span> <span class="op">=&gt;</span> <span class="number">16</span>,
-
-            <span class="comment">// All other optimization levels default use one codegen unit,</span>
-            <span class="comment">// the historical default in Rust for a Long Time.</span>
-            _ <span class="op">=&gt;</span> <span class="number">1</span>,
-        }
-    });
-
     (<span class="ident">Options</span> {
         <span class="ident">crate_types</span>,
         <span class="ident">optimize</span>: <span class="ident">opt_level</span>,
@@ -4526,7 +4442,7 @@
         <span class="ident">unstable_features</span>: <span class="ident">UnstableFeatures</span>::<span class="ident">from_environment</span>(),
         <span class="ident">debug_assertions</span>,
         <span class="ident">actually_rustdoc</span>: <span class="bool-val">false</span>,
-        <span class="ident">codegen_units</span>,
+        <span class="ident">cli_forced_codegen_units</span>: <span class="ident">codegen_units</span>,
     },
     <span class="ident">cfg</span>)
 }

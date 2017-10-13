@@ -2786,7 +2786,7 @@
     <span class="kw">let</span> <span class="ident">strategy</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental</span>.<span class="ident">is_some</span>() {
         <span class="ident">PartitioningStrategy</span>::<span class="ident">PerModule</span>
     } <span class="kw">else</span> {
-        <span class="ident">PartitioningStrategy</span>::<span class="ident">FixedUnitCount</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">codegen_units</span>)
+        <span class="ident">PartitioningStrategy</span>::<span class="ident">FixedUnitCount</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">codegen_units</span>())
     };
 
     <span class="kw">let</span> <span class="ident">codegen_units</span> <span class="op">=</span> <span class="ident">time</span>(<span class="ident">time_passes</span>, <span class="string">&quot;codegen unit partitioning&quot;</span>, <span class="op">||</span> {

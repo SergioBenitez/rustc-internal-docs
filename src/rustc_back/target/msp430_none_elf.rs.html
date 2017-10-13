@@ -97,6 +97,11 @@
 <span id="52">52</span>
 <span id="53">53</span>
 <span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -147,6 +152,11 @@
             <span class="comment">// Similarly, one almost always never wants to use relocatable</span>
             <span class="comment">// code because of the extra costs it involves.</span>
             <span class="ident">relocation_model</span>: <span class="string">&quot;static&quot;</span>.<span class="ident">to_string</span>(),
+
+            <span class="comment">// Right now we invoke an external assembler and this isn&#39;t</span>
+            <span class="comment">// compatible with multiple codegen units, and plus we probably</span>
+            <span class="comment">// don&#39;t want to invoke that many gcc instances.</span>
+            <span class="ident">default_codegen_units</span>: <span class="prelude-val">Some</span>(<span class="number">1</span>),
 
             .. <span class="ident">Default</span>::<span class="ident">default</span>( )
         }
