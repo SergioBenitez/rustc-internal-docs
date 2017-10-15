@@ -904,54 +904,6 @@
 <span id="859">859</span>
 <span id="860">860</span>
 <span id="861">861</span>
-<span id="862">862</span>
-<span id="863">863</span>
-<span id="864">864</span>
-<span id="865">865</span>
-<span id="866">866</span>
-<span id="867">867</span>
-<span id="868">868</span>
-<span id="869">869</span>
-<span id="870">870</span>
-<span id="871">871</span>
-<span id="872">872</span>
-<span id="873">873</span>
-<span id="874">874</span>
-<span id="875">875</span>
-<span id="876">876</span>
-<span id="877">877</span>
-<span id="878">878</span>
-<span id="879">879</span>
-<span id="880">880</span>
-<span id="881">881</span>
-<span id="882">882</span>
-<span id="883">883</span>
-<span id="884">884</span>
-<span id="885">885</span>
-<span id="886">886</span>
-<span id="887">887</span>
-<span id="888">888</span>
-<span id="889">889</span>
-<span id="890">890</span>
-<span id="891">891</span>
-<span id="892">892</span>
-<span id="893">893</span>
-<span id="894">894</span>
-<span id="895">895</span>
-<span id="896">896</span>
-<span id="897">897</span>
-<span id="898">898</span>
-<span id="899">899</span>
-<span id="900">900</span>
-<span id="901">901</span>
-<span id="902">902</span>
-<span id="903">903</span>
-<span id="904">904</span>
-<span id="905">905</span>
-<span id="906">906</span>
-<span id="907">907</span>
-<span id="908">908</span>
-<span id="909">909</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1299,6 +1251,52 @@
                 }
             }
 
+            <span class="doccomment">/// Ensure that either this query has all green inputs or been executed.</span>
+            <span class="doccomment">/// Executing query::ensure(D) is considered a read of the dep-node D.</span>
+            <span class="doccomment">///</span>
+            <span class="doccomment">/// This function is particularly useful when executing passes for their</span>
+            <span class="doccomment">/// side-effects -- e.g., in order to report errors for erroneous programs.</span>
+            <span class="doccomment">///</span>
+            <span class="doccomment">/// Note: The optimization is only available during incr. comp.</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ensure</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="lifetime">&#39;lcx</span><span class="op">&gt;</span>, <span class="ident">key</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>) <span class="op">-&gt;</span> () {
+                <span class="kw">let</span> <span class="ident">dep_node</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">to_dep_node</span>(<span class="ident">tcx</span>, <span class="kw-2">&amp;</span><span class="ident">key</span>);
+
+                <span class="comment">// Ensuring an &quot;input&quot; or anonymous query makes no sense</span>
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">dep_node</span>.<span class="ident">kind</span>.<span class="ident">is_anon</span>());
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">dep_node</span>.<span class="ident">kind</span>.<span class="ident">is_input</span>());
+                <span class="kw">use</span> <span class="ident">dep_graph</span>::<span class="ident">DepNodeColor</span>;
+                <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">node_color</span>(<span class="kw-2">&amp;</span><span class="ident">dep_node</span>) {
+                    <span class="prelude-val">Some</span>(<span class="ident">DepNodeColor</span>::<span class="ident">Green</span>(<span class="ident">dep_node_index</span>)) <span class="op">=&gt;</span> {
+                        <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">read_index</span>(<span class="ident">dep_node_index</span>);
+                    }
+                    <span class="prelude-val">Some</span>(<span class="ident">DepNodeColor</span>::<span class="ident">Red</span>) <span class="op">=&gt;</span> {
+                        <span class="comment">// A DepNodeColor::Red DepNode means that this query was executed</span>
+                        <span class="comment">// before. We can not call `dep_graph.read()` here as we don&#39;t have</span>
+                        <span class="comment">// the DepNodeIndex. Instead, We call the query again to issue the</span>
+                        <span class="comment">// appropriate `dep_graph.read()` call. The performance cost this</span>
+                        <span class="comment">// introduces should be negligible as we&#39;ll immediately hit the</span>
+                        <span class="comment">// in-memory cache.</span>
+                        <span class="kw">let</span> _ <span class="op">=</span> <span class="ident">tcx</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="ident">key</span>);
+                    }
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                        <span class="comment">// Huh</span>
+                        <span class="kw">if</span> <span class="op">!</span><span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">is_fully_enabled</span>() {
+                            <span class="kw">let</span> _ <span class="op">=</span> <span class="ident">tcx</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="ident">key</span>);
+                            <span class="kw">return</span>;
+                        }
+                        <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">try_mark_green</span>(<span class="ident">tcx</span>, <span class="kw-2">&amp;</span><span class="ident">dep_node</span>) {
+                            <span class="prelude-val">Some</span>(<span class="ident">dep_node_index</span>) <span class="op">=&gt;</span> {
+                                <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">is_green</span>(<span class="ident">dep_node_index</span>));
+                                <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">read_index</span>(<span class="ident">dep_node_index</span>);
+                            }
+                            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                                <span class="kw">let</span> _ <span class="op">=</span> <span class="ident">tcx</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="ident">key</span>);
+                            }
+                        }
+                    }
+                }
+            }
+
             <span class="kw">fn</span> <span class="ident">compute_result</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="lifetime">&#39;lcx</span><span class="op">&gt;</span>, <span class="ident">key</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span> {
                 <span class="kw">let</span> <span class="ident">provider</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">maps</span>.<span class="ident">providers</span>[<span class="ident">key</span>.<span class="ident">map_crate</span>()].<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>;
                 <span class="ident">provider</span>(<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(), <span class="ident">key</span>)
@@ -1423,8 +1421,7 @@
 
         <span class="macro">define_provider_struct</span><span class="macro">!</span> {
             <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">input</span>: ($(([$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">modifiers</span>)<span class="kw-2">*</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span>]))<span class="kw-2">*</span>),
-            <span class="ident">output</span>: ()
+            <span class="ident">input</span>: ($(([$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">modifiers</span>)<span class="kw-2">*</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span>]))<span class="kw-2">*</span>)
         }
 
         <span class="kw">impl</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> <span class="ident">Copy</span> <span class="kw">for</span> <span class="ident">Providers</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> {}
@@ -1435,78 +1432,19 @@
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">define_map_struct</span> {
-    <span class="comment">// Initial state</span>
     (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> {
-        <span class="macro">define_map_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>,
-            <span class="ident">output</span>: ()
-        }
-    };
-
-    <span class="comment">// Final output</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">input</span>: (),
-     <span class="ident">output</span>: ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> {
+     <span class="ident">input</span>: ($(([$(<span class="ident">modifiers</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>] [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>]))<span class="kw-2">*</span>)) <span class="op">=&gt;</span> {
         <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Maps</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> {
             <span class="ident">providers</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">CrateNum</span>, <span class="ident">Providers</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span>,
             <span class="ident">query_stack</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">Query</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span>)<span class="op">&gt;&gt;</span>,
-            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>)<span class="op">*</span>
-        }
-    };
-
-    <span class="comment">// Field recognized and ready to shift into the output</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">ready</span>: ([$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>] [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>]),
-     <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>,
-     <span class="ident">output</span>: ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> {
-        <span class="macro">define_map_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>,
-            <span class="ident">output</span>: ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>)<span class="op">*</span>
-                     $(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>]</span>)<span class="op">*</span> $(<span class="macro-nonterminal">$</span><span class="kw">pub</span>)<span class="op">*</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">QueryMap</span><span class="op">&lt;</span><span class="ident">queries</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,)
-        }
-    };
-
-    <span class="comment">// No modifiers left? This is a private item.</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">input</span>: (([] <span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span>:<span class="ident">tt</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">tt</span>) $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>),
-     <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> {
-        <span class="macro">define_map_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">ready</span>: ([] <span class="macro-nonterminal">$</span><span class="macro-nonterminal">attrs</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>),
-            <span class="ident">input</span>: ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>)<span class="kw-2">*</span>),
-            <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>
-        }
-    };
-
-    <span class="comment">// Skip other modifiers</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">input</span>: (([<span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_modifier</span>:<span class="ident">tt</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">modifiers</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>] $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fields</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>),
-     <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> {
-        <span class="macro">define_map_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">input</span>: (([$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">modifiers</span>)<span class="kw-2">*</span>] $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fields</span>)<span class="kw-2">*</span>) $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>)<span class="kw-2">*</span>),
-            <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>
+            $($(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>]</span>)<span class="op">*</span>  <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">QueryMap</span><span class="op">&lt;</span><span class="ident">queries</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,)<span class="op">*</span>
         }
     };
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">define_provider_struct</span> {
-    <span class="comment">// Initial state:</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>, <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> {
-        <span class="macro">define_provider_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>,
-            <span class="ident">output</span>: ()
-        }
-    };
-
-    <span class="comment">// Final state:</span>
     (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">input</span>: (),
-     <span class="ident">output</span>: ($(([<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>:<span class="ident">ty</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">R</span>:<span class="ident">ty</span>]))<span class="kw-2">*</span>)) <span class="op">=&gt;</span> {
+     <span class="ident">input</span>: ($(([$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">modifiers</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>:<span class="ident">ty</span>] [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">R</span>:<span class="ident">ty</span>]))<span class="kw-2">*</span>)) <span class="op">=&gt;</span> {
         <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Providers</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> {
             $(<span class="kw">pub</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="kw">for</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">fn</span>(<span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">R</span>,)<span class="op">*</span>
         }
@@ -1519,41 +1457,6 @@
                 })<span class="op">*</span>
                 <span class="ident">Providers</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>),<span class="op">*</span> }
             }
-        }
-    };
-
-    <span class="comment">// Something ready to shift:</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">ready</span>: (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">tt</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>:<span class="ident">tt</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span>:<span class="ident">tt</span>),
-     <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>,
-     <span class="ident">output</span>: ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> {
-        <span class="macro">define_provider_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">input</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>,
-            <span class="ident">output</span>: ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>)<span class="op">*</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span>))
-        }
-    };
-
-    <span class="comment">// Regular queries produce a `V` only.</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">input</span>: (([] <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">tt</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span>:<span class="ident">tt</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span>:<span class="ident">tt</span>) $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>),
-     <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> {
-        <span class="macro">define_provider_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">ready</span>: (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">K</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span>),
-            <span class="ident">input</span>: ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>)<span class="kw-2">*</span>),
-            <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>
-        }
-    };
-
-    <span class="comment">// Skip modifiers.</span>
-    (<span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span>,
-     <span class="ident">input</span>: (([<span class="macro-nonterminal">$</span><span class="macro-nonterminal">other_modifier</span>:<span class="ident">tt</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">modifiers</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>] $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fields</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>),
-     <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> {
-        <span class="macro">define_provider_struct</span><span class="macro">!</span> {
-            <span class="ident">tcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>,
-            <span class="ident">input</span>: (([$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">modifiers</span>)<span class="kw-2">*</span>] $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">fields</span>)<span class="kw-2">*</span>) $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">input</span>)<span class="kw-2">*</span>),
-            <span class="ident">output</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">output</span>
         }
     };
 }
@@ -1704,6 +1607,7 @@
         <span class="ident">DepKind</span>::<span class="ident">CodegenUnit</span> <span class="op">|</span>
         <span class="ident">DepKind</span>::<span class="ident">CompileCodegenUnit</span> <span class="op">|</span>
         <span class="ident">DepKind</span>::<span class="ident">FulfillObligation</span> <span class="op">|</span>
+        <span class="ident">DepKind</span>::<span class="ident">VtableMethods</span> <span class="op">|</span>
 
         <span class="comment">// These are just odd</span>
         <span class="ident">DepKind</span>::<span class="ident">Null</span> <span class="op">|</span>
@@ -1880,9 +1784,9 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>

@@ -1759,6 +1759,15 @@
 <span id="1714">1714</span>
 <span id="1715">1715</span>
 <span id="1716">1716</span>
+<span id="1717">1717</span>
+<span id="1718">1718</span>
+<span id="1719">1719</span>
+<span id="1720">1720</span>
+<span id="1721">1721</span>
+<span id="1722">1722</span>
+<span id="1723">1723</span>
+<span id="1724">1724</span>
+<span id="1725">1725</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2464,6 +2473,15 @@
 }
 
 <span class="doccomment">/// The output of a finished process.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This is returned in a Result by either the [`output`] method of a</span>
+<span class="doccomment">/// [`Command`], or the [`wait_with_output`] method of a [`Child`]</span>
+<span class="doccomment">/// process.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [`Command`]: struct.Command.html</span>
+<span class="doccomment">/// [`Child`]: struct.Child.html</span>
+<span class="doccomment">/// [`output`]: struct.Command.html#method.output</span>
+<span class="doccomment">/// [`wait_with_output`]: struct.Child.html#method.wait_with_output</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>)]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;process&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Output</span> {
@@ -3494,9 +3512,9 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>

@@ -48,12 +48,14 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/mem.rs.html#484-486' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/mem.rs.html#486-488' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn needs_drop&lt;T&gt;() -&gt; bool</pre><div class='docblock'><p>Returns whether dropping values of type <code>T</code> matters.</p>
 
-<p>This is purely an optimization hint, and may be implemented conservatively.
-For instance, always returning <code>true</code> would be a valid implementation of
-this function.</p>
+<p>This is purely an optimization hint, and may be implemented conservatively:
+it may return <code>true</code> for types that don&#39;t actually need to be dropped.
+As such always returning <code>true</code> would be a valid implementation of
+this function. However if this function actually returns <code>false</code>, then you
+can be certain dropping <code>T</code> has no side effect.</p>
 
 <p>Low level implementations of things like collections, which need to manually
 drop their data, should use this function to avoid unnecessarily
@@ -110,9 +112,9 @@ values one at a time and should use this API.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>

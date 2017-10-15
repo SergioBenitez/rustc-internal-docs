@@ -6405,6 +6405,32 @@
 <span id="6360">6360</span>
 <span id="6361">6361</span>
 <span id="6362">6362</span>
+<span id="6363">6363</span>
+<span id="6364">6364</span>
+<span id="6365">6365</span>
+<span id="6366">6366</span>
+<span id="6367">6367</span>
+<span id="6368">6368</span>
+<span id="6369">6369</span>
+<span id="6370">6370</span>
+<span id="6371">6371</span>
+<span id="6372">6372</span>
+<span id="6373">6373</span>
+<span id="6374">6374</span>
+<span id="6375">6375</span>
+<span id="6376">6376</span>
+<span id="6377">6377</span>
+<span id="6378">6378</span>
+<span id="6379">6379</span>
+<span id="6380">6380</span>
+<span id="6381">6381</span>
+<span id="6382">6382</span>
+<span id="6383">6383</span>
+<span id="6384">6384</span>
+<span id="6385">6385</span>
+<span id="6386">6386</span>
+<span id="6387">6387</span>
+<span id="6388">6388</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -6441,7 +6467,7 @@
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">VariantData</span>, <span class="ident">StructField</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::<span class="ident">StrStyle</span>;
 <span class="kw">use</span> <span class="ident">ast</span>::<span class="ident">SelfKind</span>;
-<span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">TraitItem</span>, <span class="ident">TraitRef</span>};
+<span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">TraitItem</span>, <span class="ident">TraitRef</span>, <span class="ident">TraitObjectSyntax</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Ty</span>, <span class="ident">TyKind</span>, <span class="ident">TypeBinding</span>, <span class="ident">TyParam</span>, <span class="ident">TyParamBounds</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">ViewPath</span>, <span class="ident">ViewPathGlob</span>, <span class="ident">ViewPathList</span>, <span class="ident">ViewPathSimple</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Visibility</span>, <span class="ident">WhereClause</span>};
@@ -6770,6 +6796,13 @@
 
 <span class="kw">fn</span> <span class="ident">is_ident_or_underscore</span>(<span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="ident">t</span>.<span class="ident">is_ident</span>() <span class="op">||</span> <span class="kw-2">*</span><span class="ident">t</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">Underscore</span>
+}
+
+<span class="comment">// Returns true if `IDENT t` can start a type - `IDENT::a::b`, `IDENT&lt;u8, u8&gt;`,</span>
+<span class="comment">// `IDENT&lt;&lt;u8 as Trait&gt;::AssocTy&gt;`, `IDENT(u8, u8) -&gt; u8`.</span>
+<span class="kw">fn</span> <span class="ident">can_continue_type_after_ident</span>(<span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Token</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="ident">t</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">ModSep</span> <span class="op">||</span> <span class="ident">t</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Lt</span> <span class="op">||</span>
+    <span class="ident">t</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Shl</span>) <span class="op">||</span> <span class="ident">t</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>)
 }
 
 <span class="doccomment">/// Information about the path to a module.</span>
@@ -7836,7 +7869,7 @@
                     <span class="ident">TyKind</span>::<span class="ident">Path</span>(<span class="prelude-val">None</span>, <span class="kw-2">ref</span> <span class="ident">path</span>) <span class="kw">if</span> <span class="ident">maybe_bounds</span> <span class="op">=&gt;</span> {
                         <span class="self">self</span>.<span class="ident">parse_remaining_bounds</span>(<span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="ident">path</span>.<span class="ident">clone</span>(), <span class="ident">lo</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>
                     }
-                    <span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>)
+                    <span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="ident">TraitObjectSyntax</span>::<span class="prelude-val">None</span>)
                             <span class="kw">if</span> <span class="ident">maybe_bounds</span> <span class="op">&amp;&amp;</span> <span class="ident">bounds</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">trailing_plus</span> <span class="op">=&gt;</span> {
                         <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">bounds</span>[<span class="number">0</span>] {
                             <span class="ident">TraitTyParamBound</span>(<span class="kw-2">ref</span> <span class="ident">pt</span>, ..) <span class="op">=&gt;</span> <span class="ident">pt</span>.<span class="ident">trait_ref</span>.<span class="ident">path</span>.<span class="ident">clone</span>(),
@@ -7880,6 +7913,35 @@
         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Underscore</span>) {
             <span class="comment">// A type to be inferred `_`</span>
             <span class="ident">TyKind</span>::<span class="ident">Infer</span>
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token_is_bare_fn_keyword</span>() {
+            <span class="comment">// Function pointer type</span>
+            <span class="self">self</span>.<span class="ident">parse_ty_bare_fn</span>(<span class="ident">Vec</span>::<span class="ident">new</span>())<span class="question-mark">?</span>
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check_keyword</span>(<span class="ident">keywords</span>::<span class="ident">For</span>) {
+            <span class="comment">// Function pointer type or bound list (trait object type) starting with a poly-trait.</span>
+            <span class="comment">//   `for&lt;&#39;lt&gt; [unsafe] [extern &quot;ABI&quot;] fn (&amp;&#39;lt S) -&gt; T`</span>
+            <span class="comment">//   `for&lt;&#39;lt&gt; Trait1&lt;&#39;lt&gt; + Trait2 + &#39;a`</span>
+            <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
+            <span class="kw">let</span> <span class="ident">lifetime_defs</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_late_bound_lifetime_defs</span>()<span class="question-mark">?</span>;
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token_is_bare_fn_keyword</span>() {
+                <span class="self">self</span>.<span class="ident">parse_ty_bare_fn</span>(<span class="ident">lifetime_defs</span>)<span class="question-mark">?</span>
+            } <span class="kw">else</span> {
+                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_path</span>(<span class="ident">PathStyle</span>::<span class="ident">Type</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">parse_plus</span> <span class="op">=</span> <span class="ident">allow_plus</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Plus</span>));
+                <span class="self">self</span>.<span class="ident">parse_remaining_bounds</span>(<span class="ident">lifetime_defs</span>, <span class="ident">path</span>, <span class="ident">lo</span>, <span class="ident">parse_plus</span>)<span class="question-mark">?</span>
+            }
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Impl</span>) {
+            <span class="comment">// FIXME: figure out priority of `+` in `impl Trait1 + Trait2` (#34511).</span>
+            <span class="ident">TyKind</span>::<span class="ident">ImplTrait</span>(<span class="self">self</span>.<span class="ident">parse_ty_param_bounds</span>()<span class="question-mark">?</span>)
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Dyn</span>) <span class="op">&amp;&amp;</span>
+                  <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">can_begin_bound</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">can_continue_type_after_ident</span>(<span class="ident">t</span>)) {
+            <span class="comment">// FIXME: figure out priority of `+` in `dyn Trait1 + Trait2` (#34511).</span>
+            <span class="self">self</span>.<span class="ident">bump</span>(); <span class="comment">// `dyn`</span>
+            <span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="self">self</span>.<span class="ident">parse_ty_param_bounds</span>()<span class="question-mark">?</span>, <span class="ident">TraitObjectSyntax</span>::<span class="ident">Dyn</span>)
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Question</span>) <span class="op">||</span>
+                  <span class="self">self</span>.<span class="ident">check_lifetime</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Plus</span>)) {
+            <span class="comment">// Bound list (trait object type)</span>
+            <span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="self">self</span>.<span class="ident">parse_ty_param_bounds_common</span>(<span class="ident">allow_plus</span>)<span class="question-mark">?</span>,
+                                <span class="ident">TraitObjectSyntax</span>::<span class="prelude-val">None</span>)
         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_lt</span>() {
             <span class="comment">// Qualified path</span>
             <span class="kw">let</span> (<span class="ident">qself</span>, <span class="ident">path</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_qpath</span>(<span class="ident">PathStyle</span>::<span class="ident">Type</span>)<span class="question-mark">?</span>;
@@ -7901,29 +7963,6 @@
                     <span class="ident">TyKind</span>::<span class="ident">Path</span>(<span class="prelude-val">None</span>, <span class="ident">path</span>)
                 }
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token_is_bare_fn_keyword</span>() {
-            <span class="comment">// Function pointer type</span>
-            <span class="self">self</span>.<span class="ident">parse_ty_bare_fn</span>(<span class="ident">Vec</span>::<span class="ident">new</span>())<span class="question-mark">?</span>
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check_keyword</span>(<span class="ident">keywords</span>::<span class="ident">For</span>) {
-            <span class="comment">// Function pointer type or bound list (trait object type) starting with a poly-trait.</span>
-            <span class="comment">//   `for&lt;&#39;lt&gt; [unsafe] [extern &quot;ABI&quot;] fn (&amp;&#39;lt S) -&gt; T`</span>
-            <span class="comment">//   `for&lt;&#39;lt&gt; Trait1&lt;&#39;lt&gt; + Trait2 + &#39;a`</span>
-            <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
-            <span class="kw">let</span> <span class="ident">lifetime_defs</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_late_bound_lifetime_defs</span>()<span class="question-mark">?</span>;
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token_is_bare_fn_keyword</span>() {
-                <span class="self">self</span>.<span class="ident">parse_ty_bare_fn</span>(<span class="ident">lifetime_defs</span>)<span class="question-mark">?</span>
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_path</span>(<span class="ident">PathStyle</span>::<span class="ident">Type</span>)<span class="question-mark">?</span>;
-                <span class="kw">let</span> <span class="ident">parse_plus</span> <span class="op">=</span> <span class="ident">allow_plus</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Plus</span>));
-                <span class="self">self</span>.<span class="ident">parse_remaining_bounds</span>(<span class="ident">lifetime_defs</span>, <span class="ident">path</span>, <span class="ident">lo</span>, <span class="ident">parse_plus</span>)<span class="question-mark">?</span>
-            }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Impl</span>) {
-            <span class="comment">// FIXME: figure out priority of `+` in `impl Trait1 + Trait2` (#34511).</span>
-            <span class="ident">TyKind</span>::<span class="ident">ImplTrait</span>(<span class="self">self</span>.<span class="ident">parse_ty_param_bounds</span>()<span class="question-mark">?</span>)
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Question</span>) <span class="op">||</span>
-                  <span class="self">self</span>.<span class="ident">check_lifetime</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Plus</span>)){
-            <span class="comment">// Bound list (trait object type)</span>
-            <span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="self">self</span>.<span class="ident">parse_ty_param_bounds_common</span>(<span class="ident">allow_plus</span>)<span class="question-mark">?</span>)
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;expected type, found {}&quot;</span>, <span class="self">self</span>.<span class="ident">this_token_descr</span>());
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="self">self</span>.<span class="ident">fatal</span>(<span class="kw-2">&amp;</span><span class="ident">msg</span>));
@@ -7946,7 +7985,7 @@
             <span class="self">self</span>.<span class="ident">bump</span>(); <span class="comment">// `+`</span>
             <span class="ident">bounds</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">parse_ty_param_bounds</span>()<span class="question-mark">?</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="ident">bounds</span>))
+        <span class="prelude-val">Ok</span>(<span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="ident">bounds</span>, <span class="ident">TraitObjectSyntax</span>::<span class="prelude-val">None</span>))
     }
 
     <span class="kw">fn</span> <span class="ident">maybe_recover_from_bad_type_plus</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">allow_plus</span>: <span class="ident">bool</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">Ty</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, ()<span class="op">&gt;</span> {
@@ -8722,6 +8761,7 @@
 
         <span class="kw">while</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">!=</span> <span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>) {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">DotDot</span>) {
+                <span class="kw">let</span> <span class="ident">exp_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">parse_expr</span>() {
                     <span class="prelude-val">Ok</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
                         <span class="ident">base</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">e</span>);
@@ -8730,6 +8770,16 @@
                         <span class="ident">e</span>.<span class="ident">emit</span>();
                         <span class="self">self</span>.<span class="ident">recover_stmt</span>();
                     }
+                }
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">Comma</span> {
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">span_diagnostic</span>.<span class="ident">mut_span_err</span>(
+                        <span class="ident">exp_span</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>),
+                        <span class="string">&quot;cannot use a comma after the base struct&quot;</span>,
+                    );
+                    <span class="ident">err</span>.<span class="ident">span_suggestion_short</span>(<span class="self">self</span>.<span class="ident">span</span>, <span class="string">&quot;remove this comma&quot;</span>, <span class="string">&quot;&quot;</span>.<span class="ident">to_owned</span>());
+                    <span class="ident">err</span>.<span class="ident">note</span>(<span class="string">&quot;the base struct must always be the last field&quot;</span>);
+                    <span class="ident">err</span>.<span class="ident">emit</span>();
+                    <span class="self">self</span>.<span class="ident">recover_stmt</span>();
                 }
                 <span class="kw">break</span>;
             }
@@ -9368,6 +9418,7 @@
                 {                                  <span class="comment">//     Foo&lt;Bar&lt;Baz&lt;Qux, ()&gt;&gt;&gt;</span>
                     <span class="ident">err</span>.<span class="ident">help</span>(
                         <span class="string">&quot;use `::&lt;...&gt;` instead of `&lt;...&gt;` if you meant to specify type arguments&quot;</span>);
+                    <span class="ident">err</span>.<span class="ident">help</span>(<span class="string">&quot;or use `(...)` if you meant to specify fn arguments&quot;</span>);
                 }
                 <span class="ident">err</span>.<span class="ident">emit</span>();
             }
@@ -10652,6 +10703,7 @@
     <span class="kw">fn</span> <span class="ident">parse_ty_param_bounds_common</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">allow_plus</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">TyParamBounds</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
         <span class="kw">loop</span> {
+            <span class="comment">// This needs to be syncronized with `Token::can_begin_bound`.</span>
             <span class="kw">let</span> <span class="ident">is_bound_start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">check_path</span>() <span class="op">||</span> <span class="self">self</span>.<span class="ident">check_lifetime</span>() <span class="op">||</span>
                                  <span class="self">self</span>.<span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Question</span>) <span class="op">||</span>
                                  <span class="self">self</span>.<span class="ident">check_keyword</span>(<span class="ident">keywords</span>::<span class="ident">For</span>) <span class="op">||</span>
@@ -12786,9 +12838,9 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>

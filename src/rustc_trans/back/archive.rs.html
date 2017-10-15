@@ -371,7 +371,6 @@
 <span id="326">326</span>
 <span id="327">327</span>
 <span id="328">328</span>
-<span id="329">329</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -406,8 +405,7 @@
     <span class="kw">pub</span> <span class="ident">lib_search_paths</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>,
 }
 
-<span class="doccomment">/// Helper for adding many files to an archive with a single invocation of</span>
-<span class="doccomment">/// `ar`.</span>
+<span class="doccomment">/// Helper for adding many files to an archive.</span>
 <span class="attribute">#[<span class="ident">must_use</span> <span class="op">=</span> <span class="string">&quot;must call build() to finish building the archive&quot;</span>]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ArchiveBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="ident">config</span>: <span class="ident">ArchiveConfig</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
@@ -576,8 +574,8 @@
         });
     }
 
-    <span class="doccomment">/// Indicate that the next call to `build` should updates all symbols in</span>
-    <span class="doccomment">/// the archive (run &#39;ar s&#39; over it).</span>
+    <span class="doccomment">/// Indicate that the next call to `build` should update all symbols in</span>
+    <span class="doccomment">/// the archive (equivalent to running &#39;ar s&#39; over it).</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update_symbols</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">should_update_symbols</span> <span class="op">=</span> <span class="bool-val">true</span>;
     }
@@ -720,9 +718,9 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>

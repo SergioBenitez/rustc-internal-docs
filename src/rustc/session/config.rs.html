@@ -2703,7 +2703,6 @@
 <span id="2658">2658</span>
 <span id="2659">2659</span>
 <span id="2660">2660</span>
-<span id="2661">2661</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3571,8 +3570,7 @@
          <span class="ident">build_codegen_options</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;codegen&quot;</span>,
          <span class="ident">CG_OPTIONS</span>, <span class="ident">cg_type_desc</span>, <span class="ident">cgsetters</span>,
     <span class="ident">ar</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
-        <span class="string">&quot;tool to assemble archives with (has no effect currently, \
-         rustc doesn&#39;t use an external archiver)&quot;</span>),
+        <span class="string">&quot;this option is deprecated and does nothing&quot;</span>),
     <span class="ident">linker</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;system linker to link outputs with&quot;</span>),
     <span class="ident">link_arg</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">parse_string_push</span>, [<span class="ident">UNTRACKED</span>],
@@ -5384,9 +5382,9 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>

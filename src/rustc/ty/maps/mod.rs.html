@@ -515,6 +515,12 @@
 <span id="470">470</span>
 <span id="471">471</span>
 <span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -746,6 +752,8 @@
     [] <span class="kw">fn</span> <span class="ident">item_body_nested_bodies</span>: <span class="ident">ItemBodyNestedBodies</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">ExternBodyNestedBodies</span>,
     [] <span class="kw">fn</span> <span class="ident">const_is_rvalue_promotable_to_static</span>: <span class="ident">ConstIsRvaluePromotableToStatic</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
     [] <span class="kw">fn</span> <span class="ident">is_mir_available</span>: <span class="ident">IsMirAvailable</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
+    [] <span class="kw">fn</span> <span class="ident">vtable_methods</span>: <span class="ident">vtable_methods_node</span>(<span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                          <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">DefId</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)<span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 
     [] <span class="kw">fn</span> <span class="ident">trans_fulfill_obligation</span>: <span class="ident">fulfill_obligation_dep_node</span>(
         (<span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)) <span class="op">-&gt;</span> <span class="ident">Vtable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, ()<span class="op">&gt;</span>,
@@ -988,6 +996,10 @@
 <span class="kw">fn</span> <span class="ident">output_filenames_node</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(_: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">DepConstructor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="ident">DepConstructor</span>::<span class="ident">OutputFilenames</span>
 }
+
+<span class="kw">fn</span> <span class="ident">vtable_methods_node</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">DepConstructor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="ident">DepConstructor</span>::<span class="ident">VtableMethods</span>{ <span class="ident">trait_ref</span> }
+}
 </pre>
 </section>
     <section id='search' class="content hidden"></section>
@@ -1006,9 +1018,9 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
