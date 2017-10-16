@@ -2176,6 +2176,8 @@
 <span id="2131">2131</span>
 <span id="2132">2132</span>
 <span id="2133">2133</span>
+<span id="2134">2134</span>
+<span id="2135">2135</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2396,7 +2398,7 @@
     <span class="ident">passes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Some(level) to optimize at a certain level, or None to run</span>
     <span class="doccomment">/// absolutely no optimizations (used for the metadata module).</span>
-    <span class="ident">opt_level</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">llvm</span>::<span class="ident">CodeGenOptLevel</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">opt_level</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">llvm</span>::<span class="ident">CodeGenOptLevel</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Some(level) to optimize binary size, or None to not affect program size.</span>
     <span class="ident">opt_size</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">llvm</span>::<span class="ident">CodeGenOptSize</span><span class="op">&gt;</span>,
@@ -2686,7 +2688,8 @@
         <span class="kw">if</span> <span class="op">!</span><span class="ident">config</span>.<span class="ident">no_prepopulate_passes</span> {
             <span class="ident">llvm</span>::<span class="ident">LLVMRustAddAnalysisPasses</span>(<span class="ident">tm</span>, <span class="ident">fpm</span>, <span class="ident">llmod</span>);
             <span class="ident">llvm</span>::<span class="ident">LLVMRustAddAnalysisPasses</span>(<span class="ident">tm</span>, <span class="ident">mpm</span>, <span class="ident">llmod</span>);
-            <span class="ident">with_llvm_pmb</span>(<span class="ident">llmod</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">opt_level</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">opt_level</span>.<span class="ident">unwrap_or</span>(<span class="ident">llvm</span>::<span class="ident">CodeGenOptLevel</span>::<span class="prelude-val">None</span>);
+            <span class="ident">with_llvm_pmb</span>(<span class="ident">llmod</span>, <span class="kw-2">&amp;</span><span class="ident">config</span>, <span class="ident">opt_level</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">|</span><span class="ident">b</span><span class="op">|</span> {
                 <span class="ident">llvm</span>::<span class="ident">LLVMPassManagerBuilderPopulateFunctionPassManager</span>(<span class="ident">b</span>, <span class="ident">fpm</span>);
                 <span class="ident">llvm</span>::<span class="ident">LLVMPassManagerBuilderPopulateModulePassManager</span>(<span class="ident">b</span>, <span class="ident">mpm</span>);
             })
@@ -4021,16 +4024,17 @@
 
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">with_llvm_pmb</span>(<span class="ident">llmod</span>: <span class="ident">ModuleRef</span>,
                             <span class="ident">config</span>: <span class="kw-2">&amp;</span><span class="ident">ModuleConfig</span>,
+                            <span class="ident">opt_level</span>: <span class="ident">llvm</span>::<span class="ident">CodeGenOptLevel</span>,
                             <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FnMut</span>(<span class="ident">llvm</span>::<span class="ident">PassManagerBuilderRef</span>)) {
     <span class="comment">// Create the PassManagerBuilder for LLVM. We configure it with</span>
     <span class="comment">// reasonable defaults and prepare it to actually populate the pass</span>
     <span class="comment">// manager.</span>
     <span class="kw">let</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMPassManagerBuilderCreate</span>();
-    <span class="kw">let</span> <span class="ident">opt_level</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">opt_level</span>.<span class="ident">unwrap_or</span>(<span class="ident">llvm</span>::<span class="ident">CodeGenOptLevel</span>::<span class="prelude-val">None</span>);
     <span class="kw">let</span> <span class="ident">opt_size</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">opt_size</span>.<span class="ident">unwrap_or</span>(<span class="ident">llvm</span>::<span class="ident">CodeGenOptSizeNone</span>);
     <span class="kw">let</span> <span class="ident">inline_threshold</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">inline_threshold</span>;
 
-    <span class="ident">llvm</span>::<span class="ident">LLVMRustConfigurePassManagerBuilder</span>(<span class="ident">builder</span>, <span class="ident">opt_level</span>,
+    <span class="ident">llvm</span>::<span class="ident">LLVMRustConfigurePassManagerBuilder</span>(<span class="ident">builder</span>,
+                                              <span class="ident">opt_level</span>,
                                               <span class="ident">config</span>.<span class="ident">merge_functions</span>,
                                               <span class="ident">config</span>.<span class="ident">vectorize_slp</span>,
                                               <span class="ident">config</span>.<span class="ident">vectorize_loop</span>);
