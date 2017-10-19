@@ -1768,6 +1768,24 @@
 <span id="1723">1723</span>
 <span id="1724">1724</span>
 <span id="1725">1725</span>
+<span id="1726">1726</span>
+<span id="1727">1727</span>
+<span id="1728">1728</span>
+<span id="1729">1729</span>
+<span id="1730">1730</span>
+<span id="1731">1731</span>
+<span id="1732">1732</span>
+<span id="1733">1733</span>
+<span id="1734">1734</span>
+<span id="1735">1735</span>
+<span id="1736">1736</span>
+<span id="1737">1737</span>
+<span id="1738">1738</span>
+<span id="1739">1739</span>
+<span id="1740">1740</span>
+<span id="1741">1741</span>
+<span id="1742">1742</span>
+<span id="1743">1743</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2323,6 +2341,12 @@
 
     <span class="doccomment">/// Configuration for the child process&#39;s standard input (stdin) handle.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Defaults to [`inherit`] when used with `spawn` or `status`, and</span>
+    <span class="doccomment">/// defaults to [`piped`] when used with `output`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`inherit`]: struct.Stdio.html#method.inherit</span>
+    <span class="doccomment">/// [`piped`]: struct.Stdio.html#method.piped</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Basic usage:</span>
@@ -2343,6 +2367,12 @@
 
     <span class="doccomment">/// Configuration for the child process&#39;s standard output (stdout) handle.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Defaults to [`inherit`] when used with `spawn` or `status`, and</span>
+    <span class="doccomment">/// defaults to [`piped`] when used with `output`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`inherit`]: struct.Stdio.html#method.inherit</span>
+    <span class="doccomment">/// [`piped`]: struct.Stdio.html#method.piped</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Basic usage:</span>
@@ -2362,6 +2392,12 @@
     }
 
     <span class="doccomment">/// Configuration for the child process&#39;s standard error (stderr) handle.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Defaults to [`inherit`] when used with `spawn` or `status`, and</span>
+    <span class="doccomment">/// defaults to [`piped`] when used with `output`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`inherit`]: struct.Stdio.html#method.inherit</span>
+    <span class="doccomment">/// [`piped`]: struct.Stdio.html#method.piped</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>

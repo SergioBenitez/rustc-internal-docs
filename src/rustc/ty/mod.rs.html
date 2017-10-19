@@ -2706,6 +2706,23 @@
 <span id="2661">2661</span>
 <span id="2662">2662</span>
 <span id="2663">2663</span>
+<span id="2664">2664</span>
+<span id="2665">2665</span>
+<span id="2666">2666</span>
+<span id="2667">2667</span>
+<span id="2668">2668</span>
+<span id="2669">2669</span>
+<span id="2670">2670</span>
+<span id="2671">2671</span>
+<span id="2672">2672</span>
+<span id="2673">2673</span>
+<span id="2674">2674</span>
+<span id="2675">2675</span>
+<span id="2676">2676</span>
+<span id="2677">2677</span>
+<span id="2678">2678</span>
+<span id="2679">2679</span>
+<span id="2680">2680</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2727,6 +2744,7 @@
 <span class="kw">use</span> <span class="ident">hir</span>::{<span class="ident">map</span> <span class="kw">as</span> <span class="ident">hir_map</span>, <span class="ident">FreevarMap</span>, <span class="ident">TraitMap</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>::{<span class="ident">Def</span>, <span class="ident">CtorKind</span>, <span class="ident">ExportMap</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">DefIndex</span>, <span class="ident">CRATE_DEF_INDEX</span>, <span class="ident">LOCAL_CRATE</span>};
+<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">DefPathData</span>;
 <span class="kw">use</span> <span class="ident">ich</span>::<span class="ident">StableHashingContext</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">lang_items</span>::{<span class="ident">FnTraitLangItem</span>, <span class="ident">FnMutTraitLangItem</span>, <span class="ident">FnOnceTraitLangItem</span>};
@@ -2798,6 +2816,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">binding</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">cast</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
+<span class="kw">mod</span> <span class="ident">erase_regions</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fast_reject</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">fold</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">inhabitedness</span>;
@@ -4941,6 +4960,20 @@
         }
     }
 
+    <span class="doccomment">/// Given a `VariantDef`, returns the def-id of the `AdtDef` of which it is a part.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">adt_def_id_of_variant</span>(<span class="self">self</span>, <span class="ident">variant_def</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">VariantDef</span>) <span class="op">-&gt;</span> <span class="ident">DefId</span> {
+        <span class="kw">let</span> <span class="ident">def_key</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def_key</span>(<span class="ident">variant_def</span>.<span class="ident">did</span>);
+        <span class="kw">match</span> <span class="ident">def_key</span>.<span class="ident">disambiguated_data</span>.<span class="ident">data</span> {
+            <span class="comment">// for enum variants and tuple structs, the def-id of the ADT itself</span>
+            <span class="comment">// is the *parent* of the variant</span>
+            <span class="ident">DefPathData</span>::<span class="ident">EnumVariant</span>(..) <span class="op">|</span> <span class="ident">DefPathData</span>::<span class="ident">StructCtor</span> <span class="op">=&gt;</span>
+                <span class="ident">DefId</span> { <span class="ident">krate</span>: <span class="ident">variant_def</span>.<span class="ident">did</span>.<span class="ident">krate</span>, <span class="ident">index</span>: <span class="ident">def_key</span>.<span class="ident">parent</span>.<span class="ident">unwrap</span>() },
+
+            <span class="comment">// otherwise, for structs and unions, they share a def-id</span>
+            _ <span class="op">=&gt;</span> <span class="ident">variant_def</span>.<span class="ident">did</span>,
+        }
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">item_name</span>(<span class="self">self</span>, <span class="ident">id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">InternedString</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">id</span>) {
             <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">name</span>(<span class="ident">id</span>).<span class="ident">as_str</span>()
@@ -5269,6 +5302,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">provide</span>(<span class="ident">providers</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span>) {
     <span class="ident">util</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
     <span class="ident">context</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
+    <span class="ident">erase_regions</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
     <span class="kw-2">*</span><span class="ident">providers</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span> {
         <span class="ident">associated_item</span>,
         <span class="ident">associated_item_def_ids</span>,

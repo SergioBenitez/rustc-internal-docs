@@ -362,7 +362,6 @@
 <span id="317">317</span>
 <span id="318">318</span>
 <span id="319">319</span>
-<span id="320">320</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -618,7 +617,6 @@
 
 <span class="kw">fn</span> <span class="ident">is_type_parameter</span>(<span class="ident">ty</span>: <span class="ident">Ty</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
-        <span class="comment">// FIXME(#20590) straighten story about projection types</span>
         <span class="ident">ty</span>::<span class="ident">TyProjection</span>(..) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyParam</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
         _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
     }

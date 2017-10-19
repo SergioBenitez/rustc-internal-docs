@@ -1043,6 +1043,10 @@
 <span id="998"> 998</span>
 <span id="999"> 999</span>
 <span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
+<span id="1004">1004</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1157,6 +1161,10 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_dereferenceable</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">dereferenceable_bytes</span> <span class="op">=</span> <span class="ident">bytes</span>;
         <span class="self">self</span>
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attr</span>: <span class="ident">ArgAttribute</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">regular</span>.<span class="ident">contains</span>(<span class="ident">attr</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">apply_llfn</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">idx</span>: <span class="ident">AttributePlace</span>, <span class="ident">llfn</span>: <span class="ident">ValueRef</span>) {

@@ -903,7 +903,7 @@
                            <span class="op">-&gt;</span> <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">ItemLocalId</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">CFGIndex</span><span class="op">&gt;&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">FxHashMap</span>();
 
-    <span class="comment">// FIXME (#6298): Would it be better to fold formals from decl</span>
+    <span class="comment">// FIXME(#15020) Would it be better to fold formals from decl</span>
     <span class="comment">// into cfg itself?  i.e. introduce a fn-based flow-graph in</span>
     <span class="comment">// addition to the current block-based flow-graph, rather than</span>
     <span class="comment">// have to put traversals like this here?</span>

@@ -4725,6 +4725,7 @@
 <span id="4680">4680</span>
 <span id="4681">4681</span>
 <span id="4682">4682</span>
+<span id="4683">4683</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -9404,6 +9405,7 @@ foo.method(); // Ok!
     <span class="ident">E0588</span>, <span class="comment">// packed struct cannot transitively contain a `[repr(align)]` struct</span>
     <span class="ident">E0592</span>, <span class="comment">// duplicate definitions with name `{}`</span>
 <span class="comment">//  E0613, // Removed (merged with E0609)</span>
+    <span class="ident">E0640</span>, <span class="comment">// infer outlives</span>
     <span class="ident">E0627</span>, <span class="comment">// yield statement outside of generator literal</span>
     <span class="ident">E0632</span>, <span class="comment">// cannot provide explicit type parameters when `impl Trait` is used in</span>
            <span class="comment">// argument position.</span>

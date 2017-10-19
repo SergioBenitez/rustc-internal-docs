@@ -5069,6 +5069,13 @@
 <span id="5024">5024</span>
 <span id="5025">5025</span>
 <span id="5026">5026</span>
+<span id="5027">5027</span>
+<span id="5028">5028</span>
+<span id="5029">5029</span>
+<span id="5030">5030</span>
+<span id="5031">5031</span>
+<span id="5032">5032</span>
+<span id="5033">5033</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -5160,6 +5167,7 @@ type parameter).
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>::{<span class="ident">Def</span>, <span class="ident">CtorKind</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">LOCAL_CRATE</span>};
 <span class="kw">use</span> <span class="ident">rustc_back</span>::<span class="ident">slice</span>::<span class="ident">ref_slice</span>;
+<span class="kw">use</span> <span class="ident">namespace</span>::<span class="ident">Namespace</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">infer</span>::{<span class="self">self</span>, <span class="ident">InferCtxt</span>, <span class="ident">InferOk</span>, <span class="ident">RegionVariableOrigin</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">infer</span>::<span class="ident">type_variable</span>::{<span class="ident">TypeVariableOrigin</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">region</span>;
@@ -6365,7 +6373,13 @@ type parameter).
     <span class="kw">for</span> <span class="ident">impl_item</span> <span class="kw">in</span> <span class="ident">impl_items</span>() {
         <span class="kw">let</span> <span class="ident">ty_impl_item</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_item</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">impl_item</span>.<span class="ident">id</span>));
         <span class="kw">let</span> <span class="ident">ty_trait_item</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>)
-            .<span class="ident">find</span>(<span class="op">|</span><span class="ident">ac</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">ty_impl_item</span>.<span class="ident">name</span>, <span class="ident">ac</span>.<span class="ident">name</span>, <span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>));
+            .<span class="ident">find</span>(<span class="op">|</span><span class="ident">ac</span><span class="op">|</span> <span class="ident">Namespace</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span><span class="ident">impl_item</span>.<span class="ident">node</span>) <span class="op">==</span> <span class="ident">Namespace</span>::<span class="ident">from</span>(<span class="ident">ac</span>.<span class="ident">kind</span>) <span class="op">&amp;&amp;</span>
+                         <span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">ty_impl_item</span>.<span class="ident">name</span>, <span class="ident">ac</span>.<span class="ident">name</span>, <span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>))
+            .<span class="ident">or_else</span>(<span class="op">||</span> {
+                <span class="comment">// Not compatible, but needed for the error message</span>
+                <span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>)
+                   .<span class="ident">find</span>(<span class="op">|</span><span class="ident">ac</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">ty_impl_item</span>.<span class="ident">name</span>, <span class="ident">ac</span>.<span class="ident">name</span>, <span class="ident">impl_trait_ref</span>.<span class="ident">def_id</span>))
+            });
 
         <span class="comment">// Check that impl definition matches trait definition</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ty_trait_item</span>) <span class="op">=</span> <span class="ident">ty_trait_item</span> {

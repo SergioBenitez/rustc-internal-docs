@@ -385,6 +385,16 @@
 <span id="340">340</span>
 <span id="341">341</span>
 <span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -437,6 +447,8 @@ independently:
 - coherence: enforces coherence rules, builds some tables
 
 - variance: variance inference
+
+- outlives: outlives inference
 
 - check: walks over function bodies and type checks them, inferring types for
   local variables, type parameters, etc as necessary.
@@ -510,7 +522,9 @@ This API is completely unstable and subject to change.
 <span class="kw">mod</span> <span class="ident">constrained_type_params</span>;
 <span class="kw">mod</span> <span class="ident">impl_wf_check</span>;
 <span class="kw">mod</span> <span class="ident">coherence</span>;
+<span class="kw">mod</span> <span class="ident">outlives</span>;
 <span class="kw">mod</span> <span class="ident">variance</span>;
+<span class="kw">mod</span> <span class="ident">namespace</span>;
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TypeAndSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -673,6 +687,7 @@ This API is completely unstable and subject to change.
     <span class="ident">coherence</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
     <span class="ident">check</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
     <span class="ident">variance</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
+    <span class="ident">outlives</span>::<span class="ident">provide</span>(<span class="ident">providers</span>);
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_crate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
@@ -686,6 +701,11 @@ This API is completely unstable and subject to change.
         <span class="ident">time</span>(<span class="ident">time_passes</span>, <span class="string">&quot;type collecting&quot;</span>, <span class="op">||</span>
              <span class="ident">collect</span>::<span class="ident">collect_item_types</span>(<span class="ident">tcx</span>));
 
+    })<span class="question-mark">?</span>;
+
+    <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">track_errors</span>(<span class="op">||</span> {
+        <span class="ident">time</span>(<span class="ident">time_passes</span>, <span class="string">&quot;outlives testing&quot;</span>, <span class="op">||</span>
+            <span class="ident">outlives</span>::<span class="ident">test</span>::<span class="ident">test_inferred_outlives</span>(<span class="ident">tcx</span>));
     })<span class="question-mark">?</span>;
 
     <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">track_errors</span>(<span class="op">||</span> {

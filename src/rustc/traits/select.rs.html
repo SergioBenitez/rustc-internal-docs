@@ -3395,16 +3395,6 @@
 <span id="3350">3350</span>
 <span id="3351">3351</span>
 <span id="3352">3352</span>
-<span id="3353">3353</span>
-<span id="3354">3354</span>
-<span id="3355">3355</span>
-<span id="3356">3356</span>
-<span id="3357">3357</span>
-<span id="3358">3358</span>
-<span id="3359">3359</span>
-<span id="3360">3360</span>
-<span id="3361">3361</span>
-<span id="3362">3362</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4717,13 +4707,13 @@
         };
 
         <span class="kw">if</span> <span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">skip_binder</span>().<span class="ident">self_ty</span>().<span class="ident">is_ty_var</span>() {
-            <span class="comment">// FIXME(#20297): Self is a type variable (e.g. `_: AsRef&lt;str&gt;`).</span>
+            <span class="comment">// Self is a type variable (e.g. `_: AsRef&lt;str&gt;`).</span>
             <span class="comment">//</span>
             <span class="comment">// This is somewhat problematic, as the current scheme can&#39;t really</span>
             <span class="comment">// handle it turning to be a projection. This does end up as truly</span>
             <span class="comment">// ambiguous in most cases anyway.</span>
             <span class="comment">//</span>
-            <span class="comment">// Until this is fixed, take the fast path out - this also improves</span>
+            <span class="comment">// Take the fast path out - this also improves</span>
             <span class="comment">// performance by preventing assemble_candidates_from_impls from</span>
             <span class="comment">// matching every impl for this trait.</span>
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">SelectionCandidateSet</span> { <span class="ident">vec</span>: <span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">ambiguous</span>: <span class="bool-val">true</span> });
@@ -4790,8 +4780,6 @@
                                               <span class="ident">candidates</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SelectionCandidateSet</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
     {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;assemble_candidates_for_projected_tys({:?})&quot;</span>, <span class="ident">obligation</span>);
-
-        <span class="comment">// FIXME(#20297) -- just examining the self-type is very simplistic</span>
 
         <span class="comment">// before we go into the whole skolemization thing, just</span>
         <span class="comment">// quickly check if the self-type is a projection at all.</span>
@@ -5582,14 +5570,6 @@
             }
 
             <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">def_id</span>, <span class="kw-2">ref</span> <span class="ident">substs</span>) <span class="op">=&gt;</span> {
-                <span class="comment">// FIXME(#27086). We are invariant w/r/t our</span>
-                <span class="comment">// func_substs, but we don&#39;t see them as</span>
-                <span class="comment">// constituent types; this seems RIGHT but also like</span>
-                <span class="comment">// something that a normal type couldn&#39;t simulate. Is</span>
-                <span class="comment">// this just a gap with the way that PhantomData and</span>
-                <span class="comment">// OIBIT interact? That is, there is no way to say</span>
-                <span class="comment">// &quot;make me invariant with respect to this TYPE, but</span>
-                <span class="comment">// do not act as though I can reach it&quot;</span>
                 <span class="ident">substs</span>.<span class="ident">upvar_tys</span>(<span class="ident">def_id</span>, <span class="self">self</span>.<span class="ident">tcx</span>()).<span class="ident">collect</span>()
             }
 

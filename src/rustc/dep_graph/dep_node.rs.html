@@ -829,6 +829,9 @@
 <span id="784">784</span>
 <span id="785">785</span>
 <span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1308,6 +1311,7 @@
     [] <span class="ident">TypeOfItem</span>(<span class="ident">DefId</span>),
     [] <span class="ident">GenericsOfItem</span>(<span class="ident">DefId</span>),
     [] <span class="ident">PredicatesOfItem</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">InferredOutlivesOf</span>(<span class="ident">DefId</span>),
     [] <span class="ident">SuperPredicatesOfItem</span>(<span class="ident">DefId</span>),
     [] <span class="ident">TraitDefOfItem</span>(<span class="ident">DefId</span>),
     [] <span class="ident">AdtDefOfItem</span>(<span class="ident">DefId</span>),
@@ -1385,6 +1389,7 @@
     [] <span class="ident">LookupDeprecationEntry</span>(<span class="ident">DefId</span>),
     [] <span class="ident">ItemBodyNestedBodies</span>(<span class="ident">DefId</span>),
     [] <span class="ident">ConstIsRvaluePromotableToStatic</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">RvaluePromotableMap</span>(<span class="ident">DefId</span>),
     [] <span class="ident">ImplParent</span>(<span class="ident">DefId</span>),
     [] <span class="ident">TraitOfItem</span>(<span class="ident">DefId</span>),
     [] <span class="ident">IsExportedSymbol</span>(<span class="ident">DefId</span>),
@@ -1440,6 +1445,7 @@
     [] <span class="ident">PostorderCnums</span>,
     [] <span class="ident">HasCloneClosures</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">HasCopyClosures</span>(<span class="ident">CrateNum</span>),
+    [] <span class="ident">EraseRegionsTy</span> { <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
 
     [] <span class="ident">Freevars</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MaybeUnusedTraitImport</span>(<span class="ident">DefId</span>),

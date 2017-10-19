@@ -1878,6 +1878,7 @@
 <span id="1833">1833</span>
 <span id="1834">1834</span>
 <span id="1835">1835</span>
+<span id="1836">1836</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2696,7 +2697,8 @@
                 <span class="comment">// the type of the node expr.id here *before applying</span>
                 <span class="comment">// adjustments*.</span>
                 <span class="comment">//</span>
-                <span class="comment">// FIXME(#6268) nested method calls requires that this rule change</span>
+                <span class="comment">// FIXME(https://github.com/rust-lang/rfcs/issues/811)</span>
+                <span class="comment">// nested method calls requires that this rule change</span>
                 <span class="kw">let</span> <span class="ident">ty0</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">resolve_node_type</span>(<span class="ident">expr</span>.<span class="ident">hir_id</span>);
                 <span class="self">self</span>.<span class="ident">type_must_outlive</span>(<span class="ident">infer</span>::<span class="ident">AddrOf</span>(<span class="ident">expr</span>.<span class="ident">span</span>), <span class="ident">ty0</span>, <span class="ident">expr_region</span>);
                 <span class="ident">intravisit</span>::<span class="ident">walk_expr</span>(<span class="self">self</span>, <span class="ident">expr</span>);

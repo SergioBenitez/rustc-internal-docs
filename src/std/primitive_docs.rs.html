@@ -1000,6 +1000,7 @@
 <span id="955">955</span>
 <span id="956">956</span>
 <span id="957">957</span>
+<span id="958">958</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1287,7 +1288,6 @@
 <span class="doccomment">/// Arrays of sizes from 0 to 32 (inclusive) implement the following traits if</span>
 <span class="doccomment">/// the element type allows it:</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// - [`Clone`][clone] (only if `T: `[`Copy`][copy])</span>
 <span class="doccomment">/// - [`Debug`][debug]</span>
 <span class="doccomment">/// - [`IntoIterator`][intoiterator] (implemented for `&amp;[T; N]` and `&amp;mut [T; N]`)</span>
 <span class="doccomment">/// - [`PartialEq`][partialeq], [`PartialOrd`][partialord], [`Eq`][eq], [`Ord`][ord]</span>
@@ -1302,8 +1302,10 @@
 <span class="doccomment">/// entirely different types. As a stopgap, trait implementations are</span>
 <span class="doccomment">/// statically generated up to size 32.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Arrays of *any* size are [`Copy`][copy] if the element type is [`Copy`][copy]. This</span>
-<span class="doccomment">/// works because the [`Copy`][copy] trait is specially known to the compiler.</span>
+<span class="doccomment">/// Arrays of *any* size are [`Copy`][copy] if the element type is [`Copy`][copy]</span>
+<span class="doccomment">/// and [`Clone`][clone] if the element type is [`Clone`][clone]. This works</span>
+<span class="doccomment">/// because [`Copy`][copy] and [`Clone`][clone] traits are specially known</span>
+<span class="doccomment">/// to the compiler.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Arrays coerce to [slices (`[T]`)][slice], so a slice method may be called on</span>
 <span class="doccomment">/// an array. Indeed, this provides most of the API for working with arrays.</span>

@@ -1054,8 +1054,6 @@
 <span id="1009">1009</span>
 <span id="1010">1010</span>
 <span id="1011">1011</span>
-<span id="1012">1012</span>
-<span id="1013">1013</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1084,7 +1082,7 @@
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">RangeEnd</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">AdtKind</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFoldable</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFoldable</span>};
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">Field</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">common</span>::<span class="ident">ErrorReported</span>;
@@ -1261,7 +1259,7 @@
 
     <span class="kw">fn</span> <span class="ident">is_uninhabited</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">features</span>.<span class="ident">borrow</span>().<span class="ident">never_type</span> {
-            <span class="ident">ty</span>.<span class="ident">is_uninhabited_from</span>(<span class="self">self</span>.<span class="ident">module</span>, <span class="self">self</span>.<span class="ident">tcx</span>)
+            <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_ty_uninhabited_from</span>(<span class="self">self</span>.<span class="ident">module</span>, <span class="ident">ty</span>)
         } <span class="kw">else</span> {
             <span class="bool-val">false</span>
         }
@@ -1269,13 +1267,11 @@
 
     <span class="kw">fn</span> <span class="ident">is_variant_uninhabited</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                               <span class="ident">variant</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">VariantDef</span>,
-                              <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
+                              <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                              <span class="op">-&gt;</span> <span class="ident">bool</span>
     {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">features</span>.<span class="ident">borrow</span>().<span class="ident">never_type</span> {
-            <span class="kw">let</span> <span class="ident">forest</span> <span class="op">=</span> <span class="ident">variant</span>.<span class="ident">uninhabited_from</span>(
-                <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FxHashMap</span>::<span class="ident">default</span>(), <span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">substs</span>, <span class="ident">AdtKind</span>::<span class="ident">Enum</span>
-            );
-            <span class="ident">forest</span>.<span class="ident">contains</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="self">self</span>.<span class="ident">module</span>)
+            <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_enum_variant_uninhabited_from</span>(<span class="self">self</span>.<span class="ident">module</span>, <span class="ident">variant</span>, <span class="ident">substs</span>)
         } <span class="kw">else</span> {
             <span class="bool-val">false</span>
         }

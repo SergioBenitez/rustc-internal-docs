@@ -1456,6 +1456,7 @@
 <span id="1411">1411</span>
 <span id="1412">1412</span>
 <span id="1413">1413</span>
+<span id="1414">1414</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1497,7 +1498,7 @@
 <span class="kw">use</span> <span class="ident">rustc_privacy</span>;
 <span class="kw">use</span> <span class="ident">rustc_plugin</span>::<span class="ident">registry</span>::<span class="ident">Registry</span>;
 <span class="kw">use</span> <span class="ident">rustc_plugin</span> <span class="kw">as</span> <span class="ident">plugin</span>;
-<span class="kw">use</span> <span class="ident">rustc_passes</span>::{<span class="ident">ast_validation</span>, <span class="ident">no_asm</span>, <span class="ident">loops</span>, <span class="ident">consts</span>, <span class="ident">static_recursion</span>, <span class="ident">hir_stats</span>};
+<span class="kw">use</span> <span class="ident">rustc_passes</span>::{<span class="self">self</span>, <span class="ident">ast_validation</span>, <span class="ident">no_asm</span>, <span class="ident">loops</span>, <span class="ident">consts</span>, <span class="ident">static_recursion</span>, <span class="ident">hir_stats</span>};
 <span class="kw">use</span> <span class="ident">rustc_const_eval</span>::{<span class="self">self</span>, <span class="ident">check_match</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Compilation</span>;
 <span class="kw">use</span> ::<span class="ident">DefaultTransCrate</span>;
@@ -2432,6 +2433,7 @@
     <span class="ident">traits</span>::<span class="ident">provide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">local_providers</span>);
     <span class="ident">reachable</span>::<span class="ident">provide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">local_providers</span>);
     <span class="ident">rustc_const_eval</span>::<span class="ident">provide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">local_providers</span>);
+    <span class="ident">rustc_passes</span>::<span class="ident">provide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">local_providers</span>);
     <span class="ident">middle</span>::<span class="ident">region</span>::<span class="ident">provide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">local_providers</span>);
     <span class="ident">cstore</span>::<span class="ident">provide_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">local_providers</span>);
     <span class="ident">lint</span>::<span class="ident">provide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">local_providers</span>);

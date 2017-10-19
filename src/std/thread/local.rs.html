@@ -775,6 +775,9 @@
 <span id="730">730</span>
 <span id="731">731</span>
 <span id="732">732</span>
+<span id="733">733</span>
+<span id="734">734</span>
+<span id="735">735</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1103,7 +1106,10 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Once the initialization expression succeeds, the key transitions to the</span>
     <span class="doccomment">/// `Valid` state which will guarantee that future calls to [`with`] will</span>
-    <span class="doccomment">/// succeed within the thread.</span>
+    <span class="doccomment">/// succeed within the thread. Some keys might skip the `Uninitialized`</span>
+    <span class="doccomment">/// state altogether and start in the `Valid` state as an optimization</span>
+    <span class="doccomment">/// (e.g. keys initialized with a constant expression), but no guarantees</span>
+    <span class="doccomment">/// are made.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// When a thread exits, each key will be destroyed in turn, and as keys are</span>
     <span class="doccomment">/// destroyed they will enter the `Destroyed` state just before the</span>

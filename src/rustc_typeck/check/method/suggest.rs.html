@@ -645,6 +645,9 @@
 <span id="600">600</span>
 <span id="601">601</span>
 <span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -665,6 +668,7 @@
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>::<span class="ident">Def</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CRATE_DEF_INDEX</span>, <span class="ident">DefId</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">lang_items</span>::<span class="ident">FnOnceTraitLangItem</span>;
+<span class="kw">use</span> <span class="ident">namespace</span>::<span class="ident">Namespace</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">traits</span>::{<span class="ident">Obligation</span>, <span class="ident">SelectionContext</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">FxHashSet</span>;
 
@@ -740,12 +744,12 @@
                     <span class="ident">CandidateSource</span>::<span class="ident">ImplSource</span>(<span class="ident">impl_did</span>) <span class="op">=&gt;</span> {
                         <span class="comment">// Provide the best span we can. Use the item, if local to crate, else</span>
                         <span class="comment">// the impl, if local to crate (item may be defaulted), else nothing.</span>
-                        <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">associated_item</span>(<span class="ident">impl_did</span>, <span class="ident">item_name</span>)
+                        <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">associated_item</span>(<span class="ident">impl_did</span>, <span class="ident">item_name</span>, <span class="ident">Namespace</span>::<span class="ident">Value</span>)
                             .<span class="ident">or_else</span>(<span class="op">||</span> {
                                 <span class="self">self</span>.<span class="ident">associated_item</span>(
                                     <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">impl_trait_ref</span>(<span class="ident">impl_did</span>).<span class="ident">unwrap</span>().<span class="ident">def_id</span>,
-
-                                    <span class="ident">item_name</span>
+                                    <span class="ident">item_name</span>,
+                                    <span class="ident">Namespace</span>::<span class="ident">Value</span>,
                                 )
                             }).<span class="ident">unwrap</span>();
                         <span class="kw">let</span> <span class="ident">note_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span_if_local</span>(<span class="ident">item</span>.<span class="ident">def_id</span>).<span class="ident">or_else</span>(<span class="op">||</span> {
@@ -775,7 +779,9 @@
                         }
                     }
                     <span class="ident">CandidateSource</span>::<span class="ident">TraitSource</span>(<span class="ident">trait_did</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">associated_item</span>(<span class="ident">trait_did</span>, <span class="ident">item_name</span>).<span class="ident">unwrap</span>();
+                        <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>
+                            .<span class="ident">associated_item</span>(<span class="ident">trait_did</span>, <span class="ident">item_name</span>, <span class="ident">Namespace</span>::<span class="ident">Value</span>)
+                            .<span class="ident">unwrap</span>();
                         <span class="kw">let</span> <span class="ident">item_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">def_span</span>(<span class="ident">item</span>.<span class="ident">def_id</span>);
                         <span class="macro">span_note</span><span class="macro">!</span>(<span class="ident">err</span>,
                                    <span class="ident">item_span</span>,
@@ -1050,7 +1056,7 @@
                 <span class="comment">// implementing a trait would be legal but is rejected</span>
                 <span class="comment">// here).</span>
                 (<span class="ident">type_is_local</span> <span class="op">||</span> <span class="ident">info</span>.<span class="ident">def_id</span>.<span class="ident">is_local</span>())
-                    <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">associated_item</span>(<span class="ident">info</span>.<span class="ident">def_id</span>, <span class="ident">item_name</span>).<span class="ident">is_some</span>()
+                    <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">associated_item</span>(<span class="ident">info</span>.<span class="ident">def_id</span>, <span class="ident">item_name</span>, <span class="ident">Namespace</span>::<span class="ident">Value</span>).<span class="ident">is_some</span>()
             })
             .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>();
 

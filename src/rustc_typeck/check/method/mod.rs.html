@@ -423,6 +423,7 @@
 <span id="378">378</span>
 <span id="379">379</span>
 <span id="380">380</span>
+<span id="381">381</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -439,6 +440,7 @@
 <span class="kw">use</span> <span class="ident">check</span>::<span class="ident">FnCtxt</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>::<span class="ident">Def</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
+<span class="kw">use</span> <span class="ident">namespace</span>::<span class="ident">Namespace</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">traits</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">ToPredicate</span>, <span class="ident">ToPolyTraitRef</span>, <span class="ident">TraitRef</span>, <span class="ident">TypeFoldable</span>};
@@ -701,7 +703,7 @@
         <span class="comment">// Trait must have a method named `m_name` and it should not have</span>
         <span class="comment">// type parameters or early-bound regions.</span>
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
-        <span class="kw">let</span> <span class="ident">method_item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">associated_item</span>(<span class="ident">trait_def_id</span>, <span class="ident">m_name</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">method_item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">associated_item</span>(<span class="ident">trait_def_id</span>, <span class="ident">m_name</span>, <span class="ident">Namespace</span>::<span class="ident">Value</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">method_item</span>.<span class="ident">def_id</span>;
         <span class="kw">let</span> <span class="ident">generics</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">generics_of</span>(<span class="ident">def_id</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">generics</span>.<span class="ident">types</span>.<span class="ident">len</span>(), <span class="number">0</span>);
@@ -797,11 +799,11 @@
 
     <span class="doccomment">/// Find item with name `item_name` defined in impl/trait `def_id`</span>
     <span class="doccomment">/// and return it, or `None`, if no such item was defined there.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">associated_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>, <span class="ident">item_name</span>: <span class="ident">ast</span>::<span class="ident">Name</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">associated_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>, <span class="ident">item_name</span>: <span class="ident">ast</span>::<span class="ident">Name</span>, <span class="ident">ns</span>: <span class="ident">Namespace</span>)
                            <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">AssociatedItem</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">def_id</span>)
-                .<span class="ident">find</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">item_name</span>, <span class="ident">item</span>.<span class="ident">name</span>, <span class="ident">def_id</span>))
-
+                .<span class="ident">find</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">Namespace</span>::<span class="ident">from</span>(<span class="ident">item</span>.<span class="ident">kind</span>) <span class="op">==</span> <span class="ident">ns</span> <span class="op">&amp;&amp;</span>
+                             <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hygienic_eq</span>(<span class="ident">item_name</span>, <span class="ident">item</span>.<span class="ident">name</span>, <span class="ident">def_id</span>))
     }
 }
 </pre>

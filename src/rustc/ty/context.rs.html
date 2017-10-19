@@ -2368,24 +2368,6 @@
 <span id="2323">2323</span>
 <span id="2324">2324</span>
 <span id="2325">2325</span>
-<span id="2326">2326</span>
-<span id="2327">2327</span>
-<span id="2328">2328</span>
-<span id="2329">2329</span>
-<span id="2330">2330</span>
-<span id="2331">2331</span>
-<span id="2332">2332</span>
-<span id="2333">2333</span>
-<span id="2334">2334</span>
-<span id="2335">2335</span>
-<span id="2336">2336</span>
-<span id="2337">2337</span>
-<span id="2338">2338</span>
-<span id="2339">2339</span>
-<span id="2340">2340</span>
-<span id="2341">2341</span>
-<span id="2342">2342</span>
-<span id="2343">2343</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2432,7 +2414,6 @@
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">TyVar</span>, <span class="ident">TyVid</span>, <span class="ident">IntVar</span>, <span class="ident">IntVid</span>, <span class="ident">FloatVar</span>, <span class="ident">FloatVid</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">TypeVariants</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">Layout</span>, <span class="ident">TargetDataLayout</span>};
-<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">inhabitedness</span>::<span class="ident">DefIdForest</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">maps</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">steal</span>::<span class="ident">Steal</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">BindingMode</span>;
@@ -3282,16 +3263,6 @@
     <span class="comment">// Internal cache for metadata decoding. No need to track deps on this.</span>
     <span class="kw">pub</span> <span class="ident">rcache</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">CReaderCacheKey</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 
-    <span class="comment">// FIXME dep tracking -- should be harmless enough</span>
-    <span class="kw">pub</span> <span class="ident">normalized_cache</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
-
-    <span class="kw">pub</span> <span class="ident">inhabitedness_cache</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">DefIdForest</span><span class="op">&gt;&gt;</span>,
-
-    <span class="doccomment">/// Set of nodes which mark locals as mutable which end up getting used at</span>
-    <span class="doccomment">/// some point. Local variable definitions not in this set can be warned</span>
-    <span class="doccomment">/// about.</span>
-    <span class="kw">pub</span> <span class="ident">used_mut_nodes</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">NodeSet</span><span class="op">&gt;</span>,
-
     <span class="doccomment">/// Caches the results of trait selection. This cache is used</span>
     <span class="doccomment">/// for things that do not have to do with the parameters in scope.</span>
     <span class="kw">pub</span> <span class="ident">selection_cache</span>: <span class="ident">traits</span>::<span class="ident">SelectionCache</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -3300,9 +3271,6 @@
     <span class="doccomment">/// for things that do not have to do with the parameters in scope.</span>
     <span class="doccomment">/// Merge this with `selection_cache`?</span>
     <span class="kw">pub</span> <span class="ident">evaluation_cache</span>: <span class="ident">traits</span>::<span class="ident">EvaluationCache</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// Maps Expr NodeId&#39;s to `true` iff `&amp;expr` can have &#39;static lifetime.</span>
-    <span class="kw">pub</span> <span class="ident">rvalue_promotable_to_static</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">NodeMap</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;&gt;</span>,
 
     <span class="doccomment">/// The definite name of the current crate after taking into account</span>
     <span class="doccomment">/// attributes, commandline parameters, etc.</span>
@@ -3572,12 +3540,8 @@
             <span class="ident">maps</span>: <span class="ident">maps</span>::<span class="ident">Maps</span>::<span class="ident">new</span>(<span class="ident">providers</span>),
             <span class="ident">mir_passes</span>,
             <span class="ident">rcache</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashMap</span>()),
-            <span class="ident">normalized_cache</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashMap</span>()),
-            <span class="ident">inhabitedness_cache</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashMap</span>()),
-            <span class="ident">used_mut_nodes</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">NodeSet</span>()),
             <span class="ident">selection_cache</span>: <span class="ident">traits</span>::<span class="ident">SelectionCache</span>::<span class="ident">new</span>(),
             <span class="ident">evaluation_cache</span>: <span class="ident">traits</span>::<span class="ident">EvaluationCache</span>::<span class="ident">new</span>(),
-            <span class="ident">rvalue_promotable_to_static</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">NodeMap</span>()),
             <span class="ident">crate_name</span>: <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="ident">crate_name</span>),
             <span class="ident">data_layout</span>,
             <span class="ident">layout_interner</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashSet</span>()),

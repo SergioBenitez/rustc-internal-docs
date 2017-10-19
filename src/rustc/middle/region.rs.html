@@ -1478,23 +1478,6 @@
 <span id="1433">1433</span>
 <span id="1434">1434</span>
 <span id="1435">1435</span>
-<span id="1436">1436</span>
-<span id="1437">1437</span>
-<span id="1438">1438</span>
-<span id="1439">1439</span>
-<span id="1440">1440</span>
-<span id="1441">1441</span>
-<span id="1442">1442</span>
-<span id="1443">1443</span>
-<span id="1444">1444</span>
-<span id="1445">1445</span>
-<span id="1446">1446</span>
-<span id="1447">1447</span>
-<span id="1448">1448</span>
-<span id="1449">1449</span>
-<span id="1450">1450</span>
-<span id="1451">1451</span>
-<span id="1452">1452</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1654,26 +1637,11 @@
     <span class="kw">pub</span> <span class="ident">first_statement_index</span>: <span class="ident">FirstStatementIndex</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Eq</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>,
-         <span class="ident">RustcDecodable</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FirstStatementIndex</span> { <span class="kw">pub</span> <span class="ident">idx</span>: <span class="ident">u32</span> }
-
-<span class="kw">impl</span> <span class="ident">Idx</span> <span class="kw">for</span> <span class="ident">FirstStatementIndex</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">idx</span> <span class="op">&lt;=</span> <span class="ident">SCOPE_DATA_REMAINDER_MAX</span> <span class="kw">as</span> <span class="ident">usize</span>);
-        <span class="ident">FirstStatementIndex</span> { <span class="ident">idx</span>: <span class="ident">idx</span> <span class="kw">as</span> <span class="ident">u32</span> }
-    }
-
-    <span class="kw">fn</span> <span class="ident">index</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
-        <span class="self">self</span>.<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">usize</span>
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">FirstStatementIndex</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">formatter</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="ident">fmt</span>::<span class="ident">Debug</span>::<span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">index</span>(), <span class="ident">formatter</span>)
-    }
-}
+<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">FirstStatementIndex</span>
+    {
+        <span class="ident">DEBUG_NAME</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>,
+        <span class="ident">MAX</span> <span class="op">=</span> <span class="ident">SCOPE_DATA_REMAINDER_MAX</span>,
+    });
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ScopeData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Scope</span> {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1706,7 +1674,7 @@
             <span class="ident">SCOPE_DATA_DESTRUCTION</span> <span class="op">=&gt;</span> <span class="ident">ScopeData</span>::<span class="ident">Destruction</span>(<span class="self">self</span>.<span class="ident">id</span>),
             <span class="ident">idx</span> <span class="op">=&gt;</span> <span class="ident">ScopeData</span>::<span class="ident">Remainder</span>(<span class="ident">BlockRemainder</span> {
                 <span class="ident">block</span>: <span class="self">self</span>.<span class="ident">id</span>,
-                <span class="ident">first_statement_index</span>: <span class="ident">FirstStatementIndex</span> { <span class="ident">idx</span> }
+                <span class="ident">first_statement_index</span>: <span class="ident">FirstStatementIndex</span>::<span class="ident">new</span>(<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">usize</span>)
             })
         }
     }
@@ -2458,7 +2426,7 @@
 
             <span class="ident">hir</span>::<span class="ident">ExprAssignOp</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ExprIndex</span>(..) <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ExprUnary</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ExprCall</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ExprMethodCall</span>(..) <span class="op">=&gt;</span> {
-                <span class="comment">// FIXME(#6268) Nested method calls</span>
+                <span class="comment">// FIXME(https://github.com/rust-lang/rfcs/issues/811) Nested method calls</span>
                 <span class="comment">//</span>
                 <span class="comment">// The lifetimes for a call or method call look as follows:</span>
                 <span class="comment">//</span>
@@ -2579,8 +2547,6 @@
     <span class="comment">// Here, the expression `[...]` has an extended lifetime due to rule</span>
     <span class="comment">// A, but the inner rvalues `a()` and `b()` have an extended lifetime</span>
     <span class="comment">// due to rule C.</span>
-    <span class="comment">//</span>
-    <span class="comment">// FIXME(#6308) -- Note that `[]` patterns work more smoothly post-DST.</span>
 
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">expr</span>) <span class="op">=</span> <span class="ident">init</span> {
         <span class="ident">record_rvalue_scope_if_borrow_expr</span>(<span class="ident">visitor</span>, <span class="kw-2">&amp;</span><span class="ident">expr</span>, <span class="ident">blk_scope</span>);

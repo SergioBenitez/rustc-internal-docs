@@ -846,7 +846,7 @@
             <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_module_parent</span>(<span class="ident">scrut</span>.<span class="ident">id</span>);
             <span class="kw">if</span> <span class="ident">inlined_arms</span>.<span class="ident">is_empty</span>() {
                 <span class="kw">let</span> <span class="ident">scrutinee_is_uninhabited</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">features</span>.<span class="ident">borrow</span>().<span class="ident">never_type</span> {
-                    <span class="ident">pat_ty</span>.<span class="ident">is_uninhabited_from</span>(<span class="ident">module</span>, <span class="self">self</span>.<span class="ident">tcx</span>)
+                    <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_ty_uninhabited_from</span>(<span class="ident">module</span>, <span class="ident">pat_ty</span>)
                 } <span class="kw">else</span> {
                     <span class="self">self</span>.<span class="ident">conservative_is_uninhabited</span>(<span class="ident">pat_ty</span>)
                 };
@@ -1180,7 +1180,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">checker</span> <span class="op">=</span> <span class="ident">MutationChecker</span> {
         <span class="ident">cx</span>,
     };
-    <span class="ident">ExprUseVisitor</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">checker</span>, <span class="ident">cx</span>.<span class="ident">tcx</span>, <span class="ident">cx</span>.<span class="ident">param_env</span>, <span class="ident">cx</span>.<span class="ident">region_scope_tree</span>, <span class="ident">cx</span>.<span class="ident">tables</span>)
+    <span class="ident">ExprUseVisitor</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">checker</span>, <span class="ident">cx</span>.<span class="ident">tcx</span>, <span class="ident">cx</span>.<span class="ident">param_env</span>, <span class="ident">cx</span>.<span class="ident">region_scope_tree</span>, <span class="ident">cx</span>.<span class="ident">tables</span>, <span class="prelude-val">None</span>)
         .<span class="ident">walk_expr</span>(<span class="ident">guard</span>);
 }
 
