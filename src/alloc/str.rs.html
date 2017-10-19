@@ -2132,6 +2132,8 @@
 <span id="2087">2087</span>
 <span id="2088">2088</span>
 <span id="2089">2089</span>
+<span id="2090">2090</span>
+<span id="2091">2091</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3094,13 +3096,15 @@
     <span class="doccomment">/// assert_eq!(s.find(&quot;Léopard&quot;), Some(13));</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// More complex patterns with closures:</span>
+    <span class="doccomment">/// More complex patterns using point-free style and closures:</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// let s = &quot;Löwe 老虎 Léopard&quot;;</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// assert_eq!(s.find(char::is_whitespace), Some(5));</span>
     <span class="doccomment">/// assert_eq!(s.find(char::is_lowercase), Some(1));</span>
+    <span class="doccomment">/// assert_eq!(s.find(|c: char| c.is_whitespace() || c.is_lowercase()), Some(1));</span>
+    <span class="doccomment">/// assert_eq!(s.find(|c: char| (c &lt; &#39;o&#39;) &amp;&amp; (c &gt; &#39;a&#39;)), Some(4));</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Not finding the pattern:</span>
