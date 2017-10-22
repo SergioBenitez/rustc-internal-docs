@@ -3899,6 +3899,8 @@
 <span id="3854">3854</span>
 <span id="3855">3855</span>
 <span id="3856">3856</span>
+<span id="3857">3857</span>
+<span id="3858">3858</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -5986,7 +5988,9 @@
                                                             <span class="ident">ValueNS</span>,
                                                             <span class="ident">impl_item</span>.<span class="ident">span</span>,
                                             <span class="op">|</span><span class="ident">n</span>, <span class="ident">s</span><span class="op">|</span> <span class="ident">ResolutionError</span>::<span class="ident">ConstNotMemberOfTrait</span>(<span class="ident">n</span>, <span class="ident">s</span>));
-                                        <span class="ident">visit</span>::<span class="ident">walk_impl_item</span>(<span class="ident">this</span>, <span class="ident">impl_item</span>);
+                                        <span class="ident">this</span>.<span class="ident">with_constant_rib</span>(<span class="op">|</span><span class="ident">this</span><span class="op">|</span>
+                                            <span class="ident">visit</span>::<span class="ident">walk_impl_item</span>(<span class="ident">this</span>, <span class="ident">impl_item</span>)
+                                        );
                                     }
                                     <span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=&gt;</span> {
                                         <span class="comment">// If this is a trait impl, ensure the method</span>
