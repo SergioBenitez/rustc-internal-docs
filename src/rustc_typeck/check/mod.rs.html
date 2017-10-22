@@ -5076,6 +5076,13 @@
 <span id="5031">5031</span>
 <span id="5032">5032</span>
 <span id="5033">5033</span>
+<span id="5034">5034</span>
+<span id="5035">5035</span>
+<span id="5036">5036</span>
+<span id="5037">5037</span>
+<span id="5038">5038</span>
+<span id="5039">5039</span>
+<span id="5040">5040</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -9370,6 +9377,7 @@ type parameter).
             <span class="ident">CoerceMany</span>::<span class="ident">with_coercion_sites</span>(<span class="ident">coerce_to_ty</span>, <span class="ident">tail_expr</span>)
         };
 
+        <span class="kw">let</span> <span class="ident">prev_diverges</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">diverges</span>.<span class="ident">get</span>();
         <span class="kw">let</span> <span class="ident">ctxt</span> <span class="op">=</span> <span class="ident">BreakableCtxt</span> {
             <span class="ident">coerce</span>: <span class="prelude-val">Some</span>(<span class="ident">coerce</span>),
             <span class="ident">may_break</span>: <span class="bool-val">false</span>,
@@ -9418,6 +9426,12 @@ type parameter).
                 }
             }
         });
+
+        <span class="kw">if</span> <span class="ident">ctxt</span>.<span class="ident">may_break</span> {
+            <span class="comment">// If we can break from the block, then the block&#39;s exit is always reachable</span>
+            <span class="comment">// (... as long as the entry is reachable) - regardless of the tail of the block.</span>
+            <span class="self">self</span>.<span class="ident">diverges</span>.<span class="ident">set</span>(<span class="ident">prev_diverges</span>);
+        }
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">ctxt</span>.<span class="ident">coerce</span>.<span class="ident">unwrap</span>().<span class="ident">complete</span>(<span class="self">self</span>);
 
@@ -10132,6 +10146,8 @@ type parameter).
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

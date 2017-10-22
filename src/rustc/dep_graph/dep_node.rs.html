@@ -832,6 +832,13 @@
 <span id="787">787</span>
 <span id="788">788</span>
 <span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1445,7 +1452,14 @@
     [] <span class="ident">PostorderCnums</span>,
     [] <span class="ident">HasCloneClosures</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">HasCopyClosures</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">EraseRegionsTy</span> { <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
+
+    <span class="comment">// This query is not expected to have inputs -- as a result, it&#39;s</span>
+    <span class="comment">// not a good candidate for &quot;replay&quot; because it&#39;s essentially a</span>
+    <span class="comment">// pure function of its input (and hence the expectation is that</span>
+    <span class="comment">// no caller would be green **apart** from just this</span>
+    <span class="comment">// query). Making it anonymous avoids hashing the result, which</span>
+    <span class="comment">// may save a bit of time.</span>
+    [<span class="ident">anon</span>] <span class="ident">EraseRegionsTy</span> { <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
 
     [] <span class="ident">Freevars</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MaybeUnusedTraitImport</span>(<span class="ident">DefId</span>),
@@ -1644,6 +1658,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

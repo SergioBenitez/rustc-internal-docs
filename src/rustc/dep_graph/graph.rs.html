@@ -891,6 +891,12 @@
 <span id="846">846</span>
 <span id="847">847</span>
 <span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -906,7 +912,6 @@
                                            <span class="ident">StableHashingContextProvider</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::{<span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::{<span class="ident">Idx</span>, <span class="ident">IndexVec</span>};
-<span class="kw">use</span> <span class="ident">session</span>::<span class="ident">config</span>::<span class="ident">OutputType</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::{<span class="ident">Ref</span>, <span class="ident">RefCell</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::<span class="ident">Hash</span>;
@@ -1541,7 +1546,14 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WorkProduct</span> {
     <span class="kw">pub</span> <span class="ident">cgu_name</span>: <span class="ident">String</span>,
     <span class="doccomment">/// Saved files associated with this CGU</span>
-    <span class="kw">pub</span> <span class="ident">saved_files</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">OutputType</span>, <span class="ident">String</span>)<span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">saved_files</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">WorkProductFileKind</span>, <span class="ident">String</span>)<span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">WorkProductFileKind</span> {
+    <span class="ident">Object</span>,
+    <span class="ident">Bytecode</span>,
+    <span class="ident">BytecodeCompressed</span>,
 }
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">CurrentDepGraph</span> {
@@ -1762,6 +1774,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

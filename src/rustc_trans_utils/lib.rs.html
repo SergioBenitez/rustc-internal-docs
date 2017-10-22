@@ -160,6 +160,11 @@
 <span id="115">115</span>
 <span id="116">116</span>
 <span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -201,6 +206,7 @@
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_back</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_data_structures</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">syntax</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">syntax_pos</span>;
 
@@ -212,7 +218,11 @@
 
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">attr</span>;
 
+<span class="kw">mod</span> <span class="ident">common</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">link</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">collector</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trans_item</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">monomorphize</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trans_crate</span>;
 
 <span class="doccomment">/// check for the #[rustc_error] annotation, which forces an</span>
@@ -300,6 +310,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

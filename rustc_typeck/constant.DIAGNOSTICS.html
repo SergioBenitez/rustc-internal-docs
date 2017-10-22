@@ -296,7 +296,7 @@
  (&quot;E0582&quot;,
   &quot;\nA lifetime appears only in an associated-type binding,\nand not in the input types to the trait.\n\nErroneous code example:\n\n```compile_fail,E0582\nfn bar&lt;F&gt;(t: F)\n    // No type can satisfy this requirement, since `\&#39;a` does not\n    // appear in any of the input types (here, `i32`):\n    where F: for&lt;\&#39;a&gt; Fn(i32) -&gt; Option&lt;&amp;\&#39;a i32&gt;\n{\n}\n\nfn main() { }\n```\n\nTo fix this issue, either use the lifetime in the inputs, or use\n`\&#39;static`. Example:\n\n```\nfn bar&lt;F, G&gt;(t: F, u: G)\n    where F: for&lt;\&#39;a&gt; Fn(&amp;\&#39;a i32) -&gt; Option&lt;&amp;\&#39;a i32&gt;,\n          G: Fn(i32) -&gt; Option&lt;&amp;\&#39;static i32&gt;,\n{\n}\n\nfn main() { }\n```\n\nNote: The examples above used to be (erroneously) accepted by the\ncompiler, but this was since corrected. See [issue #33685] for more\ndetails.\n\n[issue #33685]: https://github.com/rust-lang/rust/issues/33685\n&quot;),
  (&quot;E0599&quot;,
-  &quot;\n```compile_fail,E0599\nstruct Mouth;\n\nlet x = Mouth;\nx.chocolate(); // error: no method named `chocolate` found for type `Mouth`\n               //        in the current scope\n```\n&quot;),
+  &quot;\nThis error occurs when a method is used on a type which doesn\&#39;t implement it:\n\nErroneous code example:\n\n```compile_fail,E0599\nstruct Mouth;\n\nlet x = Mouth;\nx.chocolate(); // error: no method named `chocolate` found for type `Mouth`\n               //        in the current scope\n```\n&quot;),
  (&quot;E0600&quot;,
   &quot;\nAn unary operator was used on a type which doesn\&#39;t implement it.\n\nExample of erroneous code:\n\n```compile_fail,E0600\nenum Question {\n    Yes,\n    No,\n}\n\n!Question::Yes; // error: cannot apply unary operator `!` to type `Question`\n```\n\nIn this case, `Question` would need to implement the `std::ops::Not` trait in\norder to be able to use `!` on it. Let\&#39;s implement it:\n\n```\nuse std::ops::Not;\n\nenum Question {\n    Yes,\n    No,\n}\n\n// We implement the `Not` trait on the enum.\nimpl Not for Question {\n    type Output = bool;\n\n    fn not(self) -&gt; bool {\n        match self {\n            Question::Yes =&gt; false, // If the `Answer` is `Yes`, then it\n                                    // returns false.\n            Question::No =&gt; true, // And here we do the opposite.\n        }\n    }\n}\n\nassert_eq!(!Question::Yes, false);\nassert_eq!(!Question::No, true);\n```\n&quot;),
  (&quot;E0608&quot;,
@@ -356,6 +356,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

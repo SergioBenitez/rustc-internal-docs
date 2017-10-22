@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/std/ascii.rs.html#56-568' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/std/ascii.rs.html#56-570' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait AsciiExt {
     type <a href='#associatedtype.Owned' class="type">Owned</a>;
     fn <a href='#tymethod.is_ascii' class='fnname'>is_ascii</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.bool.html">bool</a>;
@@ -379,11 +379,14 @@ ASCII hex digits.</p>
 <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">space</span>.<span class="ident">is_ascii_hexdigit</span>());
 <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">lf</span>.<span class="ident">is_ascii_hexdigit</span>());
 <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">esc</span>.<span class="ident">is_ascii_hexdigit</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(ascii_ctype)%5D%0A%23!%5Ballow(non_snake_case)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aascii%3A%3AAsciiExt%3B%0Alet%20A%20%3D%20'A'%3B%0Alet%20G%20%3D%20'G'%3B%0Alet%20a%20%3D%20'a'%3B%0Alet%20g%20%3D%20'g'%3B%0Alet%20zero%20%3D%20'0'%3B%0Alet%20percent%20%3D%20'%25'%3B%0Alet%20space%20%3D%20'%20'%3B%0Alet%20lf%20%3D%20'%5Cn'%3B%0Alet%20esc%20%3D%20'%5Cu%7B001b%7D'%3B%0A%0Aassert!(A.is_ascii_hexdigit())%3B%0Aassert!(!G.is_ascii_hexdigit())%3B%0Aassert!(a.is_ascii_hexdigit())%3B%0Aassert!(!g.is_ascii_hexdigit())%3B%0Aassert!(zero.is_ascii_hexdigit())%3B%0Aassert!(!percent.is_ascii_hexdigit())%3B%0Aassert!(!space.is_ascii_hexdigit())%3B%0Aassert!(!lf.is_ascii_hexdigit())%3B%0Aassert!(!esc.is_ascii_hexdigit())%3B%0A%7D&amp;version=nightly">Run</a></pre>
-</div><h3 id='method.is_ascii_punctuation' class='method'><span id='is_ascii_punctuation.v' class='invisible'><code>fn <a href='#method.is_ascii_punctuation' class='fnname'>is_ascii_punctuation</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.bool.html">bool</a></code></span></h3><div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype </code><a href="https://github.com/rust-lang/rust/issues/39658">#39658</a>)</div></div><div class='docblock'><p>Checks if the value is an ASCII punctuation character:
-U+0021 ... U+002F <code>! &quot; # $ % &amp; &#39; ( ) * + , - . /</code>
+</div><h3 id='method.is_ascii_punctuation' class='method'><span id='is_ascii_punctuation.v' class='invisible'><code>fn <a href='#method.is_ascii_punctuation' class='fnname'>is_ascii_punctuation</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.bool.html">bool</a></code></span></h3><div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype </code><a href="https://github.com/rust-lang/rust/issues/39658">#39658</a>)</div></div><div class='docblock'><p>Checks if the value is an ASCII punctuation character:</p>
+
+<p>U+0021 ... U+002F <code>! &quot; # $ % &amp; &#39; ( ) * + , - . /</code>
 U+003A ... U+0040 <code>: ; &lt; = &gt; ? @</code>
-U+005B ... U+0060 <code>[ \\ ] ^ _ \</code><code>U+007B ... U+007E</code>{ | } ~`
-For strings, true if all characters in the string are
+U+005B ... U+0060 <code>[ \\ ] ^ _ `</code>
+U+007B ... U+007E <code>{ | } ~</code></p>
+
+<p>For strings, true if all characters in the string are
 ASCII punctuation.</p>
 
 <h1 id='examples-12' class='section-header'><a href='#examples-12'>Examples</a></h1>
@@ -511,10 +514,10 @@ characters, but SPACE is not.</p>
           Implementors<a href='#implementors' class='anchor'></a>
         </h2>
         <ul class='item-list' id='implementors-list'>
-    <li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#571-659' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.str.html">str</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="struct" href="../../std/string/struct.String.html" title="struct std::string::String">String</a>;</span></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#662-752' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.slice.html">[</a><a class="primitive" href="../primitive.u8.html">u8</a><a class="primitive" href="../primitive.slice.html">]</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="struct" href="../../std/vec/struct.Vec.html" title="struct std::vec::Vec">Vec</a>&lt;<a class="primitive" href="../primitive.u8.html">u8</a>&gt;;</span></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#755-861' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.u8.html">u8</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="primitive" href="../primitive.u8.html">u8</a>;</span></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#864-948' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.char.html">char</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="primitive" href="../primitive.char.html">char</a>;</span></code></li>
+    <li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#573-661' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.str.html">str</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="struct" href="../../std/string/struct.String.html" title="struct std::string::String">String</a>;</span></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#664-754' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.slice.html">[</a><a class="primitive" href="../primitive.u8.html">u8</a><a class="primitive" href="../primitive.slice.html">]</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="struct" href="../../std/vec/struct.Vec.html" title="struct std::vec::Vec">Vec</a>&lt;<a class="primitive" href="../primitive.u8.html">u8</a>&gt;;</span></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#757-863' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.u8.html">u8</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="primitive" href="../primitive.u8.html">u8</a>;</span></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/std/ascii.rs.html#866-950' title='goto source code'>[src]</a></div><code>impl AsciiExt for <a class="primitive" href="../primitive.char.html">char</a><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="primitive" href="../primitive.char.html">char</a>;</span></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/std/ascii/trait.AsciiExt.js">
                  </script></section>
@@ -538,6 +541,8 @@ characters, but SPACE is not.</p>
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

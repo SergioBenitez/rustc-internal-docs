@@ -989,6 +989,39 @@
 <span id="944">944</span>
 <span id="945">945</span>
 <span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1123,6 +1156,9 @@ should go to.
 
     <span class="doccomment">/// The cache for drop chain on &quot;generator drop&quot; exit.</span>
     <span class="ident">cached_generator_drop</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// The cache for drop chain on &quot;unwind&quot; exit.</span>
+    <span class="ident">cached_unwind</span>: <span class="ident">CachedBlock</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
@@ -1146,6 +1182,11 @@ should go to.
     <span class="ident">unwind</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// The cached block for unwinds during cleanups-on-generator-drop path</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is split from the standard unwind path here to prevent drop</span>
+    <span class="doccomment">/// elaboration from creating drop flags that would have to be captured</span>
+    <span class="doccomment">/// by the generator. I&#39;m not sure how important this optimization is,</span>
+    <span class="doccomment">/// but it is here.</span>
     <span class="ident">generator_drop</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
 }
 
@@ -1209,34 +1250,29 @@ should go to.
     <span class="doccomment">/// Should always be run for all inner scopes when a drop is pushed into some scope enclosing a</span>
     <span class="doccomment">/// larger extent of code.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// `unwind` controls whether caches for the unwind branch are also invalidated.</span>
-    <span class="kw">fn</span> <span class="ident">invalidate_cache</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">unwind</span>: <span class="ident">bool</span>) {
-        <span class="self">self</span>.<span class="ident">cached_exits</span>.<span class="ident">clear</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">unwind</span> { <span class="kw">return</span>; }
-        <span class="kw">for</span> <span class="ident">dropdata</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">drops</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">DropKind</span>::<span class="ident">Value</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cached_block</span> } <span class="op">=</span> <span class="ident">dropdata</span>.<span class="ident">kind</span> {
-                <span class="ident">cached_block</span>.<span class="ident">invalidate</span>();
-            }
-        }
-    }
+    <span class="doccomment">/// `storage_only` controls whether to invalidate only drop paths run `StorageDead`.</span>
+    <span class="doccomment">/// `this_scope_only` controls whether to invalidate only drop paths that refer to the current</span>
+    <span class="doccomment">/// top-of-scope (as opposed to dependent scopes).</span>
+    <span class="kw">fn</span> <span class="ident">invalidate_cache</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">storage_only</span>: <span class="ident">bool</span>, <span class="ident">this_scope_only</span>: <span class="ident">bool</span>) {
+        <span class="comment">// FIXME: maybe do shared caching of `cached_exits` etc. to handle functions</span>
+        <span class="comment">// with lots of `try!`?</span>
 
-    <span class="doccomment">/// Returns the cached entrypoint for diverging exit from this scope.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Precondition: the caches must be fully filled (i.e. diverge_cleanup is called) in order for</span>
-    <span class="doccomment">/// this method to work correctly.</span>
-    <span class="kw">fn</span> <span class="ident">cached_block</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">generator_drop</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">drops</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">drops</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
-            <span class="kw">match</span> <span class="ident">data</span>.<span class="ident">kind</span> {
-                <span class="ident">DropKind</span>::<span class="ident">Value</span> { <span class="ident">cached_block</span> } <span class="op">=&gt;</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">cached_block</span>.<span class="ident">get</span>(<span class="ident">generator_drop</span>))
+        <span class="comment">// cached exits drop storage and refer to the top-of-scope</span>
+        <span class="self">self</span>.<span class="ident">cached_exits</span>.<span class="ident">clear</span>();
+
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">storage_only</span> {
+            <span class="comment">// the current generator drop and unwind ignore</span>
+            <span class="comment">// storage but refer to top-of-scope</span>
+            <span class="self">self</span>.<span class="ident">cached_generator_drop</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+            <span class="self">self</span>.<span class="ident">cached_unwind</span>.<span class="ident">invalidate</span>();
+        }
+
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">storage_only</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">this_scope_only</span> {
+            <span class="kw">for</span> <span class="ident">dropdata</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">drops</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">DropKind</span>::<span class="ident">Value</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">cached_block</span> } <span class="op">=</span> <span class="ident">dropdata</span>.<span class="ident">kind</span> {
+                    <span class="ident">cached_block</span>.<span class="ident">invalidate</span>();
                 }
-                <span class="ident">DropKind</span>::<span class="ident">Storage</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>
             }
-        });
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cached_block</span>) <span class="op">=</span> <span class="ident">drops</span>.<span class="ident">next</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">cached_block</span>.<span class="ident">expect</span>(<span class="string">&quot;drop cache is not filled&quot;</span>))
-        } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
         }
     }
 
@@ -1348,7 +1384,8 @@ should go to.
             <span class="ident">needs_cleanup</span>: <span class="bool-val">false</span>,
             <span class="ident">drops</span>: <span class="macro">vec</span><span class="macro">!</span>[],
             <span class="ident">cached_generator_drop</span>: <span class="prelude-val">None</span>,
-            <span class="ident">cached_exits</span>: <span class="ident">FxHashMap</span>()
+            <span class="ident">cached_exits</span>: <span class="ident">FxHashMap</span>(),
+            <span class="ident">cached_unwind</span>: <span class="ident">CachedBlock</span>::<span class="ident">default</span>(),
         });
     }
 
@@ -1474,15 +1511,16 @@ should go to.
                                    <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: <span class="ident">b</span> });
                 <span class="ident">b</span>
             };
+
+            <span class="comment">// End all regions for scopes out of which we are breaking.</span>
+            <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>(), <span class="ident">block</span>, <span class="ident">src_info</span>, <span class="ident">scope</span>.<span class="ident">region_scope</span>);
+
             <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="ident">build_scope_drops</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">cfg</span>,
                                               <span class="ident">scope</span>,
                                               <span class="ident">rest</span>,
                                               <span class="ident">block</span>,
                                               <span class="self">self</span>.<span class="ident">arg_count</span>,
                                               <span class="bool-val">true</span>));
-
-            <span class="comment">// End all regions for scopes out of which we are breaking.</span>
-            <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>(), <span class="ident">block</span>, <span class="ident">src_info</span>, <span class="ident">scope</span>.<span class="ident">region_scope</span>);
         }
 
         <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">terminate</span>(<span class="ident">block</span>, <span class="ident">src_info</span>, <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span>);
@@ -1664,8 +1702,7 @@ should go to.
             <span class="comment">// invalidating caches of each scope visited. This way bare minimum of the</span>
             <span class="comment">// caches gets invalidated. i.e. if a new drop is added into the middle scope, the</span>
             <span class="comment">// cache of outer scpoe stays intact.</span>
-            <span class="kw">let</span> <span class="ident">invalidate_unwind</span> <span class="op">=</span> <span class="ident">needs_drop</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">this_scope</span>;
-            <span class="ident">scope</span>.<span class="ident">invalidate_cache</span>(<span class="ident">invalidate_unwind</span>);
+            <span class="ident">scope</span>.<span class="ident">invalidate_cache</span>(<span class="op">!</span><span class="ident">needs_drop</span>, <span class="ident">this_scope</span>);
             <span class="kw">if</span> <span class="ident">this_scope</span> {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">DropKind</span>::<span class="ident">Value</span> { .. } <span class="op">=</span> <span class="ident">drop_kind</span> {
                     <span class="ident">scope</span>.<span class="ident">needs_cleanup</span> <span class="op">=</span> <span class="bool-val">true</span>;
@@ -1811,30 +1848,50 @@ should go to.
                            <span class="ident">generator_drop</span>: <span class="ident">bool</span>)
                            <span class="op">-&gt;</span> <span class="ident">BlockAnd</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;build_scope_drops({:?} -&gt; {:?})&quot;</span>, <span class="ident">block</span>, <span class="ident">scope</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">scope</span>.<span class="ident">drops</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">peekable</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">scope</span>.<span class="ident">drops</span>.<span class="ident">iter</span>().<span class="ident">rev</span>();
     <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">drop_data</span>) <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>() {
         <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="ident">scope</span>.<span class="ident">source_info</span>(<span class="ident">drop_data</span>.<span class="ident">span</span>);
         <span class="kw">match</span> <span class="ident">drop_data</span>.<span class="ident">kind</span> {
             <span class="ident">DropKind</span>::<span class="ident">Value</span> { .. } <span class="op">=&gt;</span> {
-                <span class="comment">// Try to find the next block with its cached block</span>
-                <span class="comment">// for us to diverge into in case the drop panics.</span>
-                <span class="kw">let</span> <span class="ident">on_diverge</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">peek</span>().<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">dd</span><span class="op">|</span> {
+                <span class="comment">// Try to find the next block with its cached block for us to</span>
+                <span class="comment">// diverge into, either a previous block in this current scope or</span>
+                <span class="comment">// the top of the previous scope.</span>
+                <span class="comment">//</span>
+                <span class="comment">// If it wasn&#39;t for EndRegion, we could just chain all the DropData</span>
+                <span class="comment">// together and pick the first DropKind::Value. Please do that</span>
+                <span class="comment">// when we replace EndRegion with NLL.</span>
+                <span class="kw">let</span> <span class="ident">on_diverge</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">clone</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">dd</span><span class="op">|</span> {
                     <span class="kw">match</span> <span class="ident">dd</span>.<span class="ident">kind</span> {
-                        <span class="ident">DropKind</span>::<span class="ident">Value</span> { <span class="ident">cached_block</span> } <span class="op">=&gt;</span> {
-                            <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">cached_block</span>.<span class="ident">get</span>(<span class="ident">generator_drop</span>);
-                            <span class="kw">if</span> <span class="ident">result</span>.<span class="ident">is_none</span>() {
-                                <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">drop_data</span>.<span class="ident">span</span>, <span class="string">&quot;cached block not present?&quot;</span>)
-                            }
-                            <span class="ident">result</span>
-                        },
+                        <span class="ident">DropKind</span>::<span class="ident">Value</span> { <span class="ident">cached_block</span> } <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">cached_block</span>),
                         <span class="ident">DropKind</span>::<span class="ident">Storage</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>
                     }
-                }).<span class="ident">next</span>();
-                <span class="comment">// If there’s no `cached_block`s within current scope,</span>
-                <span class="comment">// we must look for one in the enclosing scope.</span>
-                <span class="kw">let</span> <span class="ident">on_diverge</span> <span class="op">=</span> <span class="ident">on_diverge</span>.<span class="ident">or_else</span>(<span class="op">||</span> {
-                    <span class="ident">earlier_scopes</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">cached_block</span>(<span class="ident">generator_drop</span>)).<span class="ident">next</span>()
+                }).<span class="ident">next</span>().<span class="ident">or_else</span>(<span class="op">||</span> {
+                    <span class="kw">if</span> <span class="ident">earlier_scopes</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">scope</span><span class="op">|</span> <span class="ident">scope</span>.<span class="ident">needs_cleanup</span>) {
+                        <span class="comment">// If *any* scope requires cleanup code to be run,</span>
+                        <span class="comment">// we must use the cached unwind from the *topmost*</span>
+                        <span class="comment">// scope, to ensure all EndRegions from surrounding</span>
+                        <span class="comment">// scopes are executed before the drop code runs.</span>
+                        <span class="prelude-val">Some</span>(<span class="ident">earlier_scopes</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">cached_unwind</span>)
+                    } <span class="kw">else</span> {
+                        <span class="comment">// We don&#39;t need any further cleanup, so return None</span>
+                        <span class="comment">// to avoid creating a landing pad. We can skip</span>
+                        <span class="comment">// EndRegions because all local regions end anyway</span>
+                        <span class="comment">// when the function unwinds.</span>
+                        <span class="comment">//</span>
+                        <span class="comment">// This is an important optimization because LLVM is</span>
+                        <span class="comment">// terrible at optimizing landing pads. FIXME: I think</span>
+                        <span class="comment">// it would be cleaner and better to do this optimization</span>
+                        <span class="comment">// in SimplifyCfg instead of here.</span>
+                        <span class="prelude-val">None</span>
+                    }
                 });
+
+                <span class="kw">let</span> <span class="ident">on_diverge</span> <span class="op">=</span> <span class="ident">on_diverge</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">cached_block</span><span class="op">|</span> {
+                    <span class="ident">cached_block</span>.<span class="ident">get</span>(<span class="ident">generator_drop</span>).<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
+                        <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">drop_data</span>.<span class="ident">span</span>, <span class="string">&quot;cached block not present?&quot;</span>)
+                    })
+                });
+
                 <span class="kw">let</span> <span class="ident">next</span> <span class="op">=</span> <span class="ident">cfg</span>.<span class="ident">start_new_block</span>();
                 <span class="ident">cfg</span>.<span class="ident">terminate</span>(<span class="ident">block</span>, <span class="ident">source_info</span>, <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> {
                     <span class="ident">location</span>: <span class="ident">drop_data</span>.<span class="ident">location</span>.<span class="ident">clone</span>(),
@@ -1925,14 +1982,23 @@ should go to.
         };
     }
 
-    <span class="comment">// Finally, push the EndRegion block, used by mir-borrowck. (Block</span>
-    <span class="comment">// becomes trivial goto after pass that removes all EndRegions.)</span>
-    {
-        <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">cfg</span>.<span class="ident">start_new_cleanup_block</span>();
-        <span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="ident">tcx</span>, <span class="ident">block</span>, <span class="ident">source_info</span>(<span class="ident">span</span>), <span class="ident">scope</span>.<span class="ident">region_scope</span>);
-        <span class="ident">cfg</span>.<span class="ident">terminate</span>(<span class="ident">block</span>, <span class="ident">source_info</span>(<span class="ident">span</span>), <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: <span class="ident">target</span> });
-        <span class="ident">target</span> <span class="op">=</span> <span class="ident">block</span>
-    }
+    <span class="comment">// Finally, push the EndRegion block, used by mir-borrowck, and set</span>
+    <span class="comment">// `cached_unwind` to point to it (Block becomes trivial goto after</span>
+    <span class="comment">// pass that removes all EndRegions).</span>
+    <span class="ident">target</span> <span class="op">=</span> {
+        <span class="kw">let</span> <span class="ident">cached_block</span> <span class="op">=</span> <span class="ident">scope</span>.<span class="ident">cached_unwind</span>.<span class="ident">ref_mut</span>(<span class="ident">generator_drop</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">cached_block</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">cached_block</span> {
+            <span class="ident">cached_block</span>
+        } <span class="kw">else</span> {
+            <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">cfg</span>.<span class="ident">start_new_cleanup_block</span>();
+            <span class="ident">cfg</span>.<span class="ident">push_end_region</span>(<span class="ident">tcx</span>, <span class="ident">block</span>, <span class="ident">source_info</span>(<span class="ident">span</span>), <span class="ident">scope</span>.<span class="ident">region_scope</span>);
+            <span class="ident">cfg</span>.<span class="ident">terminate</span>(<span class="ident">block</span>, <span class="ident">source_info</span>(<span class="ident">span</span>), <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: <span class="ident">target</span> });
+            <span class="kw-2">*</span><span class="ident">cached_block</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">block</span>);
+            <span class="ident">block</span>
+        }
+    };
+
+    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;build_diverge_scope({:?}, {:?}) = {:?}&quot;</span>, <span class="ident">scope</span>, <span class="ident">span</span>, <span class="ident">target</span>);
 
     <span class="ident">target</span>
 }
@@ -1958,6 +2024,8 @@ should go to.
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

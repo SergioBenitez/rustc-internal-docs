@@ -1887,7 +1887,6 @@
 <span id="1842">1842</span>
 <span id="1843">1843</span>
 <span id="1844">1844</span>
-<span id="1845">1845</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1921,7 +1920,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">util</span>::<span class="ident">TypeIdHasher</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
-<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">ToHex</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ich</span>::<span class="ident">Fingerprint</span>;
 <span class="kw">use</span> {<span class="ident">type_of</span>, <span class="ident">machine</span>, <span class="ident">monomorphize</span>};
 <span class="kw">use</span> <span class="ident">common</span>::{<span class="self">self</span>, <span class="ident">CrateContext</span>};
 <span class="kw">use</span> <span class="ident">type_</span>::<span class="ident">Type</span>;
@@ -2037,11 +2036,10 @@
 
         <span class="comment">// The hasher we are using to generate the UniqueTypeId. We want</span>
         <span class="comment">// something that provides more than the 64 bits of the DefaultHasher.</span>
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">type_id_hasher</span> <span class="op">=</span> <span class="ident">TypeIdHasher</span>::<span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">20</span>]<span class="op">&gt;</span>::<span class="ident">new</span>(<span class="ident">cx</span>.<span class="ident">tcx</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">type_id_hasher</span> <span class="op">=</span> <span class="ident">TypeIdHasher</span>::<span class="op">&lt;</span><span class="ident">Fingerprint</span><span class="op">&gt;</span>::<span class="ident">new</span>(<span class="ident">cx</span>.<span class="ident">tcx</span>());
         <span class="ident">type_id_hasher</span>.<span class="ident">visit_ty</span>(<span class="ident">type_</span>);
-
         <span class="kw">let</span> <span class="ident">unique_type_id</span> <span class="op">=</span> <span class="ident">type_id_hasher</span>.<span class="ident">finish</span>().<span class="ident">to_hex</span>();
+
         <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">unique_id_interner</span>.<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="ident">unique_type_id</span>);
         <span class="self">self</span>.<span class="ident">type_to_unique_id</span>.<span class="ident">insert</span>(<span class="ident">type_</span>, <span class="ident">UniqueTypeId</span>(<span class="ident">key</span>));
 
@@ -3756,6 +3754,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

@@ -593,7 +593,7 @@
 <span class="doccomment">//! DefPaths which are much more robust in the face of changes to the code base.</span>
 
 <span class="kw">use</span> <span class="ident">monomorphize</span>::<span class="ident">Instance</span>;
-<span class="kw">use</span> <span class="ident">trans_item</span>::{<span class="ident">TransItemExt</span>, <span class="ident">InstantiationMode</span>};
+<span class="kw">use</span> <span class="ident">trans_item</span>::{<span class="ident">BaseTransItemExt</span>, <span class="ident">InstantiationMode</span>};
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">weak_lang_items</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">trans</span>::<span class="ident">TransItem</span>;
@@ -964,6 +964,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

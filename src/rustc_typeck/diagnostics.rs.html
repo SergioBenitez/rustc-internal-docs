@@ -4726,6 +4726,10 @@
 <span id="4681">4681</span>
 <span id="4682">4682</span>
 <span id="4683">4683</span>
+<span id="4684">4684</span>
+<span id="4685">4685</span>
+<span id="4686">4686</span>
+<span id="4687">4687</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -8715,6 +8719,10 @@ details.
 &quot;##</span>,
 
 <span class="ident">E0599</span>: <span class="string">r##&quot;
+This error occurs when a method is used on a type which doesn&#39;t implement it:
+
+Erroneous code example:
+
 ```compile_fail,E0599
 struct Mouth;
 
@@ -9432,6 +9440,8 @@ foo.method(); // Ok!
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

@@ -1208,7 +1208,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// * `align` must be a power of two,</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// * `align` must not exceed 2^31 (i.e. `1 &lt;&lt; 31`),</span>
+    <span class="doccomment">/// * `align` must not exceed 2&lt;sup&gt;31&lt;/sup&gt; (i.e. `1 &lt;&lt; 31`),</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * `size`, when rounded up to the nearest multiple of `align`,</span>
     <span class="doccomment">///    must not overflow (i.e. the rounded value must be less than</span>
@@ -1251,7 +1251,7 @@
     <span class="doccomment">/// # Safety</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function is unsafe as it does not verify that `align` is</span>
-    <span class="doccomment">/// a power-of-two that is also less than or equal to 2^31, nor</span>
+    <span class="doccomment">/// a power-of-two that is also less than or equal to 2&lt;sup&gt;31&lt;/sup&gt;, nor</span>
     <span class="doccomment">/// that `size` aligned to `align` fits within the address space</span>
     <span class="doccomment">/// (i.e. the `Layout::from_size_align` preconditions).</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -1365,7 +1365,7 @@
         };
 
         <span class="comment">// We can assume that `self.align` is a power-of-two that does</span>
-        <span class="comment">// not exceed 2^31. Furthermore, `alloc_size` has already been</span>
+        <span class="comment">// not exceed 2&lt;sup&gt;31&lt;/sup&gt;. Furthermore, `alloc_size` has already been</span>
         <span class="comment">// rounded up to a multiple of `self.align`; therefore, the</span>
         <span class="comment">// call to `Layout::from_size_align` below should never panic.</span>
         <span class="prelude-val">Some</span>((<span class="ident">Layout</span>::<span class="ident">from_size_align</span>(<span class="ident">alloc_size</span>, <span class="self">self</span>.<span class="ident">align</span>).<span class="ident">unwrap</span>(), <span class="ident">padded_size</span>))
@@ -2250,6 +2250,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

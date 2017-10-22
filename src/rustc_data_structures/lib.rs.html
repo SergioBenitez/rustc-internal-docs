@@ -113,6 +113,8 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -144,6 +146,7 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">fn_traits</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">unsize</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">i128_type</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">i128</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">conservative_impl_trait</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">specialization</span>)]</span>
 
@@ -170,6 +173,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">indexed_set</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">indexed_vec</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">obligation_forest</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sip128</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">snapshot_map</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">snapshot_vec</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stable_hasher</span>;
@@ -206,6 +210,8 @@
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>

@@ -106,8 +106,8 @@ from any borrow of a given type.</p>
         </h2>
         <ul class='item-list' id='implementors-list'>
     <li><code>impl ToOwned for str<span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="struct" href="../../collections/string/struct.String.html" title="struct collections::string::String">String</a>;</span></code></li>
-<li><code>impl&lt;T&gt; ToOwned for [T] <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="../../core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a>,&nbsp;</span><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="struct" href="../../collections/vec/struct.Vec.html" title="struct collections::vec::Vec">Vec</a>&lt;T&gt;;</span></code></li>
 <li><code>impl&lt;T&gt; ToOwned for T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="../../core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a>,&nbsp;</span><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = T;</span></code></li>
+<li><code>impl&lt;T&gt; ToOwned for [T] <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="../../core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a>,&nbsp;</span><span class="where fmt-newline">  type <a href='#associatedtype.Owned' class="type">Owned</a> = <a class="struct" href="../../collections/vec/struct.Vec.html" title="struct collections::vec::Vec">Vec</a>&lt;T&gt;;</span></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/alloc/borrow/trait.ToOwned.js">
                  </script></section>
@@ -131,6 +131,8 @@ from any borrow of a given type.</p>
                     <dd>Move up in search results</dd>
                     <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
                     <dt>+</dt>
