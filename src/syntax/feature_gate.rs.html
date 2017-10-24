@@ -1826,6 +1826,17 @@
 <span id="1781">1781</span>
 <span id="1782">1782</span>
 <span id="1783">1783</span>
+<span id="1784">1784</span>
+<span id="1785">1785</span>
+<span id="1786">1786</span>
+<span id="1787">1787</span>
+<span id="1788">1788</span>
+<span id="1789">1789</span>
+<span id="1790">1790</span>
+<span id="1791">1791</span>
+<span id="1792">1792</span>
+<span id="1793">1793</span>
+<span id="1794">1794</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2230,6 +2241,9 @@
 
     <span class="comment">// Trait object syntax with `dyn` prefix</span>
     (<span class="ident">active</span>, <span class="ident">dyn_trait</span>, <span class="string">&quot;1.22.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">44662</span>)),
+
+    <span class="comment">// `crate` as visibility modifier, synonymous to `pub(crate)`</span>
+    (<span class="ident">active</span>, <span class="ident">crate_visibility_modifier</span>, <span class="string">&quot;1.23.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">45388</span>)),
 );
 
 <span class="macro">declare_features</span><span class="macro">!</span> (
@@ -3409,6 +3423,14 @@
             _ <span class="op">=&gt;</span> {}
         }
         <span class="ident">visit</span>::<span class="ident">walk_impl_item</span>(<span class="self">self</span>, <span class="ident">ii</span>);
+    }
+
+    <span class="kw">fn</span> <span class="ident">visit_vis</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vis</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ast</span>::<span class="ident">Visibility</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ast</span>::<span class="ident">Visibility</span>::<span class="ident">Crate</span>(<span class="ident">span</span>, <span class="ident">ast</span>::<span class="ident">CrateSugar</span>::<span class="ident">JustCrate</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">vis</span> {
+            <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">crate_visibility_modifier</span>, <span class="ident">span</span>,
+                               <span class="string">&quot;`crate` visibility modifier is experimental&quot;</span>);
+        }
+        <span class="ident">visit</span>::<span class="ident">walk_vis</span>(<span class="self">self</span>, <span class="ident">vis</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">visit_generics</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">g</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ast</span>::<span class="ident">Generics</span>) {

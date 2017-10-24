@@ -2066,6 +2066,15 @@
 <span id="2021">2021</span>
 <span id="2022">2022</span>
 <span id="2023">2023</span>
+<span id="2024">2024</span>
+<span id="2025">2025</span>
+<span id="2026">2026</span>
+<span id="2027">2027</span>
+<span id="2028">2028</span>
+<span id="2029">2029</span>
+<span id="2030">2030</span>
+<span id="2031">2031</span>
+<span id="2032">2032</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3857,10 +3866,19 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">CrateSugar</span> {
+    <span class="doccomment">/// Source is `pub(crate)`</span>
+    <span class="ident">PubCrate</span>,
+
+    <span class="doccomment">/// Source is (just) `crate`</span>
+    <span class="ident">JustCrate</span>,
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Visibility</span> {
     <span class="ident">Public</span>,
-    <span class="ident">Crate</span>(<span class="ident">Span</span>),
+    <span class="ident">Crate</span>(<span class="ident">Span</span>, <span class="ident">CrateSugar</span>),
     <span class="ident">Restricted</span> { <span class="ident">path</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;</span>, <span class="ident">id</span>: <span class="ident">NodeId</span> },
     <span class="ident">Inherited</span>,
 }
