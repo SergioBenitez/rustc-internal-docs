@@ -903,6 +903,7 @@
 <span id="858">858</span>
 <span id="859">859</span>
 <span id="860">860</span>
+<span id="861">861</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1660,6 +1661,7 @@
         <span class="ident">DepKind</span>::<span class="ident">InherentImpls</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">inherent_impls</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">TypeckBodiesKrate</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">typeck_item_bodies</span>, <span class="ident">LOCAL_CRATE</span>); }
         <span class="ident">DepKind</span>::<span class="ident">TypeckTables</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">typeck_tables_of</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
+        <span class="ident">DepKind</span>::<span class="ident">UsedTraitImports</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">used_trait_imports</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">HasTypeckTables</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">has_typeck_tables</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">SymbolName</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">def_symbol_name</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">SpecializationGraph</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">specialization_graph_of</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }

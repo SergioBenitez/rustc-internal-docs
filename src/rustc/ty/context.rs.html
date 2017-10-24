@@ -2367,6 +2367,8 @@
 <span id="2322">2322</span>
 <span id="2323">2323</span>
 <span id="2324">2324</span>
+<span id="2325">2325</span>
+<span id="2326">2326</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2756,8 +2758,10 @@
     <span class="ident">cast_kinds</span>: <span class="ident">ItemLocalMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">cast</span>::<span class="ident">CastKind</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Set of trait imports actually used in the method resolution.</span>
-    <span class="doccomment">/// This is used for warning unused imports.</span>
-    <span class="kw">pub</span> <span class="ident">used_trait_imports</span>: <span class="ident">DefIdSet</span>,
+    <span class="doccomment">/// This is used for warning unused imports. During type</span>
+    <span class="doccomment">/// checking, this `Rc` should not be cloned: it must have a ref-count</span>
+    <span class="doccomment">/// of 1 so that we can insert things into the set mutably.</span>
+    <span class="kw">pub</span> <span class="ident">used_trait_imports</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">DefIdSet</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// If any errors occurred while type-checking this body,</span>
     <span class="doccomment">/// this field will be set to `true`.</span>
@@ -2787,7 +2791,7 @@
             <span class="ident">liberated_fn_sigs</span>: <span class="ident">ItemLocalMap</span>(),
             <span class="ident">fru_field_types</span>: <span class="ident">ItemLocalMap</span>(),
             <span class="ident">cast_kinds</span>: <span class="ident">ItemLocalMap</span>(),
-            <span class="ident">used_trait_imports</span>: <span class="ident">DefIdSet</span>(),
+            <span class="ident">used_trait_imports</span>: <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">DefIdSet</span>()),
             <span class="ident">tainted_by_errors</span>: <span class="bool-val">false</span>,
             <span class="ident">free_region_map</span>: <span class="ident">FreeRegionMap</span>::<span class="ident">new</span>(),
         }
