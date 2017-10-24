@@ -3355,7 +3355,7 @@
                 <span class="ident">span</span>: <span class="ident">Span</span>,
                 <span class="ident">_node_id</span>: <span class="ident">NodeId</span>) {
         <span class="comment">// check for const fn declarations</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">FnKind</span>::<span class="ident">ItemFn</span>(_, _, _, <span class="ident">Spanned</span> { <span class="ident">node</span>: <span class="ident">ast</span>::<span class="ident">Constness</span>::<span class="ident">Const</span>, .. }, _, _, _) <span class="op">=</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">FnKind</span>::<span class="ident">ItemFn</span>(_, _, <span class="ident">Spanned</span> { <span class="ident">node</span>: <span class="ident">ast</span>::<span class="ident">Constness</span>::<span class="ident">Const</span>, .. }, _, _, _) <span class="op">=</span>
             <span class="ident">fn_kind</span> {
             <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">const_fn</span>, <span class="ident">span</span>, <span class="string">&quot;const fn is unstable&quot;</span>);
         }
@@ -3365,7 +3365,7 @@
         <span class="comment">// point.</span>
 
         <span class="kw">match</span> <span class="ident">fn_kind</span> {
-            <span class="ident">FnKind</span>::<span class="ident">ItemFn</span>(_, _, _, _, <span class="ident">abi</span>, _, _) <span class="op">|</span>
+            <span class="ident">FnKind</span>::<span class="ident">ItemFn</span>(_, _, _, <span class="ident">abi</span>, _, _) <span class="op">|</span>
             <span class="ident">FnKind</span>::<span class="ident">Method</span>(_, <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">MethodSig</span> { <span class="ident">abi</span>, .. }, _, _) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">check_abi</span>(<span class="ident">abi</span>, <span class="ident">span</span>);
             }

@@ -2065,6 +2065,7 @@
 <span id="2020">2020</span>
 <span id="2021">2021</span>
 <span id="2022">2022</span>
+<span id="2023">2023</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3246,7 +3247,6 @@
     <span class="kw">pub</span> <span class="ident">constness</span>: <span class="ident">Spanned</span><span class="op">&lt;</span><span class="ident">Constness</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">abi</span>: <span class="ident">Abi</span>,
     <span class="kw">pub</span> <span class="ident">decl</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">FnDecl</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">generics</span>: <span class="ident">Generics</span>,
 }
 
 <span class="doccomment">/// Represents an item declaration within a trait declaration,</span>
@@ -3258,6 +3258,7 @@
     <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">NodeId</span>,
     <span class="kw">pub</span> <span class="ident">ident</span>: <span class="ident">Ident</span>,
     <span class="kw">pub</span> <span class="ident">attrs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">generics</span>: <span class="ident">Generics</span>,
     <span class="kw">pub</span> <span class="ident">node</span>: <span class="ident">TraitItemKind</span>,
     <span class="kw">pub</span> <span class="ident">span</span>: <span class="ident">Span</span>,
     <span class="doccomment">/// See `Item::tokens` for what this is</span>
@@ -3279,6 +3280,7 @@
     <span class="kw">pub</span> <span class="ident">vis</span>: <span class="ident">Visibility</span>,
     <span class="kw">pub</span> <span class="ident">defaultness</span>: <span class="ident">Defaultness</span>,
     <span class="kw">pub</span> <span class="ident">attrs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">generics</span>: <span class="ident">Generics</span>,
     <span class="kw">pub</span> <span class="ident">node</span>: <span class="ident">ImplItemKind</span>,
     <span class="kw">pub</span> <span class="ident">span</span>: <span class="ident">Span</span>,
     <span class="doccomment">/// See `Item::tokens` for what this is</span>

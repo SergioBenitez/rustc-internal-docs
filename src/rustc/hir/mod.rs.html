@@ -2002,6 +2002,7 @@
 <span id="1957">1957</span>
 <span id="1958">1958</span>
 <span id="1959">1959</span>
+<span id="1960">1960</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3300,7 +3301,6 @@
     <span class="kw">pub</span> <span class="ident">constness</span>: <span class="ident">Constness</span>,
     <span class="kw">pub</span> <span class="ident">abi</span>: <span class="ident">Abi</span>,
     <span class="kw">pub</span> <span class="ident">decl</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">FnDecl</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">generics</span>: <span class="ident">Generics</span>,
 }
 
 <span class="comment">// The bodies for items are stored &quot;out of line&quot;, in a separate</span>
@@ -3321,6 +3321,7 @@
     <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">Name</span>,
     <span class="kw">pub</span> <span class="ident">hir_id</span>: <span class="ident">HirId</span>,
     <span class="kw">pub</span> <span class="ident">attrs</span>: <span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">generics</span>: <span class="ident">Generics</span>,
     <span class="kw">pub</span> <span class="ident">node</span>: <span class="ident">TraitItemKind</span>,
     <span class="kw">pub</span> <span class="ident">span</span>: <span class="ident">Span</span>,
 }
@@ -3365,6 +3366,7 @@
     <span class="kw">pub</span> <span class="ident">vis</span>: <span class="ident">Visibility</span>,
     <span class="kw">pub</span> <span class="ident">defaultness</span>: <span class="ident">Defaultness</span>,
     <span class="kw">pub</span> <span class="ident">attrs</span>: <span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">generics</span>: <span class="ident">Generics</span>,
     <span class="kw">pub</span> <span class="ident">node</span>: <span class="ident">ImplItemKind</span>,
     <span class="kw">pub</span> <span class="ident">span</span>: <span class="ident">Span</span>,
 }

@@ -6431,6 +6431,8 @@
 <span id="6386">6386</span>
 <span id="6387">6387</span>
 <span id="6388">6388</span>
+<span id="6389">6389</span>
+<span id="6390">6390</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -7721,10 +7723,10 @@
                          <span class="kw-2">mut</span> <span class="ident">attrs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">TraitItem</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
 
-        <span class="kw">let</span> (<span class="ident">name</span>, <span class="ident">node</span>) <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Type</span>) {
+        <span class="kw">let</span> (<span class="ident">name</span>, <span class="ident">node</span>, <span class="ident">generics</span>) <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Type</span>) {
             <span class="kw">let</span> <span class="ident">TyParam</span> {<span class="ident">ident</span>, <span class="ident">bounds</span>, <span class="ident">default</span>, ..} <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ty_param</span>(<span class="macro">vec</span><span class="macro">!</span>[])<span class="question-mark">?</span>;
             <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Semi</span>)<span class="question-mark">?</span>;
-            (<span class="ident">ident</span>, <span class="ident">TraitItemKind</span>::<span class="ident">Type</span>(<span class="ident">bounds</span>, <span class="ident">default</span>))
+            (<span class="ident">ident</span>, <span class="ident">TraitItemKind</span>::<span class="ident">Type</span>(<span class="ident">bounds</span>, <span class="ident">default</span>), <span class="ident">ast</span>::<span class="ident">Generics</span>::<span class="ident">default</span>())
         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_const_item</span>() {
             <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Const</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ident</span>()<span class="question-mark">?</span>;
@@ -7739,7 +7741,7 @@
                 <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Semi</span>)<span class="question-mark">?</span>;
                 <span class="prelude-val">None</span>
             };
-            (<span class="ident">ident</span>, <span class="ident">TraitItemKind</span>::<span class="ident">Const</span>(<span class="ident">ty</span>, <span class="ident">default</span>))
+            (<span class="ident">ident</span>, <span class="ident">TraitItemKind</span>::<span class="ident">Const</span>(<span class="ident">ty</span>, <span class="ident">default</span>), <span class="ident">ast</span>::<span class="ident">Generics</span>::<span class="ident">default</span>())
         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_path_start</span>() {
             <span class="comment">// trait item macro.</span>
             <span class="comment">// code copied from parse_macro_use_or_failure... abstraction!</span>
@@ -7762,7 +7764,7 @@
             }
 
             <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">respan</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>), <span class="ident">Mac_</span> { <span class="ident">path</span>: <span class="ident">pth</span>, <span class="ident">tts</span>: <span class="ident">tts</span> });
-            (<span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>(), <span class="ident">ast</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Macro</span>(<span class="ident">mac</span>))
+            (<span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>(), <span class="ident">ast</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Macro</span>(<span class="ident">mac</span>), <span class="ident">ast</span>::<span class="ident">Generics</span>::<span class="ident">default</span>())
         } <span class="kw">else</span> {
             <span class="kw">let</span> (<span class="ident">constness</span>, <span class="ident">unsafety</span>, <span class="ident">abi</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_fn_front_matter</span>()<span class="question-mark">?</span>;
 
@@ -7775,13 +7777,12 @@
                 <span class="comment">// definition...</span>
                 <span class="ident">p</span>.<span class="ident">parse_arg_general</span>(<span class="bool-val">false</span>)
             })<span class="question-mark">?</span>;
-
             <span class="ident">generics</span>.<span class="ident">where_clause</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_where_clause</span>()<span class="question-mark">?</span>;
+
             <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">ast</span>::<span class="ident">MethodSig</span> {
                 <span class="ident">unsafety</span>,
                 <span class="ident">constness</span>,
                 <span class="ident">decl</span>: <span class="ident">d</span>,
-                <span class="ident">generics</span>,
                 <span class="ident">abi</span>,
             };
 
@@ -7804,13 +7805,14 @@
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="self">self</span>.<span class="ident">fatal</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;expected `;` or `{{`, found `{}`&quot;</span>, <span class="ident">token_str</span>)));
                 }
             };
-            (<span class="ident">ident</span>, <span class="ident">ast</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Method</span>(<span class="ident">sig</span>, <span class="ident">body</span>))
+            (<span class="ident">ident</span>, <span class="ident">ast</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Method</span>(<span class="ident">sig</span>, <span class="ident">body</span>), <span class="ident">generics</span>)
         };
 
         <span class="prelude-val">Ok</span>(<span class="ident">TraitItem</span> {
             <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>,
             <span class="ident">ident</span>: <span class="ident">name</span>,
             <span class="ident">attrs</span>,
+            <span class="ident">generics</span>,
             <span class="ident">node</span>,
             <span class="ident">span</span>: <span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>),
             <span class="ident">tokens</span>: <span class="prelude-val">None</span>,
@@ -11335,12 +11337,12 @@
         <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
         <span class="kw">let</span> <span class="ident">vis</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_visibility</span>(<span class="bool-val">false</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">defaultness</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_defaultness</span>()<span class="question-mark">?</span>;
-        <span class="kw">let</span> (<span class="ident">name</span>, <span class="ident">node</span>) <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Type</span>) {
+        <span class="kw">let</span> (<span class="ident">name</span>, <span class="ident">node</span>, <span class="ident">generics</span>) <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Type</span>) {
             <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ident</span>()<span class="question-mark">?</span>;
             <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Eq</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">typ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ty</span>()<span class="question-mark">?</span>;
             <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Semi</span>)<span class="question-mark">?</span>;
-            (<span class="ident">name</span>, <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Type</span>(<span class="ident">typ</span>))
+            (<span class="ident">name</span>, <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Type</span>(<span class="ident">typ</span>), <span class="ident">ast</span>::<span class="ident">Generics</span>::<span class="ident">default</span>())
         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_const_item</span>() {
             <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Const</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ident</span>()<span class="question-mark">?</span>;
@@ -11349,11 +11351,11 @@
             <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Eq</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr</span>()<span class="question-mark">?</span>;
             <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Semi</span>)<span class="question-mark">?</span>;
-            (<span class="ident">name</span>, <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Const</span>(<span class="ident">typ</span>, <span class="ident">expr</span>))
+            (<span class="ident">name</span>, <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Const</span>(<span class="ident">typ</span>, <span class="ident">expr</span>), <span class="ident">ast</span>::<span class="ident">Generics</span>::<span class="ident">default</span>())
         } <span class="kw">else</span> {
-            <span class="kw">let</span> (<span class="ident">name</span>, <span class="ident">inner_attrs</span>, <span class="ident">node</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_impl_method</span>(<span class="kw-2">&amp;</span><span class="ident">vis</span>, <span class="ident">at_end</span>)<span class="question-mark">?</span>;
+            <span class="kw">let</span> (<span class="ident">name</span>, <span class="ident">inner_attrs</span>, <span class="ident">generics</span>, <span class="ident">node</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_impl_method</span>(<span class="kw-2">&amp;</span><span class="ident">vis</span>, <span class="ident">at_end</span>)<span class="question-mark">?</span>;
             <span class="ident">attrs</span>.<span class="ident">extend</span>(<span class="ident">inner_attrs</span>);
-            (<span class="ident">name</span>, <span class="ident">node</span>)
+            (<span class="ident">name</span>, <span class="ident">node</span>, <span class="ident">generics</span>)
         };
 
         <span class="prelude-val">Ok</span>(<span class="ident">ImplItem</span> {
@@ -11363,6 +11365,7 @@
             <span class="ident">vis</span>,
             <span class="ident">defaultness</span>,
             <span class="ident">attrs</span>,
+            <span class="ident">generics</span>,
             <span class="ident">node</span>,
             <span class="ident">tokens</span>: <span class="prelude-val">None</span>,
         })
@@ -11420,7 +11423,8 @@
 
     <span class="doccomment">/// Parse a method or a macro invocation in a trait impl.</span>
     <span class="kw">fn</span> <span class="ident">parse_impl_method</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vis</span>: <span class="kw-2">&amp;</span><span class="ident">Visibility</span>, <span class="ident">at_end</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bool</span>)
-                         <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, (<span class="ident">Ident</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Attribute</span><span class="op">&gt;</span>, <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>)<span class="op">&gt;</span> {
+                         <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, (<span class="ident">Ident</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Attribute</span><span class="op">&gt;</span>, <span class="ident">ast</span>::<span class="ident">Generics</span>,
+                             <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>)<span class="op">&gt;</span> {
         <span class="comment">// code copied from parse_macro_use_or_failure... abstraction!</span>
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_path_start</span>() {
             <span class="comment">// Method macro.</span>
@@ -11447,7 +11451,8 @@
             }
 
             <span class="kw">let</span> <span class="ident">mac</span> <span class="op">=</span> <span class="ident">respan</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>), <span class="ident">Mac_</span> { <span class="ident">path</span>: <span class="ident">pth</span>, <span class="ident">tts</span>: <span class="ident">tts</span> });
-            <span class="prelude-val">Ok</span>((<span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>(), <span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Macro</span>(<span class="ident">mac</span>)))
+            <span class="prelude-val">Ok</span>((<span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>(), <span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">ast</span>::<span class="ident">Generics</span>::<span class="ident">default</span>(),
+                <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Macro</span>(<span class="ident">mac</span>)))
         } <span class="kw">else</span> {
             <span class="kw">let</span> (<span class="ident">constness</span>, <span class="ident">unsafety</span>, <span class="ident">abi</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_fn_front_matter</span>()<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ident</span>()<span class="question-mark">?</span>;
@@ -11456,8 +11461,7 @@
             <span class="ident">generics</span>.<span class="ident">where_clause</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_where_clause</span>()<span class="question-mark">?</span>;
             <span class="kw-2">*</span><span class="ident">at_end</span> <span class="op">=</span> <span class="bool-val">true</span>;
             <span class="kw">let</span> (<span class="ident">inner_attrs</span>, <span class="ident">body</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_inner_attrs_and_block</span>()<span class="question-mark">?</span>;
-            <span class="prelude-val">Ok</span>((<span class="ident">ident</span>, <span class="ident">inner_attrs</span>, <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(<span class="ident">ast</span>::<span class="ident">MethodSig</span> {
-                <span class="ident">generics</span>,
+            <span class="prelude-val">Ok</span>((<span class="ident">ident</span>, <span class="ident">inner_attrs</span>, <span class="ident">generics</span>, <span class="ident">ast</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(<span class="ident">ast</span>::<span class="ident">MethodSig</span> {
                 <span class="ident">abi</span>,
                 <span class="ident">unsafety</span>,
                 <span class="ident">constness</span>,
