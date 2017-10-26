@@ -942,7 +942,7 @@
                             <span class="ident">treat_err_as_bug</span>: <span class="ident">bool</span>,
                             <span class="ident">cm</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">CodeMapper</span><span class="op">&gt;&gt;</span>)
                             <span class="op">-&gt;</span> <span class="ident">Handler</span> {
-        <span class="kw">let</span> <span class="ident">emitter</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">stderr</span>(<span class="ident">color_config</span>, <span class="ident">cm</span>));
+        <span class="kw">let</span> <span class="ident">emitter</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">stderr</span>(<span class="ident">color_config</span>, <span class="ident">cm</span>, <span class="bool-val">false</span>));
         <span class="ident">Handler</span>::<span class="ident">with_emitter</span>(<span class="ident">can_emit_warnings</span>, <span class="ident">treat_err_as_bug</span>, <span class="ident">emitter</span>)
     }
 

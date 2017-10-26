@@ -2717,6 +2717,7 @@
 <span id="2672">2672</span>
 <span id="2673">2673</span>
 <span id="2674">2674</span>
+<span id="2675">2675</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2746,6 +2747,7 @@
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">resolve_lifetime</span>::<span class="ident">ObjectLifetimeDefault</span>;
 <span class="kw">use</span> <span class="ident">mir</span>::<span class="ident">Mir</span>;
 <span class="kw">use</span> <span class="ident">mir</span>::<span class="ident">GeneratorLayout</span>;
+<span class="kw">use</span> <span class="ident">session</span>::<span class="ident">CrateDisambiguator</span>;
 <span class="kw">use</span> <span class="ident">traits</span>;
 <span class="kw">use</span> <span class="ident">ty</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Subst</span>, <span class="ident">Substs</span>};
@@ -5276,7 +5278,7 @@
 }
 
 <span class="kw">fn</span> <span class="ident">crate_disambiguator</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                 <span class="ident">crate_num</span>: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Symbol</span> {
+                                 <span class="ident">crate_num</span>: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">CrateDisambiguator</span> {
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">crate_num</span>, <span class="ident">LOCAL_CRATE</span>);
     <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">local_crate_disambiguator</span>()
 }

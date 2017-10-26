@@ -573,7 +573,7 @@
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">exported_symbols</span>::<span class="ident">SymbolExportLevel</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">trans</span>::{<span class="ident">CodegenUnit</span>, <span class="ident">Stats</span>};
 <span class="kw">use</span> <span class="ident">mir</span>;
-<span class="kw">use</span> <span class="ident">session</span>::<span class="ident">CompileResult</span>;
+<span class="kw">use</span> <span class="ident">session</span>::{<span class="ident">CompileResult</span>, <span class="ident">CrateDisambiguator</span>};
 <span class="kw">use</span> <span class="ident">session</span>::<span class="ident">config</span>::<span class="ident">OutputFilenames</span>;
 <span class="kw">use</span> <span class="ident">traits</span>::<span class="ident">Vtable</span>;
 <span class="kw">use</span> <span class="ident">traits</span>::<span class="ident">specialization_graph</span>;
@@ -829,7 +829,7 @@
     [] <span class="kw">fn</span> <span class="ident">native_libraries</span>: <span class="ident">NativeLibraries</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NativeLibrary</span><span class="op">&gt;&gt;</span>,
     [] <span class="kw">fn</span> <span class="ident">plugin_registrar_fn</span>: <span class="ident">PluginRegistrarFn</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DefId</span><span class="op">&gt;</span>,
     [] <span class="kw">fn</span> <span class="ident">derive_registrar_fn</span>: <span class="ident">DeriveRegistrarFn</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DefId</span><span class="op">&gt;</span>,
-    [] <span class="kw">fn</span> <span class="ident">crate_disambiguator</span>: <span class="ident">CrateDisambiguator</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Symbol</span>,
+    [] <span class="kw">fn</span> <span class="ident">crate_disambiguator</span>: <span class="ident">CrateDisambiguator</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">CrateDisambiguator</span>,
     [] <span class="kw">fn</span> <span class="ident">crate_hash</span>: <span class="ident">CrateHash</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Svh</span>,
     [] <span class="kw">fn</span> <span class="ident">original_crate_name</span>: <span class="ident">OriginalCrateName</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Symbol</span>,
 

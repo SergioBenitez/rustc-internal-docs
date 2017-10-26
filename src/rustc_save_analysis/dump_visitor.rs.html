@@ -2201,7 +2201,7 @@
                         <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="prelude-val">Some</span>(::<span class="ident">id_from_node_id</span>(<span class="ident">item</span>.<span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">save_ctxt</span>));
 
                         <span class="self">self</span>.<span class="ident">dumper</span>.<span class="ident">dump_def</span>(<span class="ident">item</span>.<span class="ident">vis</span> <span class="op">==</span> <span class="ident">ast</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span>, <span class="ident">Def</span> {
-                            <span class="ident">kind</span>: <span class="ident">DefKind</span>::<span class="ident">Struct</span>,
+                            <span class="ident">kind</span>: <span class="ident">DefKind</span>::<span class="ident">StructVariant</span>,
                             <span class="ident">id</span>,
                             <span class="ident">span</span>,
                             <span class="ident">name</span>,
@@ -2235,7 +2235,7 @@
                         <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="prelude-val">Some</span>(::<span class="ident">id_from_node_id</span>(<span class="ident">item</span>.<span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">save_ctxt</span>));
 
                         <span class="self">self</span>.<span class="ident">dumper</span>.<span class="ident">dump_def</span>(<span class="ident">item</span>.<span class="ident">vis</span> <span class="op">==</span> <span class="ident">ast</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span>, <span class="ident">Def</span> {
-                            <span class="ident">kind</span>: <span class="ident">DefKind</span>::<span class="ident">Tuple</span>,
+                            <span class="ident">kind</span>: <span class="ident">DefKind</span>::<span class="ident">TupleVariant</span>,
                             <span class="ident">id</span>,
                             <span class="ident">span</span>,
                             <span class="ident">name</span>,
