@@ -1690,8 +1690,6 @@
 <span id="1645">1645</span>
 <span id="1646">1646</span>
 <span id="1647">1647</span>
-<span id="1648">1648</span>
-<span id="1649">1649</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3258,9 +3256,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_crate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">AccessLevels</span><span class="op">&gt;</span> {
-    <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> { <span class="comment">// FIXME</span>
-        <span class="ident">tcx</span>.<span class="ident">privacy_access_levels</span>(<span class="ident">LOCAL_CRATE</span>)
-    })
+    <span class="ident">tcx</span>.<span class="ident">privacy_access_levels</span>(<span class="ident">LOCAL_CRATE</span>)
 }
 
 <span class="kw">fn</span> <span class="ident">privacy_access_levels</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,

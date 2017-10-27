@@ -395,7 +395,7 @@
 <span class="kw">use</span> <span class="ident">snippet</span>::<span class="ident">Style</span>;
 
 <span class="attribute">#[<span class="ident">must_use</span>]</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Diagnostic</span> {
     <span class="kw">pub</span> <span class="ident">level</span>: <span class="ident">Level</span>,
     <span class="kw">pub</span> <span class="ident">message</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">Style</span>)<span class="op">&gt;</span>,
@@ -406,7 +406,7 @@
 }
 
 <span class="doccomment">/// For example a note attached to an error.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SubDiagnostic</span> {
     <span class="kw">pub</span> <span class="ident">level</span>: <span class="ident">Level</span>,
     <span class="kw">pub</span> <span class="ident">message</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">Style</span>)<span class="op">&gt;</span>,
