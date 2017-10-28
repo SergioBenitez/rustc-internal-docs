@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/rustc/libc_shim/../../liblibc/src/unix/notbsd/linux/other/b64/x86_64.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/michael/.cargo/registry/src/github.com-1ecc6299db9ec823/libc-0.2.32/src/unix/notbsd/linux/other/b64/x86_64.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>x86_64.rs.html -- source</title>
@@ -1015,7 +1015,6 @@
 <span id="970">970</span>
 <span id="971">971</span>
 <span id="972">972</span>
-<span id="973">973</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! x86_64-specific definitions for 64-bit linux-like values</span>
 
@@ -1041,11 +1040,11 @@
         <span class="kw">pub</span> <span class="ident">st_blksize</span>: ::<span class="ident">blksize_t</span>,
         <span class="kw">pub</span> <span class="ident">st_blocks</span>: ::<span class="ident">blkcnt_t</span>,
         <span class="kw">pub</span> <span class="ident">st_atime</span>: ::<span class="ident">time_t</span>,
-        <span class="kw">pub</span> <span class="ident">st_atime_nsec</span>: <span class="ident">i64</span>,
+        <span class="kw">pub</span> <span class="ident">st_atime_nsec</span>: ::<span class="ident">c_long</span>,
         <span class="kw">pub</span> <span class="ident">st_mtime</span>: ::<span class="ident">time_t</span>,
-        <span class="kw">pub</span> <span class="ident">st_mtime_nsec</span>: <span class="ident">i64</span>,
+        <span class="kw">pub</span> <span class="ident">st_mtime_nsec</span>: ::<span class="ident">c_long</span>,
         <span class="kw">pub</span> <span class="ident">st_ctime</span>: ::<span class="ident">time_t</span>,
-        <span class="kw">pub</span> <span class="ident">st_ctime_nsec</span>: <span class="ident">i64</span>,
+        <span class="kw">pub</span> <span class="ident">st_ctime_nsec</span>: ::<span class="ident">c_long</span>,
         <span class="ident">__unused</span>: [::<span class="ident">c_long</span>; <span class="number">3</span>],
     }
 
@@ -1062,11 +1061,11 @@
         <span class="kw">pub</span> <span class="ident">st_blksize</span>: ::<span class="ident">blksize_t</span>,
         <span class="kw">pub</span> <span class="ident">st_blocks</span>: ::<span class="ident">blkcnt64_t</span>,
         <span class="kw">pub</span> <span class="ident">st_atime</span>: ::<span class="ident">time_t</span>,
-        <span class="kw">pub</span> <span class="ident">st_atime_nsec</span>: <span class="ident">i64</span>,
+        <span class="kw">pub</span> <span class="ident">st_atime_nsec</span>: ::<span class="ident">c_long</span>,
         <span class="kw">pub</span> <span class="ident">st_mtime</span>: ::<span class="ident">time_t</span>,
-        <span class="kw">pub</span> <span class="ident">st_mtime_nsec</span>: <span class="ident">i64</span>,
+        <span class="kw">pub</span> <span class="ident">st_mtime_nsec</span>: ::<span class="ident">c_long</span>,
         <span class="kw">pub</span> <span class="ident">st_ctime</span>: ::<span class="ident">time_t</span>,
-        <span class="kw">pub</span> <span class="ident">st_ctime_nsec</span>: <span class="ident">i64</span>,
+        <span class="kw">pub</span> <span class="ident">st_ctime_nsec</span>: ::<span class="ident">c_long</span>,
         <span class="ident">__reserved</span>: [::<span class="ident">c_long</span>; <span class="number">3</span>],
     }
 
@@ -1230,17 +1229,6 @@
         <span class="kw">pub</span> <span class="ident">shm_nattch</span>: ::<span class="ident">shmatt_t</span>,
         <span class="ident">__unused4</span>: ::<span class="ident">c_ulong</span>,
         <span class="ident">__unused5</span>: ::<span class="ident">c_ulong</span>
-    }
-
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">termios2</span> {
-        <span class="kw">pub</span> <span class="ident">c_iflag</span>: ::<span class="ident">tcflag_t</span>,
-        <span class="kw">pub</span> <span class="ident">c_oflag</span>: ::<span class="ident">tcflag_t</span>,
-        <span class="kw">pub</span> <span class="ident">c_cflag</span>: ::<span class="ident">tcflag_t</span>,
-        <span class="kw">pub</span> <span class="ident">c_lflag</span>: ::<span class="ident">tcflag_t</span>,
-        <span class="kw">pub</span> <span class="ident">c_line</span>: ::<span class="ident">cc_t</span>,
-        <span class="kw">pub</span> <span class="ident">c_cc</span>: [::<span class="ident">cc_t</span>; <span class="number">19</span>],
-        <span class="kw">pub</span> <span class="ident">c_ispeed</span>: ::<span class="ident">speed_t</span>,
-        <span class="kw">pub</span> <span class="ident">c_ospeed</span>: ::<span class="ident">speed_t</span>,
     }
 }
 
@@ -1582,7 +1570,6 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">B38400</span>: ::<span class="ident">speed_t</span> <span class="op">=</span> <span class="number">0o000017</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">EXTA</span>: ::<span class="ident">speed_t</span> <span class="op">=</span> <span class="ident">B19200</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">EXTB</span>: ::<span class="ident">speed_t</span> <span class="op">=</span> <span class="ident">B38400</span>;
-<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">BOTHER</span>: ::<span class="ident">speed_t</span> <span class="op">=</span> <span class="number">0o010000</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">B57600</span>: ::<span class="ident">speed_t</span> <span class="op">=</span> <span class="number">0o010001</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">B115200</span>: ::<span class="ident">speed_t</span> <span class="op">=</span> <span class="number">0o010002</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">B230400</span>: ::<span class="ident">speed_t</span> <span class="op">=</span> <span class="number">0o010003</span>;
@@ -1761,6 +1748,7 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_sigaltstack</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">131</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_utime</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">132</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_mknod</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">133</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_uselib</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">134</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_personality</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">135</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_ustat</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">136</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_statfs</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">137</span>;
@@ -1782,6 +1770,7 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_vhangup</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">153</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_modify_ldt</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">154</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_pivot_root</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">155</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS__sysctl</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">156</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_prctl</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">157</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_arch_prctl</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">158</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_adjtimex</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">159</span>;
@@ -1799,9 +1788,13 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_setdomainname</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">171</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_iopl</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">172</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_ioperm</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">173</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_create_module</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">174</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_init_module</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">175</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_delete_module</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">176</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_get_kernel_syms</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">177</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_query_module</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">178</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_quotactl</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">179</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_nfsservctl</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">180</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_getpmsg</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">181</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_putpmsg</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">182</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_afs_syscall</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">183</span>;
@@ -1826,13 +1819,17 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_futex</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">202</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_sched_setaffinity</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">203</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_sched_getaffinity</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">204</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_set_thread_area</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">205</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_io_setup</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">206</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_io_destroy</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">207</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_io_getevents</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">208</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_io_submit</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">209</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_io_cancel</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">210</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_get_thread_area</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">211</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_lookup_dcookie</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">212</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_epoll_create</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">213</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_epoll_ctl_old</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">214</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_epoll_wait_old</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">215</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_remap_file_pages</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">216</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_getdents64</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">217</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_set_tid_address</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">218</span>;
@@ -1853,6 +1850,7 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_epoll_ctl</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">233</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_tgkill</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">234</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_utimes</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">235</span>;
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_vserver</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">236</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_mbind</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">237</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_set_mempolicy</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">238</span>;
 <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">SYS_get_mempolicy</span>: ::<span class="ident">c_long</span> <span class="op">=</span> <span class="number">239</span>;
