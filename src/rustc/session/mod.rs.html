@@ -1017,6 +1017,11 @@
 <span id="972">972</span>
 <span id="973">973</span>
 <span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1796,7 +1801,12 @@
     <span class="kw">let</span> <span class="ident">print_fuel_crate</span> <span class="op">=</span> <span class="ident">sopts</span>.<span class="ident">debugging_opts</span>.<span class="ident">print_fuel</span>.<span class="ident">clone</span>();
     <span class="kw">let</span> <span class="ident">print_fuel</span> <span class="op">=</span> <span class="ident">Cell</span>::<span class="ident">new</span>(<span class="number">0</span>);
 
-    <span class="kw">let</span> <span class="ident">working_dir</span> <span class="op">=</span> <span class="ident">env</span>::<span class="ident">current_dir</span>().<span class="ident">unwrap</span>().<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>();
+    <span class="kw">let</span> <span class="ident">working_dir</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">current_dir</span>() {
+        <span class="prelude-val">Ok</span>(<span class="ident">dir</span>) <span class="op">=&gt;</span> <span class="ident">dir</span>.<span class="ident">to_string_lossy</span>().<span class="ident">into_owned</span>(),
+        <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="ident">p_s</span>.<span class="ident">span_diagnostic</span>.<span class="ident">fatal</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Current directory is invalid: {}&quot;</span>, <span class="ident">e</span>)))
+        }
+    };
     <span class="kw">let</span> <span class="ident">working_dir</span> <span class="op">=</span> <span class="ident">file_path_mapping</span>.<span class="ident">map_prefix</span>(<span class="ident">working_dir</span>);
 
     <span class="kw">let</span> <span class="ident">sess</span> <span class="op">=</span> <span class="ident">Session</span> {
