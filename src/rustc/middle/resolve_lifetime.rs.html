@@ -1743,6 +1743,9 @@
 <span id="1698">1698</span>
 <span id="1699">1699</span>
 <span id="1700">1700</span>
+<span id="1701">1701</span>
+<span id="1702">1702</span>
+<span id="1703">1703</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2109,6 +2112,9 @@
                 })
             }
             <span class="ident">hir</span>::<span class="ident">ForeignItemStatic</span>(..) <span class="op">=&gt;</span> {
+                <span class="ident">intravisit</span>::<span class="ident">walk_foreign_item</span>(<span class="self">self</span>, <span class="ident">item</span>);
+            }
+            <span class="ident">hir</span>::<span class="ident">ForeignItemType</span> <span class="op">=&gt;</span> {
                 <span class="ident">intravisit</span>::<span class="ident">walk_foreign_item</span>(<span class="self">self</span>, <span class="ident">item</span>);
             }
         }

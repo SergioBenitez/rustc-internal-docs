@@ -1013,6 +1013,8 @@
 <span id="968">968</span>
 <span id="969">969</span>
 <span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1626,8 +1628,7 @@
                 <span class="ident">def_id</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
                 <span class="ident">closure_substs</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             }
-            <span class="ident">TyGenerator</span>(<span class="ident">def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">interior</span>)
-             <span class="op">=&gt;</span> {
+            <span class="ident">TyGenerator</span>(<span class="ident">def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">interior</span>) <span class="op">=&gt;</span> {
                 <span class="ident">def_id</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
                 <span class="ident">closure_substs</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
                 <span class="ident">interior</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
@@ -1645,6 +1646,9 @@
             }
             <span class="ident">TyParam</span>(<span class="ident">param_ty</span>) <span class="op">=&gt;</span> {
                 <span class="ident">param_ty</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
+            }
+            <span class="ident">TyForeign</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> {
+                <span class="ident">def_id</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             }
             <span class="ident">TyInfer</span>(..) <span class="op">=&gt;</span> {
                 <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;ty::TypeVariants::hash_stable() - Unexpected variant {:?}.&quot;</span>, <span class="kw-2">*</span><span class="self">self</span>)

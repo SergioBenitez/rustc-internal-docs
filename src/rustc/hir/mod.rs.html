@@ -2003,6 +2003,9 @@
 <span id="1958">1958</span>
 <span id="1959">1959</span>
 <span id="1960">1960</span>
+<span id="1961">1961</span>
+<span id="1962">1962</span>
+<span id="1963">1963</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3918,6 +3921,8 @@
     <span class="doccomment">/// A foreign static item (`static ext: u8`), with optional mutability</span>
     <span class="doccomment">/// (the boolean is true when mutable)</span>
     <span class="ident">ForeignItemStatic</span>(<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&gt;</span>, <span class="ident">bool</span>),
+    <span class="doccomment">/// A foreign type</span>
+    <span class="ident">ForeignItemType</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">ForeignItem_</span> {
@@ -3925,6 +3930,7 @@
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">ForeignItemFn</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;foreign function&quot;</span>,
             <span class="ident">ForeignItemStatic</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;foreign static item&quot;</span>,
+            <span class="ident">ForeignItemType</span> <span class="op">=&gt;</span> <span class="string">&quot;foreign type&quot;</span>,
         }
     }
 }

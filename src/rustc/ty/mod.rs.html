@@ -4505,7 +4505,7 @@
                 <span class="macro">vec</span><span class="macro">!</span>[]
             }
 
-            <span class="ident">TyStr</span> <span class="op">|</span> <span class="ident">TyDynamic</span>(..) <span class="op">|</span> <span class="ident">TySlice</span>(_) <span class="op">|</span> <span class="ident">TyError</span> <span class="op">=&gt;</span> {
+            <span class="ident">TyStr</span> <span class="op">|</span> <span class="ident">TyDynamic</span>(..) <span class="op">|</span> <span class="ident">TySlice</span>(_) <span class="op">|</span> <span class="ident">TyForeign</span>(..) <span class="op">|</span> <span class="ident">TyError</span> <span class="op">=&gt;</span> {
                 <span class="comment">// these are never sized - return the target type</span>
                 <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>]
             }
