@@ -431,7 +431,7 @@ memory in <code>self</code> unchanged.</p>
 moves the value out of <code>self</code> without preventing further usage of <code>self</code>.
 If <code>T</code> is not <code>Copy</code>, then care must be taken to ensure that the value at
 <code>self</code> is not used before the data is overwritten again (e.g. with <code>write</code>,
-<code>zero_memory</code>, or <code>copy_memory</code>). Note that <code>*self = foo</code> counts as a use
+<code>write_bytes</code>, or <code>copy</code>). Note that <code>*self = foo</code> counts as a use
 because it will attempt to drop the value previously at <code>*self</code>.</p>
 
 <p>The pointer must be aligned; use <code>read_unaligned</code> if that is not the case.</p>
@@ -472,7 +472,7 @@ and may be ignored.</p>
 moves the value out of <code>self</code> without preventing further usage of <code>self</code>.
 If <code>T</code> is not <code>Copy</code>, then care must be taken to ensure that the value at
 <code>self</code> is not used before the data is overwritten again (e.g. with <code>write</code>,
-<code>zero_memory</code>, or <code>copy_memory</code>). Note that <code>*self = foo</code> counts as a use
+<code>write_bytes</code>, or <code>copy</code>). Note that <code>*self = foo</code> counts as a use
 because it will attempt to drop the value previously at <code>*self</code>.</p>
 
 <h1 id='examples-10' class='section-header'><a href='#examples-10'>Examples</a></h1>
@@ -498,7 +498,7 @@ memory in <code>self</code> unchanged.</p>
 moves the value out of <code>self</code> without preventing further usage of <code>self</code>.
 If <code>T</code> is not <code>Copy</code>, then care must be taken to ensure that the value at
 <code>self</code> is not used before the data is overwritten again (e.g. with <code>write</code>,
-<code>zero_memory</code>, or <code>copy_memory</code>). Note that <code>*self = foo</code> counts as a use
+<code>write_bytes</code>, or <code>copy</code>). Note that <code>*self = foo</code> counts as a use
 because it will attempt to drop the value previously at <code>*self</code>.</p>
 
 <h1 id='examples-11' class='section-header'><a href='#examples-11'>Examples</a></h1>
@@ -944,7 +944,7 @@ memory in <code>self</code> unchanged.</p>
 moves the value out of <code>self</code> without preventing further usage of <code>self</code>.
 If <code>T</code> is not <code>Copy</code>, then care must be taken to ensure that the value at
 <code>self</code> is not used before the data is overwritten again (e.g. with <code>write</code>,
-<code>zero_memory</code>, or <code>copy_memory</code>). Note that <code>*self = foo</code> counts as a use
+<code>write_bytes</code>, or <code>copy</code>). Note that <code>*self = foo</code> counts as a use
 because it will attempt to drop the value previously at <code>*self</code>.</p>
 
 <p>The pointer must be aligned; use <code>read_unaligned</code> if that is not the case.</p>
@@ -985,7 +985,7 @@ and may be ignored.</p>
 moves the value out of <code>self</code> without preventing further usage of <code>self</code>.
 If <code>T</code> is not <code>Copy</code>, then care must be taken to ensure that the value at
 <code>src</code> is not used before the data is overwritten again (e.g. with <code>write</code>,
-<code>zero_memory</code>, or <code>copy_memory</code>). Note that <code>*self = foo</code> counts as a use
+<code>write_bytes</code>, or <code>copy</code>). Note that <code>*self = foo</code> counts as a use
 because it will attempt to drop the value previously at <code>*self</code>.</p>
 
 <h1 id='examples-27' class='section-header'><a href='#examples-27'>Examples</a></h1>
@@ -1011,7 +1011,7 @@ memory in <code>self</code> unchanged.</p>
 moves the value out of <code>self</code> without preventing further usage of <code>self</code>.
 If <code>T</code> is not <code>Copy</code>, then care must be taken to ensure that the value at
 <code>self</code> is not used before the data is overwritten again (e.g. with <code>write</code>,
-<code>zero_memory</code>, or <code>copy_memory</code>). Note that <code>*self = foo</code> counts as a use
+<code>write_bytes</code>, or <code>copy</code>). Note that <code>*self = foo</code> counts as a use
 because it will attempt to drop the value previously at <code>*self</code>.</p>
 
 <h1 id='examples-28' class='section-header'><a href='#examples-28'>Examples</a></h1>

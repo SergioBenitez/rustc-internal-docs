@@ -2825,7 +2825,7 @@
 <span class="doccomment">/// moves the value out of `src` without preventing further usage of `src`.</span>
 <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
 <span class="doccomment">/// `src` is not used before the data is overwritten again (e.g. with `write`,</span>
-<span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*src = foo` counts as a use</span>
+<span class="doccomment">/// `write_bytes`, or `copy`). Note that `*src = foo` counts as a use</span>
 <span class="doccomment">/// because it will attempt to drop the value previously at `*src`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The pointer must be aligned; use `read_unaligned` if that is not the case.</span>
@@ -2861,7 +2861,7 @@
 <span class="doccomment">/// moves the value out of `src` without preventing further usage of `src`.</span>
 <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
 <span class="doccomment">/// `src` is not used before the data is overwritten again (e.g. with `write`,</span>
-<span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*src = foo` counts as a use</span>
+<span class="doccomment">/// `write_bytes`, or `copy`). Note that `*src = foo` counts as a use</span>
 <span class="doccomment">/// because it will attempt to drop the value previously at `*src`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
@@ -2994,7 +2994,7 @@
 <span class="doccomment">/// moves the value out of `src` without preventing further usage of `src`.</span>
 <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
 <span class="doccomment">/// `src` is not used before the data is overwritten again (e.g. with `write`,</span>
-<span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*src = foo` counts as a use</span>
+<span class="doccomment">/// `write_bytes`, or `copy`). Note that `*src = foo` counts as a use</span>
 <span class="doccomment">/// because it will attempt to drop the value previously at `*src`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
@@ -3468,7 +3468,7 @@
     <span class="doccomment">/// moves the value out of `self` without preventing further usage of `self`.</span>
     <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
     <span class="doccomment">/// `self` is not used before the data is overwritten again (e.g. with `write`,</span>
-    <span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*self = foo` counts as a use</span>
+    <span class="doccomment">/// `write_bytes`, or `copy`). Note that `*self = foo` counts as a use</span>
     <span class="doccomment">/// because it will attempt to drop the value previously at `*self`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The pointer must be aligned; use `read_unaligned` if that is not the case.</span>
@@ -3522,7 +3522,7 @@
     <span class="doccomment">/// moves the value out of `self` without preventing further usage of `self`.</span>
     <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
     <span class="doccomment">/// `self` is not used before the data is overwritten again (e.g. with `write`,</span>
-    <span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*self = foo` counts as a use</span>
+    <span class="doccomment">/// `write_bytes`, or `copy`). Note that `*self = foo` counts as a use</span>
     <span class="doccomment">/// because it will attempt to drop the value previously at `*self`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
@@ -3558,7 +3558,7 @@
     <span class="doccomment">/// moves the value out of `self` without preventing further usage of `self`.</span>
     <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
     <span class="doccomment">/// `self` is not used before the data is overwritten again (e.g. with `write`,</span>
-    <span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*self = foo` counts as a use</span>
+    <span class="doccomment">/// `write_bytes`, or `copy`). Note that `*self = foo` counts as a use</span>
     <span class="doccomment">/// because it will attempt to drop the value previously at `*self`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
@@ -4166,7 +4166,7 @@
     <span class="doccomment">/// moves the value out of `self` without preventing further usage of `self`.</span>
     <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
     <span class="doccomment">/// `self` is not used before the data is overwritten again (e.g. with `write`,</span>
-    <span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*self = foo` counts as a use</span>
+    <span class="doccomment">/// `write_bytes`, or `copy`). Note that `*self = foo` counts as a use</span>
     <span class="doccomment">/// because it will attempt to drop the value previously at `*self`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The pointer must be aligned; use `read_unaligned` if that is not the case.</span>
@@ -4220,7 +4220,7 @@
     <span class="doccomment">/// moves the value out of `self` without preventing further usage of `self`.</span>
     <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
     <span class="doccomment">/// `src` is not used before the data is overwritten again (e.g. with `write`,</span>
-    <span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*self = foo` counts as a use</span>
+    <span class="doccomment">/// `write_bytes`, or `copy`). Note that `*self = foo` counts as a use</span>
     <span class="doccomment">/// because it will attempt to drop the value previously at `*self`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
@@ -4256,7 +4256,7 @@
     <span class="doccomment">/// moves the value out of `self` without preventing further usage of `self`.</span>
     <span class="doccomment">/// If `T` is not `Copy`, then care must be taken to ensure that the value at</span>
     <span class="doccomment">/// `self` is not used before the data is overwritten again (e.g. with `write`,</span>
-    <span class="doccomment">/// `zero_memory`, or `copy_memory`). Note that `*self = foo` counts as a use</span>
+    <span class="doccomment">/// `write_bytes`, or `copy`). Note that `*self = foo` counts as a use</span>
     <span class="doccomment">/// because it will attempt to drop the value previously at `*self`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
