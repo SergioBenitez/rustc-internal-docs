@@ -2705,6 +2705,10 @@
 <span id="2660">2660</span>
 <span id="2661">2661</span>
 <span id="2662">2662</span>
+<span id="2663">2663</span>
+<span id="2664">2664</span>
+<span id="2665">2665</span>
+<span id="2666">2666</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3765,6 +3769,8 @@
           <span class="string">&quot;dump MIR state at various points in translation&quot;</span>),
     <span class="ident">dump_mir_dir</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
           <span class="string">&quot;the directory the MIR is dumped into&quot;</span>),
+    <span class="ident">dump_mir_graphviz</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
+          <span class="string">&quot;in addition to `.mir` files, create graphviz `.dot` files&quot;</span>),
     <span class="ident">dump_mir_exclude_pass_number</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
           <span class="string">&quot;if set, exclude the pass number when dumping MIR (used in tests)&quot;</span>),
     <span class="ident">mir_emit_validate</span>: <span class="ident">usize</span> <span class="op">=</span> (<span class="number">0</span>, <span class="ident">parse_uint</span>, [<span class="ident">TRACKED</span>],
@@ -5316,6 +5322,8 @@
         <span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">dump_mir</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;abc&quot;</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">reference</span>.<span class="ident">dep_tracking_hash</span>(), <span class="ident">opts</span>.<span class="ident">dep_tracking_hash</span>());
         <span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">dump_mir_dir</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;abc&quot;</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">reference</span>.<span class="ident">dep_tracking_hash</span>(), <span class="ident">opts</span>.<span class="ident">dep_tracking_hash</span>());
+        <span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">dump_mir_graphviz</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">reference</span>.<span class="ident">dep_tracking_hash</span>(), <span class="ident">opts</span>.<span class="ident">dep_tracking_hash</span>());
 
         <span class="comment">// Make sure changing a [TRACKED] option changes the hash</span>

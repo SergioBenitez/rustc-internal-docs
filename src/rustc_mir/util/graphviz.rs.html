@@ -218,6 +218,15 @@
 <span id="173">173</span>
 <span id="174">174</span>
 <span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -251,29 +260,38 @@
     <span class="kw">for</span> <span class="ident">def_id</span> <span class="kw">in</span> <span class="ident">dump_mir_def_ids</span>(<span class="ident">tcx</span>, <span class="ident">single</span>) {
         <span class="kw">let</span> <span class="ident">nodeid</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">mir</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">tcx</span>.<span class="ident">optimized_mir</span>(<span class="ident">def_id</span>);
-
-        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;digraph Mir_{} {{&quot;</span>, <span class="ident">nodeid</span>)<span class="question-mark">?</span>;
-
-        <span class="comment">// Global graph properties</span>
-        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">r#&quot;    graph [fontname=&quot;monospace&quot;];&quot;#</span>)<span class="question-mark">?</span>;
-        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">r#&quot;    node [fontname=&quot;monospace&quot;];&quot;#</span>)<span class="question-mark">?</span>;
-        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">r#&quot;    edge [fontname=&quot;monospace&quot;];&quot;#</span>)<span class="question-mark">?</span>;
-
-        <span class="comment">// Graph label</span>
-        <span class="ident">write_graph_label</span>(<span class="ident">tcx</span>, <span class="ident">nodeid</span>, <span class="ident">mir</span>, <span class="ident">w</span>)<span class="question-mark">?</span>;
-
-        <span class="comment">// Nodes</span>
-        <span class="kw">for</span> (<span class="ident">block</span>, _) <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">iter_enumerated</span>() {
-            <span class="ident">write_node</span>(<span class="ident">block</span>, <span class="ident">mir</span>, <span class="ident">w</span>)<span class="question-mark">?</span>;
-        }
-
-        <span class="comment">// Edges</span>
-        <span class="kw">for</span> (<span class="ident">source</span>, _) <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">iter_enumerated</span>() {
-            <span class="ident">write_edges</span>(<span class="ident">source</span>, <span class="ident">mir</span>, <span class="ident">w</span>)<span class="question-mark">?</span>;
-        }
-        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;}}&quot;</span>)<span class="question-mark">?</span>
+        <span class="ident">write_mir_fn_graphviz</span>(<span class="ident">tcx</span>, <span class="ident">nodeid</span>, <span class="ident">mir</span>, <span class="ident">w</span>)<span class="question-mark">?</span>;
     }
     <span class="prelude-val">Ok</span>(())
+}
+
+<span class="doccomment">/// Write a graphviz DOT graph of the MIR.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_mir_fn_graphviz</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                        <span class="ident">nodeid</span>: <span class="ident">NodeId</span>,
+                                        <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span>,
+                                        <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">W</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Write</span>
+{
+    <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;digraph Mir_{} {{&quot;</span>, <span class="ident">nodeid</span>)<span class="question-mark">?</span>;
+
+    <span class="comment">// Global graph properties</span>
+    <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">r#&quot;    graph [fontname=&quot;monospace&quot;];&quot;#</span>)<span class="question-mark">?</span>;
+    <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">r#&quot;    node [fontname=&quot;monospace&quot;];&quot;#</span>)<span class="question-mark">?</span>;
+    <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">r#&quot;    edge [fontname=&quot;monospace&quot;];&quot;#</span>)<span class="question-mark">?</span>;
+
+    <span class="comment">// Graph label</span>
+    <span class="ident">write_graph_label</span>(<span class="ident">tcx</span>, <span class="ident">nodeid</span>, <span class="ident">mir</span>, <span class="ident">w</span>)<span class="question-mark">?</span>;
+
+    <span class="comment">// Nodes</span>
+    <span class="kw">for</span> (<span class="ident">block</span>, _) <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">iter_enumerated</span>() {
+        <span class="ident">write_node</span>(<span class="ident">block</span>, <span class="ident">mir</span>, <span class="ident">w</span>)<span class="question-mark">?</span>;
+    }
+
+    <span class="comment">// Edges</span>
+    <span class="kw">for</span> (<span class="ident">source</span>, _) <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">iter_enumerated</span>() {
+        <span class="ident">write_edges</span>(<span class="ident">source</span>, <span class="ident">mir</span>, <span class="ident">w</span>)<span class="question-mark">?</span>;
+    }
+    <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;}}&quot;</span>)
 }
 
 <span class="doccomment">/// Write a graphviz HTML-styled label for the given basic block, with</span>

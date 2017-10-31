@@ -1245,6 +1245,24 @@
 <span id="1200">1200</span>
 <span id="1201">1201</span>
 <span id="1202">1202</span>
+<span id="1203">1203</span>
+<span id="1204">1204</span>
+<span id="1205">1205</span>
+<span id="1206">1206</span>
+<span id="1207">1207</span>
+<span id="1208">1208</span>
+<span id="1209">1209</span>
+<span id="1210">1210</span>
+<span id="1211">1211</span>
+<span id="1212">1212</span>
+<span id="1213">1213</span>
+<span id="1214">1214</span>
+<span id="1215">1215</span>
+<span id="1216">1216</span>
+<span id="1217">1217</span>
+<span id="1218">1218</span>
+<span id="1219">1219</span>
+<span id="1220">1220</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1961,7 +1979,15 @@
             <span class="ident">span</span>
         } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="ident">hcx</span>.<span class="ident">hash_hir_item_like</span>(<span class="ident">attrs</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="ident">is_const</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">node</span> {
+            <span class="ident">hir</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Const</span>(..) <span class="op">|</span>
+            <span class="ident">hir</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Type</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">hir</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Method</span>(<span class="ident">hir</span>::<span class="ident">MethodSig</span> { <span class="ident">constness</span>, .. }, _) <span class="op">=&gt;</span> {
+                <span class="ident">constness</span> <span class="op">==</span> <span class="ident">hir</span>::<span class="ident">Constness</span>::<span class="ident">Const</span>
+            }
+        };
+
+        <span class="ident">hcx</span>.<span class="ident">hash_hir_item_like</span>(<span class="ident">attrs</span>, <span class="ident">is_const</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
             <span class="ident">name</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">attrs</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">generics</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
@@ -1998,7 +2024,15 @@
             <span class="ident">span</span>
         } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="ident">hcx</span>.<span class="ident">hash_hir_item_like</span>(<span class="ident">attrs</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="ident">is_const</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">node</span> {
+            <span class="ident">hir</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Const</span>(..) <span class="op">|</span>
+            <span class="ident">hir</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Type</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">hir</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(<span class="ident">hir</span>::<span class="ident">MethodSig</span> { <span class="ident">constness</span>, .. }, _) <span class="op">=&gt;</span> {
+                <span class="ident">constness</span> <span class="op">==</span> <span class="ident">hir</span>::<span class="ident">Constness</span>::<span class="ident">Const</span>
+            }
+        };
+
+        <span class="ident">hcx</span>.<span class="ident">hash_hir_item_like</span>(<span class="ident">attrs</span>, <span class="ident">is_const</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
             <span class="ident">name</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">vis</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">defaultness</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
@@ -2117,11 +2151,13 @@
     <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                           <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
                                           <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">hash_spans</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">node</span> {
+        <span class="kw">let</span> (<span class="ident">is_const</span>, <span class="ident">hash_spans</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">node</span> {
             <span class="ident">hir</span>::<span class="ident">ItemStatic</span>(..)      <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">ItemConst</span>(..)       <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">ItemFn</span>(..)          <span class="op">=&gt;</span> {
-                <span class="ident">hcx</span>.<span class="ident">hash_spans</span>()
+            <span class="ident">hir</span>::<span class="ident">ItemConst</span>(..)       <span class="op">=&gt;</span> {
+                (<span class="bool-val">true</span>, <span class="ident">hcx</span>.<span class="ident">hash_spans</span>())
+            }
+            <span class="ident">hir</span>::<span class="ident">ItemFn</span>(_, _, <span class="ident">constness</span>, ..) <span class="op">=&gt;</span> {
+                (<span class="ident">constness</span> <span class="op">==</span> <span class="ident">hir</span>::<span class="ident">Constness</span>::<span class="ident">Const</span>, <span class="ident">hcx</span>.<span class="ident">hash_spans</span>())
             }
             <span class="ident">hir</span>::<span class="ident">ItemUse</span>(..)         <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemExternCrate</span>(..) <span class="op">|</span>
@@ -2135,7 +2171,7 @@
             <span class="ident">hir</span>::<span class="ident">ItemEnum</span>(..)        <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemStruct</span>(..)      <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemUnion</span>(..)       <span class="op">=&gt;</span> {
-                <span class="bool-val">false</span>
+                (<span class="bool-val">false</span>, <span class="bool-val">false</span>)
             }
         };
 
@@ -2149,7 +2185,7 @@
             <span class="ident">span</span>
         } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="ident">hcx</span>.<span class="ident">hash_hir_item_like</span>(<span class="ident">attrs</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
+        <span class="ident">hcx</span>.<span class="ident">hash_hir_item_like</span>(<span class="ident">attrs</span>, <span class="ident">is_const</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
             <span class="ident">hcx</span>.<span class="ident">while_hashing_spans</span>(<span class="ident">hash_spans</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
                 <span class="ident">name</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
                 <span class="ident">attrs</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);

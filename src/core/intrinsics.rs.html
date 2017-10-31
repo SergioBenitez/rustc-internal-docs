@@ -1430,6 +1430,9 @@
 <span id="1385">1385</span>
 <span id="1386">1386</span>
 <span id="1387">1387</span>
+<span id="1388">1388</span>
+<span id="1389">1389</span>
+<span id="1390">1390</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2060,6 +2063,9 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rustc_peek</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(_: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">T</span>;
 
     <span class="doccomment">/// Aborts the execution of the process.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The stabilized version of this intrinsic is</span>
+    <span class="doccomment">/// [`std::process::abort`](../../std/process/fn.abort.html)</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">abort</span>() <span class="op">-&gt;</span> <span class="op">!</span>;
 
     <span class="doccomment">/// Tells LLVM that this point in the code is not reachable, enabling</span>
