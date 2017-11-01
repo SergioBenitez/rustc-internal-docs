@@ -2115,6 +2115,14 @@
 <span id="2070">2070</span>
 <span id="2071">2071</span>
 <span id="2072">2072</span>
+<span id="2073">2073</span>
+<span id="2074">2074</span>
+<span id="2075">2075</span>
+<span id="2076">2076</span>
+<span id="2077">2077</span>
+<span id="2078">2078</span>
+<span id="2079">2079</span>
+<span id="2080">2080</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2535,7 +2543,7 @@
 
 <span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">Local</span>
     {
-        <span class="ident">DEBUG_NAME</span> <span class="op">=</span> <span class="string">&quot;_&quot;</span>,
+        <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;_{}&quot;</span>,
         <span class="kw">const</span> <span class="ident">RETURN_POINTER</span> <span class="op">=</span> <span class="number">0</span>,
     });
 
@@ -2671,7 +2679,7 @@
 <span class="comment">///////////////////////////////////////////////////////////////////////////</span>
 <span class="comment">// BasicBlock</span>
 
-<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">BasicBlock</span> { <span class="ident">DEBUG_NAME</span> <span class="op">=</span> <span class="string">&quot;bb&quot;</span> });
+<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">BasicBlock</span> { <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;bb{}&quot;</span> });
 
 <span class="comment">///////////////////////////////////////////////////////////////////////////</span>
 <span class="comment">// BasicBlockData and Terminator</span>
@@ -3253,7 +3261,7 @@
 <span class="doccomment">/// and the index is a local.</span>
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ProjectionElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Local</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>;
 
-<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">Field</span> { <span class="ident">DEBUG_NAME</span> <span class="op">=</span> <span class="string">&quot;field&quot;</span> });
+<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">Field</span> { <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;field[{}]&quot;</span> });
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">field</span>(<span class="self">self</span>, <span class="ident">f</span>: <span class="ident">Field</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -3320,7 +3328,7 @@
 
 <span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">VisibilityScope</span>
     {
-        <span class="ident">DEBUG_NAME</span> <span class="op">=</span> <span class="string">&quot;scope&quot;</span>,
+        <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;scope[{}]&quot;</span>,
         <span class="kw">const</span> <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span> <span class="op">=</span> <span class="number">0</span>,
     });
 
@@ -3647,7 +3655,7 @@
     <span class="kw">pub</span> <span class="ident">literal</span>: <span class="ident">Literal</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 }
 
-<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">Promoted</span> { <span class="ident">DEBUG_NAME</span> <span class="op">=</span> <span class="string">&quot;promoted&quot;</span> });
+<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">Promoted</span> { <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;promoted[{}]&quot;</span> });
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Literal</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -3755,6 +3763,14 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Location</span> {
+    <span class="doccomment">/// Returns the location immediately after this one within the enclosing block.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that if this location represents a terminator, then the</span>
+    <span class="doccomment">/// resulting location would be out of bounds and invalid.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">successor_within_block</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Location</span> {
+        <span class="ident">Location</span> { <span class="ident">block</span>: <span class="self">self</span>.<span class="ident">block</span>, <span class="ident">statement_index</span>: <span class="self">self</span>.<span class="ident">statement_index</span> <span class="op">+</span> <span class="number">1</span> }
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dominates</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">Location</span>, <span class="ident">dominators</span>: <span class="kw-2">&amp;</span><span class="ident">Dominators</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">block</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">block</span> {
             <span class="self">self</span>.<span class="ident">statement_index</span> <span class="op">&lt;=</span> <span class="ident">other</span>.<span class="ident">statement_index</span>

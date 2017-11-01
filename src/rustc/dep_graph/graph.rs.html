@@ -951,6 +951,25 @@
 <span id="906">906</span>
 <span id="907">907</span>
 <span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -962,6 +981,7 @@
 <span class="comment">// option. This file may not be copied, modified, or distributed</span>
 <span class="comment">// except according to those terms.</span>
 
+<span class="kw">use</span> <span class="ident">errors</span>::<span class="ident">DiagnosticBuilder</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">stable_hasher</span>::{<span class="ident">HashStable</span>, <span class="ident">StableHasher</span>,
                                            <span class="ident">StableHashingContextProvider</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::{<span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>};
@@ -1553,6 +1573,24 @@
         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">old_fingerprint</span>.<span class="ident">is_none</span>(),
                       <span class="string">&quot;DepGraph::try_mark_green() - Duplicate fingerprint \
                       insertion for {:?}&quot;</span>, <span class="ident">dep_node</span>);
+
+        <span class="comment">// ... emitting any stored diagnostic ...</span>
+        {
+            <span class="kw">let</span> <span class="ident">diagnostics</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">on_disk_query_result_cache</span>
+                                 .<span class="ident">load_diagnostics</span>(<span class="ident">prev_dep_node_index</span>);
+
+            <span class="kw">if</span> <span class="ident">diagnostics</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+                <span class="kw">let</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">diagnostic</span>();
+
+                <span class="comment">// Promote the previous diagnostics to the current session.</span>
+                <span class="ident">tcx</span>.<span class="ident">on_disk_query_result_cache</span>
+                   .<span class="ident">store_diagnostics</span>(<span class="ident">dep_node_index</span>, <span class="ident">diagnostics</span>.<span class="ident">clone</span>());
+
+                <span class="kw">for</span> <span class="ident">diagnostic</span> <span class="kw">in</span> <span class="ident">diagnostics</span> {
+                    <span class="ident">DiagnosticBuilder</span>::<span class="ident">new_diagnostic</span>(<span class="ident">handle</span>, <span class="ident">diagnostic</span>).<span class="ident">emit</span>();
+                }
+            }
+        }
 
         <span class="comment">// ... and finally storing a &quot;Green&quot; entry in the color map.</span>
         <span class="kw">let</span> <span class="ident">old_color</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">colors</span>

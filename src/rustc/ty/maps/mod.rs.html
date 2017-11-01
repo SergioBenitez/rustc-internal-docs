@@ -541,6 +541,9 @@
 <span id="496">496</span>
 <span id="497">497</span>
 <span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -613,6 +616,9 @@
 <span class="kw">mod</span> <span class="ident">config</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">config</span>::<span class="ident">QueryConfig</span>;
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">config</span>::<span class="ident">QueryDescription</span>;
+
+<span class="kw">mod</span> <span class="ident">on_disk_cache</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">on_disk_cache</span>::<span class="ident">OnDiskCache</span>;
 
 <span class="comment">// Each of these maps also corresponds to a method on a</span>
 <span class="comment">// `Provider` trait for requesting a value of that type,</span>

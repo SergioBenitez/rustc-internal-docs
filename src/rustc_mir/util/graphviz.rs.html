@@ -251,10 +251,10 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">pretty</span>::<span class="ident">dump_mir_def_ids</span>;
 
 <span class="doccomment">/// Write a graphviz DOT graph of a list of MIRs.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_mir_graphviz</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                       <span class="ident">single</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DefId</span><span class="op">&gt;</span>,
-                                       <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">W</span>)
-                                       <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_mir_graphviz</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                   <span class="ident">single</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DefId</span><span class="op">&gt;</span>,
+                                   <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">W</span>)
+                                   <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
     <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Write</span>
 {
     <span class="kw">for</span> <span class="ident">def_id</span> <span class="kw">in</span> <span class="ident">dump_mir_def_ids</span>(<span class="ident">tcx</span>, <span class="ident">single</span>) {
@@ -266,10 +266,10 @@
 }
 
 <span class="doccomment">/// Write a graphviz DOT graph of the MIR.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_mir_fn_graphviz</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                        <span class="ident">nodeid</span>: <span class="ident">NodeId</span>,
-                                        <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span>,
-                                        <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">W</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_mir_fn_graphviz</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                      <span class="ident">nodeid</span>: <span class="ident">NodeId</span>,
+                                      <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span>,
+                                      <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">W</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
     <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Write</span>
 {
     <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;digraph Mir_{} {{&quot;</span>, <span class="ident">nodeid</span>)<span class="question-mark">?</span>;
@@ -367,11 +367,11 @@
 <span class="doccomment">/// Write the graphviz DOT label for the overall graph. This is essentially a block of text that</span>
 <span class="doccomment">/// will appear below the graph, showing the type of the `fn` this MIR represents and the types of</span>
 <span class="doccomment">/// all the variables and temporaries.</span>
-<span class="kw">fn</span> <span class="ident">write_graph_label</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">W</span>: <span class="ident">Write</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                         <span class="ident">nid</span>: <span class="ident">NodeId</span>,
-                                         <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span>,
-                                         <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">W</span>)
-                                         <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">write_graph_label</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">W</span>: <span class="ident">Write</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                               <span class="ident">nid</span>: <span class="ident">NodeId</span>,
+                                               <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span>,
+                                               <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">W</span>)
+                                               <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;    label=&lt;fn {}(&quot;</span>, <span class="ident">dot</span>::<span class="ident">escape_html</span>(<span class="kw-2">&amp;</span><span class="ident">tcx</span>.<span class="ident">node_path_str</span>(<span class="ident">nid</span>)))<span class="question-mark">?</span>;
 
     <span class="comment">// fn argument types.</span>

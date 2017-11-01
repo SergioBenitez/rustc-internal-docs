@@ -275,13 +275,13 @@
     <span class="ident">GeneratorDrop</span>(<span class="ident">NodeId</span>),
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MirSource</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_local_def_id</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">MirSource</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MirSource</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_local_def_id</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">MirSource</span> {
         <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">expect</span>(<span class="string">&quot;mir source requires local def-id&quot;</span>);
         <span class="self">Self</span>::<span class="ident">from_node</span>(<span class="ident">tcx</span>, <span class="ident">id</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_node</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">id</span>: <span class="ident">NodeId</span>) <span class="op">-&gt;</span> <span class="ident">MirSource</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_node</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">id</span>: <span class="ident">NodeId</span>) <span class="op">-&gt;</span> <span class="ident">MirSource</span> {
         <span class="kw">use</span> <span class="ident">hir</span>::<span class="kw-2">*</span>;
 
         <span class="comment">// Handle constants in enum discriminants, types, and repeat expressions.</span>
