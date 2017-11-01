@@ -5091,6 +5091,16 @@
 <span id="5046">5046</span>
 <span id="5047">5047</span>
 <span id="5048">5048</span>
+<span id="5049">5049</span>
+<span id="5050">5050</span>
+<span id="5051">5051</span>
+<span id="5052">5052</span>
+<span id="5053">5053</span>
+<span id="5054">5054</span>
+<span id="5055">5055</span>
+<span id="5056">5056</span>
+<span id="5057">5057</span>
+<span id="5058">5058</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -7849,9 +7859,19 @@ type parameter).
     <span class="kw">fn</span> <span class="ident">check_expr_coercable_to_type</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                     <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">hir</span>::<span class="ident">Expr</span>,
                                     <span class="ident">expected</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">check_expr_with_hint</span>(<span class="ident">expr</span>, <span class="ident">expected</span>);
-        <span class="self">self</span>.<span class="ident">demand_coerce</span>(<span class="ident">expr</span>, <span class="ident">ty</span>, <span class="ident">expected</span>);
-        <span class="ident">ty</span>
+        <span class="self">self</span>.<span class="ident">check_expr_coercable_to_type_with_lvalue_pref</span>(<span class="ident">expr</span>, <span class="ident">expected</span>, <span class="ident">NoPreference</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">check_expr_coercable_to_type_with_lvalue_pref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                                     <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">hir</span>::<span class="ident">Expr</span>,
+                                                     <span class="ident">expected</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                                     <span class="ident">lvalue_pref</span>: <span class="ident">LvaluePreference</span>)
+                                                     <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">check_expr_with_expectation_and_lvalue_pref</span>(
+            <span class="ident">expr</span>,
+            <span class="ident">ExpectHasType</span>(<span class="ident">expected</span>),
+            <span class="ident">lvalue_pref</span>);
+        <span class="self">self</span>.<span class="ident">demand_coerce</span>(<span class="ident">expr</span>, <span class="ident">ty</span>, <span class="ident">expected</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">check_expr_with_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">hir</span>::<span class="ident">Expr</span>,

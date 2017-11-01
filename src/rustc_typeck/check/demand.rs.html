@@ -343,6 +343,15 @@
 <span id="298">298</span>
 <span id="299">299</span>
 <span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -420,10 +429,16 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">demand_coerce</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span>, <span class="ident">checked_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">expected</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">err</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">demand_coerce_diag</span>(<span class="ident">expr</span>, <span class="ident">checked_ty</span>, <span class="ident">expected</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">demand_coerce</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                         <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span>,
+                         <span class="ident">checked_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                         <span class="ident">expected</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                         <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> (<span class="ident">ty</span>, <span class="ident">err</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">demand_coerce_diag</span>(<span class="ident">expr</span>, <span class="ident">checked_ty</span>, <span class="ident">expected</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">mut</span> <span class="ident">err</span>) <span class="op">=</span> <span class="ident">err</span> {
             <span class="ident">err</span>.<span class="ident">emit</span>();
         }
+        <span class="ident">ty</span>
     }
 
     <span class="comment">// Checks that the type of `expr` can be coerced to `expected`.</span>
@@ -434,61 +449,64 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">demand_coerce_diag</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                               <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span>,
                               <span class="ident">checked_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                              <span class="ident">expected</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+                              <span class="ident">expected</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                              <span class="op">-&gt;</span> (<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>) {
         <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">resolve_type_vars_with_obligations</span>(<span class="ident">expected</span>);
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">try_coerce</span>(<span class="ident">expr</span>, <span class="ident">checked_ty</span>, <span class="self">self</span>.<span class="ident">diverges</span>.<span class="ident">get</span>(), <span class="ident">expected</span>) {
-            <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">misc</span>(<span class="ident">expr</span>.<span class="ident">span</span>);
-            <span class="kw">let</span> <span class="ident">expr_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">resolve_type_vars_with_obligations</span>(<span class="ident">checked_ty</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">report_mismatched_types</span>(<span class="kw-2">&amp;</span><span class="ident">cause</span>, <span class="ident">expected</span>, <span class="ident">expr_ty</span>, <span class="ident">e</span>);
+        <span class="kw">let</span> <span class="ident">e</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">try_coerce</span>(<span class="ident">expr</span>, <span class="ident">checked_ty</span>, <span class="self">self</span>.<span class="ident">diverges</span>.<span class="ident">get</span>(), <span class="ident">expected</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">ty</span>) <span class="op">=&gt;</span> <span class="kw">return</span> (<span class="ident">ty</span>, <span class="prelude-val">None</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="ident">e</span>
+        };
 
-            <span class="comment">// If the expected type is an enum with any variants whose sole</span>
-            <span class="comment">// field is of the found type, suggest such variants. See Issue</span>
-            <span class="comment">// #42764.</span>
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">expected_adt</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="ident">expected</span>.<span class="ident">sty</span> {
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compatible_variants</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
-                <span class="kw">for</span> <span class="ident">variant</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">expected_adt</span>.<span class="ident">variants</span> {
-                    <span class="kw">if</span> <span class="ident">variant</span>.<span class="ident">fields</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
-                        <span class="kw">let</span> <span class="ident">sole_field</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">variant</span>.<span class="ident">fields</span>[<span class="number">0</span>];
-                        <span class="kw">let</span> <span class="ident">sole_field_ty</span> <span class="op">=</span> <span class="ident">sole_field</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">substs</span>);
-                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">can_coerce</span>(<span class="ident">expr_ty</span>, <span class="ident">sole_field_ty</span>) {
-                            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">variant_path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">variant</span>.<span class="ident">did</span>);
-                            <span class="ident">variant_path</span> <span class="op">=</span> <span class="ident">variant_path</span>.<span class="ident">trim_left_matches</span>(<span class="string">&quot;std::prelude::v1::&quot;</span>)
-                                .<span class="ident">to_string</span>();
-                            <span class="ident">compatible_variants</span>.<span class="ident">push</span>(<span class="ident">variant_path</span>);
-                        }
+        <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">misc</span>(<span class="ident">expr</span>.<span class="ident">span</span>);
+        <span class="kw">let</span> <span class="ident">expr_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">resolve_type_vars_with_obligations</span>(<span class="ident">checked_ty</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">report_mismatched_types</span>(<span class="kw-2">&amp;</span><span class="ident">cause</span>, <span class="ident">expected</span>, <span class="ident">expr_ty</span>, <span class="ident">e</span>);
+
+        <span class="comment">// If the expected type is an enum with any variants whose sole</span>
+        <span class="comment">// field is of the found type, suggest such variants. See Issue</span>
+        <span class="comment">// #42764.</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">expected_adt</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="ident">expected</span>.<span class="ident">sty</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">compatible_variants</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+            <span class="kw">for</span> <span class="ident">variant</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">expected_adt</span>.<span class="ident">variants</span> {
+                <span class="kw">if</span> <span class="ident">variant</span>.<span class="ident">fields</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
+                    <span class="kw">let</span> <span class="ident">sole_field</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">variant</span>.<span class="ident">fields</span>[<span class="number">0</span>];
+                    <span class="kw">let</span> <span class="ident">sole_field_ty</span> <span class="op">=</span> <span class="ident">sole_field</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">substs</span>);
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">can_coerce</span>(<span class="ident">expr_ty</span>, <span class="ident">sole_field_ty</span>) {
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">variant_path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">variant</span>.<span class="ident">did</span>);
+                        <span class="ident">variant_path</span> <span class="op">=</span> <span class="ident">variant_path</span>.<span class="ident">trim_left_matches</span>(<span class="string">&quot;std::prelude::v1::&quot;</span>)
+                            .<span class="ident">to_string</span>();
+                        <span class="ident">compatible_variants</span>.<span class="ident">push</span>(<span class="ident">variant_path</span>);
                     }
                 }
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">compatible_variants</span>.<span class="ident">is_empty</span>() {
-                    <span class="kw">let</span> <span class="ident">expr_text</span> <span class="op">=</span> <span class="ident">print</span>::<span class="ident">to_string</span>(<span class="ident">print</span>::<span class="ident">NO_ANN</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">print_expr</span>(<span class="ident">expr</span>));
-                    <span class="kw">let</span> <span class="ident">suggestions</span> <span class="op">=</span> <span class="ident">compatible_variants</span>.<span class="ident">iter</span>()
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}({})&quot;</span>, <span class="ident">v</span>, <span class="ident">expr_text</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>();
-                    <span class="ident">err</span>.<span class="ident">span_suggestions</span>(<span class="ident">expr</span>.<span class="ident">span</span>,
-                                         <span class="string">&quot;try using a variant of the expected type&quot;</span>,
-                                         <span class="ident">suggestions</span>);
-                }
             }
-
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">suggestion</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">check_ref</span>(<span class="ident">expr</span>,
-                                                     <span class="ident">checked_ty</span>,
-                                                     <span class="ident">expected</span>) {
-                <span class="ident">err</span>.<span class="ident">help</span>(<span class="kw-2">&amp;</span><span class="ident">suggestion</span>);
-            } <span class="kw">else</span> {
-                <span class="kw">let</span> <span class="ident">mode</span> <span class="op">=</span> <span class="ident">probe</span>::<span class="ident">Mode</span>::<span class="ident">MethodCall</span>;
-                <span class="kw">let</span> <span class="ident">suggestions</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">probe_for_return_type</span>(<span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span>,
-                                                             <span class="ident">mode</span>,
-                                                             <span class="ident">expected</span>,
-                                                             <span class="ident">checked_ty</span>,
-                                                             <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>);
-                <span class="kw">if</span> <span class="ident">suggestions</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="ident">err</span>.<span class="ident">help</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;here are some functions which \
-                                       might fulfill your needs:\n{}&quot;</span>,
-                                      <span class="self">self</span>.<span class="ident">get_best_match</span>(<span class="kw-2">&amp;</span><span class="ident">suggestions</span>).<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>)));
-                }
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">compatible_variants</span>.<span class="ident">is_empty</span>() {
+                <span class="kw">let</span> <span class="ident">expr_text</span> <span class="op">=</span> <span class="ident">print</span>::<span class="ident">to_string</span>(<span class="ident">print</span>::<span class="ident">NO_ANN</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">print_expr</span>(<span class="ident">expr</span>));
+                <span class="kw">let</span> <span class="ident">suggestions</span> <span class="op">=</span> <span class="ident">compatible_variants</span>.<span class="ident">iter</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">v</span><span class="op">|</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}({})&quot;</span>, <span class="ident">v</span>, <span class="ident">expr_text</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>();
+                <span class="ident">err</span>.<span class="ident">span_suggestions</span>(<span class="ident">expr</span>.<span class="ident">span</span>,
+                                     <span class="string">&quot;try using a variant of the expected type&quot;</span>,
+                                     <span class="ident">suggestions</span>);
             }
-            <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>);
         }
-        <span class="prelude-val">None</span>
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">suggestion</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">check_ref</span>(<span class="ident">expr</span>,
+                                                 <span class="ident">checked_ty</span>,
+                                                 <span class="ident">expected</span>) {
+            <span class="ident">err</span>.<span class="ident">help</span>(<span class="kw-2">&amp;</span><span class="ident">suggestion</span>);
+        } <span class="kw">else</span> {
+            <span class="kw">let</span> <span class="ident">mode</span> <span class="op">=</span> <span class="ident">probe</span>::<span class="ident">Mode</span>::<span class="ident">MethodCall</span>;
+            <span class="kw">let</span> <span class="ident">suggestions</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">probe_for_return_type</span>(<span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span>,
+                                                         <span class="ident">mode</span>,
+                                                         <span class="ident">expected</span>,
+                                                         <span class="ident">checked_ty</span>,
+                                                         <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>);
+            <span class="kw">if</span> <span class="ident">suggestions</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+                <span class="ident">err</span>.<span class="ident">help</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;here are some functions which \
+                                   might fulfill your needs:\n{}&quot;</span>,
+                                  <span class="self">self</span>.<span class="ident">get_best_match</span>(<span class="kw-2">&amp;</span><span class="ident">suggestions</span>).<span class="ident">join</span>(<span class="string">&quot;\n&quot;</span>)));
+            }
+        }
+        (<span class="ident">expected</span>, <span class="prelude-val">Some</span>(<span class="ident">err</span>))
     }
 
     <span class="kw">fn</span> <span class="ident">format_method_suggestion</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">AssociatedItem</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {

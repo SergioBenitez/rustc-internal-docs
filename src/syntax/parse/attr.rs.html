@@ -325,7 +325,6 @@
 <span id="280">280</span>
 <span id="281">281</span>
 <span id="282">282</span>
-<span id="283">283</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -434,11 +433,10 @@
                         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
                         <span class="self">self</span>.<span class="ident">diagnostic</span>()
                             .<span class="ident">struct_span_err</span>(<span class="ident">span</span>, <span class="ident">reason</span>)
-                            .<span class="ident">note</span>(<span class="string">&quot;inner attributes and doc comments, like `#![no_std]` or \
-                                   `//! My crate`, annotate the item enclosing them, and are \
-                                   usually found at the beginning of source files. Outer \
-                                   attributes and doc comments, like `#[test]` and
-                                   `/// My function`, annotate the item following them.&quot;</span>)
+                            .<span class="ident">note</span>(<span class="string">&quot;inner attributes, like `#![no_std]`, annotate the item \
+                                   enclosing them, and are usually found at the beginning of \
+                                   source files. Outer attributes, like `#[test]`, annotate the \
+                                   item following them.&quot;</span>)
                             .<span class="ident">emit</span>()
                     }
                     <span class="ident">ast</span>::<span class="ident">AttrStyle</span>::<span class="ident">Inner</span>

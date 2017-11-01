@@ -2019,6 +2019,8 @@
 <span id="1974">1974</span>
 <span id="1975">1975</span>
 <span id="1976">1976</span>
+<span id="1977">1977</span>
+<span id="1978">1978</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3076,7 +3078,9 @@
     <span class="doccomment">/// A function call</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The first field resolves to the function itself (usually an `ExprPath`),</span>
-    <span class="doccomment">/// and the second field is the list of arguments</span>
+    <span class="doccomment">/// and the second field is the list of arguments.</span>
+    <span class="doccomment">/// This also represents calling the constructor of</span>
+    <span class="doccomment">/// tuple-like ADTs such as tuple structs and enum variants.</span>
     <span class="ident">ExprCall</span>(<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>, <span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>),
     <span class="doccomment">/// A method call (`x.foo::&lt;&#39;static, Bar, Baz&gt;(a, b, c, d)`)</span>
     <span class="doccomment">///</span>

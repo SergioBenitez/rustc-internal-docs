@@ -48,11 +48,17 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/std/sys/unix/ext/mod.rs.html#11-60' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/std/sys/unix/ext/mod.rs.html#11-66' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab portability'>This is supported on <strong>Unix</strong> only.</div></div><div class='docblock'><p>Experimental extensions to <code>std</code> for Unix platforms.</p>
 
-<p>For now, this module is limited to extracting file descriptors,
-but its functionality will grow over time.</p>
+<p>Provides access to platform-level information on Unix platforms, and
+exposes Unix-specific functions that would otherwise be inappropriate as
+part of the core <code>std</code> library.</p>
+
+<p>It exposes more ways to deal with platform-specific strings (<code>OsStr</code>,
+<code>OsString</code>), allows to set permissions more granularly, extract low-level
+file descriptors from files and sockets, and has platform-specific helpers
+for spawning processes.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
