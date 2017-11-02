@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/slice/mod.rs.html#11-2666' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/slice/mod.rs.html#11-2682' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Slice management and manipulation</p>
 
 <p>For more details see <a href="../../std/slice/index.html"><code>std::slice</code></a>.</p>
@@ -187,6 +187,20 @@ by elements that match <code>pred</code>, starting from the end of the slice.</p
                            <td class='docblock-short'>
                                 <p>Performs the same functionality as <code>from_raw_parts</code>, except that a mutable
 slice is returned.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="fn" href="fn.from_ref.html"
+                                  title='fn core::slice::from_ref'>from_ref</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>Converts a reference to T into a slice of length 1 (without copying).</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="fn" href="fn.from_ref_mut.html"
+                                  title='fn core::slice::from_ref_mut'>from_ref_mut</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>Converts a reference to T into a slice of length 1 (without copying).</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

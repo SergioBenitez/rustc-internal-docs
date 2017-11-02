@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rls_data/lib.rs.html#10-312' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rls_data/lib.rs.html#10-326' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
@@ -93,6 +93,16 @@
                                   title='struct rls_data::ExternalCrateData'>ExternalCrateData</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] <p>Data for external crates in the prelude of a crate.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="struct" href="struct.GlobalCrateId.html"
+                                  title='struct rls_data::GlobalCrateId'>GlobalCrateId</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>Crate name, along with its disambiguator (128-bit hash) represents a globally
+unique crate identifier, which should allow for differentiation between
+different crate targets or versions and should point to the same crate when
+pulled by different other, dependent crates.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/michael/.cargo/registry/src/github.com-1ecc6299db9ec823/rls-data-0.11.0/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/michael/.cargo/registry/src/github.com-1ecc6299db9ec823/rls-data-0.12.0/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -355,6 +355,20 @@
 <span id="310">310</span>
 <span id="311">311</span>
 <span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// at http://rust-lang.org/COPYRIGHT.</span>
@@ -439,6 +453,16 @@
     <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u32</span>,
 }
 
+<span class="doccomment">/// Crate name, along with its disambiguator (128-bit hash) represents a globally</span>
+<span class="doccomment">/// unique crate identifier, which should allow for differentiation between</span>
+<span class="doccomment">/// different crate targets or versions and should point to the same crate when</span>
+<span class="doccomment">/// pulled by different other, dependent crates.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">RustcDecodable</span>, <span class="ident">RustcEncodable</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GlobalCrateId</span> {
+    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span> <span class="ident">disambiguator</span>: (<span class="ident">u64</span>, <span class="ident">u64</span>),
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">RustcDecodable</span>, <span class="ident">RustcEncodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SpanData</span> {
     <span class="kw">pub</span> <span class="ident">file_name</span>: <span class="ident">PathBuf</span>,
@@ -453,7 +477,7 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">RustcDecodable</span>, <span class="ident">RustcEncodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CratePreludeData</span> {
-    <span class="kw">pub</span> <span class="ident">crate_name</span>: <span class="ident">String</span>,
+    <span class="kw">pub</span> <span class="ident">crate_id</span>: <span class="ident">GlobalCrateId</span>,
     <span class="kw">pub</span> <span class="ident">crate_root</span>: <span class="ident">String</span>,
     <span class="kw">pub</span> <span class="ident">external_crates</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ExternalCrateData</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">span</span>: <span class="ident">SpanData</span>,
@@ -462,9 +486,13 @@
 <span class="doccomment">/// Data for external crates in the prelude of a crate.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">RustcDecodable</span>, <span class="ident">RustcEncodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExternalCrateData</span> {
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
-    <span class="kw">pub</span> <span class="ident">num</span>: <span class="ident">u32</span>,
+    <span class="doccomment">/// Source file where the external crate is declared.</span>
     <span class="kw">pub</span> <span class="ident">file_name</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// A crate-local crate index of an external crate. Local crate index is</span>
+    <span class="doccomment">/// always 0, so these should start from 1 and range should be contiguous,</span>
+    <span class="doccomment">/// e.g. from 1 to n for n external crates.</span>
+    <span class="kw">pub</span> <span class="ident">num</span>: <span class="ident">u32</span>,
+    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">GlobalCrateId</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">RustcDecodable</span>, <span class="ident">RustcEncodable</span>)]</span>
