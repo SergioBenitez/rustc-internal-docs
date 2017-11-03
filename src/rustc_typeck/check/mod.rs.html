@@ -5204,7 +5204,7 @@ type parameter).
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">fold</span>::{<span class="ident">BottomUpFolder</span>, <span class="ident">TypeFoldable</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">util</span>::{<span class="ident">Representability</span>, <span class="ident">IntTypeExt</span>};
-<span class="kw">use</span> <span class="ident">errors</span>::<span class="ident">DiagnosticBuilder</span>;
+<span class="kw">use</span> <span class="ident">errors</span>::{<span class="ident">DiagnosticBuilder</span>, <span class="ident">DiagnosticId</span>};
 <span class="kw">use</span> <span class="ident">require_c_abi_if_variadic</span>;
 <span class="kw">use</span> <span class="ident">session</span>::{<span class="ident">CompileIncomplete</span>, <span class="ident">Session</span>};
 <span class="kw">use</span> <span class="ident">TypeAndSubsts</span>;
@@ -7571,7 +7571,7 @@ type parameter).
                     <span class="kw">if</span> <span class="ident">expected_count</span> <span class="op">==</span> <span class="number">1</span> {<span class="string">&quot;&quot;</span>} <span class="kw">else</span> {<span class="string">&quot;s&quot;</span>},
                     <span class="ident">arg_count</span>,
                     <span class="kw">if</span> <span class="ident">arg_count</span> <span class="op">==</span> <span class="number">1</span> {<span class="string">&quot; was&quot;</span>} <span class="kw">else</span> {<span class="string">&quot;s were&quot;</span>}),
-                <span class="ident">error_code</span>);
+                <span class="ident">DiagnosticId</span>::<span class="ident">Error</span>(<span class="ident">error_code</span>.<span class="ident">to_owned</span>()));
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">def_s</span>) <span class="op">=</span> <span class="ident">def_span</span> {
                 <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">def_s</span>, <span class="string">&quot;defined here&quot;</span>);

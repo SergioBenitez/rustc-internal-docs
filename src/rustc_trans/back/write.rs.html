@@ -2303,7 +2303,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">TyCtxt</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">common</span>::{<span class="ident">time</span>, <span class="ident">time_depth</span>, <span class="ident">set_time_depth</span>, <span class="ident">path2cstr</span>, <span class="ident">print_time_passes_entry</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">fs</span>::{<span class="ident">link_or_copy</span>, <span class="ident">rename_or_copy_remove</span>};
-<span class="kw">use</span> <span class="ident">errors</span>::{<span class="self">self</span>, <span class="ident">Handler</span>, <span class="ident">Level</span>, <span class="ident">DiagnosticBuilder</span>, <span class="ident">FatalError</span>};
+<span class="kw">use</span> <span class="ident">errors</span>::{<span class="self">self</span>, <span class="ident">Handler</span>, <span class="ident">Level</span>, <span class="ident">DiagnosticBuilder</span>, <span class="ident">FatalError</span>, <span class="ident">DiagnosticId</span>};
 <span class="kw">use</span> <span class="ident">errors</span>::<span class="ident">emitter</span>::{<span class="ident">Emitter</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">attr</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ext</span>::<span class="ident">hygiene</span>::<span class="ident">Mark</span>;
@@ -3533,7 +3533,7 @@
 
 <span class="kw">struct</span> <span class="ident">Diagnostic</span> {
     <span class="ident">msg</span>: <span class="ident">String</span>,
-    <span class="ident">code</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">code</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DiagnosticId</span><span class="op">&gt;</span>,
     <span class="ident">lvl</span>: <span class="ident">Level</span>,
 }
 
@@ -4286,7 +4286,7 @@
                         <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">code</span>) <span class="op">=&gt;</span> {
                             <span class="ident">handler</span>.<span class="ident">emit_with_code</span>(<span class="kw-2">&amp;</span><span class="ident">MultiSpan</span>::<span class="ident">new</span>(),
                                                    <span class="kw-2">&amp;</span><span class="ident">diag</span>.<span class="ident">msg</span>,
-                                                   <span class="kw-2">&amp;</span><span class="ident">code</span>,
+                                                   <span class="ident">code</span>.<span class="ident">clone</span>(),
                                                    <span class="ident">diag</span>.<span class="ident">lvl</span>);
                         }
                         <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
