@@ -1850,7 +1850,7 @@
                 <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);
                 <span class="ident">cmp</span>::<span class="ident">min</span>(<span class="self">self</span>.<span class="ident">item_ty_level</span>(<span class="ident">def_id</span>), <span class="self">self</span>.<span class="ident">impl_trait_level</span>(<span class="ident">def_id</span>))
             }
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">=&gt;</span> {
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);
                 <span class="self">self</span>.<span class="ident">impl_trait_level</span>(<span class="ident">def_id</span>)
             }
@@ -1916,7 +1916,7 @@
             }
             <span class="ident">hir</span>::<span class="ident">ItemUse</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemStatic</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemConst</span>(..) <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemGlobalAsm</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemTy</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemMod</span>(..) <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">ItemFn</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemExternCrate</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">=&gt;</span> {}
+            <span class="ident">hir</span>::<span class="ident">ItemFn</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemExternCrate</span>(..) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">=&gt;</span> {}
         }
 
         <span class="comment">// Mark all items in interfaces of reachable items as reachable</span>
@@ -1928,7 +1928,7 @@
             <span class="comment">// Reexports are handled in visit_mod</span>
             <span class="ident">hir</span>::<span class="ident">ItemUse</span>(..) <span class="op">=&gt;</span> {}
             <span class="comment">// The interface is empty</span>
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">=&gt;</span> {}
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">=&gt;</span> {}
             <span class="comment">// The interface is empty</span>
             <span class="ident">hir</span>::<span class="ident">ItemGlobalAsm</span>(..) <span class="op">=&gt;</span> {}
             <span class="comment">// Visit everything</span>
@@ -3207,7 +3207,7 @@
                 }
             }
             <span class="comment">// The interface is empty</span>
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">=&gt;</span> {}
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">=&gt;</span> {}
             <span class="comment">// An inherent impl is public when its type is public</span>
             <span class="comment">// Subitems of inherent impls have their own publicity</span>
             <span class="ident">hir</span>::<span class="ident">ItemImpl</span>(.., <span class="prelude-val">None</span>, _, <span class="kw-2">ref</span> <span class="ident">impl_item_refs</span>) <span class="op">=&gt;</span> {

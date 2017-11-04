@@ -6587,7 +6587,7 @@ unsafe impl !Clone for Foo { }
 
 This will compile:
 
-```
+```ignore (ignore auto_trait future compatibility warning)
 #![feature(optin_builtin_traits)]
 
 struct Foo;
@@ -9402,7 +9402,7 @@ foo.method(); // Ok!
 <span class="comment">//  E0372, // coherence not object safe</span>
     <span class="ident">E0377</span>, <span class="comment">// the trait `CoerceUnsized` may only be implemented for a coercion</span>
            <span class="comment">// between structures with the same definition</span>
-    <span class="ident">E0521</span>, <span class="comment">// redundant default implementations of trait</span>
+    <span class="ident">E0521</span>, <span class="comment">// redundant auto implementations of trait</span>
     <span class="ident">E0533</span>, <span class="comment">// `{}` does not name a unit variant, unit struct or a constant</span>
 <span class="comment">//  E0563, // cannot determine a type for this `impl Trait`: {} // removed in 6383de15</span>
     <span class="ident">E0564</span>, <span class="comment">// only named lifetimes are allowed in `impl Trait`,</span>

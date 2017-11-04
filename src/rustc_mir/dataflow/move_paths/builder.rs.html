@@ -421,6 +421,7 @@
 <span id="376">376</span>
 <span id="377">377</span>
 <span id="378">378</span>
+<span id="379">379</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -729,6 +730,7 @@
             <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: _ } <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">Resume</span> <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
+            <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">=&gt;</span> { }
 
             <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">=&gt;</span> {

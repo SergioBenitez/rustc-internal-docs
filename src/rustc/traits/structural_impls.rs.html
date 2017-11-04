@@ -715,7 +715,7 @@
             <span class="kw">super</span>::<span class="ident">VtableImpl</span>(<span class="kw-2">ref</span> <span class="ident">v</span>) <span class="op">=&gt;</span>
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">v</span>),
 
-            <span class="kw">super</span>::<span class="ident">VtableDefaultImpl</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) <span class="op">=&gt;</span>
+            <span class="kw">super</span>::<span class="ident">VtableAutoImpl</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) <span class="op">=&gt;</span>
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">t</span>),
 
             <span class="kw">super</span>::<span class="ident">VtableClosure</span>(<span class="kw-2">ref</span> <span class="ident">d</span>) <span class="op">=&gt;</span>
@@ -772,9 +772,9 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">N</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">traits</span>::<span class="ident">VtableDefaultImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">N</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">traits</span>::<span class="ident">VtableAutoImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;VtableDefaultImplData(trait_def_id={:?}, nested={:?})&quot;</span>,
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;VtableAutoImplData(trait_def_id={:?}, nested={:?})&quot;</span>,
                <span class="self">self</span>.<span class="ident">trait_def_id</span>,
                <span class="self">self</span>.<span class="ident">nested</span>)
     }
@@ -960,7 +960,7 @@
                     })
                 })
             }
-            <span class="ident">traits</span>::<span class="ident">VtableDefaultImpl</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">traits</span>::<span class="ident">VtableDefaultImpl</span>(<span class="ident">t</span>)),
+            <span class="ident">traits</span>::<span class="ident">VtableAutoImpl</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">traits</span>::<span class="ident">VtableAutoImpl</span>(<span class="ident">t</span>)),
             <span class="ident">traits</span>::<span class="ident">VtableGenerator</span>(<span class="ident">traits</span>::<span class="ident">VtableGeneratorData</span> {
                 <span class="ident">closure_def_id</span>,
                 <span class="ident">substs</span>,
@@ -1075,9 +1075,9 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">N</span>: <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">traits</span>::<span class="ident">VtableDefaultImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">N</span>: <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">traits</span>::<span class="ident">VtableAutoImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">traits</span>::<span class="ident">VtableDefaultImplData</span> {
+        <span class="ident">traits</span>::<span class="ident">VtableAutoImplData</span> {
             <span class="ident">trait_def_id</span>: <span class="self">self</span>.<span class="ident">trait_def_id</span>,
             <span class="ident">nested</span>: <span class="self">self</span>.<span class="ident">nested</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
         }
@@ -1131,7 +1131,7 @@
     <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">traits</span>::<span class="ident">VtableImpl</span>(<span class="kw-2">ref</span> <span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">traits</span>::<span class="ident">VtableImpl</span>(<span class="ident">v</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
-            <span class="ident">traits</span>::<span class="ident">VtableDefaultImpl</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">traits</span>::<span class="ident">VtableDefaultImpl</span>(<span class="ident">t</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
+            <span class="ident">traits</span>::<span class="ident">VtableAutoImpl</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">traits</span>::<span class="ident">VtableAutoImpl</span>(<span class="ident">t</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
             <span class="ident">traits</span>::<span class="ident">VtableGenerator</span>(<span class="kw-2">ref</span> <span class="ident">d</span>) <span class="op">=&gt;</span> {
                 <span class="ident">traits</span>::<span class="ident">VtableGenerator</span>(<span class="ident">d</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>))
             }
@@ -1150,7 +1150,7 @@
     <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">traits</span>::<span class="ident">VtableImpl</span>(<span class="kw-2">ref</span> <span class="ident">v</span>) <span class="op">=&gt;</span> <span class="ident">v</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
-            <span class="ident">traits</span>::<span class="ident">VtableDefaultImpl</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">t</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
+            <span class="ident">traits</span>::<span class="ident">VtableAutoImpl</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">t</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
             <span class="ident">traits</span>::<span class="ident">VtableGenerator</span>(<span class="kw-2">ref</span> <span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">d</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
             <span class="ident">traits</span>::<span class="ident">VtableClosure</span>(<span class="kw-2">ref</span> <span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">d</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
             <span class="ident">traits</span>::<span class="ident">VtableFnPointer</span>(<span class="kw-2">ref</span> <span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">d</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),

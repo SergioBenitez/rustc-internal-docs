@@ -2634,7 +2634,7 @@
                     <span class="ident">ctor_sig</span>: <span class="prelude-val">None</span>,
                 }), <span class="ident">repr_options</span>)
             }
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">=&gt;</span> {
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">ImplData</span> {
                     <span class="ident">polarity</span>: <span class="ident">hir</span>::<span class="ident">ImplPolarity</span>::<span class="ident">Positive</span>,
                     <span class="ident">defaultness</span>: <span class="ident">hir</span>::<span class="ident">Defaultness</span>::<span class="ident">Final</span>,
@@ -2643,7 +2643,7 @@
                     <span class="ident">trait_ref</span>: <span class="ident">tcx</span>.<span class="ident">impl_trait_ref</span>(<span class="ident">def_id</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">trait_ref</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">lazy</span>(<span class="kw-2">&amp;</span><span class="ident">trait_ref</span>)),
                 };
 
-                <span class="ident">EntryKind</span>::<span class="ident">DefaultImpl</span>(<span class="self">self</span>.<span class="ident">lazy</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>))
+                <span class="ident">EntryKind</span>::<span class="ident">AutoImpl</span>(<span class="self">self</span>.<span class="ident">lazy</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>))
             }
             <span class="ident">hir</span>::<span class="ident">ItemImpl</span>(_, <span class="ident">polarity</span>, <span class="ident">defaultness</span>, ..) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">impl_trait_ref</span>(<span class="ident">def_id</span>);
@@ -2685,7 +2685,7 @@
                 <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">TraitData</span> {
                     <span class="ident">unsafety</span>: <span class="ident">trait_def</span>.<span class="ident">unsafety</span>,
                     <span class="ident">paren_sugar</span>: <span class="ident">trait_def</span>.<span class="ident">paren_sugar</span>,
-                    <span class="ident">has_default_impl</span>: <span class="ident">tcx</span>.<span class="ident">trait_has_default_impl</span>(<span class="ident">def_id</span>),
+                    <span class="ident">has_auto_impl</span>: <span class="ident">tcx</span>.<span class="ident">trait_is_auto</span>(<span class="ident">def_id</span>),
                     <span class="ident">super_predicates</span>: <span class="self">self</span>.<span class="ident">lazy</span>(<span class="kw-2">&amp;</span><span class="ident">tcx</span>.<span class="ident">super_predicates_of</span>(<span class="ident">def_id</span>)),
                 };
 
@@ -3232,7 +3232,7 @@
             <span class="ident">hir</span>::<span class="ident">ItemGlobalAsm</span>(..) <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemExternCrate</span>(..) <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemUse</span>(..) <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">|</span>
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemTy</span>(..) <span class="op">=&gt;</span> {
                 <span class="comment">// no sub-item recording needed in these cases</span>
             }

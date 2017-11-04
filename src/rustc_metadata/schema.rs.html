@@ -874,7 +874,7 @@
     <span class="ident">Generator</span>(<span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">GeneratorData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
     <span class="ident">Trait</span>(<span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">TraitData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
     <span class="ident">Impl</span>(<span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">ImplData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
-    <span class="ident">DefaultImpl</span>(<span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">ImplData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
+    <span class="ident">AutoImpl</span>(<span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">ImplData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
     <span class="ident">Method</span>(<span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">MethodData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
     <span class="ident">AssociatedType</span>(<span class="ident">AssociatedContainer</span>),
     <span class="ident">AssociatedConst</span>(<span class="ident">AssociatedContainer</span>, <span class="ident">u8</span>),
@@ -930,7 +930,7 @@
             <span class="ident">EntryKind</span>::<span class="ident">Trait</span>(<span class="kw-2">ref</span> <span class="ident">trait_data</span>) <span class="op">=&gt;</span> {
                 <span class="ident">trait_data</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             }
-            <span class="ident">EntryKind</span>::<span class="ident">DefaultImpl</span>(<span class="kw-2">ref</span> <span class="ident">impl_data</span>) <span class="op">|</span>
+            <span class="ident">EntryKind</span>::<span class="ident">AutoImpl</span>(<span class="kw-2">ref</span> <span class="ident">impl_data</span>) <span class="op">|</span>
             <span class="ident">EntryKind</span>::<span class="ident">Impl</span>(<span class="kw-2">ref</span> <span class="ident">impl_data</span>) <span class="op">=&gt;</span> {
                 <span class="ident">impl_data</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             }
@@ -997,14 +997,14 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TraitData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="ident">unsafety</span>: <span class="ident">hir</span>::<span class="ident">Unsafety</span>,
     <span class="kw">pub</span> <span class="ident">paren_sugar</span>: <span class="ident">bool</span>,
-    <span class="kw">pub</span> <span class="ident">has_default_impl</span>: <span class="ident">bool</span>,
+    <span class="kw">pub</span> <span class="ident">has_auto_impl</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span> <span class="ident">super_predicates</span>: <span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GenericPredicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">TraitData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="ident">unsafety</span>,
     <span class="ident">paren_sugar</span>,
-    <span class="ident">has_default_impl</span>,
+    <span class="ident">has_auto_impl</span>,
     <span class="ident">super_predicates</span>
 });
 

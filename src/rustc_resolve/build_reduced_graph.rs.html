@@ -1271,7 +1271,7 @@
                 <span class="self">self</span>.<span class="ident">insert_field_names</span>(<span class="ident">item_def_id</span>, <span class="ident">field_names</span>);
             }
 
-            <span class="ident">ItemKind</span>::<span class="ident">DefaultImpl</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Impl</span>(..) <span class="op">=&gt;</span> {}
+            <span class="ident">ItemKind</span>::<span class="ident">AutoImpl</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Impl</span>(..) <span class="op">=&gt;</span> {}
 
             <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(..) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">definitions</span>.<span class="ident">local_def_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);

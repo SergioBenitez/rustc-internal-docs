@@ -63,7 +63,7 @@ by the compiler in many circumstances. This mechanism is called
 <p>Implementing <code>Deref</code> for smart pointers makes accessing the data behind them
 convenient, which is why they implement <code>Deref</code>. On the other hand, the
 rules regarding <code>Deref</code> and <a href="trait.DerefMut.html"><code>DerefMut</code></a> were designed specifically to
-accomodate smart pointers. Because of this, <strong><code>Deref</code> should only be
+accommodate smart pointers. Because of this, <strong><code>Deref</code> should only be
 implemented for smart pointers</strong> to avoid confusion.</p>
 
 <p>For similar reasons, <strong>this trait should never fail</strong>. Failure during

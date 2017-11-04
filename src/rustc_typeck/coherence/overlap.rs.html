@@ -174,7 +174,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">itemlikevisit</span>::<span class="ident">ItemLikeVisitor</span>;
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_default_impls</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_auto_impls</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">overlap</span> <span class="op">=</span> <span class="ident">OverlapChecker</span> { <span class="ident">tcx</span> };
 
     <span class="comment">// this secondary walk specifically checks for some other cases,</span>
@@ -230,19 +230,19 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;v</span><span class="op">&gt;</span> <span class="ident">ItemLikeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;v</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">OverlapChecker</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">visit_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;v</span> <span class="ident">hir</span>::<span class="ident">Item</span>) {
         <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">=&gt;</span> {
-                <span class="comment">// look for another default impl; note that due to the</span>
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">=&gt;</span> {
+                <span class="comment">// look for another auto impl; note that due to the</span>
                 <span class="comment">// general orphan/coherence rules, it must always be</span>
                 <span class="comment">// in this crate.</span>
                 <span class="kw">let</span> <span class="ident">impl_def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);
                 <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">impl_trait_ref</span>(<span class="ident">impl_def_id</span>).<span class="ident">unwrap</span>();
 
-                <span class="kw">let</span> <span class="ident">prev_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">trait_default_impl</span>(<span class="ident">trait_ref</span>.<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
+                <span class="kw">let</span> <span class="ident">prev_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">trait_auto_impl</span>(<span class="ident">trait_ref</span>.<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
                 <span class="kw">if</span> <span class="ident">prev_id</span> <span class="op">!=</span> <span class="ident">item</span>.<span class="ident">id</span> {
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>,
                                                    <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">span_of_impl</span>(<span class="ident">impl_def_id</span>).<span class="ident">unwrap</span>(),
                                                    <span class="ident">E0521</span>,
-                                                   <span class="string">&quot;redundant default implementations of trait \
+                                                   <span class="string">&quot;redundant auto implementations of trait \
                                                     `{}`:&quot;</span>,
                                                    <span class="ident">trait_ref</span>);
                     <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="self">self</span>.<span class="ident">tcx</span>

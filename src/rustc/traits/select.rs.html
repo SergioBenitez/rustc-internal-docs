@@ -3431,9 +3431,9 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Selection</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">SelectionResult</span>;
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">VtableBuiltin</span>, <span class="ident">VtableImpl</span>, <span class="ident">VtableParam</span>, <span class="ident">VtableClosure</span>, <span class="ident">VtableGenerator</span>,
-            <span class="ident">VtableFnPointer</span>, <span class="ident">VtableObject</span>, <span class="ident">VtableDefaultImpl</span>};
+            <span class="ident">VtableFnPointer</span>, <span class="ident">VtableObject</span>, <span class="ident">VtableAutoImpl</span>};
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">VtableImplData</span>, <span class="ident">VtableObjectData</span>, <span class="ident">VtableBuiltinData</span>, <span class="ident">VtableGeneratorData</span>,
-            <span class="ident">VtableClosureData</span>, <span class="ident">VtableDefaultImplData</span>, <span class="ident">VtableFnPointerData</span>};
+            <span class="ident">VtableClosureData</span>, <span class="ident">VtableAutoImplData</span>, <span class="ident">VtableFnPointerData</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">util</span>;
 
 <span class="kw">use</span> <span class="ident">dep_graph</span>::{<span class="ident">DepNodeIndex</span>, <span class="ident">DepKind</span>};
@@ -3631,7 +3631,7 @@
     <span class="ident">BuiltinCandidate</span> { <span class="ident">has_nested</span>: <span class="ident">bool</span> },
     <span class="ident">ParamCandidate</span>(<span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
     <span class="ident">ImplCandidate</span>(<span class="ident">DefId</span>),
-    <span class="ident">DefaultImplCandidate</span>(<span class="ident">DefId</span>),
+    <span class="ident">AutoImplCandidate</span>(<span class="ident">DefId</span>),
 
     <span class="doccomment">/// This is a trait matching with a projected type as `Self`, and</span>
     <span class="doccomment">/// we found an applicable bound in the trait definition.</span>
@@ -3666,7 +3666,7 @@
                 }
             }
             <span class="ident">ImplCandidate</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> <span class="ident">ImplCandidate</span>(<span class="ident">def_id</span>),
-            <span class="ident">DefaultImplCandidate</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> <span class="ident">DefaultImplCandidate</span>(<span class="ident">def_id</span>),
+            <span class="ident">AutoImplCandidate</span>(<span class="ident">def_id</span>) <span class="op">=&gt;</span> <span class="ident">AutoImplCandidate</span>(<span class="ident">def_id</span>),
             <span class="ident">ProjectionCandidate</span> <span class="op">=&gt;</span> <span class="ident">ProjectionCandidate</span>,
             <span class="ident">FnPointerCandidate</span> <span class="op">=&gt;</span> <span class="ident">FnPointerCandidate</span>,
             <span class="ident">ObjectCandidate</span> <span class="op">=&gt;</span> <span class="ident">ObjectCandidate</span>,
@@ -4316,7 +4316,7 @@
     <span class="kw">fn</span> <span class="ident">coinductive_predicate</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">predicate</span>: <span class="ident">ty</span>::<span class="ident">Predicate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">predicate</span> {
             <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">Trait</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">trait_has_default_impl</span>(<span class="ident">data</span>.<span class="ident">def_id</span>())
+                <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">trait_is_auto</span>(<span class="ident">data</span>.<span class="ident">def_id</span>())
             }
             _ <span class="op">=&gt;</span> {
                 <span class="bool-val">false</span>
@@ -4774,10 +4774,10 @@
 
         <span class="self">self</span>.<span class="ident">assemble_candidates_from_projected_tys</span>(<span class="ident">obligation</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">candidates</span>);
         <span class="self">self</span>.<span class="ident">assemble_candidates_from_caller_bounds</span>(<span class="ident">stack</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">candidates</span>)<span class="question-mark">?</span>;
-        <span class="comment">// Default implementations have lower priority, so we only</span>
+        <span class="comment">// Auto implementations have lower priority, so we only</span>
         <span class="comment">// consider triggering a default if there is no other impl that can apply.</span>
         <span class="kw">if</span> <span class="ident">candidates</span>.<span class="ident">vec</span>.<span class="ident">is_empty</span>() {
-            <span class="self">self</span>.<span class="ident">assemble_candidates_from_default_impls</span>(<span class="ident">obligation</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">candidates</span>)<span class="question-mark">?</span>;
+            <span class="self">self</span>.<span class="ident">assemble_candidates_from_auto_impls</span>(<span class="ident">obligation</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">candidates</span>)<span class="question-mark">?</span>;
         }
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;candidate list size: {}&quot;</span>, <span class="ident">candidates</span>.<span class="ident">vec</span>.<span class="ident">len</span>());
         <span class="prelude-val">Ok</span>(<span class="ident">candidates</span>)
@@ -5092,18 +5092,18 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">fn</span> <span class="ident">assemble_candidates_from_default_impls</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+    <span class="kw">fn</span> <span class="ident">assemble_candidates_from_auto_impls</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                               <span class="ident">obligation</span>: <span class="kw-2">&amp;</span><span class="ident">TraitObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                               <span class="ident">candidates</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SelectionCandidateSet</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                               <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SelectionError</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
     {
         <span class="comment">// OK to skip binder here because the tests we do below do not involve bound regions</span>
         <span class="kw">let</span> <span class="ident">self_ty</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">obligation</span>.<span class="ident">self_ty</span>().<span class="ident">skip_binder</span>();
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;assemble_candidates_from_default_impls(self_ty={:?})&quot;</span>, <span class="ident">self_ty</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;assemble_candidates_from_auto_impls(self_ty={:?})&quot;</span>, <span class="ident">self_ty</span>);
 
         <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">def_id</span>();
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">trait_has_default_impl</span>(<span class="ident">def_id</span>) {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">trait_is_auto</span>(<span class="ident">def_id</span>) {
             <span class="kw">match</span> <span class="ident">self_ty</span>.<span class="ident">sty</span> {
                 <span class="ident">ty</span>::<span class="ident">TyDynamic</span>(..) <span class="op">=&gt;</span> {
                     <span class="comment">// For object types, we don&#39;t know what the closed</span>
@@ -5134,11 +5134,11 @@
                     <span class="comment">// this path.</span>
                 }
                 <span class="ident">ty</span>::<span class="ident">TyInfer</span>(<span class="ident">ty</span>::<span class="ident">TyVar</span>(_)) <span class="op">=&gt;</span> {
-                    <span class="comment">// the defaulted impl might apply, we don&#39;t know</span>
+                    <span class="comment">// the auto impl might apply, we don&#39;t know</span>
                     <span class="ident">candidates</span>.<span class="ident">ambiguous</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 }
                 _ <span class="op">=&gt;</span> {
-                    <span class="ident">candidates</span>.<span class="ident">vec</span>.<span class="ident">push</span>(<span class="ident">DefaultImplCandidate</span>(<span class="ident">def_id</span>.<span class="ident">clone</span>()))
+                    <span class="ident">candidates</span>.<span class="ident">vec</span>.<span class="ident">push</span>(<span class="ident">AutoImplCandidate</span>(<span class="ident">def_id</span>.<span class="ident">clone</span>()))
                 }
             }
         }
@@ -5339,7 +5339,7 @@
         <span class="kw">match</span> <span class="ident">other</span>.<span class="ident">candidate</span> {
             <span class="ident">ObjectCandidate</span> <span class="op">|</span>
             <span class="ident">ParamCandidate</span>(_) <span class="op">|</span> <span class="ident">ProjectionCandidate</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">victim</span>.<span class="ident">candidate</span> {
-                <span class="ident">DefaultImplCandidate</span>(..) <span class="op">=&gt;</span> {
+                <span class="ident">AutoImplCandidate</span>(..) <span class="op">=&gt;</span> {
                     <span class="macro">bug</span><span class="macro">!</span>(
                         <span class="string">&quot;default implementations shouldn&#39;t be recorded \
                          when there are other valid candidates&quot;</span>);
@@ -5688,9 +5688,9 @@
                 <span class="prelude-val">Ok</span>(<span class="ident">VtableParam</span>(<span class="ident">obligations</span>))
             }
 
-            <span class="ident">DefaultImplCandidate</span>(<span class="ident">trait_def_id</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">confirm_default_impl_candidate</span>(<span class="ident">obligation</span>, <span class="ident">trait_def_id</span>);
-                <span class="prelude-val">Ok</span>(<span class="ident">VtableDefaultImpl</span>(<span class="ident">data</span>))
+            <span class="ident">AutoImplCandidate</span>(<span class="ident">trait_def_id</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">confirm_auto_impl_candidate</span>(<span class="ident">obligation</span>, <span class="ident">trait_def_id</span>);
+                <span class="prelude-val">Ok</span>(<span class="ident">VtableAutoImpl</span>(<span class="ident">data</span>))
             }
 
             <span class="ident">ImplCandidate</span>(<span class="ident">impl_def_id</span>) <span class="op">=&gt;</span> {
@@ -5823,29 +5823,29 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// 1. For each constituent type `Y` in `X`, `Y : Foo` holds</span>
     <span class="doccomment">/// 2. For each where-clause `C` declared on `Foo`, `[Self =&gt; X] C` holds.</span>
-    <span class="kw">fn</span> <span class="ident">confirm_default_impl_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+    <span class="kw">fn</span> <span class="ident">confirm_auto_impl_candidate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                       <span class="ident">obligation</span>: <span class="kw-2">&amp;</span><span class="ident">TraitObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                       <span class="ident">trait_def_id</span>: <span class="ident">DefId</span>)
-                                      <span class="op">-&gt;</span> <span class="ident">VtableDefaultImplData</span><span class="op">&lt;</span><span class="ident">PredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
+                                      <span class="op">-&gt;</span> <span class="ident">VtableAutoImplData</span><span class="op">&lt;</span><span class="ident">PredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
     {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;confirm_default_impl_candidate({:?}, {:?})&quot;</span>,
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;confirm_auto_impl_candidate({:?}, {:?})&quot;</span>,
                <span class="ident">obligation</span>,
                <span class="ident">trait_def_id</span>);
 
         <span class="comment">// binder is moved below</span>
         <span class="kw">let</span> <span class="ident">self_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">shallow_resolve</span>(<span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">skip_binder</span>().<span class="ident">self_ty</span>());
         <span class="kw">let</span> <span class="ident">types</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">constituent_types_for_ty</span>(<span class="ident">self_ty</span>);
-        <span class="self">self</span>.<span class="ident">vtable_default_impl</span>(<span class="ident">obligation</span>, <span class="ident">trait_def_id</span>, <span class="ident">ty</span>::<span class="ident">Binder</span>(<span class="ident">types</span>))
+        <span class="self">self</span>.<span class="ident">vtable_auto_impl</span>(<span class="ident">obligation</span>, <span class="ident">trait_def_id</span>, <span class="ident">ty</span>::<span class="ident">Binder</span>(<span class="ident">types</span>))
     }
 
-    <span class="doccomment">/// See `confirm_default_impl_candidate`</span>
-    <span class="kw">fn</span> <span class="ident">vtable_default_impl</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+    <span class="doccomment">/// See `confirm_auto_impl_candidate`</span>
+    <span class="kw">fn</span> <span class="ident">vtable_auto_impl</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                            <span class="ident">obligation</span>: <span class="kw-2">&amp;</span><span class="ident">TraitObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                            <span class="ident">trait_def_id</span>: <span class="ident">DefId</span>,
                            <span class="ident">nested</span>: <span class="ident">ty</span>::<span class="ident">Binder</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>)
-                           <span class="op">-&gt;</span> <span class="ident">VtableDefaultImplData</span><span class="op">&lt;</span><span class="ident">PredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
+                           <span class="op">-&gt;</span> <span class="ident">VtableAutoImplData</span><span class="op">&lt;</span><span class="ident">PredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
     {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;vtable_default_impl: nested={:?}&quot;</span>, <span class="ident">nested</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;vtable_auto_impl: nested={:?}&quot;</span>, <span class="ident">nested</span>);
 
         <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">derived_cause</span>(<span class="ident">BuiltinDerivedObligation</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">obligations</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">collect_predicates_for_types</span>(
@@ -5871,9 +5871,9 @@
 
         <span class="ident">obligations</span>.<span class="ident">extend</span>(<span class="ident">trait_obligations</span>);
 
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;vtable_default_impl: obligations={:?}&quot;</span>, <span class="ident">obligations</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;vtable_auto_impl: obligations={:?}&quot;</span>, <span class="ident">obligations</span>);
 
-        <span class="ident">VtableDefaultImplData</span> {
+        <span class="ident">VtableAutoImplData</span> {
             <span class="ident">trait_def_id</span>,
             <span class="ident">nested</span>: <span class="ident">obligations</span>
         }

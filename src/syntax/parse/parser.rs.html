@@ -6475,6 +6475,37 @@
 <span id="6430">6430</span>
 <span id="6431">6431</span>
 <span id="6432">6432</span>
+<span id="6433">6433</span>
+<span id="6434">6434</span>
+<span id="6435">6435</span>
+<span id="6436">6436</span>
+<span id="6437">6437</span>
+<span id="6438">6438</span>
+<span id="6439">6439</span>
+<span id="6440">6440</span>
+<span id="6441">6441</span>
+<span id="6442">6442</span>
+<span id="6443">6443</span>
+<span id="6444">6444</span>
+<span id="6445">6445</span>
+<span id="6446">6446</span>
+<span id="6447">6447</span>
+<span id="6448">6448</span>
+<span id="6449">6449</span>
+<span id="6450">6450</span>
+<span id="6451">6451</span>
+<span id="6452">6452</span>
+<span id="6453">6453</span>
+<span id="6454">6454</span>
+<span id="6455">6455</span>
+<span id="6456">6456</span>
+<span id="6457">6457</span>
+<span id="6458">6458</span>
+<span id="6459">6459</span>
+<span id="6460">6460</span>
+<span id="6461">6461</span>
+<span id="6462">6462</span>
+<span id="6463">6463</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -6499,7 +6530,7 @@
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Expr</span>, <span class="ident">ExprKind</span>, <span class="ident">RangeLimits</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Field</span>, <span class="ident">FnDecl</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">ForeignItem</span>, <span class="ident">ForeignItemKind</span>, <span class="ident">FunctionRetTy</span>};
-<span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Ident</span>, <span class="ident">ImplItem</span>, <span class="ident">Item</span>, <span class="ident">ItemKind</span>};
+<span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Ident</span>, <span class="ident">ImplItem</span>, <span class="ident">IsAuto</span>, <span class="ident">Item</span>, <span class="ident">ItemKind</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">Lifetime</span>, <span class="ident">LifetimeDef</span>, <span class="ident">Lit</span>, <span class="ident">LitKind</span>, <span class="ident">UintTy</span>};
 <span class="kw">use</span> <span class="ident">ast</span>::<span class="ident">Local</span>;
 <span class="kw">use</span> <span class="ident">ast</span>::<span class="ident">MacStmtStyle</span>;
@@ -9632,7 +9663,13 @@
         <span class="comment">// Parse: `for &lt;src_pat&gt; in &lt;src_expr&gt; &lt;src_loop_block&gt;`</span>
 
         <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat</span>()<span class="question-mark">?</span>;
-        <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">In</span>)<span class="question-mark">?</span>;
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">In</span>) {
+            <span class="kw">let</span> <span class="ident">in_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>.<span class="ident">between</span>(<span class="self">self</span>.<span class="ident">span</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">span_diagnostic</span>
+                .<span class="ident">struct_span_err</span>(<span class="ident">in_span</span>, <span class="string">&quot;missing `in` in `for` loop&quot;</span>);
+            <span class="ident">err</span>.<span class="ident">span_suggestion_short</span>(<span class="ident">in_span</span>, <span class="string">&quot;try adding `in` here&quot;</span>, <span class="string">&quot; in &quot;</span>.<span class="ident">into</span>());
+            <span class="ident">err</span>.<span class="ident">emit</span>();
+        }
         <span class="kw">let</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_expr_res</span>(<span class="ident">Restrictions</span>::<span class="ident">NO_STRUCT_LITERAL</span>, <span class="prelude-val">None</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> (<span class="ident">iattrs</span>, <span class="ident">loop_block</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_inner_attrs_and_block</span>()<span class="question-mark">?</span>;
         <span class="ident">attrs</span>.<span class="ident">extend</span>(<span class="ident">iattrs</span>);
@@ -10349,6 +10386,16 @@
     <span class="kw">fn</span> <span class="ident">is_union_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Union</span>) <span class="op">&amp;&amp;</span>
         <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_ident</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">t</span>.<span class="ident">is_reserved_ident</span>())
+    }
+
+    <span class="kw">fn</span> <span class="ident">eat_auto_trait</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Auto</span>)
+            <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>))
+        {
+            <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Auto</span>) <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>)
+        } <span class="kw">else</span> {
+            <span class="bool-val">false</span>
+        }
     }
 
     <span class="kw">fn</span> <span class="ident">is_defaultness</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -11529,7 +11576,7 @@
     }
 
     <span class="doccomment">/// Parse trait Foo { ... }</span>
-    <span class="kw">fn</span> <span class="ident">parse_item_trait</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">unsafety</span>: <span class="ident">Unsafety</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">ItemInfo</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">parse_item_trait</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">is_auto</span>: <span class="ident">IsAuto</span>, <span class="ident">unsafety</span>: <span class="ident">Unsafety</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">ItemInfo</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ident</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tps</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_generics</span>()<span class="question-mark">?</span>;
 
@@ -11556,7 +11603,7 @@
                 }
             }
         }
-        <span class="prelude-val">Ok</span>((<span class="ident">ident</span>, <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(<span class="ident">unsafety</span>, <span class="ident">tps</span>, <span class="ident">bounds</span>, <span class="ident">trait_items</span>), <span class="prelude-val">None</span>))
+        <span class="prelude-val">Ok</span>((<span class="ident">ident</span>, <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(<span class="ident">is_auto</span>, <span class="ident">unsafety</span>, <span class="ident">tps</span>, <span class="ident">bounds</span>, <span class="ident">trait_items</span>), <span class="prelude-val">None</span>))
     }
 
     <span class="doccomment">/// Parses items implementations variants</span>
@@ -11611,19 +11658,19 @@
 
         <span class="kw">if</span> <span class="ident">opt_trait</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">DotDot</span>) {
             <span class="kw">if</span> <span class="ident">generics</span>.<span class="ident">is_parameterized</span>() {
-                <span class="self">self</span>.<span class="ident">span_err</span>(<span class="ident">impl_span</span>, <span class="string">&quot;default trait implementations are not \
+                <span class="self">self</span>.<span class="ident">span_err</span>(<span class="ident">impl_span</span>, <span class="string">&quot;auto trait implementations are not \
                                           allowed to have generics&quot;</span>);
             }
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ast</span>::<span class="ident">Defaultness</span>::<span class="ident">Default</span> <span class="op">=</span> <span class="ident">defaultness</span> {
                 <span class="self">self</span>.<span class="ident">span_err</span>(<span class="ident">impl_span</span>, <span class="string">&quot;`default impl` is not allowed for \
-                                         default trait implementations&quot;</span>);
+                                         auto trait implementations&quot;</span>);
             }
 
             <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>))<span class="question-mark">?</span>;
             <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>))<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>((<span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>(),
-             <span class="ident">ItemKind</span>::<span class="ident">DefaultImpl</span>(<span class="ident">unsafety</span>, <span class="ident">opt_trait</span>.<span class="ident">unwrap</span>()), <span class="prelude-val">None</span>))
+             <span class="ident">ItemKind</span>::<span class="ident">AutoImpl</span>(<span class="ident">unsafety</span>, <span class="ident">opt_trait</span>.<span class="ident">unwrap</span>()), <span class="prelude-val">None</span>))
         } <span class="kw">else</span> {
             <span class="kw">if</span> <span class="ident">opt_trait</span>.<span class="ident">is_some</span>() {
                 <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ty</span>()<span class="question-mark">?</span>;
@@ -12466,13 +12513,19 @@
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">item</span>));
         }
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Unsafe</span>) <span class="op">&amp;&amp;</span>
-            <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>))
+            (<span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>)) <span class="op">||</span>
+            <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Auto</span>)))
         {
             <span class="comment">// UNSAFE TRAIT ITEM</span>
             <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Unsafe</span>)<span class="question-mark">?</span>;
-            <span class="self">self</span>.<span class="ident">expect_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>)<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">is_auto</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>) {
+                <span class="ident">IsAuto</span>::<span class="ident">No</span>
+            } <span class="kw">else</span> {
+                <span class="self">self</span>.<span class="ident">eat_auto_trait</span>();
+                <span class="ident">IsAuto</span>::<span class="ident">Yes</span>
+            };
             <span class="kw">let</span> (<span class="ident">ident</span>, <span class="ident">item_</span>, <span class="ident">extra_attrs</span>) <span class="op">=</span>
-                <span class="self">self</span>.<span class="ident">parse_item_trait</span>(<span class="ident">ast</span>::<span class="ident">Unsafety</span>::<span class="ident">Unsafe</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">parse_item_trait</span>(<span class="ident">is_auto</span>, <span class="ident">ast</span>::<span class="ident">Unsafety</span>::<span class="ident">Unsafe</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">prev_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
             <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mk_item</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">prev_span</span>),
                                     <span class="ident">ident</span>,
@@ -12575,10 +12628,19 @@
                                     <span class="ident">maybe_append</span>(<span class="ident">attrs</span>, <span class="ident">extra_attrs</span>));
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">item</span>));
         }
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>) {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>)
+            <span class="op">||</span> (<span class="self">self</span>.<span class="ident">check_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Auto</span>)
+                <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>)))
+        {
+            <span class="kw">let</span> <span class="ident">is_auto</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>) {
+                <span class="ident">IsAuto</span>::<span class="ident">No</span>
+            } <span class="kw">else</span> {
+                <span class="self">self</span>.<span class="ident">eat_auto_trait</span>();
+                <span class="ident">IsAuto</span>::<span class="ident">Yes</span>
+            };
             <span class="comment">// TRAIT ITEM</span>
             <span class="kw">let</span> (<span class="ident">ident</span>, <span class="ident">item_</span>, <span class="ident">extra_attrs</span>) <span class="op">=</span>
-                <span class="self">self</span>.<span class="ident">parse_item_trait</span>(<span class="ident">ast</span>::<span class="ident">Unsafety</span>::<span class="ident">Normal</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">parse_item_trait</span>(<span class="ident">is_auto</span>, <span class="ident">ast</span>::<span class="ident">Unsafety</span>::<span class="ident">Normal</span>)<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">prev_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
             <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mk_item</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">prev_span</span>),
                                     <span class="ident">ident</span>,

@@ -2719,6 +2719,9 @@
 <span id="2674">2674</span>
 <span id="2675">2675</span>
 <span id="2676">2676</span>
+<span id="2677">2677</span>
+<span id="2678">2678</span>
+<span id="2679">2679</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -5030,8 +5033,11 @@
         <span class="self">self</span>.<span class="ident">get_attrs</span>(<span class="ident">did</span>).<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">check_name</span>(<span class="ident">attr</span>))
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trait_has_default_impl</span>(<span class="self">self</span>, <span class="ident">trait_def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">trait_def</span>(<span class="ident">trait_def_id</span>).<span class="ident">has_default_impl</span>
+    <span class="doccomment">/// Returns true if this is an `auto trait`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// NB. For a limited time, also returns true if `impl Trait for .. { }` is in the code-base.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trait_is_auto</span>(<span class="self">self</span>, <span class="ident">trait_def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">trait_def</span>(<span class="ident">trait_def_id</span>).<span class="ident">has_auto_impl</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">generator_layout</span>(<span class="self">self</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">GeneratorLayout</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {

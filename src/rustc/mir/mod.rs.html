@@ -2123,6 +2123,30 @@
 <span id="2078">2078</span>
 <span id="2079">2079</span>
 <span id="2080">2080</span>
+<span id="2081">2081</span>
+<span id="2082">2082</span>
+<span id="2083">2083</span>
+<span id="2084">2084</span>
+<span id="2085">2085</span>
+<span id="2086">2086</span>
+<span id="2087">2087</span>
+<span id="2088">2088</span>
+<span id="2089">2089</span>
+<span id="2090">2090</span>
+<span id="2091">2091</span>
+<span id="2092">2092</span>
+<span id="2093">2093</span>
+<span id="2094">2094</span>
+<span id="2095">2095</span>
+<span id="2096">2096</span>
+<span id="2097">2097</span>
+<span id="2098">2098</span>
+<span id="2099">2099</span>
+<span id="2100">2100</span>
+<span id="2101">2101</span>
+<span id="2102">2102</span>
+<span id="2103">2103</span>
+<span id="2104">2104</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2808,6 +2832,11 @@
 
     <span class="doccomment">/// Indicates the end of the dropping of a generator</span>
     <span class="ident">GeneratorDrop</span>,
+
+    <span class="ident">FalseEdges</span> {
+        <span class="ident">real_target</span>: <span class="ident">BasicBlock</span>,
+        <span class="ident">imaginary_targets</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>
+    },
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Terminator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -2857,6 +2886,11 @@
             }
             <span class="ident">Assert</span> { <span class="ident">target</span>, <span class="ident">cleanup</span>: <span class="prelude-val">Some</span>(<span class="ident">unwind</span>), .. } <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">target</span>, <span class="ident">unwind</span>].<span class="ident">into_cow</span>(),
             <span class="ident">Assert</span> { <span class="kw-2">ref</span> <span class="ident">target</span>, .. } <span class="op">=&gt;</span> <span class="ident">slice</span>::<span class="ident">ref_slice</span>(<span class="ident">target</span>).<span class="ident">into_cow</span>(),
+            <span class="ident">FalseEdges</span> { <span class="kw-2">ref</span> <span class="ident">real_target</span>, <span class="kw-2">ref</span> <span class="ident">imaginary_targets</span> } <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="kw-2">*</span><span class="ident">real_target</span>];
+                <span class="ident">s</span>.<span class="ident">extend_from_slice</span>(<span class="ident">imaginary_targets</span>);
+                <span class="ident">s</span>.<span class="ident">into_cow</span>()
+            }
         }
     }
 
@@ -2883,7 +2917,12 @@
                 <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">target</span>]
             }
             <span class="ident">Assert</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">target</span>, <span class="ident">cleanup</span>: <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">unwind</span>), .. } <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">target</span>, <span class="ident">unwind</span>],
-            <span class="ident">Assert</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">target</span>, .. } <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">target</span>]
+            <span class="ident">Assert</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">target</span>, .. } <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">target</span>],
+            <span class="ident">FalseEdges</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">real_target</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">imaginary_targets</span> } <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">real_target</span>];
+                <span class="ident">s</span>.<span class="ident">extend</span>(<span class="ident">imaginary_targets</span>.<span class="ident">iter_mut</span>());
+                <span class="ident">s</span>
+            }
         }
     }
 }
@@ -3000,7 +3039,8 @@
                 }
 
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;)&quot;</span>)
-            }
+            },
+            <span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;falseEdges&quot;</span>)
         }
     }
 
@@ -3036,7 +3076,12 @@
             }
             <span class="ident">Assert</span> { <span class="ident">cleanup</span>: <span class="prelude-val">None</span>, .. } <span class="op">=&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;&quot;</span>.<span class="ident">into</span>()],
             <span class="ident">Assert</span> { .. } <span class="op">=&gt;</span>
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;success&quot;</span>.<span class="ident">into_cow</span>(), <span class="string">&quot;unwind&quot;</span>.<span class="ident">into_cow</span>()]
+                <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;success&quot;</span>.<span class="ident">into_cow</span>(), <span class="string">&quot;unwind&quot;</span>.<span class="ident">into_cow</span>()],
+            <span class="ident">FalseEdges</span> { <span class="kw-2">ref</span> <span class="ident">imaginary_targets</span>, .. } <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">l</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;real&quot;</span>.<span class="ident">into</span>()];
+                <span class="ident">l</span>.<span class="ident">resize</span>(<span class="ident">imaginary_targets</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="number">1</span>, <span class="string">&quot;imaginary&quot;</span>.<span class="ident">into</span>());
+                <span class="ident">l</span>
+            }
         }
     }
 }
@@ -4004,6 +4049,8 @@
             <span class="ident">Resume</span> <span class="op">=&gt;</span> <span class="ident">Resume</span>,
             <span class="ident">Return</span> <span class="op">=&gt;</span> <span class="ident">Return</span>,
             <span class="ident">Unreachable</span> <span class="op">=&gt;</span> <span class="ident">Unreachable</span>,
+            <span class="ident">FalseEdges</span> { <span class="ident">real_target</span>, <span class="kw-2">ref</span> <span class="ident">imaginary_targets</span> } <span class="op">=&gt;</span>
+                <span class="ident">FalseEdges</span> { <span class="ident">real_target</span>, <span class="ident">imaginary_targets</span>: <span class="ident">imaginary_targets</span>.<span class="ident">clone</span>() }
         };
         <span class="ident">Terminator</span> {
             <span class="ident">source_info</span>: <span class="self">self</span>.<span class="ident">source_info</span>,
@@ -4043,7 +4090,8 @@
             <span class="ident">Resume</span> <span class="op">|</span>
             <span class="ident">Return</span> <span class="op">|</span>
             <span class="ident">GeneratorDrop</span> <span class="op">|</span>
-            <span class="ident">Unreachable</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>
+            <span class="ident">Unreachable</span> <span class="op">|</span>
+            <span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> <span class="bool-val">false</span>
         }
     }
 }

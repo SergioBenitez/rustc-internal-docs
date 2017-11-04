@@ -1008,6 +1008,11 @@
 <span id="963">963</span>
 <span id="964">964</span>
 <span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1488,8 +1493,13 @@
                 <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot; {}&quot;</span>);
                 <span class="prelude-val">Ok</span>(<span class="ident">sig</span>)
             }
-            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Trait</span>(<span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, _) <span class="op">=&gt;</span> {
+            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Trait</span>(<span class="ident">is_auto</span>, <span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, _) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
+
+                <span class="kw">if</span> <span class="ident">is_auto</span> <span class="op">==</span> <span class="ident">ast</span>::<span class="ident">IsAuto</span>::<span class="ident">Yes</span> {
+                    <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;auto &quot;</span>);
+                }
+
                 <span class="kw">if</span> <span class="ident">unsafety</span> <span class="op">==</span> <span class="ident">ast</span>::<span class="ident">Unsafety</span>::<span class="ident">Unsafe</span> {
                     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;unsafe &quot;</span>);
                 }
@@ -1510,7 +1520,7 @@
 
                 <span class="prelude-val">Ok</span>(<span class="ident">sig</span>)
             }
-            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">DefaultImpl</span>(<span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
+            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">AutoImpl</span>(<span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                 <span class="kw">if</span> <span class="ident">unsafety</span> <span class="op">==</span> <span class="ident">ast</span>::<span class="ident">Unsafety</span>::<span class="ident">Unsafe</span> {
                     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;unsafe &quot;</span>);

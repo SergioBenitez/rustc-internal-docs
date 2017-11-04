@@ -1596,6 +1596,7 @@
 <span id="1551">1551</span>
 <span id="1552">1552</span>
 <span id="1553">1553</span>
+<span id="1554">1554</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1963,7 +1964,8 @@
             <span class="ident">TerminatorKind</span>::<span class="ident">Resume</span> <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
-            <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">=&gt;</span> {
+            <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
+            <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> {
                 <span class="comment">// no data used, thus irrelevant to borrowck</span>
             }
         }

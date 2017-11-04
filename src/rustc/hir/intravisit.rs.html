@@ -1699,7 +1699,7 @@
             <span class="comment">// visit_enum_def() takes care of visiting the Item&#39;s NodeId</span>
             <span class="ident">visitor</span>.<span class="ident">visit_enum_def</span>(<span class="ident">enum_definition</span>, <span class="ident">type_parameters</span>, <span class="ident">item</span>.<span class="ident">id</span>, <span class="ident">item</span>.<span class="ident">span</span>)
         }
-        <span class="ident">ItemDefaultImpl</span>(_, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
+        <span class="ident">ItemAutoImpl</span>(_, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
             <span class="ident">visitor</span>.<span class="ident">visit_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);
             <span class="ident">visitor</span>.<span class="ident">visit_trait_ref</span>(<span class="ident">trait_ref</span>)
         }
@@ -1716,7 +1716,7 @@
             <span class="ident">visitor</span>.<span class="ident">visit_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);
             <span class="ident">visitor</span>.<span class="ident">visit_variant_data</span>(<span class="ident">struct_definition</span>, <span class="ident">item</span>.<span class="ident">name</span>, <span class="ident">generics</span>, <span class="ident">item</span>.<span class="ident">id</span>, <span class="ident">item</span>.<span class="ident">span</span>);
         }
-        <span class="ident">ItemTrait</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="kw-2">ref</span> <span class="ident">trait_item_refs</span>) <span class="op">=&gt;</span> {
+        <span class="ident">ItemTrait</span>(.., <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="kw-2">ref</span> <span class="ident">trait_item_refs</span>) <span class="op">=&gt;</span> {
             <span class="ident">visitor</span>.<span class="ident">visit_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);
             <span class="ident">visitor</span>.<span class="ident">visit_generics</span>(<span class="ident">generics</span>);
             <span class="macro">walk_list</span><span class="macro">!</span>(<span class="ident">visitor</span>, <span class="ident">visit_ty_param_bound</span>, <span class="ident">bounds</span>);

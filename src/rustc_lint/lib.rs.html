@@ -316,6 +316,12 @@
 <span id="271">271</span>
 <span id="272">272</span>
 <span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -428,6 +434,7 @@
                        <span class="ident">AnonymousParameters</span>,
                        <span class="ident">IllegalFloatLiteralPattern</span>,
                        <span class="ident">UnusedDocComment</span>,
+                       <span class="ident">AutoImpl</span>,
                        );
 
     <span class="macro">add_early_builtin_with_new</span><span class="macro">!</span>(<span class="ident">sess</span>,
@@ -456,6 +463,7 @@
                  <span class="ident">PluginAsLibrary</span>,
                  <span class="ident">MutableTransmutes</span>,
                  <span class="ident">UnionsWithDropFields</span>,
+                 <span class="ident">UnreachablePub</span>,
                  );
 
     <span class="macro">add_builtin_with_new</span><span class="macro">!</span>(<span class="ident">sess</span>,
@@ -500,6 +508,10 @@
     <span class="comment">// - Eventually, remove lint</span>
     <span class="ident">store</span>.<span class="ident">register_future_incompatible</span>(<span class="ident">sess</span>,
                                        <span class="macro">vec</span><span class="macro">!</span>[
+        <span class="ident">FutureIncompatibleInfo</span> {
+            <span class="ident">id</span>: <span class="ident">LintId</span>::<span class="ident">of</span>(<span class="ident">AUTO_IMPL</span>),
+            <span class="ident">reference</span>: <span class="string">&quot;issue #13231 &lt;https://github.com/rust-lang/rust/issues/13231&gt;&quot;</span>,
+        },
         <span class="ident">FutureIncompatibleInfo</span> {
             <span class="ident">id</span>: <span class="ident">LintId</span>::<span class="ident">of</span>(<span class="ident">PRIVATE_IN_PUBLIC</span>),
             <span class="ident">reference</span>: <span class="string">&quot;issue #34537 &lt;https://github.com/rust-lang/rust/issues/34537&gt;&quot;</span>,

@@ -2080,6 +2080,13 @@
 <span id="2035">2035</span>
 <span id="2036">2036</span>
 <span id="2037">2037</span>
+<span id="2038">2038</span>
+<span id="2039">2039</span>
+<span id="2040">2040</span>
+<span id="2041">2041</span>
+<span id="2042">2042</span>
+<span id="2043">2043</span>
+<span id="2044">2044</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3664,6 +3671,13 @@
     }
 }
 
+<span class="doccomment">/// Is the trait definition an auto trait?</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">IsAuto</span> {
+    <span class="ident">Yes</span>,
+    <span class="ident">No</span>
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Unsafety</span> {
     <span class="ident">Unsafe</span>,
@@ -4025,12 +4039,12 @@
     <span class="ident">Union</span>(<span class="ident">VariantData</span>, <span class="ident">Generics</span>),
     <span class="doccomment">/// A Trait declaration (`trait` or `pub trait`).</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// E.g. `trait Foo { .. }` or `trait Foo&lt;T&gt; { .. }`</span>
-    <span class="ident">Trait</span>(<span class="ident">Unsafety</span>, <span class="ident">Generics</span>, <span class="ident">TyParamBounds</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TraitItem</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// E.g. `trait Foo { .. }`, `trait Foo&lt;T&gt; { .. }` or `auto trait Foo {}`</span>
+    <span class="ident">Trait</span>(<span class="ident">IsAuto</span>, <span class="ident">Unsafety</span>, <span class="ident">Generics</span>, <span class="ident">TyParamBounds</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TraitItem</span><span class="op">&gt;</span>),
     <span class="doccomment">/// Auto trait implementation.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `impl Trait for .. {}` or `impl&lt;T&gt; Trait&lt;T&gt; for .. {}`</span>
-    <span class="ident">DefaultImpl</span>(<span class="ident">Unsafety</span>, <span class="ident">TraitRef</span>),
+    <span class="ident">AutoImpl</span>(<span class="ident">Unsafety</span>, <span class="ident">TraitRef</span>),
     <span class="doccomment">/// An implementation.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `impl&lt;A&gt; Foo&lt;A&gt; { .. }` or `impl&lt;A&gt; Trait for Foo&lt;A&gt; { .. }`</span>
@@ -4069,7 +4083,7 @@
             <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(..) <span class="op">|</span>
             <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(..) <span class="op">|</span>
             <span class="ident">ItemKind</span>::<span class="ident">Impl</span>(..) <span class="op">|</span>
-            <span class="ident">ItemKind</span>::<span class="ident">DefaultImpl</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;item&quot;</span>
+            <span class="ident">ItemKind</span>::<span class="ident">AutoImpl</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;item&quot;</span>
         }
     }
 }

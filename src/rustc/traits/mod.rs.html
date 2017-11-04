@@ -1189,11 +1189,11 @@
     <span class="doccomment">/// Vtable identifying a particular impl.</span>
     <span class="ident">VtableImpl</span>(<span class="ident">VtableImplData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">N</span><span class="op">&gt;</span>),
 
-    <span class="doccomment">/// Vtable for default trait implementations</span>
+    <span class="doccomment">/// Vtable for auto trait implementations</span>
     <span class="doccomment">/// This carries the information and nested obligations with regards</span>
-    <span class="doccomment">/// to a default implementation for a trait `Trait`. The nested obligations</span>
+    <span class="doccomment">/// to an auto implementation for a trait `Trait`. The nested obligations</span>
     <span class="doccomment">/// ensure the trait implementation holds for all the constituent types.</span>
-    <span class="ident">VtableDefaultImpl</span>(<span class="ident">VtableDefaultImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>),
+    <span class="ident">VtableAutoImpl</span>(<span class="ident">VtableAutoImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>),
 
     <span class="doccomment">/// Successful resolution to an obligation provided by the caller</span>
     <span class="doccomment">/// for some type parameter. The `Vec&lt;N&gt;` represents the</span>
@@ -1255,7 +1255,7 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VtableDefaultImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">VtableAutoImplData</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="ident">trait_def_id</span>: <span class="ident">DefId</span>,
     <span class="kw">pub</span> <span class="ident">nested</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>
 }
@@ -1659,7 +1659,7 @@
             <span class="ident">VtableImpl</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">nested</span>,
             <span class="ident">VtableParam</span>(<span class="ident">n</span>) <span class="op">=&gt;</span> <span class="ident">n</span>,
             <span class="ident">VtableBuiltin</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">nested</span>,
-            <span class="ident">VtableDefaultImpl</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">d</span>.<span class="ident">nested</span>,
+            <span class="ident">VtableAutoImpl</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">d</span>.<span class="ident">nested</span>,
             <span class="ident">VtableClosure</span>(<span class="ident">c</span>) <span class="op">=&gt;</span> <span class="ident">c</span>.<span class="ident">nested</span>,
             <span class="ident">VtableGenerator</span>(<span class="ident">c</span>) <span class="op">=&gt;</span> <span class="ident">c</span>.<span class="ident">nested</span>,
             <span class="ident">VtableObject</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">d</span>.<span class="ident">nested</span>,
@@ -1672,7 +1672,7 @@
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableImpl</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">i</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">i</span>.<span class="ident">nested</span>,
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableParam</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">n</span>) <span class="op">=&gt;</span> <span class="ident">n</span>,
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableBuiltin</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">i</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">i</span>.<span class="ident">nested</span>,
-            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableDefaultImpl</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">d</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">d</span>.<span class="ident">nested</span>,
+            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableAutoImpl</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">d</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">d</span>.<span class="ident">nested</span>,
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableGenerator</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">c</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">c</span>.<span class="ident">nested</span>,
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableClosure</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">c</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">c</span>.<span class="ident">nested</span>,
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">VtableObject</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">d</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">d</span>.<span class="ident">nested</span>,
@@ -1696,7 +1696,7 @@
                 <span class="ident">vtable_base</span>: <span class="ident">o</span>.<span class="ident">vtable_base</span>,
                 <span class="ident">nested</span>: <span class="ident">o</span>.<span class="ident">nested</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">f</span>).<span class="ident">collect</span>(),
             }),
-            <span class="ident">VtableDefaultImpl</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">VtableDefaultImpl</span>(<span class="ident">VtableDefaultImplData</span> {
+            <span class="ident">VtableAutoImpl</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">VtableAutoImpl</span>(<span class="ident">VtableAutoImplData</span> {
                 <span class="ident">trait_def_id</span>: <span class="ident">d</span>.<span class="ident">trait_def_id</span>,
                 <span class="ident">nested</span>: <span class="ident">d</span>.<span class="ident">nested</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">f</span>).<span class="ident">collect</span>(),
             }),

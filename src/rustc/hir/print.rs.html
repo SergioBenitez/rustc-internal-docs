@@ -2467,6 +2467,14 @@
 <span id="2422">2422</span>
 <span id="2423">2423</span>
 <span id="2424">2424</span>
+<span id="2425">2425</span>
+<span id="2426">2426</span>
+<span id="2427">2427</span>
+<span id="2428">2428</span>
+<span id="2429">2429</span>
+<span id="2430">2430</span>
+<span id="2431">2431</span>
+<span id="2432">2432</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3130,7 +3138,7 @@
                 <span class="self">self</span>.<span class="ident">head</span>(<span class="kw-2">&amp;</span><span class="ident">visibility_qualified</span>(<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">vis</span>, <span class="string">&quot;union&quot;</span>))<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">print_struct</span>(<span class="ident">struct_def</span>, <span class="ident">generics</span>, <span class="ident">item</span>.<span class="ident">name</span>, <span class="ident">item</span>.<span class="ident">span</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
             }
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(<span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(<span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">head</span>(<span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">print_visibility</span>(<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">vis</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">print_unsafety</span>(<span class="ident">unsafety</span>)<span class="question-mark">?</span>;
@@ -3187,9 +3195,10 @@
                 }
                 <span class="self">self</span>.<span class="ident">bclose</span>(<span class="ident">item</span>.<span class="ident">span</span>)<span class="question-mark">?</span>;
             }
-            <span class="ident">hir</span>::<span class="ident">ItemTrait</span>(<span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="kw-2">ref</span> <span class="ident">trait_items</span>) <span class="op">=&gt;</span> {
+            <span class="ident">hir</span>::<span class="ident">ItemTrait</span>(<span class="ident">is_auto</span>, <span class="ident">unsafety</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="kw-2">ref</span> <span class="ident">trait_items</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">head</span>(<span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">print_visibility</span>(<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">vis</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">print_is_auto</span>(<span class="ident">is_auto</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">print_unsafety</span>(<span class="ident">unsafety</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">word_nbsp</span>(<span class="string">&quot;trait&quot;</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">print_name</span>(<span class="ident">item</span>.<span class="ident">name</span>)<span class="question-mark">?</span>;
@@ -4742,6 +4751,13 @@
         <span class="kw">match</span> <span class="ident">s</span> {
             <span class="ident">hir</span>::<span class="ident">Unsafety</span>::<span class="ident">Normal</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(()),
             <span class="ident">hir</span>::<span class="ident">Unsafety</span>::<span class="ident">Unsafe</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">word_nbsp</span>(<span class="string">&quot;unsafe&quot;</span>),
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_is_auto</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="ident">hir</span>::<span class="ident">IsAuto</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="ident">s</span> {
+            <span class="ident">hir</span>::<span class="ident">IsAuto</span>::<span class="ident">Yes</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">word_nbsp</span>(<span class="string">&quot;auto&quot;</span>),
+            <span class="ident">hir</span>::<span class="ident">IsAuto</span>::<span class="ident">No</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(()),
         }
     }
 }

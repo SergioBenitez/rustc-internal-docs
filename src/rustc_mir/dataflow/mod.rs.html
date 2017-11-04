@@ -782,6 +782,12 @@
 <span id="737">737</span>
 <span id="738">738</span>
 <span id="739">739</span>
+<span id="740">740</span>
+<span id="741">741</span>
+<span id="742">742</span>
+<span id="743">743</span>
+<span id="744">744</span>
+<span id="745">745</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1504,6 +1510,12 @@
                     <span class="self">self</span>.<span class="ident">flow_state</span>.<span class="ident">operator</span>.<span class="ident">propagate_call_return</span>(
                         <span class="ident">in_out</span>, <span class="ident">bb</span>, <span class="kw-2">*</span><span class="ident">dest_bb</span>, <span class="ident">dest_lval</span>);
                     <span class="self">self</span>.<span class="ident">propagate_bits_into_entry_set_for</span>(<span class="ident">in_out</span>, <span class="ident">changed</span>, <span class="ident">dest_bb</span>);
+                }
+            }
+            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { <span class="kw-2">ref</span> <span class="ident">real_target</span>, <span class="kw-2">ref</span> <span class="ident">imaginary_targets</span> } <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">propagate_bits_into_entry_set_for</span>(<span class="ident">in_out</span>, <span class="ident">changed</span>, <span class="ident">real_target</span>);
+                <span class="kw">for</span> <span class="ident">target</span> <span class="kw">in</span> <span class="ident">imaginary_targets</span> {
+                    <span class="self">self</span>.<span class="ident">propagate_bits_into_entry_set_for</span>(<span class="ident">in_out</span>, <span class="ident">changed</span>, <span class="ident">target</span>);
                 }
             }
         }

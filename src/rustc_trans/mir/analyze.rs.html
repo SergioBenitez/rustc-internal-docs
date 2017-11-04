@@ -355,6 +355,7 @@
 <span id="310">310</span>
 <span id="311">311</span>
 <span id="312">312</span>
+<span id="313">313</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -586,7 +587,8 @@
                 <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
                 <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
                 <span class="ident">TerminatorKind</span>::<span class="ident">SwitchInt</span> { .. } <span class="op">|</span>
-                <span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. }  <span class="op">=&gt;</span> {
+                <span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. } <span class="op">|</span>
+                <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> {
                     <span class="comment">/* nothing to do */</span>
                 }
                 <span class="ident">TerminatorKind</span>::<span class="ident">Call</span> { <span class="ident">cleanup</span>: <span class="ident">unwind</span>, .. } <span class="op">|</span>

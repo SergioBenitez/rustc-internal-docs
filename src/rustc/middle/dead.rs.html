@@ -1260,7 +1260,7 @@
                 <span class="ident">hir</span>::<span class="ident">ItemStruct</span>(..) <span class="op">|</span>
                 <span class="ident">hir</span>::<span class="ident">ItemUnion</span>(..) <span class="op">|</span>
                 <span class="ident">hir</span>::<span class="ident">ItemTrait</span>(..) <span class="op">|</span>
-                <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">|</span>
+                <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">|</span>
                 <span class="ident">hir</span>::<span class="ident">ItemImpl</span>(..) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">def_span</span>(<span class="ident">item</span>.<span class="ident">span</span>),
                 _ <span class="op">=&gt;</span> <span class="ident">item</span>.<span class="ident">span</span>,
             };

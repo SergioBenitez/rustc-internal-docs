@@ -5774,7 +5774,7 @@
                                              <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">visit</span>::<span class="ident">walk_item</span>(<span class="ident">this</span>, <span class="ident">item</span>));
             }
 
-            <span class="ident">ItemKind</span>::<span class="ident">DefaultImpl</span>(_, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
+            <span class="ident">ItemKind</span>::<span class="ident">AutoImpl</span>(_, <span class="kw-2">ref</span> <span class="ident">trait_ref</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">with_optional_trait_ref</span>(<span class="prelude-val">Some</span>(<span class="ident">trait_ref</span>), <span class="op">|</span><span class="ident">this</span>, _<span class="op">|</span> {
                     <span class="comment">// Resolve type arguments in trait path</span>
                     <span class="ident">visit</span>::<span class="ident">walk_trait_ref</span>(<span class="ident">this</span>, <span class="ident">trait_ref</span>);
@@ -5787,7 +5787,7 @@
                                             <span class="ident">item</span>.<span class="ident">id</span>,
                                             <span class="ident">impl_items</span>),
 
-            <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="kw-2">ref</span> <span class="ident">trait_items</span>) <span class="op">=&gt;</span> {
+            <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(.., <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="kw-2">ref</span> <span class="ident">trait_items</span>) <span class="op">=&gt;</span> {
                 <span class="comment">// Create a new rib for the trait-wide type parameters.</span>
                 <span class="self">self</span>.<span class="ident">with_type_parameter_rib</span>(<span class="ident">HasTypeParameters</span>(<span class="ident">generics</span>, <span class="ident">ItemRibKind</span>), <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                     <span class="kw">let</span> <span class="ident">local_def_id</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">definitions</span>.<span class="ident">local_def_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);

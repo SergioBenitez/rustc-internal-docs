@@ -1850,6 +1850,12 @@
 <span id="1805">1805</span>
 <span id="1806">1806</span>
 <span id="1807">1807</span>
+<span id="1808">1808</span>
+<span id="1809">1809</span>
+<span id="1810">1810</span>
+<span id="1811">1811</span>
+<span id="1812">1812</span>
+<span id="1813">1813</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3210,10 +3216,10 @@
                 }
             }
 
-            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">DefaultImpl</span>(..) <span class="op">=&gt;</span> {
+            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">AutoImpl</span>(..) <span class="op">=&gt;</span> {
                 <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">optin_builtin_traits</span>,
                                    <span class="ident">i</span>.<span class="ident">span</span>,
-                                   <span class="string">&quot;default trait implementations are experimental \
+                                   <span class="string">&quot;auto trait implementations are experimental \
                                     and possibly buggy&quot;</span>);
             }
 
@@ -3240,6 +3246,12 @@
                         }
                     }
                 }
+            }
+
+            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Trait</span>(<span class="ident">ast</span>::<span class="ident">IsAuto</span>::<span class="ident">Yes</span>, ..) <span class="op">=&gt;</span> {
+                <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">optin_builtin_traits</span>,
+                                   <span class="ident">i</span>.<span class="ident">span</span>,
+                                   <span class="string">&quot;auto traits are experimental and possibly buggy&quot;</span>);
             }
 
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(<span class="ident">ast</span>::<span class="ident">MacroDef</span> { <span class="ident">legacy</span>: <span class="bool-val">false</span>, .. }) <span class="op">=&gt;</span> {

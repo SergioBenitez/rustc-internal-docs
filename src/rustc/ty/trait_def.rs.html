@@ -280,7 +280,7 @@
     <span class="doccomment">/// be usable with the sugar (or without it).</span>
     <span class="kw">pub</span> <span class="ident">paren_sugar</span>: <span class="ident">bool</span>,
 
-    <span class="kw">pub</span> <span class="ident">has_default_impl</span>: <span class="ident">bool</span>,
+    <span class="kw">pub</span> <span class="ident">has_auto_impl</span>: <span class="ident">bool</span>,
 
     <span class="doccomment">/// The ICH of this trait&#39;s DefPath, cached here so it doesn&#39;t have to be</span>
     <span class="doccomment">/// recomputed all the time.</span>
@@ -297,14 +297,14 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">def_id</span>: <span class="ident">DefId</span>,
                <span class="ident">unsafety</span>: <span class="ident">hir</span>::<span class="ident">Unsafety</span>,
                <span class="ident">paren_sugar</span>: <span class="ident">bool</span>,
-               <span class="ident">has_default_impl</span>: <span class="ident">bool</span>,
+               <span class="ident">has_auto_impl</span>: <span class="ident">bool</span>,
                <span class="ident">def_path_hash</span>: <span class="ident">DefPathHash</span>)
                <span class="op">-&gt;</span> <span class="ident">TraitDef</span> {
         <span class="ident">TraitDef</span> {
             <span class="ident">def_id</span>,
             <span class="ident">paren_sugar</span>,
             <span class="ident">unsafety</span>,
-            <span class="ident">has_default_impl</span>,
+            <span class="ident">has_auto_impl</span>,
             <span class="ident">def_path_hash</span>,
         }
     }

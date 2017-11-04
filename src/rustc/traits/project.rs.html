@@ -2834,7 +2834,7 @@
                 <span class="comment">// projection. And the projection where clause is handled</span>
                 <span class="comment">// in `assemble_candidates_from_param_env`.</span>
             }
-            <span class="kw">super</span>::<span class="ident">VtableDefaultImpl</span>(..) <span class="op">|</span>
+            <span class="kw">super</span>::<span class="ident">VtableAutoImpl</span>(..) <span class="op">|</span>
             <span class="kw">super</span>::<span class="ident">VtableBuiltin</span>(..) <span class="op">=&gt;</span> {
                 <span class="comment">// These traits have no associated types.</span>
                 <span class="macro">span_bug</span><span class="macro">!</span>(
@@ -2900,7 +2900,7 @@
             <span class="ident">confirm_fn_pointer_candidate</span>(<span class="ident">selcx</span>, <span class="ident">obligation</span>, <span class="ident">data</span>),
         <span class="kw">super</span>::<span class="ident">VtableObject</span>(_) <span class="op">=&gt;</span>
             <span class="ident">confirm_object_candidate</span>(<span class="ident">selcx</span>, <span class="ident">obligation</span>, <span class="ident">obligation_trait_ref</span>),
-        <span class="kw">super</span>::<span class="ident">VtableDefaultImpl</span>(..) <span class="op">|</span>
+        <span class="kw">super</span>::<span class="ident">VtableAutoImpl</span>(..) <span class="op">|</span>
         <span class="kw">super</span>::<span class="ident">VtableParam</span>(..) <span class="op">|</span>
         <span class="kw">super</span>::<span class="ident">VtableBuiltin</span>(..) <span class="op">=&gt;</span>
             <span class="comment">// we don&#39;t create Select candidates with this kind of resolution</span>

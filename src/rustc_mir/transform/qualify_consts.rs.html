@@ -1104,6 +1104,7 @@
 <span id="1059">1059</span>
 <span id="1060">1060</span>
 <span id="1061">1061</span>
+<span id="1062">1062</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1424,7 +1425,8 @@
                 <span class="ident">TerminatorKind</span>::<span class="ident">Resume</span> <span class="op">|</span>
                 <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
                 <span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. } <span class="op">|</span>
-                <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+                <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
+                <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
 
                 <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">=&gt;</span> {
                     <span class="comment">// Check for unused values. This usually means</span>

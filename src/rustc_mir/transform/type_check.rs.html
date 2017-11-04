@@ -857,6 +857,13 @@
 <span id="812">812</span>
 <span id="813">813</span>
 <span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1301,7 +1308,8 @@
             <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
-            <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { .. } <span class="op">=&gt;</span> {
+            <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { .. } <span class="op">|</span>
+            <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> {
                 <span class="comment">// no checks needed for these</span>
             }
 
@@ -1543,6 +1551,12 @@
                         <span class="macro">span_mirbug</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">block</span>, <span class="string">&quot;cleanup on cleanup block&quot;</span>)
                     }
                     <span class="self">self</span>.<span class="ident">assert_iscleanup</span>(<span class="ident">mir</span>, <span class="ident">block</span>, <span class="ident">cleanup</span>, <span class="bool-val">true</span>);
+                }
+            }
+            <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { <span class="ident">real_target</span>, <span class="kw-2">ref</span> <span class="ident">imaginary_targets</span> } <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">assert_iscleanup</span>(<span class="ident">mir</span>, <span class="ident">block</span>, <span class="ident">real_target</span>, <span class="ident">is_cleanup</span>);
+                <span class="kw">for</span> <span class="ident">target</span> <span class="kw">in</span> <span class="ident">imaginary_targets</span> {
+                    <span class="self">self</span>.<span class="ident">assert_iscleanup</span>(<span class="ident">mir</span>, <span class="ident">block</span>, <span class="kw-2">*</span><span class="ident">target</span>, <span class="ident">is_cleanup</span>);
                 }
             }
         }

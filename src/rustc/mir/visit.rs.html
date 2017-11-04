@@ -956,6 +956,13 @@
 <span id="911">911</span>
 <span id="912">912</span>
 <span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1445,8 +1452,15 @@
                         <span class="self">self</span>.<span class="ident">visit_operand</span>(<span class="ident">value</span>, <span class="ident">source_location</span>);
                         <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">resume</span>);
                         <span class="ident">drop</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">t</span>));
+
                     }
 
+                    <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { <span class="ident">real_target</span>, <span class="kw-2">ref</span> <span class="ident">imaginary_targets</span> } <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">real_target</span>);
+                        <span class="kw">for</span> <span class="ident">target</span> <span class="kw">in</span> <span class="ident">imaginary_targets</span> {
+                            <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="kw-2">*</span><span class="ident">target</span>);
+                        }
+                    }
                 }
             }
 

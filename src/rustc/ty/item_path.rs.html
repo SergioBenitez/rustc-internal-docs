@@ -684,7 +684,7 @@
 
         <span class="comment">// Always use types for non-local impls, where types are always</span>
         <span class="comment">// available, and filename/line-number is mostly uninteresting.</span>
-        <span class="kw">let</span> <span class="ident">use_types</span> <span class="op">=</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_default_impl</span>(<span class="ident">impl_def_id</span>) <span class="op">&amp;&amp;</span> (<span class="op">!</span><span class="ident">impl_def_id</span>.<span class="ident">is_local</span>() <span class="op">||</span> {
+        <span class="kw">let</span> <span class="ident">use_types</span> <span class="op">=</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_auto_impl</span>(<span class="ident">impl_def_id</span>) <span class="op">&amp;&amp;</span> (<span class="op">!</span><span class="ident">impl_def_id</span>.<span class="ident">is_local</span>() <span class="op">||</span> {
             <span class="comment">// Otherwise, use filename/line-number if forced.</span>
             <span class="kw">let</span> <span class="ident">force_no_types</span> <span class="op">=</span> <span class="ident">FORCE_IMPL_FILENAME_LINE</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="ident">f</span>.<span class="ident">get</span>());
             <span class="op">!</span><span class="ident">force_no_types</span>

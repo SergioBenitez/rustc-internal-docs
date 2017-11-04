@@ -1105,6 +1105,7 @@
 <span id="1060">1060</span>
 <span id="1061">1061</span>
 <span id="1062">1062</span>
+<span id="1063">1063</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1731,7 +1732,8 @@
             <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
             <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> { .. } <span class="op">=&gt;</span> {}
             <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. } <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(),
+            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. } <span class="op">|</span>
+            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(),
         }
 
         <span class="self">self</span>.<span class="ident">super_terminator_kind</span>(<span class="ident">block</span>, <span class="ident">kind</span>, <span class="ident">location</span>);
@@ -1991,7 +1993,7 @@
             <span class="ident">hir</span>::<span class="ident">ItemUse</span>(..)         <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemForeignMod</span>(..)  <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemTy</span>(..)          <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">|</span>
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemTrait</span>(..)       <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemMod</span>(..)         <span class="op">=&gt;</span> {
                 <span class="comment">// Nothing to do, just keep recursing...</span>

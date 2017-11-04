@@ -957,7 +957,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">RawVec</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Heap</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Creates the biggest possible RawVec (on the system heap)</span>
     <span class="doccomment">/// without allocating. If T has positive size, then this makes a</span>
-    <span class="doccomment">/// RawVec with capacity 0. If T has 0 size, then it it makes a</span>
+    <span class="doccomment">/// RawVec with capacity 0. If T has 0 size, then it makes a</span>
     <span class="doccomment">/// RawVec with capacity `usize::MAX`. Useful for implementing</span>
     <span class="doccomment">/// delayed allocation.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {

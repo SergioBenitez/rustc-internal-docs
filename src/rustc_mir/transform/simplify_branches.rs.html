@@ -111,6 +111,9 @@
 <span id="66">66</span>
 <span id="67">67</span>
 <span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -174,6 +177,9 @@
                     }, ..
                 }), <span class="ident">expected</span>, .. } <span class="kw">if</span> <span class="ident">cond</span> <span class="op">==</span> <span class="ident">expected</span> <span class="op">=&gt;</span> {
                     <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: <span class="ident">target</span> }
+                },
+                <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { <span class="ident">real_target</span>, .. } <span class="op">=&gt;</span> {
+                    <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: <span class="ident">real_target</span> }
                 },
                 _ <span class="op">=&gt;</span> <span class="kw">continue</span>
             };

@@ -325,6 +325,7 @@
 <span id="280">280</span>
 <span id="281">281</span>
 <span id="282">282</span>
+<span id="283">283</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -449,6 +450,7 @@
             <span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;TerminatorKind::Assert&quot;</span>,
             <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">=&gt;</span> <span class="string">&quot;TerminatorKind::GeneratorDrop&quot;</span>,
             <span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;TerminatorKind::Yield&quot;</span>,
+            <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;TerminatorKind::FalseEdges&quot;</span>,
         }, <span class="ident">kind</span>);
         <span class="self">self</span>.<span class="ident">super_terminator_kind</span>(<span class="ident">block</span>, <span class="ident">kind</span>, <span class="ident">location</span>);
     }

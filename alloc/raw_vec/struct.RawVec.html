@@ -101,7 +101,7 @@ of allocator for the returned RawVec.</p>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>alloc </code><a href="https://github.com/rust-lang/rust/issues/27783">#27783</a>)</summary><p>this library is unlikely to be stabilized in its current form or name</p>
 </details></div></div><div class='docblock'><p>Creates the biggest possible RawVec (on the system heap)
 without allocating. If T has positive size, then this makes a
-RawVec with capacity 0. If T has 0 size, then it it makes a
+RawVec with capacity 0. If T has 0 size, then it makes a
 RawVec with capacity <code>usize::MAX</code>. Useful for implementing
 delayed allocation.</p>
 </div><h4 id='method.with_capacity' class="method"><span id='with_capacity.v' class='invisible'><code>pub fn <a href='#method.with_capacity' class='fnname'>with_capacity</a>(cap: usize) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/raw_vec.rs.html#140-142' title='goto source code'>[src]</a></span></h4>

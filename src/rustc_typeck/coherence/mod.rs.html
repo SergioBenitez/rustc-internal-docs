@@ -318,7 +318,7 @@
 
     <span class="ident">unsafety</span>::<span class="ident">check</span>(<span class="ident">tcx</span>);
     <span class="ident">orphan</span>::<span class="ident">check</span>(<span class="ident">tcx</span>);
-    <span class="ident">overlap</span>::<span class="ident">check_default_impls</span>(<span class="ident">tcx</span>);
+    <span class="ident">overlap</span>::<span class="ident">check_auto_impls</span>(<span class="ident">tcx</span>);
 
     <span class="comment">// these queries are executed for side-effects (error reporting):</span>
     <span class="ident">tcx</span>.<span class="ident">crate_inherent_impls</span>(<span class="ident">LOCAL_CRATE</span>);

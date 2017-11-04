@@ -1263,6 +1263,10 @@
 <span id="1218">1218</span>
 <span id="1219">1219</span>
 <span id="1220">1220</span>
+<span id="1221">1221</span>
+<span id="1222">1222</span>
+<span id="1223">1223</span>
+<span id="1224">1224</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2164,7 +2168,7 @@
             <span class="ident">hir</span>::<span class="ident">ItemForeignMod</span>(..)  <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemGlobalAsm</span>(..)   <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemMod</span>(..)         <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">ItemDefaultImpl</span>(..) <span class="op">|</span>
+            <span class="ident">hir</span>::<span class="ident">ItemAutoImpl</span>(..) <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemTrait</span>(..)       <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemImpl</span>(..)        <span class="op">|</span>
             <span class="ident">hir</span>::<span class="ident">ItemTy</span>(..)          <span class="op">|</span>
@@ -2210,8 +2214,8 @@
     <span class="ident">ItemEnum</span>(<span class="ident">enum_def</span>, <span class="ident">generics</span>),
     <span class="ident">ItemStruct</span>(<span class="ident">variant_data</span>, <span class="ident">generics</span>),
     <span class="ident">ItemUnion</span>(<span class="ident">variant_data</span>, <span class="ident">generics</span>),
-    <span class="ident">ItemTrait</span>(<span class="ident">unsafety</span>, <span class="ident">generics</span>, <span class="ident">bounds</span>, <span class="ident">item_refs</span>),
-    <span class="ident">ItemDefaultImpl</span>(<span class="ident">unsafety</span>, <span class="ident">trait_ref</span>),
+    <span class="ident">ItemTrait</span>(<span class="ident">is_auto</span>, <span class="ident">unsafety</span>, <span class="ident">generics</span>, <span class="ident">bounds</span>, <span class="ident">item_refs</span>),
+    <span class="ident">ItemAutoImpl</span>(<span class="ident">unsafety</span>, <span class="ident">trait_ref</span>),
     <span class="ident">ItemImpl</span>(<span class="ident">unsafety</span>, <span class="ident">impl_polarity</span>, <span class="ident">impl_defaultness</span>, <span class="ident">generics</span>, <span class="ident">trait_ref</span>, <span class="ident">ty</span>, <span class="ident">impl_item_refs</span>)
 });
 
@@ -2392,6 +2396,10 @@
     <span class="ident">MutImmutable</span>
 });
 
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> <span class="ident">hir</span>::<span class="ident">IsAuto</span> {
+    <span class="ident">Yes</span>,
+    <span class="ident">No</span>
+});
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> <span class="ident">hir</span>::<span class="ident">Unsafety</span> {
     <span class="ident">Unsafe</span>,

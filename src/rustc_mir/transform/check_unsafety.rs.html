@@ -430,6 +430,7 @@
 <span id="385">385</span>
 <span id="386">386</span>
 <span id="387">387</span>
+<span id="388">388</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -506,7 +507,8 @@
             <span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">Resume</span> <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">|</span>
-            <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">=&gt;</span> {
+            <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
+            <span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> {
                                 <span class="comment">// safe (at least as emitted during MIR construction)</span>
             }
 

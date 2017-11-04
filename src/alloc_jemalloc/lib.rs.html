@@ -294,6 +294,8 @@
 <span id="249">249</span>
 <span id="250">250</span>
 <span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -500,7 +502,8 @@
                                             <span class="ident">err</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> {
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">__rde_alloc</span>(<span class="ident">size</span>, <span class="ident">align</span>, <span class="ident">err</span>);
         <span class="kw">if</span> <span class="op">!</span><span class="ident">p</span>.<span class="ident">is_null</span>() {
-            <span class="kw-2">*</span><span class="ident">excess</span> <span class="op">=</span> <span class="ident">size</span>;
+            <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">align_to_flags</span>(<span class="ident">align</span>);
+            <span class="kw-2">*</span><span class="ident">excess</span> <span class="op">=</span> <span class="ident">nallocx</span>(<span class="ident">size</span>, <span class="ident">flags</span>) <span class="kw">as</span> <span class="ident">usize</span>;
         }
         <span class="kw">return</span> <span class="ident">p</span>
     }
@@ -516,9 +519,10 @@
                                               <span class="ident">err</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> {
         <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">__rde_realloc</span>(<span class="ident">ptr</span>, <span class="ident">old_size</span>, <span class="ident">old_align</span>, <span class="ident">new_size</span>, <span class="ident">new_align</span>, <span class="ident">err</span>);
         <span class="kw">if</span> <span class="op">!</span><span class="ident">p</span>.<span class="ident">is_null</span>() {
-            <span class="kw-2">*</span><span class="ident">excess</span> <span class="op">=</span> <span class="ident">new_size</span>;
+            <span class="kw">let</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">align_to_flags</span>(<span class="ident">new_align</span>);
+            <span class="kw-2">*</span><span class="ident">excess</span> <span class="op">=</span> <span class="ident">nallocx</span>(<span class="ident">new_size</span>, <span class="ident">flags</span>) <span class="kw">as</span> <span class="ident">usize</span>;
         }
-        <span class="kw">return</span> <span class="ident">p</span>
+        <span class="ident">p</span>
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
