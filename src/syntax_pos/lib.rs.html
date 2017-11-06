@@ -1106,6 +1106,93 @@
 <span id="1061">1061</span>
 <span id="1062">1062</span>
 <span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
+<span id="1110">1110</span>
+<span id="1111">1111</span>
+<span id="1112">1112</span>
+<span id="1113">1113</span>
+<span id="1114">1114</span>
+<span id="1115">1115</span>
+<span id="1116">1116</span>
+<span id="1117">1117</span>
+<span id="1118">1118</span>
+<span id="1119">1119</span>
+<span id="1120">1120</span>
+<span id="1121">1121</span>
+<span id="1122">1122</span>
+<span id="1123">1123</span>
+<span id="1124">1124</span>
+<span id="1125">1125</span>
+<span id="1126">1126</span>
+<span id="1127">1127</span>
+<span id="1128">1128</span>
+<span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
+<span id="1139">1139</span>
+<span id="1140">1140</span>
+<span id="1141">1141</span>
+<span id="1142">1142</span>
+<span id="1143">1143</span>
+<span id="1144">1144</span>
+<span id="1145">1145</span>
+<span id="1146">1146</span>
+<span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1152,6 +1239,8 @@
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serialize</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serialize</span> <span class="kw">as</span> <span class="ident">rustc_serialize</span>; <span class="comment">// used by deriving</span>
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">unicode_width</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">hygiene</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">hygiene</span>::{<span class="ident">SyntaxContext</span>, <span class="ident">ExpnInfo</span>, <span class="ident">ExpnFormat</span>, <span class="ident">NameAndSpan</span>, <span class="ident">CompilerDesugaringKind</span>};
@@ -1603,6 +1692,63 @@
     <span class="kw">pub</span> <span class="ident">bytes</span>: <span class="ident">usize</span>,
 }
 
+<span class="doccomment">/// Identifies an offset of a non-narrow character in a FileMap</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">NonNarrowChar</span> {
+    <span class="doccomment">/// Represents a zero-width character</span>
+    <span class="ident">ZeroWidth</span>(<span class="ident">BytePos</span>),
+    <span class="doccomment">/// Represents a wide (fullwidth) character</span>
+    <span class="ident">Wide</span>(<span class="ident">BytePos</span>),
+}
+
+<span class="kw">impl</span> <span class="ident">NonNarrowChar</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">pos</span>: <span class="ident">BytePos</span>, <span class="ident">width</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">match</span> <span class="ident">width</span> {
+            <span class="number">0</span> <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span>),
+            <span class="number">2</span> <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span>),
+            _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;width {} given for non-narrow character&quot;</span>, <span class="ident">width</span>),
+        }
+    }
+
+    <span class="doccomment">/// Returns the absolute offset of the character in the CodeMap</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pos</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">BytePos</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+            <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">p</span>) <span class="op">|</span>
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="ident">p</span>,
+        }
+    }
+
+    <span class="doccomment">/// Returns the width of the character, 0 (zero-width) or 2 (wide)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">width</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+            <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(_) <span class="op">=&gt;</span> <span class="number">0</span>,
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(_) <span class="op">=&gt;</span> <span class="number">2</span>,
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Add</span><span class="op">&lt;</span><span class="ident">BytePos</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">NonNarrowChar</span> {
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+
+    <span class="kw">fn</span> <span class="ident">add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">BytePos</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="ident">rhs</span>),
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="ident">rhs</span>),
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Sub</span><span class="op">&lt;</span><span class="ident">BytePos</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">NonNarrowChar</span> {
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="self">Self</span>;
+
+    <span class="kw">fn</span> <span class="ident">sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="ident">BytePos</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span> <span class="op">-</span> <span class="ident">rhs</span>),
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span> <span class="op">-</span> <span class="ident">rhs</span>),
+        }
+    }
+}
+
 <span class="doccomment">/// The state of the lazy external source loading mechanism of a FileMap.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ExternalSource</span> {
@@ -1661,11 +1807,13 @@
     <span class="kw">pub</span> <span class="ident">lines</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BytePos</span><span class="op">&gt;&gt;</span>,
     <span class="doccomment">/// Locations of multi-byte characters in the source code</span>
     <span class="kw">pub</span> <span class="ident">multibyte_chars</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MultiByteChar</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Width of characters that are not narrow in the source code</span>
+    <span class="kw">pub</span> <span class="ident">non_narrow_chars</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NonNarrowChar</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Encodable</span> <span class="kw">for</span> <span class="ident">FileMap</span> {
     <span class="kw">fn</span> <span class="ident">encode</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Encoder</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">S</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="ident">s</span>.<span class="ident">emit_struct</span>(<span class="string">&quot;FileMap&quot;</span>, <span class="number">7</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
+        <span class="ident">s</span>.<span class="ident">emit_struct</span>(<span class="string">&quot;FileMap&quot;</span>, <span class="number">8</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
             <span class="ident">s</span>.<span class="ident">emit_struct_field</span>(<span class="string">&quot;name&quot;</span>, <span class="number">0</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">name</span>.<span class="ident">encode</span>(<span class="ident">s</span>))<span class="question-mark">?</span>;
             <span class="ident">s</span>.<span class="ident">emit_struct_field</span>(<span class="string">&quot;name_was_remapped&quot;</span>, <span class="number">1</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">name_was_remapped</span>.<span class="ident">encode</span>(<span class="ident">s</span>))<span class="question-mark">?</span>;
             <span class="ident">s</span>.<span class="ident">emit_struct_field</span>(<span class="string">&quot;src_hash&quot;</span>, <span class="number">6</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">src_hash</span>.<span class="ident">encode</span>(<span class="ident">s</span>))<span class="question-mark">?</span>;
@@ -1719,6 +1867,9 @@
             })<span class="question-mark">?</span>;
             <span class="ident">s</span>.<span class="ident">emit_struct_field</span>(<span class="string">&quot;multibyte_chars&quot;</span>, <span class="number">5</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
                 (<span class="kw-2">*</span><span class="self">self</span>.<span class="ident">multibyte_chars</span>.<span class="ident">borrow</span>()).<span class="ident">encode</span>(<span class="ident">s</span>)
+            })<span class="question-mark">?</span>;
+            <span class="ident">s</span>.<span class="ident">emit_struct_field</span>(<span class="string">&quot;non_narrow_chars&quot;</span>, <span class="number">7</span>, <span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
+                (<span class="kw-2">*</span><span class="self">self</span>.<span class="ident">non_narrow_chars</span>.<span class="ident">borrow</span>()).<span class="ident">encode</span>(<span class="ident">s</span>)
             })
         })
     }
@@ -1727,7 +1878,7 @@
 <span class="kw">impl</span> <span class="ident">Decodable</span> <span class="kw">for</span> <span class="ident">FileMap</span> {
     <span class="kw">fn</span> <span class="ident">decode</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="ident">Decoder</span><span class="op">&gt;</span>(<span class="ident">d</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">D</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileMap</span>, <span class="ident">D</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
 
-        <span class="ident">d</span>.<span class="ident">read_struct</span>(<span class="string">&quot;FileMap&quot;</span>, <span class="number">6</span>, <span class="op">|</span><span class="ident">d</span><span class="op">|</span> {
+        <span class="ident">d</span>.<span class="ident">read_struct</span>(<span class="string">&quot;FileMap&quot;</span>, <span class="number">8</span>, <span class="op">|</span><span class="ident">d</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">name</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">d</span>.<span class="ident">read_struct_field</span>(<span class="string">&quot;name&quot;</span>, <span class="number">0</span>, <span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">Decodable</span>::<span class="ident">decode</span>(<span class="ident">d</span>))<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">name_was_remapped</span>: <span class="ident">bool</span> <span class="op">=</span>
                 <span class="ident">d</span>.<span class="ident">read_struct_field</span>(<span class="string">&quot;name_was_remapped&quot;</span>, <span class="number">1</span>, <span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">Decodable</span>::<span class="ident">decode</span>(<span class="ident">d</span>))<span class="question-mark">?</span>;
@@ -1766,6 +1917,8 @@
             })<span class="question-mark">?</span>;
             <span class="kw">let</span> <span class="ident">multibyte_chars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MultiByteChar</span><span class="op">&gt;</span> <span class="op">=</span>
                 <span class="ident">d</span>.<span class="ident">read_struct_field</span>(<span class="string">&quot;multibyte_chars&quot;</span>, <span class="number">5</span>, <span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">Decodable</span>::<span class="ident">decode</span>(<span class="ident">d</span>))<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="ident">non_narrow_chars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">NonNarrowChar</span><span class="op">&gt;</span> <span class="op">=</span>
+                <span class="ident">d</span>.<span class="ident">read_struct_field</span>(<span class="string">&quot;non_narrow_chars&quot;</span>, <span class="number">7</span>, <span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">Decodable</span>::<span class="ident">decode</span>(<span class="ident">d</span>))<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(<span class="ident">FileMap</span> {
                 <span class="ident">name</span>,
                 <span class="ident">name_was_remapped</span>,
@@ -1780,7 +1933,8 @@
                 <span class="ident">src_hash</span>,
                 <span class="ident">external_src</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">ExternalSource</span>::<span class="ident">AbsentOk</span>),
                 <span class="ident">lines</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">lines</span>),
-                <span class="ident">multibyte_chars</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">multibyte_chars</span>)
+                <span class="ident">multibyte_chars</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">multibyte_chars</span>),
+                <span class="ident">non_narrow_chars</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">non_narrow_chars</span>)
             })
         })
     }
@@ -1818,6 +1972,7 @@
             <span class="ident">end_pos</span>: <span class="ident">Pos</span>::<span class="ident">from_usize</span>(<span class="ident">end_pos</span>),
             <span class="ident">lines</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
             <span class="ident">multibyte_chars</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
+            <span class="ident">non_narrow_chars</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
         }
     }
 
@@ -1905,6 +2060,23 @@
             <span class="ident">bytes</span>,
         };
         <span class="self">self</span>.<span class="ident">multibyte_chars</span>.<span class="ident">borrow_mut</span>().<span class="ident">push</span>(<span class="ident">mbc</span>);
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">record_width</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">BytePos</span>, <span class="ident">ch</span>: <span class="ident">char</span>) {
+        <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ch</span> {
+            <span class="string">&#39;\t&#39;</span> <span class="op">|</span> <span class="string">&#39;\n&#39;</span> <span class="op">=&gt;</span>
+                <span class="comment">// Tabs will consume one column.</span>
+                <span class="comment">// Make newlines take one column so that displayed spans can point them.</span>
+                <span class="number">1</span>,
+            <span class="ident">ch</span> <span class="op">=&gt;</span>
+                <span class="comment">// Assume control characters are zero width.</span>
+                <span class="comment">// FIXME: How can we decide between `width` and `width_cjk`?</span>
+                <span class="ident">unicode_width</span>::<span class="ident">UnicodeWidthChar</span>::<span class="ident">width</span>(<span class="ident">ch</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>),
+        };
+        <span class="comment">// Only record non-narrow characters.</span>
+        <span class="kw">if</span> <span class="ident">width</span> <span class="op">!=</span> <span class="number">1</span> {
+            <span class="self">self</span>.<span class="ident">non_narrow_chars</span>.<span class="ident">borrow_mut</span>().<span class="ident">push</span>(<span class="ident">NonNarrowChar</span>::<span class="ident">new</span>(<span class="ident">pos</span>, <span class="ident">width</span>));
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_real_file</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -2053,7 +2225,9 @@
     <span class="doccomment">/// The (1-based) line number</span>
     <span class="kw">pub</span> <span class="ident">line</span>: <span class="ident">usize</span>,
     <span class="doccomment">/// The (0-based) column offset</span>
-    <span class="kw">pub</span> <span class="ident">col</span>: <span class="ident">CharPos</span>
+    <span class="kw">pub</span> <span class="ident">col</span>: <span class="ident">CharPos</span>,
+    <span class="doccomment">/// The (0-based) column offset when displayed</span>
+    <span class="kw">pub</span> <span class="ident">col_display</span>: <span class="ident">usize</span>,
 }
 
 <span class="doccomment">/// A source code location used as the result of lookup_char_pos_adj</span>

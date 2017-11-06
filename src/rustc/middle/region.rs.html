@@ -1639,8 +1639,8 @@
 
 <span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">FirstStatementIndex</span>
     {
-        <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;{}&quot;</span>,
-        <span class="ident">MAX</span> <span class="op">=</span> <span class="ident">SCOPE_DATA_REMAINDER_MAX</span>,
+        <span class="kw">pub</span> <span class="ident">idx</span>
+        <span class="ident">MAX</span> <span class="op">=</span> <span class="ident">SCOPE_DATA_REMAINDER_MAX</span>
     });
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ScopeData</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Scope</span> {

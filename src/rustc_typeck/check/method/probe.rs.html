@@ -1407,6 +1407,9 @@
 <span id="1362">1362</span>
 <span id="1363">1363</span>
 <span id="1364">1364</span>
+<span id="1365">1365</span>
+<span id="1366">1366</span>
+<span id="1367">1367</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1840,6 +1843,9 @@
             }
             <span class="ident">ty</span>::<span class="ident">TySlice</span>(_) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">lang_def_id</span> <span class="op">=</span> <span class="ident">lang_items</span>.<span class="ident">slice_impl</span>();
+                <span class="self">self</span>.<span class="ident">assemble_inherent_impl_for_primitive</span>(<span class="ident">lang_def_id</span>);
+
+                <span class="kw">let</span> <span class="ident">lang_def_id</span> <span class="op">=</span> <span class="ident">lang_items</span>.<span class="ident">slice_u8_impl</span>();
                 <span class="self">self</span>.<span class="ident">assemble_inherent_impl_for_primitive</span>(<span class="ident">lang_def_id</span>);
             }
             <span class="ident">ty</span>::<span class="ident">TyRawPtr</span>(<span class="ident">ty</span>::<span class="ident">TypeAndMut</span> { <span class="ident">ty</span>: _, <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">MutImmutable</span> }) <span class="op">=&gt;</span> {

@@ -79,6 +79,15 @@
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><pre class="rust ">
 <span class="ident">IS_BOX</span>: <span class="ident">AdtFlags</span> <span class="op">=</span> <span class="ident">AdtFlags</span>{<span class="ident">bits</span>: <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>,}</pre>
+</div><h4 id='associatedconstant.IS_NON_EXHAUSTIVE' class="associatedconstant"><span id='IS_NON_EXHAUSTIVE.v' class='invisible'><code>const <a href='#associatedconstant.IS_NON_EXHAUSTIVE' class="constant"><b>IS_NON_EXHAUSTIVE</b></a>: <a class="struct" href="../../rustc/ty/struct.AdtFlags.html" title="struct rustc::ty::AdtFlags">AdtFlags</a></code></span></h4>
+<div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
+</details></div></div><div class='docblock'><pre class="rust ">
+<span class="ident">IS_NON_EXHAUSTIVE</span>: <span class="ident">AdtFlags</span> <span class="op">=</span> <span class="ident">AdtFlags</span>{<span class="ident">bits</span>: <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>,}</pre>
+<p>Indicates whether this abstract data type will be expanded on in future (new
+fields/variants) and as such, whether downstream crates must match exhaustively on the
+fields/variants of this data type.</p>
+
+<p>See RFC 2008 (<a href="https://github.com/rust-lang/rfcs/pull/2008">https://github.com/rust-lang/rfcs/pull/2008</a>).</p>
 </div><h4 id='method.empty' class="method"><span id='empty.v' class='invisible'><code>pub fn <a href='#method.empty' class='fnname'>empty</a>() -&gt; <a class="struct" href="../../rustc/ty/struct.AdtFlags.html" title="struct rustc::ty::AdtFlags">AdtFlags</a></code></span></h4>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>Returns an empty set of flags.</p>

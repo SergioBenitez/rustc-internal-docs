@@ -406,7 +406,7 @@
     <span class="comment">// ABI</span>
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_alloc</span>(<span class="ident">size</span>: <span class="ident">usize</span>,
                                      <span class="ident">align</span>: <span class="ident">usize</span>,
                                      <span class="ident">err</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> {
@@ -421,13 +421,13 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_oom</span>(<span class="ident">err</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="op">!</span> {
         <span class="ident">System</span>.<span class="ident">oom</span>((<span class="kw-2">*</span>(<span class="ident">err</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">AllocErr</span>)).<span class="ident">clone</span>())
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_dealloc</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
                                        <span class="ident">size</span>: <span class="ident">usize</span>,
                                        <span class="ident">align</span>: <span class="ident">usize</span>) {
@@ -436,7 +436,7 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_usable_size</span>(<span class="ident">layout</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>,
                                            <span class="ident">min</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">usize</span>,
                                            <span class="ident">max</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">usize</span>) {
@@ -452,7 +452,7 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_realloc</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
                                        <span class="ident">_old_size</span>: <span class="ident">usize</span>,
                                        <span class="ident">old_align</span>: <span class="ident">usize</span>,
@@ -476,7 +476,7 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_alloc_zeroed</span>(<span class="ident">size</span>: <span class="ident">usize</span>,
                                             <span class="ident">align</span>: <span class="ident">usize</span>,
                                             <span class="ident">err</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> {
@@ -495,7 +495,7 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_alloc_excess</span>(<span class="ident">size</span>: <span class="ident">usize</span>,
                                             <span class="ident">align</span>: <span class="ident">usize</span>,
                                             <span class="ident">excess</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">usize</span>,
@@ -509,7 +509,7 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_realloc_excess</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
                                               <span class="ident">old_size</span>: <span class="ident">usize</span>,
                                               <span class="ident">old_align</span>: <span class="ident">usize</span>,
@@ -526,7 +526,7 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_grow_in_place</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
                                              <span class="ident">old_size</span>: <span class="ident">usize</span>,
                                              <span class="ident">old_align</span>: <span class="ident">usize</span>,
@@ -536,7 +536,7 @@
     }
 
     <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
-    <span class="attribute">#[<span class="ident">linkage</span> <span class="op">=</span> <span class="string">&quot;external&quot;</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_std_internal_symbol</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">__rde_shrink_in_place</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
                                                <span class="ident">_old_size</span>: <span class="ident">usize</span>,
                                                <span class="ident">old_align</span>: <span class="ident">usize</span>,

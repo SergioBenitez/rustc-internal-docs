@@ -1712,6 +1712,13 @@
 <span id="1667">1667</span>
 <span id="1668">1668</span>
 <span id="1669">1669</span>
+<span id="1670">1670</span>
+<span id="1671">1671</span>
+<span id="1672">1672</span>
+<span id="1673">1673</span>
+<span id="1674">1674</span>
+<span id="1675">1675</span>
+<span id="1676">1676</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2299,7 +2306,8 @@
     <span class="kw">fn</span> <span class="ident">encode_struct_ctor</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, (<span class="ident">adt_def_id</span>, <span class="ident">def_id</span>): (<span class="ident">DefId</span>, <span class="ident">DefId</span>)) <span class="op">-&gt;</span> <span class="ident">Entry</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;IsolatedEncoder::encode_struct_ctor({:?})&quot;</span>, <span class="ident">def_id</span>);
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
-        <span class="kw">let</span> <span class="ident">variant</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">adt_def</span>(<span class="ident">adt_def_id</span>).<span class="ident">struct_variant</span>();
+        <span class="kw">let</span> <span class="ident">adt_def</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">adt_def</span>(<span class="ident">adt_def_id</span>);
+        <span class="kw">let</span> <span class="ident">variant</span> <span class="op">=</span> <span class="ident">adt_def</span>.<span class="ident">struct_variant</span>();
 
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">VariantData</span> {
             <span class="ident">ctor_kind</span>: <span class="ident">variant</span>.<span class="ident">ctor_kind</span>,
@@ -2319,6 +2327,12 @@
             <span class="kw">if</span> <span class="ident">ctor_vis</span>.<span class="ident">is_at_least</span>(<span class="ident">field</span>.<span class="ident">vis</span>, <span class="ident">tcx</span>) {
                 <span class="ident">ctor_vis</span> <span class="op">=</span> <span class="ident">field</span>.<span class="ident">vis</span>;
             }
+        }
+
+        <span class="comment">// If the structure is marked as non_exhaustive then lower the visibility</span>
+        <span class="comment">// to within the crate.</span>
+        <span class="kw">if</span> <span class="ident">adt_def</span>.<span class="ident">is_non_exhaustive</span>() <span class="op">&amp;&amp;</span> <span class="ident">ctor_vis</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span> {
+            <span class="ident">ctor_vis</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">Visibility</span>::<span class="ident">Restricted</span>(<span class="ident">DefId</span>::<span class="ident">local</span>(<span class="ident">CRATE_DEF_INDEX</span>));
         }
 
         <span class="kw">let</span> <span class="ident">repr_options</span> <span class="op">=</span> <span class="ident">get_repr_options</span>(<span class="kw-2">&amp;</span><span class="ident">tcx</span>, <span class="ident">adt_def_id</span>);

@@ -376,6 +376,13 @@
 <span id="331">331</span>
 <span id="332">332</span>
 <span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -514,6 +521,13 @@
                                           <span class="ident">lang_items</span>.<span class="ident">str_impl</span>(),
                                           <span class="string">&quot;str&quot;</span>,
                                           <span class="string">&quot;str&quot;</span>,
+                                          <span class="ident">item</span>.<span class="ident">span</span>);
+            }
+            <span class="ident">ty</span>::<span class="ident">TySlice</span>(<span class="ident">slice_item</span>) <span class="kw">if</span> <span class="ident">slice_item</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u8</span> <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">check_primitive_impl</span>(<span class="ident">def_id</span>,
+                                          <span class="ident">lang_items</span>.<span class="ident">slice_u8_impl</span>(),
+                                          <span class="string">&quot;slice_u8&quot;</span>,
+                                          <span class="string">&quot;[u8]&quot;</span>,
                                           <span class="ident">item</span>.<span class="ident">span</span>);
             }
             <span class="ident">ty</span>::<span class="ident">TySlice</span>(_) <span class="op">=&gt;</span> {

@@ -48,22 +48,106 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rustc_data_structures/indexed_vec.rs.html#42-120' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rustc_data_structures/indexed_vec.rs.html#42-325' title='goto source code'>[src]</a></span></h1>
 <pre class="rust macro">
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">newtype_index</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> { ... };
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="op">+</span> }) <span class="op">=&gt;</span> { ... };
-    (@<span class="kw">type</span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>] @<span class="ident">max</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>] @<span class="ident">debug_format</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">expr</span>]) <span class="op">=&gt;</span> { ... };
-    (@<span class="kw">type</span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>] @<span class="ident">max</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>] @<span class="ident">debug_format</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">expr</span>]
-            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">constant</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> { ... };
-    (@<span class="kw">type</span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>] @<span class="ident">max</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_max</span>:<span class="ident">expr</span>] @<span class="ident">debug_format</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">expr</span>]
-            <span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">constant</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> { ... };
-    (@<span class="kw">type</span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>] @<span class="ident">max</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_max</span>:<span class="ident">expr</span>] @<span class="ident">debug_format</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">expr</span>]
-            <span class="ident">MAX</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
-    (@<span class="kw">type</span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>] @<span class="ident">max</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>] @<span class="ident">debug_format</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_debug_format</span>:<span class="ident">expr</span>]
-            <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">expr</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
-    (@<span class="kw">type</span>[<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>] @<span class="ident">max</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>] @<span class="ident">debug_format</span>[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">expr</span>]
-            <span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">constant</span>:<span class="ident">expr</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">derives</span>      [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">handle_debug</span>
+     @<span class="ident">derives</span>      [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">debug_format</span> [<span class="ident">custom</span>]) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">handle_debug</span>
+     @<span class="ident">derives</span>      []
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">handle_debug</span>
+     @<span class="ident">derives</span>      [<span class="ident">Debug</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">handle_debug</span>
+     @<span class="ident">derives</span>      [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_derive</span>:<span class="ident">ident</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]) <span class="op">=&gt;</span> { ... };
+    (@<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   <span class="kw">pub</span> <span class="ident">idx</span>
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   <span class="ident">derive</span> [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>]
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   <span class="ident">derive</span> [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="op">+</span>]
+                   <span class="ident">ENCODABLE</span> <span class="op">=</span> <span class="ident">custom</span>
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   <span class="ident">derive</span> [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="op">+</span>]
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   <span class="ident">ENCODABLE</span> <span class="op">=</span> <span class="ident">custom</span>
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">derives</span>      [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">constant</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">derives</span>      [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   $(<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc</span>:<span class="ident">expr</span>]</span>)<span class="op">*</span>
+                   <span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">constant</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">derives</span>      [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   <span class="ident">MAX</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>,
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">derives</span>      [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_debug_format</span>:<span class="ident">tt</span>]
+                   <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>,
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
+    (@<span class="ident">derives</span>      [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">derives</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>]
+     @<span class="kw">pub</span>          [$(<span class="macro-nonterminal">$</span><span class="kw">pub</span>:<span class="macro-nonterminal">tt</span>)<span class="kw-2">*</span>]
+     @<span class="kw">type</span>         [<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>]
+     @<span class="ident">max</span>          [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">max</span>:<span class="ident">expr</span>]
+     @<span class="ident">debug_format</span> [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_format</span>:<span class="ident">tt</span>]
+                   $(<span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc</span>:<span class="ident">expr</span>]</span>)<span class="op">*</span>
+                   <span class="kw">const</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">constant</span>:<span class="ident">expr</span>,
+                   $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">tokens</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
 }</pre>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div></section>

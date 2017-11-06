@@ -2722,6 +2722,20 @@
 <span id="2677">2677</span>
 <span id="2678">2678</span>
 <span id="2679">2679</span>
+<span id="2680">2680</span>
+<span id="2681">2681</span>
+<span id="2682">2682</span>
+<span id="2683">2683</span>
+<span id="2684">2684</span>
+<span id="2685">2685</span>
+<span id="2686">2686</span>
+<span id="2687">2687</span>
+<span id="2688">2688</span>
+<span id="2689">2689</span>
+<span id="2690">2690</span>
+<span id="2691">2691</span>
+<span id="2692">2692</span>
+<span id="2693">2693</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4051,6 +4065,12 @@
         <span class="kw">const</span> <span class="ident">IS_FUNDAMENTAL</span>      <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>;
         <span class="kw">const</span> <span class="ident">IS_UNION</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>;
         <span class="kw">const</span> <span class="ident">IS_BOX</span>              <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">4</span>;
+        <span class="doccomment">/// Indicates whether this abstract data type will be expanded on in future (new</span>
+        <span class="doccomment">/// fields/variants) and as such, whether downstream crates must match exhaustively on the</span>
+        <span class="doccomment">/// fields/variants of this data type.</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// See RFC 2008 (https://github.com/rust-lang/rfcs/pull/2008).</span>
+        <span class="kw">const</span> <span class="ident">IS_NON_EXHAUSTIVE</span>   <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">5</span>;
     }
 }
 
@@ -4251,6 +4271,9 @@
         <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">did</span>) <span class="op">==</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">owned_box</span>() {
             <span class="ident">flags</span> <span class="op">=</span> <span class="ident">flags</span> <span class="op">|</span> <span class="ident">AdtFlags</span>::<span class="ident">IS_BOX</span>;
         }
+        <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">has_attr</span>(<span class="ident">did</span>, <span class="string">&quot;non_exhaustive&quot;</span>) {
+            <span class="ident">flags</span> <span class="op">=</span> <span class="ident">flags</span> <span class="op">|</span> <span class="ident">AdtFlags</span>::<span class="ident">IS_NON_EXHAUSTIVE</span>;
+        }
         <span class="kw">match</span> <span class="ident">kind</span> {
             <span class="ident">AdtKind</span>::<span class="ident">Enum</span> <span class="op">=&gt;</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">flags</span> <span class="op">|</span> <span class="ident">AdtFlags</span>::<span class="ident">IS_ENUM</span>,
             <span class="ident">AdtKind</span>::<span class="ident">Union</span> <span class="op">=&gt;</span> <span class="ident">flags</span> <span class="op">=</span> <span class="ident">flags</span> <span class="op">|</span> <span class="ident">AdtFlags</span>::<span class="ident">IS_UNION</span>,
@@ -4277,6 +4300,11 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_enum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">intersects</span>(<span class="ident">AdtFlags</span>::<span class="ident">IS_ENUM</span>)
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_non_exhaustive</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">flags</span>.<span class="ident">intersects</span>(<span class="ident">AdtFlags</span>::<span class="ident">IS_NON_EXHAUSTIVE</span>)
     }
 
     <span class="doccomment">/// Returns the kind of the ADT - Struct or Enum.</span>

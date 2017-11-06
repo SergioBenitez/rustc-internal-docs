@@ -892,6 +892,18 @@
 <span id="847">847</span>
 <span id="848">848</span>
 <span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1233,11 +1245,22 @@
             <span class="comment">// These items live in both the type and value namespaces.</span>
             <span class="ident">ItemKind</span>::<span class="ident">Struct</span>(<span class="kw-2">ref</span> <span class="ident">struct_def</span>, _) <span class="op">=&gt;</span> {
                 <span class="comment">// Define a name in the type namespace.</span>
-                <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">Def</span>::<span class="ident">Struct</span>(<span class="self">self</span>.<span class="ident">definitions</span>.<span class="ident">local_def_id</span>(<span class="ident">item</span>.<span class="ident">id</span>));
+                <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">definitions</span>.<span class="ident">local_def_id</span>(<span class="ident">item</span>.<span class="ident">id</span>);
+                <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">Def</span>::<span class="ident">Struct</span>(<span class="ident">def_id</span>);
                 <span class="self">self</span>.<span class="ident">define</span>(<span class="ident">parent</span>, <span class="ident">ident</span>, <span class="ident">TypeNS</span>, (<span class="ident">def</span>, <span class="ident">vis</span>, <span class="ident">sp</span>, <span class="ident">expansion</span>));
 
-                <span class="comment">// Record field names for error reporting.</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ctor_vis</span> <span class="op">=</span> <span class="ident">vis</span>;
+
+                <span class="kw">let</span> <span class="ident">has_non_exhaustive</span> <span class="op">=</span> <span class="ident">item</span>.<span class="ident">attrs</span>.<span class="ident">iter</span>()
+                    .<span class="ident">any</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">check_name</span>(<span class="string">&quot;non_exhaustive&quot;</span>));
+
+                <span class="comment">// If the structure is marked as non_exhaustive then lower the visibility</span>
+                <span class="comment">// to within the crate.</span>
+                <span class="kw">if</span> <span class="ident">has_non_exhaustive</span> <span class="op">&amp;&amp;</span> <span class="ident">vis</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span> {
+                    <span class="ident">ctor_vis</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">Visibility</span>::<span class="ident">Restricted</span>(<span class="ident">DefId</span>::<span class="ident">local</span>(<span class="ident">CRATE_DEF_INDEX</span>));
+                }
+
+                <span class="comment">// Record field names for error reporting.</span>
                 <span class="kw">let</span> <span class="ident">field_names</span> <span class="op">=</span> <span class="ident">struct_def</span>.<span class="ident">fields</span>().<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">field</span><span class="op">|</span> {
                     <span class="kw">let</span> <span class="ident">field_vis</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">resolve_visibility</span>(<span class="kw-2">&amp;</span><span class="ident">field</span>.<span class="ident">vis</span>);
                     <span class="kw">if</span> <span class="ident">ctor_vis</span>.<span class="ident">is_at_least</span>(<span class="ident">field_vis</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>) {
@@ -1309,6 +1332,7 @@
         <span class="comment">// value namespace, they are reserved for possible future use.</span>
         <span class="kw">let</span> <span class="ident">ctor_kind</span> <span class="op">=</span> <span class="ident">CtorKind</span>::<span class="ident">from_ast</span>(<span class="kw-2">&amp;</span><span class="ident">variant</span>.<span class="ident">node</span>.<span class="ident">data</span>);
         <span class="kw">let</span> <span class="ident">ctor_def</span> <span class="op">=</span> <span class="ident">Def</span>::<span class="ident">VariantCtor</span>(<span class="ident">def_id</span>, <span class="ident">ctor_kind</span>);
+
         <span class="self">self</span>.<span class="ident">define</span>(<span class="ident">parent</span>, <span class="ident">ident</span>, <span class="ident">ValueNS</span>, (<span class="ident">ctor_def</span>, <span class="ident">vis</span>, <span class="ident">variant</span>.<span class="ident">span</span>, <span class="ident">expansion</span>));
     }
 

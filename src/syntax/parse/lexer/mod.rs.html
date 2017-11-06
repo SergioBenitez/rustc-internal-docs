@@ -1976,6 +1976,7 @@
 <span id="1931">1931</span>
 <span id="1932">1932</span>
 <span id="1933">1933</span>
+<span id="1934">1934</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2412,6 +2413,7 @@
                     <span class="self">self</span>.<span class="ident">filemap</span>.<span class="ident">record_multibyte_char</span>(<span class="self">self</span>.<span class="ident">pos</span>, <span class="ident">new_ch_len</span>);
                 }
             }
+            <span class="self">self</span>.<span class="ident">filemap</span>.<span class="ident">record_width</span>(<span class="self">self</span>.<span class="ident">pos</span>, <span class="ident">new_ch</span>);
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">ch</span> <span class="op">=</span> <span class="prelude-val">None</span>;
             <span class="self">self</span>.<span class="ident">pos</span> <span class="op">=</span> <span class="ident">new_pos</span>;

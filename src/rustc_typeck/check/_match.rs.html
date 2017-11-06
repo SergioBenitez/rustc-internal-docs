@@ -951,6 +951,14 @@
 <span id="906">906</span>
 <span id="907">907</span>
 <span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1779,10 +1787,11 @@
                                <span class="ident">def_bm</span>: <span class="ident">ty</span>::<span class="ident">BindingMode</span>) {
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
 
-        <span class="kw">let</span> (<span class="ident">substs</span>, <span class="ident">kind_name</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">adt_ty</span>.<span class="ident">sty</span> {
-            <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">adt</span>, <span class="ident">substs</span>) <span class="op">=&gt;</span> (<span class="ident">substs</span>, <span class="ident">adt</span>.<span class="ident">variant_descr</span>()),
+        <span class="kw">let</span> (<span class="ident">substs</span>, <span class="ident">adt</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">adt_ty</span>.<span class="ident">sty</span> {
+            <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">adt</span>, <span class="ident">substs</span>) <span class="op">=&gt;</span> (<span class="ident">substs</span>, <span class="ident">adt</span>),
             _ <span class="op">=&gt;</span> <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">span</span>, <span class="string">&quot;struct pattern is not an ADT&quot;</span>)
         };
+        <span class="kw">let</span> <span class="ident">kind_name</span> <span class="op">=</span> <span class="ident">adt</span>.<span class="ident">variant_descr</span>();
 
         <span class="comment">// Index the struct fields&#39; types.</span>
         <span class="kw">let</span> <span class="ident">field_map</span> <span class="op">=</span> <span class="ident">variant</span>.<span class="ident">fields</span>
@@ -1834,6 +1843,13 @@
             };
 
             <span class="self">self</span>.<span class="ident">check_pat_walk</span>(<span class="kw-2">&amp;</span><span class="ident">field</span>.<span class="ident">pat</span>, <span class="ident">field_ty</span>, <span class="ident">def_bm</span>, <span class="bool-val">true</span>);
+        }
+
+        <span class="comment">// Require `..` if struct has non_exhaustive attribute.</span>
+        <span class="kw">if</span> <span class="ident">adt</span>.<span class="ident">is_struct</span>() <span class="op">&amp;&amp;</span> <span class="ident">adt</span>.<span class="ident">is_non_exhaustive</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">adt</span>.<span class="ident">did</span>.<span class="ident">is_local</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">etc</span> {
+            <span class="macro">span_err</span><span class="macro">!</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0638</span>,
+                      <span class="string">&quot;`..` required with {} marked as non-exhaustive&quot;</span>,
+                      <span class="ident">kind_name</span>);
         }
 
         <span class="comment">// Report an error if incorrect number of the fields were specified.</span>
