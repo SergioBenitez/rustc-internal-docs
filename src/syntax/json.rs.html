@@ -403,6 +403,12 @@
 <span id="358">358</span>
 <span id="359">359</span>
 <span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -436,36 +442,41 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::{<span class="self">self</span>, <span class="ident">Write</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">vec</span>;
 
-<span class="kw">use</span> <span class="ident">rustc_serialize</span>::<span class="ident">json</span>::<span class="ident">as_json</span>;
+<span class="kw">use</span> <span class="ident">rustc_serialize</span>::<span class="ident">json</span>::{<span class="ident">as_json</span>, <span class="ident">as_pretty_json</span>};
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">JsonEmitter</span> {
     <span class="ident">dst</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Write</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>,
     <span class="ident">registry</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Registry</span><span class="op">&gt;</span>,
     <span class="ident">cm</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">CodeMapper</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
+    <span class="ident">pretty</span>: <span class="ident">bool</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">JsonEmitter</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">stderr</span>(<span class="ident">registry</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Registry</span><span class="op">&gt;</span>,
-                  <span class="ident">code_map</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">CodeMap</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">JsonEmitter</span> {
+                  <span class="ident">code_map</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">CodeMap</span><span class="op">&gt;</span>,
+                  <span class="ident">pretty</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">JsonEmitter</span> {
         <span class="ident">JsonEmitter</span> {
             <span class="ident">dst</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">io</span>::<span class="ident">stderr</span>()),
             <span class="ident">registry</span>,
             <span class="ident">cm</span>: <span class="ident">code_map</span>,
+            <span class="ident">pretty</span>,
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">basic</span>() <span class="op">-&gt;</span> <span class="ident">JsonEmitter</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">basic</span>(<span class="ident">pretty</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">JsonEmitter</span> {
         <span class="kw">let</span> <span class="ident">file_path_mapping</span> <span class="op">=</span> <span class="ident">FilePathMapping</span>::<span class="ident">empty</span>();
-        <span class="ident">JsonEmitter</span>::<span class="ident">stderr</span>(<span class="prelude-val">None</span>, <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">CodeMap</span>::<span class="ident">new</span>(<span class="ident">file_path_mapping</span>)))
+        <span class="ident">JsonEmitter</span>::<span class="ident">stderr</span>(<span class="prelude-val">None</span>, <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">CodeMap</span>::<span class="ident">new</span>(<span class="ident">file_path_mapping</span>)), <span class="ident">pretty</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dst</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Write</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>,
                <span class="ident">registry</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Registry</span><span class="op">&gt;</span>,
-               <span class="ident">code_map</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">CodeMap</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">JsonEmitter</span> {
+               <span class="ident">code_map</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">CodeMap</span><span class="op">&gt;</span>,
+               <span class="ident">pretty</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">JsonEmitter</span> {
         <span class="ident">JsonEmitter</span> {
             <span class="ident">dst</span>,
             <span class="ident">registry</span>,
             <span class="ident">cm</span>: <span class="ident">code_map</span>,
+            <span class="ident">pretty</span>,
         }
     }
 }
@@ -473,7 +484,12 @@
 <span class="kw">impl</span> <span class="ident">Emitter</span> <span class="kw">for</span> <span class="ident">JsonEmitter</span> {
     <span class="kw">fn</span> <span class="ident">emit</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">db</span>: <span class="kw-2">&amp;</span><span class="ident">DiagnosticBuilder</span>) {
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">Diagnostic</span>::<span class="ident">from_diagnostic_builder</span>(<span class="ident">db</span>, <span class="self">self</span>);
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="macro">writeln</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">dst</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">as_json</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>)) {
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">pretty</span> {
+            <span class="macro">writeln</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">dst</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">as_pretty_json</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>))
+        } <span class="kw">else</span> {
+            <span class="macro">writeln</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">dst</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">as_json</span>(<span class="kw-2">&amp;</span><span class="ident">data</span>))
+        };
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">result</span> {
             <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;failed to print diagnostics: {:?}&quot;</span>, <span class="ident">e</span>);
         }
     }
@@ -491,9 +507,7 @@
     <span class="ident">spans</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DiagnosticSpan</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Associated diagnostic messages.</span>
     <span class="ident">children</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Diagnostic</span><span class="op">&gt;</span>,
-    <span class="doccomment">/// The message as rustc would render it. Currently this is only</span>
-    <span class="doccomment">/// `Some` for &quot;suggestions&quot;, but eventually it will include all</span>
-    <span class="doccomment">/// snippets.</span>
+    <span class="doccomment">/// The message as rustc would render it. Currently this is always `None`</span>
     <span class="ident">rendered</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
@@ -516,9 +530,7 @@
     <span class="doccomment">/// Label that should be placed at this location (if any)</span>
     <span class="ident">label</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// If we are suggesting a replacement, this will contain text</span>
-    <span class="doccomment">/// that should be sliced in atop this span. You may prefer to</span>
-    <span class="doccomment">/// load the fully rendered version from the parent `Diagnostic`,</span>
-    <span class="doccomment">/// however.</span>
+    <span class="doccomment">/// that should be sliced in atop this span.</span>
     <span class="ident">suggested_replacement</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Macro invocations that created the code at this span, if any.</span>
     <span class="ident">expansion</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">DiagnosticSpanMacroExpansion</span><span class="op">&gt;&gt;</span>,

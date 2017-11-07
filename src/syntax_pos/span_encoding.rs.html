@@ -186,6 +186,8 @@
 <span id="141">141</span>
 <span id="142">142</span>
 <span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -248,9 +250,11 @@
 <span class="kw">const</span> <span class="ident">CTXT_INDEX</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">2</span>;
 
 <span class="comment">// Tag = 0, inline format.</span>
-<span class="comment">// -----------------------------------</span>
-<span class="comment">// | base 31:8  | len 7:1  | tag 0:0 |</span>
-<span class="comment">// -----------------------------------</span>
+<span class="comment">// -------------------------------------------------------------</span>
+<span class="comment">// | base 31:8  | len 7:1  | ctxt (currently 0 bits) | tag 0:0 |</span>
+<span class="comment">// -------------------------------------------------------------</span>
+<span class="comment">// Since there are zero bits for ctxt, only SpanData with a 0 SyntaxContext</span>
+<span class="comment">// can be inline.</span>
 <span class="kw">const</span> <span class="ident">INLINE_SIZES</span>: [<span class="ident">u32</span>; <span class="number">3</span>] <span class="op">=</span> [<span class="number">24</span>, <span class="number">7</span>, <span class="number">0</span>];
 <span class="kw">const</span> <span class="ident">INLINE_OFFSETS</span>: [<span class="ident">u32</span>; <span class="number">3</span>] <span class="op">=</span> [<span class="number">8</span>, <span class="number">1</span>, <span class="number">1</span>];
 

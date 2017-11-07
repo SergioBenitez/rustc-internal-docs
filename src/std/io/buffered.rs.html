@@ -1287,6 +1287,31 @@
 <span id="1242">1242</span>
 <span id="1243">1243</span>
 <span id="1244">1244</span>
+<span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
+<span id="1252">1252</span>
+<span id="1253">1253</span>
+<span id="1254">1254</span>
+<span id="1255">1255</span>
+<span id="1256">1256</span>
+<span id="1257">1257</span>
+<span id="1258">1258</span>
+<span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
+<span id="1262">1262</span>
+<span id="1263">1263</span>
+<span id="1264">1264</span>
+<span id="1265">1265</span>
+<span id="1266">1266</span>
+<span id="1267">1267</span>
+<span id="1268">1268</span>
+<span id="1269">1269</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1436,6 +1461,31 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span> { <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span> }
+
+    <span class="doccomment">/// Returns `true` if there are no bytes in the internal buffer.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # #![feature(bufreader_is_empty)]</span>
+    <span class="doccomment">/// use std::io::BufReader;</span>
+    <span class="doccomment">/// use std::io::BufRead;</span>
+    <span class="doccomment">/// use std::fs::File;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # fn foo() -&gt; std::io::Result&lt;()&gt; {</span>
+    <span class="doccomment">/// let f1 = File::open(&quot;log.txt&quot;)?;</span>
+    <span class="doccomment">/// let mut reader = BufReader::new(f1);</span>
+    <span class="doccomment">/// assert!(reader.is_empty());</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// if reader.fill_buf()?.len() &gt; 0 {</span>
+    <span class="doccomment">///     assert!(!reader.is_empty());</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// # Ok(())</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;bufreader_is_empty&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;45323&quot;</span>, <span class="ident">reason</span> <span class="op">=</span> <span class="string">&quot;recently added&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">pos</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">cap</span>
+    }
 
     <span class="doccomment">/// Unwraps this `BufReader`, returning the underlying reader.</span>
     <span class="doccomment">///</span>

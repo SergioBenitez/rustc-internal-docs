@@ -277,6 +277,16 @@
 <span id="232">232</span>
 <span id="233">233</span>
 <span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -318,7 +328,7 @@
     <span class="ident">location_map</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">Location</span>, <span class="ident">BorrowIndex</span><span class="op">&gt;</span>,
     <span class="ident">region_map</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">FxHashSet</span><span class="op">&lt;</span><span class="ident">BorrowIndex</span><span class="op">&gt;&gt;</span>,
     <span class="ident">region_span_map</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">RegionKind</span>, <span class="ident">Span</span><span class="op">&gt;</span>,
-    <span class="ident">nonlexical_regioncx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RegionInferenceContext</span><span class="op">&gt;</span>,
+    <span class="ident">nonlexical_regioncx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RegionInferenceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="comment">// temporarily allow some dead fields: `kind` and `region` will be</span>
@@ -349,7 +359,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Borrows</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-               <span class="ident">nonlexical_regioncx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RegionInferenceContext</span><span class="op">&gt;</span>)
+               <span class="ident">nonlexical_regioncx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">RegionInferenceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)
                <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">visitor</span> <span class="op">=</span> <span class="ident">GatherBorrows</span> { <span class="ident">idx_vec</span>: <span class="ident">IndexVec</span>::<span class="ident">new</span>(),
                                           <span class="ident">location_map</span>: <span class="ident">FxHashMap</span>(),
@@ -419,11 +429,21 @@
                                            <span class="ident">location</span>: <span class="ident">Location</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">regioncx</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">nonlexical_regioncx</span> {
             <span class="kw">for</span> (<span class="ident">borrow_index</span>, <span class="ident">borrow_data</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">borrows</span>.<span class="ident">iter_enumerated</span>() {
-                <span class="kw">let</span> <span class="ident">borrow_region</span> <span class="op">=</span> <span class="ident">regioncx</span>.<span class="ident">region_value</span>(<span class="ident">borrow_data</span>.<span class="ident">region</span>.<span class="ident">to_region_index</span>());
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">borrow_region</span>.<span class="ident">may_contain</span>(<span class="ident">location</span>) <span class="op">&amp;&amp;</span> <span class="ident">location</span> <span class="op">!=</span> <span class="ident">borrow_data</span>.<span class="ident">location</span> {
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;kill_loans_out_of_scope_at_location: kill{:?} \
-                           location={:?} borrow_data={:?}&quot;</span>, <span class="ident">borrow_index</span>, <span class="ident">location</span>, <span class="ident">borrow_data</span>);
-                    <span class="ident">sets</span>.<span class="ident">kill</span>(<span class="kw-2">&amp;</span><span class="ident">borrow_index</span>);
+                <span class="kw">let</span> <span class="ident">borrow_region</span> <span class="op">=</span> <span class="ident">borrow_data</span>.<span class="ident">region</span>.<span class="ident">to_region_index</span>();
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">regioncx</span>.<span class="ident">region_contains_point</span>(<span class="ident">borrow_region</span>, <span class="ident">location</span>) {
+                    <span class="comment">// The region checker really considers the borrow</span>
+                    <span class="comment">// to start at the point **after** the location of</span>
+                    <span class="comment">// the borrow, but the borrow checker puts the gen</span>
+                    <span class="comment">// directly **on** the location of the</span>
+                    <span class="comment">// borrow. This results in a gen/kill both being</span>
+                    <span class="comment">// generated for same point if we are not</span>
+                    <span class="comment">// careful. Probably we should change the point of</span>
+                    <span class="comment">// the gen, but for now we hackily account for the</span>
+                    <span class="comment">// mismatch here by not generating a kill for the</span>
+                    <span class="comment">// location on the borrow itself.</span>
+                    <span class="kw">if</span> <span class="ident">location</span> <span class="op">!=</span> <span class="ident">borrow_data</span>.<span class="ident">location</span> {
+                        <span class="ident">sets</span>.<span class="ident">kill</span>(<span class="kw-2">&amp;</span><span class="ident">borrow_index</span>);
+                    }
                 }
             }
         }

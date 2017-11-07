@@ -247,6 +247,19 @@
 <span id="202">202</span>
 <span id="203">203</span>
 <span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -431,6 +444,19 @@
         };
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;lub_free_regions(r_a={:?}, r_b={:?}) = {:?}&quot;</span>, <span class="ident">r_a</span>, <span class="ident">r_b</span>, <span class="ident">result</span>);
         <span class="ident">result</span>
+    }
+
+    <span class="doccomment">/// Returns all regions that are known to outlive `r_a`. For</span>
+    <span class="doccomment">/// example, in a function:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// fn foo&lt;&#39;a, &#39;b: &#39;a, &#39;c: &#39;b&gt;() { .. }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// if `r_a` represents `&#39;a`, this function would return `{&#39;b, &#39;c}`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">regions_that_outlive</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">r_a</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">is_free</span>(<span class="ident">r_a</span>));
+        <span class="self">self</span>.<span class="ident">relation</span>.<span class="ident">greater_than</span>(<span class="kw-2">&amp;</span><span class="ident">r_a</span>)
     }
 }
 

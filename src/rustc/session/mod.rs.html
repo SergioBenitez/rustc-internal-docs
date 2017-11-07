@@ -1413,7 +1413,7 @@
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">error_format</span> {
             <span class="comment">// when outputting JSON for tool consumption, the tool might want</span>
             <span class="comment">// the duplicates</span>
-            <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span> <span class="op">=&gt;</span> {
+            <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>(_) <span class="op">=&gt;</span> {
                 <span class="ident">do_method</span>()
             },
             _ <span class="op">=&gt;</span> {
@@ -1777,11 +1777,11 @@
         (<span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">HumanReadable</span>(_), <span class="prelude-val">Some</span>(<span class="ident">dst</span>)) <span class="op">=&gt;</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">new</span>(<span class="ident">dst</span>, <span class="prelude-val">Some</span>(<span class="ident">codemap</span>.<span class="ident">clone</span>()), <span class="bool-val">false</span>))
         }
-        (<span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>, <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
-            <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">stderr</span>(<span class="prelude-val">Some</span>(<span class="ident">registry</span>), <span class="ident">codemap</span>.<span class="ident">clone</span>()))
+        (<span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>(<span class="ident">pretty</span>), <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
+            <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">stderr</span>(<span class="prelude-val">Some</span>(<span class="ident">registry</span>), <span class="ident">codemap</span>.<span class="ident">clone</span>(), <span class="ident">pretty</span>))
         }
-        (<span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>, <span class="prelude-val">Some</span>(<span class="ident">dst</span>)) <span class="op">=&gt;</span> {
-            <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">new</span>(<span class="ident">dst</span>, <span class="prelude-val">Some</span>(<span class="ident">registry</span>), <span class="ident">codemap</span>.<span class="ident">clone</span>()))
+        (<span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>(<span class="ident">pretty</span>), <span class="prelude-val">Some</span>(<span class="ident">dst</span>)) <span class="op">=&gt;</span> {
+            <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">new</span>(<span class="ident">dst</span>, <span class="prelude-val">Some</span>(<span class="ident">registry</span>), <span class="ident">codemap</span>.<span class="ident">clone</span>(), <span class="ident">pretty</span>))
         }
         (<span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Short</span>(<span class="ident">color_config</span>), <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">stderr</span>(<span class="ident">color_config</span>, <span class="prelude-val">Some</span>(<span class="ident">codemap</span>.<span class="ident">clone</span>()), <span class="bool-val">true</span>))
@@ -1959,7 +1959,7 @@
         <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">HumanReadable</span>(<span class="ident">color_config</span>) <span class="op">=&gt;</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">stderr</span>(<span class="ident">color_config</span>, <span class="prelude-val">None</span>, <span class="bool-val">false</span>))
         }
-        <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span> <span class="op">=&gt;</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">basic</span>()),
+        <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>(<span class="ident">pretty</span>) <span class="op">=&gt;</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">basic</span>(<span class="ident">pretty</span>)),
         <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Short</span>(<span class="ident">color_config</span>) <span class="op">=&gt;</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">stderr</span>(<span class="ident">color_config</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>))
         }
@@ -1974,7 +1974,7 @@
         <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">HumanReadable</span>(<span class="ident">color_config</span>) <span class="op">=&gt;</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">stderr</span>(<span class="ident">color_config</span>, <span class="prelude-val">None</span>, <span class="bool-val">false</span>))
         }
-        <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span> <span class="op">=&gt;</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">basic</span>()),
+        <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>(<span class="ident">pretty</span>) <span class="op">=&gt;</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">JsonEmitter</span>::<span class="ident">basic</span>(<span class="ident">pretty</span>)),
         <span class="ident">config</span>::<span class="ident">ErrorOutputType</span>::<span class="ident">Short</span>(<span class="ident">color_config</span>) <span class="op">=&gt;</span> {
             <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">EmitterWriter</span>::<span class="ident">stderr</span>(<span class="ident">color_config</span>, <span class="prelude-val">None</span>, <span class="bool-val">true</span>))
         }
