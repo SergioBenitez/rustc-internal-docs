@@ -248,8 +248,8 @@
 
     <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">idx</span> <span class="op">&lt;</span> <span class="ident">cx</span>.<span class="ident">frames</span>.<span class="ident">len</span>() {
         <span class="ident">cx</span>.<span class="ident">frames</span>[<span class="ident">cx</span>.<span class="ident">idx</span>] <span class="op">=</span> <span class="ident">Frame</span> {
-            <span class="ident">symbol_addr</span>: <span class="ident">symaddr</span>,
-            <span class="ident">exact_position</span>: <span class="ident">ip</span>,
+            <span class="ident">symbol_addr</span>: <span class="ident">symaddr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
+            <span class="ident">exact_position</span>: <span class="ident">ip</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>,
         };
         <span class="ident">cx</span>.<span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
     }

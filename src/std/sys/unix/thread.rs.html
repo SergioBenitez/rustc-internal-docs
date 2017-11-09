@@ -531,7 +531,7 @@
         };
 
         <span class="kw">extern</span> <span class="kw">fn</span> <span class="ident">thread_start</span>(<span class="ident">main</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">libc</span>::<span class="ident">c_void</span>) <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">libc</span>::<span class="ident">c_void</span> {
-            <span class="kw">unsafe</span> { <span class="ident">start_thread</span>(<span class="ident">main</span>); }
+            <span class="kw">unsafe</span> { <span class="ident">start_thread</span>(<span class="ident">main</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>); }
             <span class="ident">ptr</span>::<span class="ident">null_mut</span>()
         }
     }

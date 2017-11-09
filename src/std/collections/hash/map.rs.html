@@ -3601,8 +3601,6 @@
 <span id="3556">3556</span>
 <span id="3557">3557</span>
 <span id="3558">3558</span>
-<span id="3559">3559</span>
-<span id="3560">3560</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3626,8 +3624,8 @@
 <span class="kw">use</span> <span class="ident">iter</span>::{<span class="ident">FromIterator</span>, <span class="ident">FusedIterator</span>};
 <span class="kw">use</span> <span class="ident">mem</span>::{<span class="self">self</span>, <span class="ident">replace</span>};
 <span class="kw">use</span> <span class="ident">ops</span>::{<span class="ident">Deref</span>, <span class="ident">Index</span>, <span class="ident">InPlace</span>, <span class="ident">Place</span>, <span class="ident">Placer</span>};
-<span class="kw">use</span> <span class="ident">rand</span>::{<span class="self">self</span>, <span class="ident">Rng</span>};
 <span class="kw">use</span> <span class="ident">ptr</span>;
+<span class="kw">use</span> <span class="ident">sys</span>;
 
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">table</span>::{<span class="self">self</span>, <span class="ident">Bucket</span>, <span class="ident">EmptyBucket</span>, <span class="ident">FullBucket</span>, <span class="ident">FullBucketMut</span>, <span class="ident">RawTable</span>, <span class="ident">SafeHash</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">table</span>::<span class="ident">BucketState</span>::{<span class="ident">Empty</span>, <span class="ident">Full</span>};
@@ -6067,9 +6065,7 @@
         <span class="comment">// increment one of the seeds on every RandomState creation, giving</span>
         <span class="comment">// every corresponding HashMap a different iteration order.</span>
         <span class="macro">thread_local</span><span class="macro">!</span>(<span class="kw">static</span> <span class="ident">KEYS</span>: <span class="ident">Cell</span><span class="op">&lt;</span>(<span class="ident">u64</span>, <span class="ident">u64</span>)<span class="op">&gt;</span> <span class="op">=</span> {
-            <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">rand</span>::<span class="ident">OsRng</span>::<span class="ident">new</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">r</span>.<span class="ident">expect</span>(<span class="string">&quot;failed to create an OS RNG&quot;</span>);
-            <span class="ident">Cell</span>::<span class="ident">new</span>((<span class="ident">r</span>.<span class="ident">gen</span>(), <span class="ident">r</span>.<span class="ident">gen</span>()))
+            <span class="ident">Cell</span>::<span class="ident">new</span>(<span class="ident">sys</span>::<span class="ident">hashmap_random_keys</span>())
         });
 
         <span class="ident">KEYS</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">keys</span><span class="op">|</span> {

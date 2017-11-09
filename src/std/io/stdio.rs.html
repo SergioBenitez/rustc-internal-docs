@@ -779,8 +779,6 @@
 <span id="734">734</span>
 <span id="735">735</span>
 <span id="736">736</span>
-<span id="737">737</span>
-<span id="738">738</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -905,10 +903,8 @@
 }
 
 <span class="kw">fn</span> <span class="ident">handle_ebadf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">r</span>: <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">default</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">stdio</span>::<span class="ident">EBADF_ERR</span>;
-
     <span class="kw">match</span> <span class="ident">r</span> {
-        <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) <span class="kw">if</span> <span class="ident">e</span>.<span class="ident">raw_os_error</span>() <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">EBADF_ERR</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">default</span>),
+        <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="ident">e</span>) <span class="kw">if</span> <span class="ident">stdio</span>::<span class="ident">is_ebadf</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">default</span>),
         <span class="ident">r</span> <span class="op">=&gt;</span> <span class="ident">r</span>
     }
 }

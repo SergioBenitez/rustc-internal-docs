@@ -696,17 +696,17 @@
 
     <span class="kw">fn</span> <span class="ident">from_suggestion</span>(<span class="ident">suggestion</span>: <span class="kw-2">&amp;</span><span class="ident">CodeSuggestion</span>, <span class="ident">je</span>: <span class="kw-2">&amp;</span><span class="ident">JsonEmitter</span>)
                        <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DiagnosticSpan</span><span class="op">&gt;</span> {
-        <span class="ident">suggestion</span>.<span class="ident">substitution_parts</span>
+        <span class="ident">suggestion</span>.<span class="ident">substitutions</span>
                       .<span class="ident">iter</span>()
                       .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">substitution</span><span class="op">|</span> {
-                          <span class="ident">substitution</span>.<span class="ident">substitutions</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">suggestion</span><span class="op">|</span> {
+                          <span class="ident">substitution</span>.<span class="ident">parts</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">suggestion</span><span class="op">|</span> {
                               <span class="kw">let</span> <span class="ident">span_label</span> <span class="op">=</span> <span class="ident">SpanLabel</span> {
-                                  <span class="ident">span</span>: <span class="ident">substitution</span>.<span class="ident">span</span>,
+                                  <span class="ident">span</span>: <span class="ident">suggestion</span>.<span class="ident">span</span>,
                                   <span class="ident">is_primary</span>: <span class="bool-val">true</span>,
                                   <span class="ident">label</span>: <span class="prelude-val">None</span>,
                               };
                               <span class="ident">DiagnosticSpan</span>::<span class="ident">from_span_label</span>(<span class="ident">span_label</span>,
-                                                              <span class="prelude-val">Some</span>(<span class="ident">suggestion</span>),
+                                                              <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">suggestion</span>.<span class="ident">snippet</span>),
                                                               <span class="ident">je</span>)
                           })
                       })

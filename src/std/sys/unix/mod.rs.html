@@ -205,6 +205,10 @@
 <span id="160">160</span>
 <span id="161">161</span>
 <span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -237,6 +241,9 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">dox</span>), <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>))]</span>   <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">fuchsia</span> <span class="kw">as</span> <span class="ident">platform</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">not</span>(<span class="ident">dox</span>), <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;l4re&quot;</span>))]</span>      <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">os</span>::<span class="ident">linux</span> <span class="kw">as</span> <span class="ident">platform</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">rand</span>::<span class="ident">hashmap_random_keys</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libc</span>::<span class="ident">strlen</span>;
+
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">weak</span>;
 
@@ -244,6 +251,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">android</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;backtrace&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">backtrace</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">cmath</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">condvar</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">env</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ext</span>;

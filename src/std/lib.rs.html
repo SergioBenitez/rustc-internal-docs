@@ -557,20 +557,6 @@
 <span id="512">512</span>
 <span id="513">513</span>
 <span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -930,6 +916,7 @@
 
 <span class="comment">// Access to Bencher, etc.</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">test</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span>;
 
 <span class="comment">// We want to reexport a few macros from core but libcore has already been</span>
 <span class="comment">// imported by the compiler (via our #[no_std] attribute) In this case we just</span>
@@ -938,9 +925,6 @@
                  <span class="ident">debug_assert_ne</span>, <span class="ident">unreachable</span>, <span class="ident">unimplemented</span>, <span class="ident">write</span>, <span class="ident">writeln</span>, <span class="ident">try</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">core</span> <span class="kw">as</span> <span class="ident">__core</span>;
 
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">masked</span>)]</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rand</span> <span class="kw">as</span> <span class="ident">core_rand</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="attribute">#[<span class="ident">macro_reexport</span>(<span class="ident">vec</span>, <span class="ident">format</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">alloc</span>;
@@ -1078,23 +1062,11 @@
 
 <span class="comment">// Private support modules</span>
 <span class="kw">mod</span> <span class="ident">panicking</span>;
-<span class="kw">mod</span> <span class="ident">rand</span>;
 <span class="kw">mod</span> <span class="ident">memchr</span>;
 
 <span class="comment">// The runtime entry point and a few unstable public functions used by the</span>
 <span class="comment">// compiler</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rt</span>;
-
-<span class="comment">// Some external utilities of the standard library rely on randomness (aka</span>
-<span class="comment">// rustc_back::TempDir and tests) and need a way to get at the OS rng we&#39;ve got</span>
-<span class="comment">// here. This module is not at all intended for stabilization as-is, however,</span>
-<span class="comment">// but it may be stabilized long-term. As a result we&#39;re exposing a hidden,</span>
-<span class="comment">// unstable module so we can get our build working.</span>
-<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
-<span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rand&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27703&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">__rand</span> {
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">rand</span>::{<span class="ident">thread_rng</span>, <span class="ident">ThreadRng</span>, <span class="ident">Rng</span>};
-}
 
 <span class="comment">// Include a number of private modules that exist solely to provide</span>
 <span class="comment">// the rustdoc documentation for primitive types. Using `include!`</span>
