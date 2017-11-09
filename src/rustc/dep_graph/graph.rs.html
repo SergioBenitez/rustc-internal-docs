@@ -955,6 +955,43 @@
 <span id="910">910</span>
 <span id="911">911</span>
 <span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1286,7 +1323,12 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fingerprint_of</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dep_node</span>: <span class="kw-2">&amp;</span><span class="ident">DepNode</span>) <span class="op">-&gt;</span> <span class="ident">Fingerprint</span> {
-        <span class="self">self</span>.<span class="ident">fingerprints</span>.<span class="ident">borrow</span>()[<span class="ident">dep_node</span>]
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fingerprints</span>.<span class="ident">borrow</span>().<span class="ident">get</span>(<span class="ident">dep_node</span>) {
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">fingerprint</span>) <span class="op">=&gt;</span> <span class="ident">fingerprint</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Could not find current fingerprint for {:?}&quot;</span>, <span class="ident">dep_node</span>)
+            }
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prev_fingerprint_of</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">dep_node</span>: <span class="kw-2">&amp;</span><span class="ident">DepNode</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Fingerprint</span><span class="op">&gt;</span> {
@@ -1464,60 +1506,67 @@
                     <span class="kw">return</span> <span class="prelude-val">None</span>
                 }
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
-                    <span class="kw">if</span> <span class="ident">dep_dep_node</span>.<span class="ident">kind</span>.<span class="ident">is_input</span>() {
-                        <span class="comment">// This input does not exist anymore.</span>
-                        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">dep_dep_node</span>.<span class="ident">extract_def_id</span>(<span class="ident">tcx</span>).<span class="ident">is_none</span>(),
-                                      <span class="string">&quot;Encountered input {:?} without color&quot;</span>,
-                                      <span class="ident">dep_dep_node</span>);
-                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) - END - dependency {:?} \
-                                was deleted input&quot;</span>, <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
-                        <span class="kw">return</span> <span class="prelude-val">None</span>;
+                    <span class="comment">// We don&#39;t know the state of this dependency. If it isn&#39;t</span>
+                    <span class="comment">// an input node, let&#39;s try to mark it green recursively.</span>
+                    <span class="kw">if</span> <span class="op">!</span><span class="ident">dep_dep_node</span>.<span class="ident">kind</span>.<span class="ident">is_input</span>() {
+                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- state of dependency {:?} \
+                                 is unknown, trying to mark it green&quot;</span>, <span class="ident">dep_node</span>,
+                                 <span class="ident">dep_dep_node</span>);
+
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node_index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">try_mark_green</span>(<span class="ident">tcx</span>, <span class="ident">dep_dep_node</span>) {
+                            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- managed to MARK \
+                                    dependency {:?} as green&quot;</span>, <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
+                            <span class="ident">current_deps</span>.<span class="ident">push</span>(<span class="ident">node_index</span>);
+                            <span class="kw">continue</span>;
+                        }
+                    } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">debug_assertions</span>) {
+                        <span class="kw">match</span> <span class="ident">dep_dep_node</span>.<span class="ident">kind</span> {
+                            <span class="ident">DepKind</span>::<span class="ident">Hir</span> <span class="op">|</span>
+                            <span class="ident">DepKind</span>::<span class="ident">HirBody</span> <span class="op">|</span>
+                            <span class="ident">DepKind</span>::<span class="ident">CrateMetadata</span> <span class="op">=&gt;</span> {
+                                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">dep_dep_node</span>.<span class="ident">extract_def_id</span>(<span class="ident">tcx</span>).<span class="ident">is_none</span>(),
+                                    <span class="string">&quot;Input {:?} should have been pre-allocated but wasn&#39;t.&quot;</span>,
+                                    <span class="ident">dep_dep_node</span>);
+                            }
+                            _ <span class="op">=&gt;</span> {
+                                <span class="comment">// For other kinds of inputs it&#39;s OK to be</span>
+                                <span class="comment">// forced.</span>
+                            }
+                        }
                     }
 
-                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- state of dependency {:?} \
-                            is unknown, trying to mark it green&quot;</span>, <span class="ident">dep_node</span>,
-                            <span class="ident">dep_dep_node</span>);
-
-                    <span class="comment">// We don&#39;t know the state of this dependency. Let&#39;s try to</span>
-                    <span class="comment">// mark it green.</span>
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node_index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">try_mark_green</span>(<span class="ident">tcx</span>, <span class="ident">dep_dep_node</span>) {
-                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- managed to MARK \
-                                dependency {:?} as green&quot;</span>, <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
-                        <span class="ident">current_deps</span>.<span class="ident">push</span>(<span class="ident">node_index</span>);
-                    } <span class="kw">else</span> {
-                        <span class="comment">// We failed to mark it green, so we try to force the query.</span>
-                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- trying to force \
-                                dependency {:?}&quot;</span>, <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
-                        <span class="kw">if</span> ::<span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">force_from_dep_node</span>(<span class="ident">tcx</span>, <span class="ident">dep_dep_node</span>) {
-                            <span class="kw">let</span> <span class="ident">dep_dep_node_color</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">colors</span>
-                                                         .<span class="ident">borrow</span>()
-                                                         .<span class="ident">get</span>(<span class="ident">dep_dep_node</span>)
-                                                         .<span class="ident">cloned</span>();
-                            <span class="kw">match</span> <span class="ident">dep_dep_node_color</span> {
-                                <span class="prelude-val">Some</span>(<span class="ident">DepNodeColor</span>::<span class="ident">Green</span>(<span class="ident">node_index</span>)) <span class="op">=&gt;</span> {
-                                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- managed to \
-                                            FORCE dependency {:?} to green&quot;</span>,
-                                            <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
-                                    <span class="ident">current_deps</span>.<span class="ident">push</span>(<span class="ident">node_index</span>);
-                                }
-                                <span class="prelude-val">Some</span>(<span class="ident">DepNodeColor</span>::<span class="ident">Red</span>) <span class="op">=&gt;</span> {
-                                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) - END - \
-                                            dependency {:?} was red after forcing&quot;</span>,
-                                           <span class="ident">dep_node</span>,
-                                           <span class="ident">dep_dep_node</span>);
-                                    <span class="kw">return</span> <span class="prelude-val">None</span>
-                                }
-                                <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
-                                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green() - Forcing the DepNode \
-                                          should have set its color&quot;</span>)
-                                }
+                    <span class="comment">// We failed to mark it green, so we try to force the query.</span>
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- trying to force \
+                            dependency {:?}&quot;</span>, <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
+                    <span class="kw">if</span> ::<span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">force_from_dep_node</span>(<span class="ident">tcx</span>, <span class="ident">dep_dep_node</span>) {
+                        <span class="kw">let</span> <span class="ident">dep_dep_node_color</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">colors</span>
+                                                     .<span class="ident">borrow</span>()
+                                                     .<span class="ident">get</span>(<span class="ident">dep_dep_node</span>)
+                                                     .<span class="ident">cloned</span>();
+                        <span class="kw">match</span> <span class="ident">dep_dep_node_color</span> {
+                            <span class="prelude-val">Some</span>(<span class="ident">DepNodeColor</span>::<span class="ident">Green</span>(<span class="ident">node_index</span>)) <span class="op">=&gt;</span> {
+                                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) --- managed to \
+                                        FORCE dependency {:?} to green&quot;</span>,
+                                        <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
+                                <span class="ident">current_deps</span>.<span class="ident">push</span>(<span class="ident">node_index</span>);
                             }
-                        } <span class="kw">else</span> {
-                            <span class="comment">// The DepNode could not be forced.</span>
-                            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) - END - dependency {:?} \
-                                    could not be forced&quot;</span>, <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
-                            <span class="kw">return</span> <span class="prelude-val">None</span>
+                            <span class="prelude-val">Some</span>(<span class="ident">DepNodeColor</span>::<span class="ident">Red</span>) <span class="op">=&gt;</span> {
+                                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) - END - \
+                                        dependency {:?} was red after forcing&quot;</span>,
+                                       <span class="ident">dep_node</span>,
+                                       <span class="ident">dep_dep_node</span>);
+                                <span class="kw">return</span> <span class="prelude-val">None</span>
+                            }
+                            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                                <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green() - Forcing the DepNode \
+                                      should have set its color&quot;</span>)
+                            }
                         }
+                    } <span class="kw">else</span> {
+                        <span class="comment">// The DepNode could not be forced.</span>
+                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;try_mark_green({:?}) - END - dependency {:?} \
+                                could not be forced&quot;</span>, <span class="ident">dep_node</span>, <span class="ident">dep_dep_node</span>);
+                        <span class="kw">return</span> <span class="prelude-val">None</span>
                     }
                 }
             }
@@ -1730,7 +1779,30 @@
             <span class="ident">read_set</span>: _,
             <span class="ident">reads</span>
         } <span class="op">=</span> <span class="ident">popped_node</span> {
-            <span class="macro">debug_assert_eq</span><span class="macro">!</span>(<span class="ident">node</span>, <span class="ident">key</span>);
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">node</span>, <span class="ident">key</span>);
+
+            <span class="comment">// If this is an input node, we expect that it either has no</span>
+            <span class="comment">// dependencies, or that it just depends on DepKind::CrateMetadata</span>
+            <span class="comment">// or DepKind::Krate. This happens for some &quot;thin wrapper queries&quot;</span>
+            <span class="comment">// like `crate_disambiguator` which sometimes have zero deps (for</span>
+            <span class="comment">// when called for LOCAL_CRATE) or they depend on a CrateMetadata</span>
+            <span class="comment">// node.</span>
+            <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">debug_assertions</span>) {
+                <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">kind</span>.<span class="ident">is_input</span>() <span class="op">&amp;&amp;</span> <span class="ident">reads</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span>
+                   <span class="comment">// FIXME(mw): Special case for DefSpan until Spans are handled</span>
+                   <span class="comment">//            better in general.</span>
+                   <span class="ident">node</span>.<span class="ident">kind</span> <span class="op">!=</span> <span class="ident">DepKind</span>::<span class="ident">DefSpan</span> <span class="op">&amp;&amp;</span>
+                    <span class="ident">reads</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> {
+                        <span class="op">!</span>(<span class="self">self</span>.<span class="ident">nodes</span>[<span class="ident">i</span>].<span class="ident">kind</span> <span class="op">==</span> <span class="ident">DepKind</span>::<span class="ident">CrateMetadata</span> <span class="op">||</span>
+                          <span class="self">self</span>.<span class="ident">nodes</span>[<span class="ident">i</span>].<span class="ident">kind</span> <span class="op">==</span> <span class="ident">DepKind</span>::<span class="ident">Krate</span>)
+                    })
+                {
+                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Input node {:?} with unexpected reads: {:?}&quot;</span>,
+                        <span class="ident">node</span>,
+                        <span class="ident">reads</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">i</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">nodes</span>[<span class="ident">i</span>]).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>())
+                }
+            }
+
             <span class="self">self</span>.<span class="ident">alloc_node</span>(<span class="ident">node</span>, <span class="ident">reads</span>)
         } <span class="kw">else</span> {
             <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;pop_task() - Expected regular task to be popped&quot;</span>)
@@ -1751,6 +1823,8 @@
             <span class="ident">read_set</span>: _,
             <span class="ident">reads</span>
         } <span class="op">=</span> <span class="ident">popped_node</span> {
+            <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">kind</span>.<span class="ident">is_input</span>());
+
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fingerprint</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">anon_id_seed</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">StableHasher</span>::<span class="ident">new</span>();
 
@@ -1894,7 +1968,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

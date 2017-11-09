@@ -73,7 +73,7 @@ returned by <a href="#method.as_os_str"><code>as_os_str</code></a>.</p>
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">OsStr</span>::<span class="ident">new</span>(<span class="string">&quot;c:&quot;</span>), <span class="ident">prefix_component</span>.<span class="ident">as_os_str</span>());
     }
     _ <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aif%20cfg!(windows)%20%7B%0Ause%20std%3A%3Apath%3A%3A%7BComponent%2C%20Path%2C%20Prefix%7D%3B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0A%0Alet%20path%20%3D%20Path%3A%3Anew(r%22c%3A%5Cyou%5Clater%5C%22)%3B%0Amatch%20path.components().next().unwrap()%20%7B%0A%20%20%20%20Component%3A%3APrefix(prefix_component)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20assert_eq!(Prefix%3A%3ADisk(b'C')%2C%20prefix_component.kind())%3B%0A%20%20%20%20%20%20%20%20assert_eq!(OsStr%3A%3Anew(%22c%3A%22)%2C%20prefix_component.as_os_str())%3B%0A%20%20%20%20%7D%0A%20%20%20%20_%20%3D%3E%20unreachable!()%2C%0A%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aif%20cfg!(windows)%20%7B%0Ause%20std%3A%3Apath%3A%3A%7BComponent%2C%20Path%2C%20Prefix%7D%3B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0A%0Alet%20path%20%3D%20Path%3A%3Anew(r%22c%3A%5Cyou%5Clater%5C%22)%3B%0Amatch%20path.components().next().unwrap()%20%7B%0A%20%20%20%20Component%3A%3APrefix(prefix_component)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20assert_eq!(Prefix%3A%3ADisk(b'C')%2C%20prefix_component.kind())%3B%0A%20%20%20%20%20%20%20%20assert_eq!(OsStr%3A%3Anew(%22c%3A%22)%2C%20prefix_component.as_os_str())%3B%0A%20%20%20%20%7D%0A%20%20%20%20_%20%3D%3E%20unreachable!()%2C%0A%7D%0A%7D%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -153,7 +153,7 @@ kinds of prefixes.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

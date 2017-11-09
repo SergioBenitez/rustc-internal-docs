@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Neg</p><div class="block items"><li><a href="#associated-types">Associated Types</a></li><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Neg', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Neg</p><div class="block items"><a class="sidebar-title" href="#associated-types">Associated Types</a><div class="sidebar-links"><a href="#associatedtype.Output">Output</a></div><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.neg">neg</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Neg', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -86,7 +86,7 @@ negate its value.</p>
 <span class="comment">// A double negative is a positive.</span>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">-</span><span class="ident">Sign</span>::<span class="ident">Negative</span>, <span class="ident">Sign</span>::<span class="ident">Positive</span>);
 <span class="comment">// Zero is its own negation.</span>
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">-</span><span class="ident">Sign</span>::<span class="ident">Zero</span>, <span class="ident">Sign</span>::<span class="ident">Zero</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ANeg%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Aenum%20Sign%20%7B%0A%20%20%20%20Negative%2C%0A%20%20%20%20Zero%2C%0A%20%20%20%20Positive%2C%0A%7D%0A%0Aimpl%20Neg%20for%20Sign%20%7B%0A%20%20%20%20type%20Output%20%3D%20Sign%3B%0A%0A%20%20%20%20fn%20neg(self)%20-%3E%20Sign%20%7B%0A%20%20%20%20%20%20%20%20match%20self%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Sign%3A%3ANegative%20%3D%3E%20Sign%3A%3APositive%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20Sign%3A%3AZero%20%3D%3E%20Sign%3A%3AZero%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20Sign%3A%3APositive%20%3D%3E%20Sign%3A%3ANegative%2C%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%0A%2F%2F%20A%20negative%20positive%20is%20a%20negative.%0Aassert_eq!(-Sign%3A%3APositive%2C%20Sign%3A%3ANegative)%3B%0A%2F%2F%20A%20double%20negative%20is%20a%20positive.%0Aassert_eq!(-Sign%3A%3ANegative%2C%20Sign%3A%3APositive)%3B%0A%2F%2F%20Zero%20is%20its%20own%20negation.%0Aassert_eq!(-Sign%3A%3AZero%2C%20Sign%3A%3AZero)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">-</span><span class="ident">Sign</span>::<span class="ident">Zero</span>, <span class="ident">Sign</span>::<span class="ident">Zero</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ANeg%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Aenum%20Sign%20%7B%0A%20%20%20%20Negative%2C%0A%20%20%20%20Zero%2C%0A%20%20%20%20Positive%2C%0A%7D%0A%0Aimpl%20Neg%20for%20Sign%20%7B%0A%20%20%20%20type%20Output%20%3D%20Sign%3B%0A%0A%20%20%20%20fn%20neg(self)%20-%3E%20Sign%20%7B%0A%20%20%20%20%20%20%20%20match%20self%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Sign%3A%3ANegative%20%3D%3E%20Sign%3A%3APositive%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20Sign%3A%3AZero%20%3D%3E%20Sign%3A%3AZero%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20Sign%3A%3APositive%20%3D%3E%20Sign%3A%3ANegative%2C%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%0A%2F%2F%20A%20negative%20positive%20is%20a%20negative.%0Aassert_eq!(-Sign%3A%3APositive%2C%20Sign%3A%3ANegative)%3B%0A%2F%2F%20A%20double%20negative%20is%20a%20positive.%0Aassert_eq!(-Sign%3A%3ANegative%2C%20Sign%3A%3APositive)%3B%0A%2F%2F%20Zero%20is%20its%20own%20negation.%0Aassert_eq!(-Sign%3A%3AZero%2C%20Sign%3A%3AZero)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='associated-types' class='small-section-header'>
               Associated Types<a href='#associated-types' class='anchor'></a>
@@ -171,7 +171,7 @@ negate its value.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

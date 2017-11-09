@@ -60,7 +60,7 @@ the given byte.</p>
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">3</span>];
 <span class="ident">io</span>::<span class="ident">repeat</span>(<span class="number">0b101</span>).<span class="ident">read_exact</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>).<span class="ident">unwrap</span>();
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buffer</span>, [<span class="number">0b101</span>, <span class="number">0b101</span>, <span class="number">0b101</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3A%7Bself%2C%20Read%7D%3B%0A%0Alet%20mut%20buffer%20%3D%20%5B0%3B%203%5D%3B%0Aio%3A%3Arepeat(0b101).read_exact(%26mut%20buffer).unwrap()%3B%0Aassert_eq!(buffer%2C%20%5B0b101%2C%200b101%2C%200b101%5D)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">buffer</span>, [<span class="number">0b101</span>, <span class="number">0b101</span>, <span class="number">0b101</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3A%7Bself%2C%20Read%7D%3B%0A%0Alet%20mut%20buffer%20%3D%20%5B0%3B%203%5D%3B%0Aio%3A%3Arepeat(0b101).read_exact(%26mut%20buffer).unwrap()%3B%0Aassert_eq!(buffer%2C%20%5B0b101%2C%200b101%2C%200b101%5D)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -86,7 +86,7 @@ the given byte.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

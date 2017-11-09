@@ -76,7 +76,7 @@ presumably pointing into an array somewhere:</p>
 <span class="kw">struct</span> <span class="ident">Slice</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">start</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>,
     <span class="ident">end</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>,
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Astruct%20Slice%3C'a%2C%20T%3E%20%7B%0A%20%20%20%20start%3A%20*const%20T%2C%0A%20%20%20%20end%3A%20*const%20T%2C%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Astruct%20Slice%3C'a%2C%20T%3E%20%7B%0A%20%20%20%20start%3A%20*const%20T%2C%0A%20%20%20%20end%3A%20*const%20T%2C%0A%7D%0A%7D">Run</a></pre>
 
 <p>The intention is that the underlying data is only valid for the
 lifetime <code>&#39;a</code>, so <code>Slice</code> should not outlive <code>&#39;a</code>. However, this
@@ -92,7 +92,7 @@ to. We can correct this by telling the compiler to act <em>as if</em> the
     <span class="ident">start</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>,
     <span class="ident">end</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>,
     <span class="ident">phantom</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span><span class="op">&gt;</span>,
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Amarker%3A%3APhantomData%3B%0A%0A%23%5Ballow(dead_code)%5D%0Astruct%20Slice%3C'a%2C%20T%3A%20'a%3E%20%7B%0A%20%20%20%20start%3A%20*const%20T%2C%0A%20%20%20%20end%3A%20*const%20T%2C%0A%20%20%20%20phantom%3A%20PhantomData%3C%26'a%20T%3E%2C%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amarker%3A%3APhantomData%3B%0A%0A%23%5Ballow(dead_code)%5D%0Astruct%20Slice%3C'a%2C%20T%3A%20'a%3E%20%7B%0A%20%20%20%20start%3A%20*const%20T%2C%0A%20%20%20%20end%3A%20*const%20T%2C%0A%20%20%20%20phantom%3A%20PhantomData%3C%26'a%20T%3E%2C%0A%7D%0A%7D">Run</a></pre>
 
 <p>This also in turn requires the annotation <code>T: &#39;a</code>, indicating
 that any references in <code>T</code> are valid over the lifetime <code>&#39;a</code>.</p>
@@ -108,7 +108,7 @@ that any references in <code>T</code> are valid over the lifetime <code>&#39;a</
         <span class="ident">end</span>: <span class="kw">unsafe</span> { <span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">vec</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">isize</span>) },
         <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(dead_code)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amarker%3A%3APhantomData%3B%0Astruct%20Slice%3C'a%2C%20T%3A%20'a%3E%20%7B%0A%20%20%20%20start%3A%20*const%20T%2C%0A%20%20%20%20end%3A%20*const%20T%2C%0A%20%20%20%20phantom%3A%20PhantomData%3C%26'a%20T%3E%2C%0A%7D%0Afn%20borrow_vec%3C'a%2C%20T%3E(vec%3A%20%26'a%20Vec%3CT%3E)%20-%3E%20Slice%3C'a%2C%20T%3E%20%7B%0A%20%20%20%20let%20ptr%20%3D%20vec.as_ptr()%3B%0A%20%20%20%20Slice%20%7B%0A%20%20%20%20%20%20%20%20start%3A%20ptr%2C%0A%20%20%20%20%20%20%20%20end%3A%20unsafe%20%7B%20ptr.offset(vec.len()%20as%20isize)%20%7D%2C%0A%20%20%20%20%20%20%20%20phantom%3A%20PhantomData%2C%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Ballow(dead_code)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amarker%3A%3APhantomData%3B%0Astruct%20Slice%3C'a%2C%20T%3A%20'a%3E%20%7B%0A%20%20%20%20start%3A%20*const%20T%2C%0A%20%20%20%20end%3A%20*const%20T%2C%0A%20%20%20%20phantom%3A%20PhantomData%3C%26'a%20T%3E%2C%0A%7D%0Afn%20borrow_vec%3C'a%2C%20T%3E(vec%3A%20%26'a%20Vec%3CT%3E)%20-%3E%20Slice%3C'a%2C%20T%3E%20%7B%0A%20%20%20%20let%20ptr%20%3D%20vec.as_ptr()%3B%0A%20%20%20%20Slice%20%7B%0A%20%20%20%20%20%20%20%20start%3A%20ptr%2C%0A%20%20%20%20%20%20%20%20end%3A%20unsafe%20%7B%20ptr.offset(vec.len()%20as%20isize)%20%7D%2C%0A%20%20%20%20%20%20%20%20phantom%3A%20PhantomData%2C%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 
 <h2 id='unused-type-parameters' class='section-header'><a href='#unused-type-parameters'>Unused type parameters</a></h2>
 <p>It sometimes happens that you have unused type parameters which
@@ -141,7 +141,7 @@ the struct <code>ExternalResource</code> which wraps a handle.</p>
         <span class="kw">let</span> <span class="ident">foreign_params</span> <span class="op">=</span> <span class="ident">convert_params</span>(<span class="ident">param</span>);
         <span class="ident">foreign_lib</span>::<span class="ident">do_stuff</span>(<span class="self">self</span>.<span class="ident">resource_handle</span>, <span class="ident">foreign_params</span>);
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(dead_code)%5D%0Afn%20main()%20%7B%0Atrait%20ResType%20%7B%20%7D%0Astruct%20ParamType%3B%0Amod%20foreign_lib%20%7B%0A%20%20%20%20pub%20fn%20new(_%3A%20usize)%20-%3E%20*mut%20()%20%7B%2042%20as%20*mut%20()%20%7D%0A%20%20%20%20pub%20fn%20do_stuff(_%3A%20*mut%20()%2C%20_%3A%20usize)%20%7B%7D%0A%7D%0Afn%20convert_params(_%3A%20ParamType)%20-%3E%20usize%20%7B%2042%20%7D%0Ause%20std%3A%3Amarker%3A%3APhantomData%3B%0Ause%20std%3A%3Amem%3B%0A%0Astruct%20ExternalResource%3CR%3E%20%7B%0A%20%20%20resource_handle%3A%20*mut%20()%2C%0A%20%20%20resource_type%3A%20PhantomData%3CR%3E%2C%0A%7D%0A%0Aimpl%3CR%3A%20ResType%3E%20ExternalResource%3CR%3E%20%7B%0A%20%20%20%20fn%20new()%20-%3E%20ExternalResource%3CR%3E%20%7B%0A%20%20%20%20%20%20%20%20let%20size_of_res%20%3D%20mem%3A%3Asize_of%3A%3A%3CR%3E()%3B%0A%20%20%20%20%20%20%20%20ExternalResource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20resource_handle%3A%20foreign_lib%3A%3Anew(size_of_res)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20resource_type%3A%20PhantomData%2C%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20fn%20do_stuff(%26self%2C%20param%3A%20ParamType)%20%7B%0A%20%20%20%20%20%20%20%20let%20foreign_params%20%3D%20convert_params(param)%3B%0A%20%20%20%20%20%20%20%20foreign_lib%3A%3Ado_stuff(self.resource_handle%2C%20foreign_params)%3B%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Ballow(dead_code)%5D%0Afn%20main()%20%7B%0Atrait%20ResType%20%7B%20%7D%0Astruct%20ParamType%3B%0Amod%20foreign_lib%20%7B%0A%20%20%20%20pub%20fn%20new(_%3A%20usize)%20-%3E%20*mut%20()%20%7B%2042%20as%20*mut%20()%20%7D%0A%20%20%20%20pub%20fn%20do_stuff(_%3A%20*mut%20()%2C%20_%3A%20usize)%20%7B%7D%0A%7D%0Afn%20convert_params(_%3A%20ParamType)%20-%3E%20usize%20%7B%2042%20%7D%0Ause%20std%3A%3Amarker%3A%3APhantomData%3B%0Ause%20std%3A%3Amem%3B%0A%0Astruct%20ExternalResource%3CR%3E%20%7B%0A%20%20%20resource_handle%3A%20*mut%20()%2C%0A%20%20%20resource_type%3A%20PhantomData%3CR%3E%2C%0A%7D%0A%0Aimpl%3CR%3A%20ResType%3E%20ExternalResource%3CR%3E%20%7B%0A%20%20%20%20fn%20new()%20-%3E%20ExternalResource%3CR%3E%20%7B%0A%20%20%20%20%20%20%20%20let%20size_of_res%20%3D%20mem%3A%3Asize_of%3A%3A%3CR%3E()%3B%0A%20%20%20%20%20%20%20%20ExternalResource%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20resource_handle%3A%20foreign_lib%3A%3Anew(size_of_res)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20resource_type%3A%20PhantomData%2C%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20fn%20do_stuff(%26self%2C%20param%3A%20ParamType)%20%7B%0A%20%20%20%20%20%20%20%20let%20foreign_params%20%3D%20convert_params(param)%3B%0A%20%20%20%20%20%20%20%20foreign_lib%3A%3Ado_stuff(self.resource_handle%2C%20foreign_params)%3B%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 
 <h2 id='ownership-and-the-drop-check' class='section-header'><a href='#ownership-and-the-drop-check'>Ownership and the drop check</a></h2>
 <p>Adding a field of type <code>PhantomData&lt;T&gt;</code> indicates that your
@@ -224,7 +224,7 @@ as not to indicate ownership.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

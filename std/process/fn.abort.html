@@ -78,7 +78,7 @@ to run.</p>
     <span class="ident">process</span>::<span class="ident">abort</span>();
 
     <span class="comment">// execution never gets here</span>
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=use%20std%3A%3Aprocess%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20println!(%22aborting%22)%3B%0A%0A%20%20%20%20process%3A%3Aabort()%3B%0A%0A%20%20%20%20%2F%2F%20execution%20never%20gets%20here%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Ause%20std%3A%3Aprocess%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20println!(%22aborting%22)%3B%0A%0A%20%20%20%20process%3A%3Aabort()%3B%0A%0A%20%20%20%20%2F%2F%20execution%20never%20gets%20here%0A%7D%0A">Run</a></pre>
 
 <p>The <code>abort</code> function terminates the process, so the destructor will not
 get run on the example below:</p>
@@ -98,7 +98,7 @@ get run on the example below:</p>
     <span class="kw">let</span> <span class="ident">_x</span> <span class="op">=</span> <span class="ident">HasDrop</span>;
     <span class="ident">process</span>::<span class="ident">abort</span>();
     <span class="comment">// the destructor implemented for HasDrop will never get run</span>
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=use%20std%3A%3Aprocess%3B%0A%0Astruct%20HasDrop%3B%0A%0Aimpl%20Drop%20for%20HasDrop%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22This%20will%20never%20be%20printed!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_x%20%3D%20HasDrop%3B%0A%20%20%20%20process%3A%3Aabort()%3B%0A%20%20%20%20%2F%2F%20the%20destructor%20implemented%20for%20HasDrop%20will%20never%20get%20run%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Ause%20std%3A%3Aprocess%3B%0A%0Astruct%20HasDrop%3B%0A%0Aimpl%20Drop%20for%20HasDrop%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22This%20will%20never%20be%20printed!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_x%20%3D%20HasDrop%3B%0A%20%20%20%20process%3A%3Aabort()%3B%0A%20%20%20%20%2F%2F%20the%20destructor%20implemented%20for%20HasDrop%20will%20never%20get%20run%0A%7D%0A">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -124,7 +124,7 @@ get run on the example below:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

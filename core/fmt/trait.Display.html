@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Display</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>fmt</a></p><script>window.sidebarCurrent = {name: 'Display', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Display</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.fmt">fmt</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>fmt</a></p><script>window.sidebarCurrent = {name: 'Display', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -77,7 +77,7 @@ output, and so cannot be derived.</p>
 
 <span class="kw">let</span> <span class="ident">origin</span> <span class="op">=</span> <span class="ident">Point</span> { <span class="ident">x</span>: <span class="number">0</span>, <span class="ident">y</span>: <span class="number">0</span> };
 
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;The origin is: {}&quot;</span>, <span class="ident">origin</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Point%20%7B%0A%20%20%20%20x%3A%20i32%2C%0A%20%20%20%20y%3A%20i32%2C%0A%7D%0A%0Aimpl%20fmt%3A%3ADisplay%20for%20Point%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22(%7B%7D%2C%20%7B%7D)%22%2C%20self.x%2C%20self.y)%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20origin%20%3D%20Point%20%7B%20x%3A%200%2C%20y%3A%200%20%7D%3B%0A%0Aprintln!(%22The%20origin%20is%3A%20%7B%7D%22%2C%20origin)%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;The origin is: {}&quot;</span>, <span class="ident">origin</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Point%20%7B%0A%20%20%20%20x%3A%20i32%2C%0A%20%20%20%20y%3A%20i32%2C%0A%7D%0A%0Aimpl%20fmt%3A%3ADisplay%20for%20Point%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22(%7B%7D%2C%20%7B%7D)%22%2C%20self.x%2C%20self.y)%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20origin%20%3D%20Point%20%7B%20x%3A%200%2C%20y%3A%200%20%7D%3B%0A%0Aprintln!(%22The%20origin%20is%3A%20%7B%7D%22%2C%20origin)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -101,7 +101,7 @@ output, and so cannot be derived.</p>
 }
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;(1.987, 2.983)&quot;</span>.<span class="ident">to_owned</span>(),
-           <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Position</span> { <span class="ident">longitude</span>: <span class="number">1.987</span>, <span class="ident">latitude</span>: <span class="number">2.983</span>, }));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Position%20%7B%0A%20%20%20%20longitude%3A%20f32%2C%0A%20%20%20%20latitude%3A%20f32%2C%0A%7D%0A%0Aimpl%20fmt%3A%3ADisplay%20for%20Position%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22(%7B%7D%2C%20%7B%7D)%22%2C%20self.longitude%2C%20self.latitude)%0A%20%20%20%20%7D%0A%7D%0A%0Aassert_eq!(%22(1.987%2C%202.983)%22.to_owned()%2C%0A%20%20%20%20%20%20%20%20%20%20%20format!(%22%7B%7D%22%2C%20Position%20%7B%20longitude%3A%201.987%2C%20latitude%3A%202.983%2C%20%7D))%3B%0A%7D">Run</a></pre>
+           <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">Position</span> { <span class="ident">longitude</span>: <span class="number">1.987</span>, <span class="ident">latitude</span>: <span class="number">2.983</span>, }));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Position%20%7B%0A%20%20%20%20longitude%3A%20f32%2C%0A%20%20%20%20latitude%3A%20f32%2C%0A%7D%0A%0Aimpl%20fmt%3A%3ADisplay%20for%20Position%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22(%7B%7D%2C%20%7B%7D)%22%2C%20self.longitude%2C%20self.latitude)%0A%20%20%20%20%7D%0A%7D%0A%0Aassert_eq!(%22(1.987%2C%202.983)%22.to_owned()%2C%0A%20%20%20%20%20%20%20%20%20%20%20format!(%22%7B%7D%22%2C%20Position%20%7B%20longitude%3A%201.987%2C%20latitude%3A%202.983%2C%20%7D))%3B%0A%7D">Run</a></pre>
 </div></div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
@@ -173,7 +173,7 @@ output, and so cannot be derived.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -67,7 +67,7 @@ variable (a double quote on Windows or a colon on Unix).</p>
 
 <span class="kw">let</span> <span class="ident">paths</span> <span class="op">=</span> [<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/bin&quot;</span>), <span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/usr/bin&quot;</span>)];
 <span class="kw">let</span> <span class="ident">path_os_string</span> <span class="op">=</span> <span class="ident">env</span>::<span class="ident">join_paths</span>(<span class="ident">paths</span>.<span class="ident">iter</span>()).<span class="ident">unwrap</span>();
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">path_os_string</span>, <span class="ident">OsString</span>::<span class="ident">from</span>(<span class="string">&quot;/bin:/usr/bin&quot;</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aif%20cfg!(unix)%20%7B%0Ause%20std%3A%3Aenv%3B%0Ause%20std%3A%3Affi%3A%3AOsString%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20paths%20%3D%20%5BPath%3A%3Anew(%22%2Fbin%22)%2C%20Path%3A%3Anew(%22%2Fusr%2Fbin%22)%5D%3B%0Alet%20path_os_string%20%3D%20env%3A%3Ajoin_paths(paths.iter()).unwrap()%3B%0Aassert_eq!(path_os_string%2C%20OsString%3A%3Afrom(%22%2Fbin%3A%2Fusr%2Fbin%22))%3B%0A%7D%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">path_os_string</span>, <span class="ident">OsString</span>::<span class="ident">from</span>(<span class="string">&quot;/bin:/usr/bin&quot;</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aif%20cfg!(unix)%20%7B%0Ause%20std%3A%3Aenv%3B%0Ause%20std%3A%3Affi%3A%3AOsString%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20paths%20%3D%20%5BPath%3A%3Anew(%22%2Fbin%22)%2C%20Path%3A%3Anew(%22%2Fusr%2Fbin%22)%5D%3B%0Alet%20path_os_string%20%3D%20env%3A%3Ajoin_paths(paths.iter()).unwrap()%3B%0Aassert_eq!(path_os_string%2C%20OsString%3A%3Afrom(%22%2Fbin%3A%2Fusr%2Fbin%22))%3B%0A%7D%0A%7D">Run</a></pre>
 
 <p>Joining a path containing a colon on a Unix-like platform results in an error:</p>
 
@@ -76,7 +76,7 @@ variable (a double quote on Windows or a colon on Unix).</p>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
 
 <span class="kw">let</span> <span class="ident">paths</span> <span class="op">=</span> [<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/bin&quot;</span>), <span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/usr/bi:n&quot;</span>)];
-<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">env</span>::<span class="ident">join_paths</span>(<span class="ident">paths</span>.<span class="ident">iter</span>()).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aif%20cfg!(unix)%20%7B%0Ause%20std%3A%3Aenv%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20paths%20%3D%20%5BPath%3A%3Anew(%22%2Fbin%22)%2C%20Path%3A%3Anew(%22%2Fusr%2Fbi%3An%22)%5D%3B%0Aassert!(env%3A%3Ajoin_paths(paths.iter()).is_err())%3B%0A%7D%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">env</span>::<span class="ident">join_paths</span>(<span class="ident">paths</span>.<span class="ident">iter</span>()).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aif%20cfg!(unix)%20%7B%0Ause%20std%3A%3Aenv%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20paths%20%3D%20%5BPath%3A%3Anew(%22%2Fbin%22)%2C%20Path%3A%3Anew(%22%2Fusr%2Fbi%3An%22)%5D%3B%0Aassert!(env%3A%3Ajoin_paths(paths.iter()).is_err())%3B%0A%7D%0A%7D">Run</a></pre>
 
 <p>Using <code>env::join_paths</code> with <code>env::spit_paths</code> to append an item to the <code>PATH</code> environment
 variable:</p>
@@ -90,7 +90,7 @@ variable:</p>
     <span class="ident">paths</span>.<span class="ident">push</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;/home/xyz/bin&quot;</span>));
     <span class="kw">let</span> <span class="ident">new_path</span> <span class="op">=</span> <span class="ident">env</span>::<span class="ident">join_paths</span>(<span class="ident">paths</span>).<span class="ident">unwrap</span>();
     <span class="ident">env</span>::<span class="ident">set_var</span>(<span class="string">&quot;PATH&quot;</span>, <span class="kw-2">&amp;</span><span class="ident">new_path</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0Ause%20std%3A%3Apath%3A%3APathBuf%3B%0A%0Aif%20let%20Some(path)%20%3D%20env%3A%3Avar_os(%22PATH%22)%20%7B%0A%20%20%20%20let%20mut%20paths%20%3D%20env%3A%3Asplit_paths(%26path).collect%3A%3A%3CVec%3C_%3E%3E()%3B%0A%20%20%20%20paths.push(PathBuf%3A%3Afrom(%22%2Fhome%2Fxyz%2Fbin%22))%3B%0A%20%20%20%20let%20new_path%20%3D%20env%3A%3Ajoin_paths(paths).unwrap()%3B%0A%20%20%20%20env%3A%3Aset_var(%22PATH%22%2C%20%26new_path)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0Ause%20std%3A%3Apath%3A%3APathBuf%3B%0A%0Aif%20let%20Some(path)%20%3D%20env%3A%3Avar_os(%22PATH%22)%20%7B%0A%20%20%20%20let%20mut%20paths%20%3D%20env%3A%3Asplit_paths(%26path).collect%3A%3A%3CVec%3C_%3E%3E()%3B%0A%20%20%20%20paths.push(PathBuf%3A%3Afrom(%22%2Fhome%2Fxyz%2Fbin%22))%3B%0A%20%20%20%20let%20new_path%20%3D%20env%3A%3Ajoin_paths(paths).unwrap()%3B%0A%20%20%20%20env%3A%3Aset_var(%22PATH%22%2C%20%26new_path)%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -116,7 +116,7 @@ variable:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

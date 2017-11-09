@@ -1162,6 +1162,8 @@
 <span id="1117">1117</span>
 <span id="1118">1118</span>
 <span id="1119">1119</span>
+<span id="1120">1120</span>
+<span id="1121">1121</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1423,14 +1425,15 @@
         <span class="kw">let</span> <span class="ident">cnum_map</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">resolve_crate_deps</span>(<span class="ident">root</span>, <span class="kw-2">&amp;</span><span class="ident">crate_root</span>, <span class="kw-2">&amp;</span><span class="ident">metadata</span>, <span class="ident">cnum</span>, <span class="ident">span</span>, <span class="ident">dep_kind</span>);
 
         <span class="kw">let</span> <span class="ident">def_path_table</span> <span class="op">=</span> <span class="ident">record_time</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">perf_stats</span>.<span class="ident">decode_def_path_tables_time</span>, <span class="op">||</span> {
-            <span class="ident">crate_root</span>.<span class="ident">def_path_table</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>)
+            <span class="ident">crate_root</span>.<span class="ident">def_path_table</span>.<span class="ident">decode</span>((<span class="kw-2">&amp;</span><span class="ident">metadata</span>, <span class="self">self</span>.<span class="ident">sess</span>))
         });
 
-        <span class="kw">let</span> <span class="ident">exported_symbols</span> <span class="op">=</span> <span class="ident">crate_root</span>.<span class="ident">exported_symbols</span>.<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>).<span class="ident">collect</span>();
-
+        <span class="kw">let</span> <span class="ident">exported_symbols</span> <span class="op">=</span> <span class="ident">crate_root</span>.<span class="ident">exported_symbols</span>
+                                         .<span class="ident">decode</span>((<span class="kw-2">&amp;</span><span class="ident">metadata</span>, <span class="self">self</span>.<span class="ident">sess</span>))
+                                         .<span class="ident">collect</span>();
         <span class="kw">let</span> <span class="ident">trait_impls</span> <span class="op">=</span> <span class="ident">crate_root</span>
             .<span class="ident">impls</span>
-            .<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="ident">metadata</span>)
+            .<span class="ident">decode</span>((<span class="kw-2">&amp;</span><span class="ident">metadata</span>, <span class="self">self</span>.<span class="ident">sess</span>))
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">trait_impls</span><span class="op">|</span> (<span class="ident">trait_impls</span>.<span class="ident">trait_id</span>, <span class="ident">trait_impls</span>.<span class="ident">impls</span>))
             .<span class="ident">collect</span>();
 
@@ -1463,7 +1466,7 @@
         <span class="kw">let</span> <span class="ident">dllimports</span>: <span class="ident">FxHashSet</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">cmeta</span>
             .<span class="ident">root</span>
             .<span class="ident">native_libraries</span>
-            .<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="ident">cmeta</span>)
+            .<span class="ident">decode</span>((<span class="kw-2">&amp;</span><span class="ident">cmeta</span>, <span class="self">self</span>.<span class="ident">sess</span>))
             .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">lib</span><span class="op">|</span> <span class="ident">relevant_lib</span>(<span class="self">self</span>.<span class="ident">sess</span>, <span class="ident">lib</span>) <span class="op">&amp;&amp;</span>
                           <span class="ident">lib</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">cstore</span>::<span class="ident">NativeLibraryKind</span>::<span class="ident">NativeUnknown</span>)
             .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">lib</span><span class="op">|</span> {
@@ -1850,14 +1853,15 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">needs_panic_runtime</span> <span class="op">=</span> <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="kw-2">&amp;</span><span class="ident">krate</span>.<span class="ident">attrs</span>,
                                                           <span class="string">&quot;needs_panic_runtime&quot;</span>);
 
+        <span class="kw">let</span> <span class="ident">sess</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>;
         <span class="self">self</span>.<span class="ident">cstore</span>.<span class="ident">iter_crate_data</span>(<span class="op">|</span><span class="ident">cnum</span>, <span class="ident">data</span><span class="op">|</span> {
             <span class="ident">needs_panic_runtime</span> <span class="op">=</span> <span class="ident">needs_panic_runtime</span> <span class="op">||</span>
-                                  <span class="ident">data</span>.<span class="ident">needs_panic_runtime</span>();
-            <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">is_panic_runtime</span>() {
+                                  <span class="ident">data</span>.<span class="ident">needs_panic_runtime</span>(<span class="ident">sess</span>);
+            <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">is_panic_runtime</span>(<span class="ident">sess</span>) {
                 <span class="comment">// Inject a dependency from all #![needs_panic_runtime] to this</span>
                 <span class="comment">// #![panic_runtime] crate.</span>
                 <span class="self">self</span>.<span class="ident">inject_dependency_if</span>(<span class="ident">cnum</span>, <span class="string">&quot;a panic runtime&quot;</span>,
-                                          <span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">needs_panic_runtime</span>());
+                                          <span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">needs_panic_runtime</span>(<span class="ident">sess</span>));
                 <span class="ident">runtime_found</span> <span class="op">=</span> <span class="ident">runtime_found</span> <span class="op">||</span> <span class="ident">data</span>.<span class="ident">dep_kind</span>.<span class="ident">get</span>() <span class="op">==</span> <span class="ident">DepKind</span>::<span class="ident">Explicit</span>;
             }
         });
@@ -1893,7 +1897,7 @@
 
         <span class="comment">// Sanity check the loaded crate to ensure it is indeed a panic runtime</span>
         <span class="comment">// and the panic strategy is indeed what we thought it was.</span>
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">is_panic_runtime</span>() {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">is_panic_runtime</span>(<span class="self">self</span>.<span class="ident">sess</span>) {
             <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the crate `{}` is not a panic runtime&quot;</span>,
                                    <span class="ident">name</span>));
         }
@@ -1905,7 +1909,7 @@
 
         <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">injected_panic_runtime</span>.<span class="ident">set</span>(<span class="prelude-val">Some</span>(<span class="ident">cnum</span>));
         <span class="self">self</span>.<span class="ident">inject_dependency_if</span>(<span class="ident">cnum</span>, <span class="string">&quot;a panic runtime&quot;</span>,
-                                  <span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">needs_panic_runtime</span>());
+                                  <span class="kw-2">&amp;</span><span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">needs_panic_runtime</span>(<span class="self">self</span>.<span class="ident">sess</span>));
     }
 
     <span class="kw">fn</span> <span class="ident">inject_sanitizer_runtime</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
@@ -2000,7 +2004,7 @@
                                        <span class="ident">PathKind</span>::<span class="ident">Crate</span>, <span class="ident">dep_kind</span>);
 
                 <span class="comment">// Sanity check the loaded crate to ensure it is indeed a sanitizer runtime</span>
-                <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">is_sanitizer_runtime</span>() {
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">is_sanitizer_runtime</span>(<span class="self">self</span>.<span class="ident">sess</span>) {
                     <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the crate `{}` is not a sanitizer runtime&quot;</span>,
                                            <span class="ident">name</span>));
                 }
@@ -2021,7 +2025,7 @@
                                    <span class="ident">PathKind</span>::<span class="ident">Crate</span>, <span class="ident">dep_kind</span>);
 
             <span class="comment">// Sanity check the loaded crate to ensure it is indeed a profiler runtime</span>
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">is_profiler_runtime</span>() {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">data</span>.<span class="ident">is_profiler_runtime</span>(<span class="self">self</span>.<span class="ident">sess</span>) {
                 <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the crate `profiler_builtins` is not \
                                         a profiler runtime&quot;</span>));
             }
@@ -2040,7 +2044,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">needs_allocator</span> <span class="op">=</span> <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="kw-2">&amp;</span><span class="ident">krate</span>.<span class="ident">attrs</span>,
                                                       <span class="string">&quot;needs_allocator&quot;</span>);
         <span class="self">self</span>.<span class="ident">cstore</span>.<span class="ident">iter_crate_data</span>(<span class="op">|</span>_, <span class="ident">data</span><span class="op">|</span> {
-            <span class="ident">needs_allocator</span> <span class="op">=</span> <span class="ident">needs_allocator</span> <span class="op">||</span> <span class="ident">data</span>.<span class="ident">needs_allocator</span>();
+            <span class="ident">needs_allocator</span> <span class="op">=</span> <span class="ident">needs_allocator</span> <span class="op">||</span> <span class="ident">data</span>.<span class="ident">needs_allocator</span>(<span class="self">self</span>.<span class="ident">sess</span>);
         });
         <span class="kw">if</span> <span class="op">!</span><span class="ident">needs_allocator</span> {
             <span class="kw">return</span>
@@ -2162,7 +2166,7 @@
             <span class="prelude-val">Some</span>(<span class="ident">data</span>) <span class="op">=&gt;</span> {
                 <span class="comment">// We have an allocator. We detect separately what kind it is, to allow for some</span>
                 <span class="comment">// flexibility in misconfiguration.</span>
-                <span class="kw">let</span> <span class="ident">attrs</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">get_item_attrs</span>(<span class="ident">CRATE_DEF_INDEX</span>);
+                <span class="kw">let</span> <span class="ident">attrs</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">get_item_attrs</span>(<span class="ident">CRATE_DEF_INDEX</span>, <span class="self">self</span>.<span class="ident">sess</span>);
                 <span class="kw">let</span> <span class="ident">kind_interned</span> <span class="op">=</span> <span class="ident">attr</span>::<span class="ident">first_attr_value_str_by_name</span>(<span class="kw-2">&amp;</span><span class="ident">attrs</span>, <span class="string">&quot;rustc_alloc_kind&quot;</span>)
                     .<span class="ident">map</span>(<span class="ident">Symbol</span>::<span class="ident">as_str</span>);
                 <span class="kw">let</span> <span class="ident">kind_str</span> <span class="op">=</span> <span class="ident">kind_interned</span>
@@ -2308,7 +2312,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

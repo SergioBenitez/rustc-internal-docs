@@ -62,7 +62,7 @@
         <span class="kw">return</span>
     }
 };
-<span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">socket</span>.<span class="ident">local_addr</span>().<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t get local address&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixListener%3B%0A%0Alet%20socket%20%3D%20match%20UnixListener%3A%3Abind(%22%2Ftmp%2Fsock%22)%20%7B%0A%20%20%20%20Ok(sock)%20%3D%3E%20sock%2C%0A%20%20%20%20Err(e)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Couldn't%20bind%3A%20%7B%3A%3F%7D%22%2C%20e)%3B%0A%20%20%20%20%20%20%20%20return%0A%20%20%20%20%7D%0A%7D%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0A%7D">Run</a></pre>
+<span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">socket</span>.<span class="ident">local_addr</span>().<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t get local address&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixListener%3B%0A%0Alet%20socket%20%3D%20match%20UnixListener%3A%3Abind(%22%2Ftmp%2Fsock%22)%20%7B%0A%20%20%20%20Ok(sock)%20%3D%3E%20sock%2C%0A%20%20%20%20Err(e)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Couldn't%20bind%3A%20%7B%3A%3F%7D%22%2C%20e)%3B%0A%20%20%20%20%20%20%20%20return%0A%20%20%20%20%7D%0A%7D%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -79,7 +79,7 @@
 
 <span class="kw">let</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">UnixListener</span>::<span class="ident">bind</span>(<span class="string">&quot;/tmp/sock&quot;</span>).<span class="ident">unwrap</span>();
 <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">socket</span>.<span class="ident">local_addr</span>().<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t get local address&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">is_unnamed</span>(), <span class="bool-val">false</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixListener%3B%0A%0Alet%20socket%20%3D%20UnixListener%3A%3Abind(%22%2Ftmp%2Fsock%22).unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.is_unnamed()%2C%20false)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">is_unnamed</span>(), <span class="bool-val">false</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixListener%3B%0A%0Alet%20socket%20%3D%20UnixListener%3A%3Abind(%22%2Ftmp%2Fsock%22).unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.is_unnamed()%2C%20false)%3B%0A%7D">Run</a></pre>
 
 <p>An unnamed address:</p>
 
@@ -88,7 +88,7 @@
 
 <span class="kw">let</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">UnixDatagram</span>::<span class="ident">unbound</span>().<span class="ident">unwrap</span>();
 <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">socket</span>.<span class="ident">local_addr</span>().<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t get local address&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">is_unnamed</span>(), <span class="bool-val">true</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixDatagram%3B%0A%0Alet%20socket%20%3D%20UnixDatagram%3A%3Aunbound().unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.is_unnamed()%2C%20true)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">is_unnamed</span>(), <span class="bool-val">true</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixDatagram%3B%0A%0Alet%20socket%20%3D%20UnixDatagram%3A%3Aunbound().unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.is_unnamed()%2C%20true)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.as_pathname' class="method"><span id='as_pathname.v' class='invisible'><code>pub fn <a href='#method.as_pathname' class='fnname'>as_pathname</a>(&amp;self) -&gt; <a class="enum" href="../../../../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;&amp;<a class="struct" href="../../../../std/path/struct.Path.html" title="struct std::path::Path">Path</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../../src/std/sys/unix/ext/net.rs.html#206-212' title='goto source code'>[src]</a></span></h4>
 <div class='stability'><div class='stab portability'>This is supported on <strong>Unix</strong> only.</div></div><div class='docblock'><p>Returns the contents of this address if it is a <code>pathname</code> address.</p>
 
@@ -101,7 +101,7 @@
 
 <span class="kw">let</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">UnixListener</span>::<span class="ident">bind</span>(<span class="string">&quot;/tmp/sock&quot;</span>).<span class="ident">unwrap</span>();
 <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">socket</span>.<span class="ident">local_addr</span>().<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t get local address&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">as_pathname</span>(), <span class="prelude-val">Some</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/tmp/sock&quot;</span>)));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixListener%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20socket%20%3D%20UnixListener%3A%3Abind(%22%2Ftmp%2Fsock%22).unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.as_pathname()%2C%20Some(Path%3A%3Anew(%22%2Ftmp%2Fsock%22)))%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">as_pathname</span>(), <span class="prelude-val">Some</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;/tmp/sock&quot;</span>)));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixListener%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20socket%20%3D%20UnixListener%3A%3Abind(%22%2Ftmp%2Fsock%22).unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.as_pathname()%2C%20Some(Path%3A%3Anew(%22%2Ftmp%2Fsock%22)))%3B%0A%7D">Run</a></pre>
 
 <p>Without a pathname:</p>
 
@@ -110,7 +110,7 @@
 
 <span class="kw">let</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">UnixDatagram</span>::<span class="ident">unbound</span>().<span class="ident">unwrap</span>();
 <span class="kw">let</span> <span class="ident">addr</span> <span class="op">=</span> <span class="ident">socket</span>.<span class="ident">local_addr</span>().<span class="ident">expect</span>(<span class="string">&quot;Couldn&#39;t get local address&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">as_pathname</span>(), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixDatagram%3B%0A%0Alet%20socket%20%3D%20UnixDatagram%3A%3Aunbound().unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.as_pathname()%2C%20None)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">addr</span>.<span class="ident">as_pathname</span>(), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3AUnixDatagram%3B%0A%0Alet%20socket%20%3D%20UnixDatagram%3A%3Aunbound().unwrap()%3B%0Alet%20addr%20%3D%20socket.local_addr().expect(%22Couldn't%20get%20local%20address%22)%3B%0Aassert_eq!(addr.as_pathname()%2C%20None)%3B%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -148,7 +148,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

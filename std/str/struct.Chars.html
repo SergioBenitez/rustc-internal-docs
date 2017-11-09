@@ -73,7 +73,7 @@ iterator can continue to be used while this exists.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">chars</span>.<span class="ident">as_str</span>(), <span class="string">&quot;bc&quot;</span>);
 <span class="ident">chars</span>.<span class="ident">next</span>();
 <span class="ident">chars</span>.<span class="ident">next</span>();
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">chars</span>.<span class="ident">as_str</span>(), <span class="string">&quot;&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20mut%20chars%20%3D%20%22abc%22.chars()%3B%0A%0Aassert_eq!(chars.as_str()%2C%20%22abc%22)%3B%0Achars.next()%3B%0Aassert_eq!(chars.as_str()%2C%20%22bc%22)%3B%0Achars.next()%3B%0Achars.next()%3B%0Aassert_eq!(chars.as_str()%2C%20%22%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">chars</span>.<span class="ident">as_str</span>(), <span class="string">&quot;&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20mut%20chars%20%3D%20%22abc%22.chars()%3B%0A%0Aassert_eq!(chars.as_str()%2C%20%22abc%22)%3B%0Achars.next()%3B%0Aassert_eq!(chars.as_str()%2C%20%22bc%22)%3B%0Achars.next()%3B%0Achars.next()%3B%0Aassert_eq!(chars.as_str()%2C%20%22%22)%3B%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -225,7 +225,7 @@ iterator can continue to be used while this exists.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

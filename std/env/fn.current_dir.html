@@ -66,7 +66,7 @@ Possible cases:</p>
 
 <span class="comment">// We assume that we are in a valid directory.</span>
 <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">env</span>::<span class="ident">current_dir</span>().<span class="ident">unwrap</span>();
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;The current directory is {}&quot;</span>, <span class="ident">path</span>.<span class="ident">display</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0A%0A%2F%2F%20We%20assume%20that%20we%20are%20in%20a%20valid%20directory.%0Alet%20path%20%3D%20env%3A%3Acurrent_dir().unwrap()%3B%0Aprintln!(%22The%20current%20directory%20is%20%7B%7D%22%2C%20path.display())%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;The current directory is {}&quot;</span>, <span class="ident">path</span>.<span class="ident">display</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0A%0A%2F%2F%20We%20assume%20that%20we%20are%20in%20a%20valid%20directory.%0Alet%20path%20%3D%20env%3A%3Acurrent_dir().unwrap()%3B%0Aprintln!(%22The%20current%20directory%20is%20%7B%7D%22%2C%20path.display())%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -92,7 +92,7 @@ Possible cases:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

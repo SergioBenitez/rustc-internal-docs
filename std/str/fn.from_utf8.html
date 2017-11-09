@@ -86,7 +86,7 @@ provided slice is not UTF-8.</p>
 <span class="comment">// We know these bytes are valid, so just use `unwrap()`.</span>
 <span class="kw">let</span> <span class="ident">sparkle_heart</span> <span class="op">=</span> <span class="ident">str</span>::<span class="ident">from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">sparkle_heart</span>).<span class="ident">unwrap</span>();
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;💖&quot;</span>, <span class="ident">sparkle_heart</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20bytes%2C%20in%20a%20vector%0Alet%20sparkle_heart%20%3D%20vec!%5B240%2C%20159%2C%20146%2C%20150%5D%3B%0A%0A%2F%2F%20We%20know%20these%20bytes%20are%20valid%2C%20so%20just%20use%20%60unwrap()%60.%0Alet%20sparkle_heart%20%3D%20str%3A%3Afrom_utf8(%26sparkle_heart).unwrap()%3B%0A%0Aassert_eq!(%22%F0%9F%92%96%22%2C%20sparkle_heart)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;💖&quot;</span>, <span class="ident">sparkle_heart</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20bytes%2C%20in%20a%20vector%0Alet%20sparkle_heart%20%3D%20vec!%5B240%2C%20159%2C%20146%2C%20150%5D%3B%0A%0A%2F%2F%20We%20know%20these%20bytes%20are%20valid%2C%20so%20just%20use%20%60unwrap()%60.%0Alet%20sparkle_heart%20%3D%20str%3A%3Afrom_utf8(%26sparkle_heart).unwrap()%3B%0A%0Aassert_eq!(%22%F0%9F%92%96%22%2C%20sparkle_heart)%3B%0A%7D">Run</a></pre>
 
 <p>Incorrect bytes:</p>
 
@@ -96,7 +96,7 @@ provided slice is not UTF-8.</p>
 <span class="comment">// some invalid bytes, in a vector</span>
 <span class="kw">let</span> <span class="ident">sparkle_heart</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>, <span class="number">159</span>, <span class="number">146</span>, <span class="number">150</span>];
 
-<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">str</span>::<span class="ident">from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">sparkle_heart</span>).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20invalid%20bytes%2C%20in%20a%20vector%0Alet%20sparkle_heart%20%3D%20vec!%5B0%2C%20159%2C%20146%2C%20150%5D%3B%0A%0Aassert!(str%3A%3Afrom_utf8(%26sparkle_heart).is_err())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">str</span>::<span class="ident">from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">sparkle_heart</span>).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20invalid%20bytes%2C%20in%20a%20vector%0Alet%20sparkle_heart%20%3D%20vec!%5B0%2C%20159%2C%20146%2C%20150%5D%3B%0A%0Aassert!(str%3A%3Afrom_utf8(%26sparkle_heart).is_err())%3B%0A%7D">Run</a></pre>
 
 <p>See the docs for <a href="struct.Utf8Error.html"><code>Utf8Error</code></a> for more details on the kinds of
 errors that can be returned.</p>
@@ -112,7 +112,7 @@ errors that can be returned.</p>
 <span class="comment">// We know these bytes are valid, so just use `unwrap()`.</span>
 <span class="kw">let</span> <span class="ident">sparkle_heart</span> <span class="op">=</span> <span class="ident">str</span>::<span class="ident">from_utf8</span>(<span class="kw-2">&amp;</span><span class="ident">sparkle_heart</span>).<span class="ident">unwrap</span>();
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;💖&quot;</span>, <span class="ident">sparkle_heart</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20bytes%2C%20in%20a%20stack-allocated%20array%0Alet%20sparkle_heart%20%3D%20%5B240%2C%20159%2C%20146%2C%20150%5D%3B%0A%0A%2F%2F%20We%20know%20these%20bytes%20are%20valid%2C%20so%20just%20use%20%60unwrap()%60.%0Alet%20sparkle_heart%20%3D%20str%3A%3Afrom_utf8(%26sparkle_heart).unwrap()%3B%0A%0Aassert_eq!(%22%F0%9F%92%96%22%2C%20sparkle_heart)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;💖&quot;</span>, <span class="ident">sparkle_heart</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20bytes%2C%20in%20a%20stack-allocated%20array%0Alet%20sparkle_heart%20%3D%20%5B240%2C%20159%2C%20146%2C%20150%5D%3B%0A%0A%2F%2F%20We%20know%20these%20bytes%20are%20valid%2C%20so%20just%20use%20%60unwrap()%60.%0Alet%20sparkle_heart%20%3D%20str%3A%3Afrom_utf8(%26sparkle_heart).unwrap()%3B%0A%0Aassert_eq!(%22%F0%9F%92%96%22%2C%20sparkle_heart)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -138,7 +138,7 @@ errors that can be returned.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

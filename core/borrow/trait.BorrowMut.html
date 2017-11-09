@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait BorrowMut</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>borrow</a></p><script>window.sidebarCurrent = {name: 'BorrowMut', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait BorrowMut</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.borrow_mut">borrow_mut</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>borrow</a></p><script>window.sidebarCurrent = {name: 'BorrowMut', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -71,7 +71,7 @@
 
 <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
 
-<span class="ident">check</span>(<span class="ident">v</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aborrow%3A%3ABorrowMut%3B%0A%0Afn%20check%3CT%3A%20BorrowMut%3C%5Bi32%5D%3E%3E(mut%20v%3A%20T)%20%7B%0A%20%20%20%20assert_eq!(%26mut%20%5B1%2C%202%2C%203%5D%2C%20v.borrow_mut())%3B%0A%7D%0A%0Alet%20v%20%3D%20vec!%5B1%2C%202%2C%203%5D%3B%0A%0Acheck(v)%3B%0A%7D">Run</a></pre>
+<span class="ident">check</span>(<span class="ident">v</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aborrow%3A%3ABorrowMut%3B%0A%0Afn%20check%3CT%3A%20BorrowMut%3C%5Bi32%5D%3E%3E(mut%20v%3A%20T)%20%7B%0A%20%20%20%20assert_eq!(%26mut%20%5B1%2C%202%2C%203%5D%2C%20v.borrow_mut())%3B%0A%7D%0A%0Alet%20v%20%3D%20vec!%5B1%2C%202%2C%203%5D%3B%0A%0Acheck(v)%3B%0A%7D">Run</a></pre>
 </div></div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
@@ -139,7 +139,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

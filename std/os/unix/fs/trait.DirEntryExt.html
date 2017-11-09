@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait DirEntryExt</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../../../index.html'>std</a>::<wbr><a href='../../index.html'>os</a>::<wbr><a href='../index.html'>unix</a>::<wbr><a href='index.html'>fs</a></p><script>window.sidebarCurrent = {name: 'DirEntryExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait DirEntryExt</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.ino">ino</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../../../index.html'>std</a>::<wbr><a href='../../index.html'>os</a>::<wbr><a href='../index.html'>unix</a>::<wbr><a href='index.html'>fs</a></p><script>window.sidebarCurrent = {name: 'DirEntryExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -48,10 +48,10 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#299-320' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#609-630' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait DirEntryExt {
     fn <a href='#tymethod.ino' class='fnname'>ino</a>(&amp;self) -&gt; <a class="primitive" href="../../../primitive.u64.html">u64</a>;
-}</pre><div class='stability'><div class='stab portability'>This is supported on <strong>Unix</strong> only.</div></div><div class='docblock'><p>Unix-specific extension methods for <code>fs::DirEntry</code></p>
+}</pre><div class='stability'><div class='stab portability'>This is supported on <strong>Unix</strong> only.</div></div><div class='docblock'><p>Unix-specific extension methods for <a href="../../../../std/fs/struct.DirEntry.html"><code>fs::DirEntry</code></a>.</p>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -72,13 +72,13 @@ structure.</p>
             <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}: {}&quot;</span>, <span class="ident">entry</span>.<span class="ident">file_name</span>(), <span class="ident">entry</span>.<span class="ident">ino</span>());
         }
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afs%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Afs%3A%3ADirEntryExt%3B%0A%0Aif%20let%20Ok(entries)%20%3D%20fs%3A%3Aread_dir(%22.%22)%20%7B%0A%20%20%20%20for%20entry%20in%20entries%20%7B%0A%20%20%20%20%20%20%20%20if%20let%20Ok(entry)%20%3D%20entry%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20Here%2C%20%60entry%60%20is%20a%20%60DirEntry%60.%0A%20%20%20%20%20%20%20%20%20%20%20%20println!(%22%7B%3A%3F%7D%3A%20%7B%7D%22%2C%20entry.file_name()%2C%20entry.ino())%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afs%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Afs%3A%3ADirEntryExt%3B%0A%0Aif%20let%20Ok(entries)%20%3D%20fs%3A%3Aread_dir(%22.%22)%20%7B%0A%20%20%20%20for%20entry%20in%20entries%20%7B%0A%20%20%20%20%20%20%20%20if%20let%20Ok(entry)%20%3D%20entry%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20Here%2C%20%60entry%60%20is%20a%20%60DirEntry%60.%0A%20%20%20%20%20%20%20%20%20%20%20%20println!(%22%7B%3A%3F%7D%3A%20%7B%7D%22%2C%20entry.file_name()%2C%20entry.ino())%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 </div></div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
         </h2>
         <ul class='item-list' id='implementors-list'>
-    <li><div class='out-of-band'><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#323-325' title='goto source code'>[src]</a></div><code>impl DirEntryExt for <a class="struct" href="../../../../std/fs/struct.DirEntry.html" title="struct std::fs::DirEntry">DirEntry</a></code></li>
+    <li><div class='out-of-band'><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#633-635' title='goto source code'>[src]</a></div><code>impl DirEntryExt for <a class="struct" href="../../../../std/fs/struct.DirEntry.html" title="struct std::fs::DirEntry">DirEntry</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../../../implementors/std/os/unix/fs/trait.DirEntryExt.js">
                  </script></section>
@@ -106,7 +106,7 @@ structure.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

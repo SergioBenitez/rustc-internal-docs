@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait RemAssign</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'RemAssign', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait RemAssign</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.rem_assign">rem_assign</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'RemAssign', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -73,7 +73,7 @@
 
 <span class="ident">jar</span> <span class="op">%=</span> <span class="ident">piles</span>;
 
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{} cookies remain in the cookie jar!&quot;</span>, <span class="ident">jar</span>.<span class="ident">cookies</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ARemAssign%3B%0A%0Astruct%20CookieJar%20%7B%20cookies%3A%20u32%20%7D%0A%0Aimpl%20RemAssign%3Cu32%3E%20for%20CookieJar%20%7B%0A%20%20%20%20fn%20rem_assign(%26mut%20self%2C%20piles%3A%20u32)%20%7B%0A%20%20%20%20%20%20%20%20self.cookies%20%25%3D%20piles%3B%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20mut%20jar%20%3D%20CookieJar%20%7B%20cookies%3A%2031%20%7D%3B%0Alet%20piles%20%3D%204%3B%0A%0Aprintln!(%22Splitting%20up%20%7B%7D%20cookies%20into%20%7B%7D%20even%20piles!%22%2C%20jar.cookies%2C%20piles)%3B%0A%0Ajar%20%25%3D%20piles%3B%0A%0Aprintln!(%22%7B%7D%20cookies%20remain%20in%20the%20cookie%20jar!%22%2C%20jar.cookies)%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{} cookies remain in the cookie jar!&quot;</span>, <span class="ident">jar</span>.<span class="ident">cookies</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ARemAssign%3B%0A%0Astruct%20CookieJar%20%7B%20cookies%3A%20u32%20%7D%0A%0Aimpl%20RemAssign%3Cu32%3E%20for%20CookieJar%20%7B%0A%20%20%20%20fn%20rem_assign(%26mut%20self%2C%20piles%3A%20u32)%20%7B%0A%20%20%20%20%20%20%20%20self.cookies%20%25%3D%20piles%3B%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20mut%20jar%20%3D%20CookieJar%20%7B%20cookies%3A%2031%20%7D%3B%0Alet%20piles%20%3D%204%3B%0A%0Aprintln!(%22Splitting%20up%20%7B%7D%20cookies%20into%20%7B%7D%20even%20piles!%22%2C%20jar.cookies%2C%20piles)%3B%0A%0Ajar%20%25%3D%20piles%3B%0A%0Aprintln!(%22%7B%7D%20cookies%20remain%20in%20the%20cookie%20jar!%22%2C%20jar.cookies)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -164,7 +164,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

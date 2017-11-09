@@ -76,7 +76,7 @@ of <a href="../result/enum.Result.html"><code>std::result::Result</code></a>.</p
     <span class="ident">io</span>::<span class="ident">stdin</span>().<span class="ident">read_line</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(<span class="ident">buffer</span>)
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3B%0A%0Afn%20get_string()%20-%3E%20io%3A%3AResult%3CString%3E%20%7B%0A%20%20%20%20let%20mut%20buffer%20%3D%20String%3A%3Anew()%3B%0A%0A%20%20%20%20io%3A%3Astdin().read_line(%26mut%20buffer)%3F%3B%0A%0A%20%20%20%20Ok(buffer)%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3B%0A%0Afn%20get_string()%20-%3E%20io%3A%3AResult%3CString%3E%20%7B%0A%20%20%20%20let%20mut%20buffer%20%3D%20String%3A%3Anew()%3B%0A%0A%20%20%20%20io%3A%3Astdin().read_line(%26mut%20buffer)%3F%3B%0A%0A%20%20%20%20Ok(buffer)%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -102,7 +102,7 @@ of <a href="../result/enum.Result.html"><code>std::result::Result</code></a>.</p
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

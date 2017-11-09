@@ -365,7 +365,6 @@
 <span id="320">320</span>
 <span id="321">321</span>
 <span id="322">322</span>
-<span id="323">323</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -565,7 +564,7 @@
 
         <span class="kw">for</span> <span class="ident">attr</span> <span class="kw">in</span> <span class="ident">attrs</span> {
             <span class="kw">if</span> <span class="ident">attr</span>.<span class="ident">check_name</span>(<span class="string">&quot;thread_local&quot;</span>) {
-                <span class="ident">llvm</span>::<span class="ident">set_thread_local</span>(<span class="ident">g</span>, <span class="bool-val">true</span>);
+                <span class="ident">llvm</span>::<span class="ident">set_thread_local_mode</span>(<span class="ident">g</span>, <span class="ident">ccx</span>.<span class="ident">tls_model</span>());
             }
         }
 
@@ -584,7 +583,7 @@
         <span class="comment">// symbol and another one doesn&#39;t.</span>
         <span class="kw">for</span> <span class="ident">attr</span> <span class="kw">in</span> <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">get_attrs</span>(<span class="ident">def_id</span>).<span class="ident">iter</span>() {
             <span class="kw">if</span> <span class="ident">attr</span>.<span class="ident">check_name</span>(<span class="string">&quot;thread_local&quot;</span>) {
-                <span class="ident">llvm</span>::<span class="ident">set_thread_local</span>(<span class="ident">g</span>, <span class="bool-val">true</span>);
+                <span class="ident">llvm</span>::<span class="ident">set_thread_local_mode</span>(<span class="ident">g</span>, <span class="ident">ccx</span>.<span class="ident">tls_model</span>());
             }
         }
         <span class="kw">if</span> <span class="ident">ccx</span>.<span class="ident">use_dll_storage_attrs</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">is_foreign_item</span>(<span class="ident">def_id</span>) {
@@ -674,9 +673,8 @@
 
         <span class="ident">debuginfo</span>::<span class="ident">create_global_var_metadata</span>(<span class="ident">ccx</span>, <span class="ident">id</span>, <span class="ident">g</span>);
 
-        <span class="kw">if</span> <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="ident">attrs</span>,
-                               <span class="string">&quot;thread_local&quot;</span>) {
-            <span class="ident">llvm</span>::<span class="ident">set_thread_local</span>(<span class="ident">g</span>, <span class="bool-val">true</span>);
+        <span class="kw">if</span> <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="ident">attrs</span>, <span class="string">&quot;thread_local&quot;</span>) {
+            <span class="ident">llvm</span>::<span class="ident">set_thread_local_mode</span>(<span class="ident">g</span>, <span class="ident">ccx</span>.<span class="ident">tls_model</span>());
         }
 
         <span class="ident">base</span>::<span class="ident">set_link_section</span>(<span class="ident">ccx</span>, <span class="ident">g</span>, <span class="ident">attrs</span>);
@@ -716,7 +714,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

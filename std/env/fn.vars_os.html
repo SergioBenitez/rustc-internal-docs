@@ -64,7 +64,7 @@ variables afterwards will not be reflected in the returned iterator.</p>
 <span class="comment">// env::vars_os();</span>
 <span class="kw">for</span> (<span class="ident">key</span>, <span class="ident">value</span>) <span class="kw">in</span> <span class="ident">env</span>::<span class="ident">vars_os</span>() {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}: {:?}&quot;</span>, <span class="ident">key</span>, <span class="ident">value</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0A%0A%2F%2F%20We%20will%20iterate%20through%20the%20references%20to%20the%20element%20returned%20by%0A%2F%2F%20env%3A%3Avars_os()%3B%0Afor%20(key%2C%20value)%20in%20env%3A%3Avars_os()%20%7B%0A%20%20%20%20println!(%22%7B%3A%3F%7D%3A%20%7B%3A%3F%7D%22%2C%20key%2C%20value)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0A%0A%2F%2F%20We%20will%20iterate%20through%20the%20references%20to%20the%20element%20returned%20by%0A%2F%2F%20env%3A%3Avars_os()%3B%0Afor%20(key%2C%20value)%20in%20env%3A%3Avars_os()%20%7B%0A%20%20%20%20println!(%22%7B%3A%3F%7D%3A%20%7B%3A%3F%7D%22%2C%20key%2C%20value)%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -90,7 +90,7 @@ variables afterwards will not be reflected in the returned iterator.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

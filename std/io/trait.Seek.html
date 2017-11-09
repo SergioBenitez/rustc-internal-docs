@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Seek</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>io</a></p><script>window.sidebarCurrent = {name: 'Seek', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Seek</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.seek">seek</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>io</a></p><script>window.sidebarCurrent = {name: 'Seek', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -69,7 +69,7 @@ end or the current offset.</p>
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="string">&quot;foo.txt&quot;</span>)<span class="question-mark">?</span>;
 
 <span class="comment">// move the cursor 42 bytes from the start of the file</span>
-<span class="ident">f</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom</span>::<span class="ident">Start</span>(<span class="number">42</span>))<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0Ause%20std%3A%3Aio%3A%3ASeekFrom%3B%0A%0Afn%20foo()%20-%3E%20io%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20f%20%3D%20File%3A%3Aopen(%22foo.txt%22)%3F%3B%0A%0A%2F%2F%20move%20the%20cursor%2042%20bytes%20from%20the%20start%20of%20the%20file%0Af.seek(SeekFrom%3A%3AStart(42))%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="ident">f</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom</span>::<span class="ident">Start</span>(<span class="number">42</span>))<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0Ause%20std%3A%3Aio%3A%3ASeekFrom%3B%0A%0Afn%20foo()%20-%3E%20io%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20f%20%3D%20File%3A%3Aopen(%22foo.txt%22)%3F%3B%0A%0A%2F%2F%20move%20the%20cursor%2042%20bytes%20from%20the%20start%20of%20the%20file%0Af.seek(SeekFrom%3A%3AStart(42))%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -125,7 +125,7 @@ That position can be used later with <a href="enum.SeekFrom.html#variant.Start">
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

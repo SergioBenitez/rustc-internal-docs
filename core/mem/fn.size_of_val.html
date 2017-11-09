@@ -63,7 +63,7 @@ then <code>size_of_val</code> can be used to get the dynamically-known size.</p>
 
 <span class="kw">let</span> <span class="ident">x</span>: [<span class="ident">u8</span>; <span class="number">13</span>] <span class="op">=</span> [<span class="number">0</span>; <span class="number">13</span>];
 <span class="kw">let</span> <span class="ident">y</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">x</span>;
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">13</span>, <span class="ident">mem</span>::<span class="ident">size_of_val</span>(<span class="ident">y</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Aassert_eq!(4%2C%20mem%3A%3Asize_of_val(%265i32))%3B%0A%0Alet%20x%3A%20%5Bu8%3B%2013%5D%20%3D%20%5B0%3B%2013%5D%3B%0Alet%20y%3A%20%26%5Bu8%5D%20%3D%20%26x%3B%0Aassert_eq!(13%2C%20mem%3A%3Asize_of_val(y))%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">13</span>, <span class="ident">mem</span>::<span class="ident">size_of_val</span>(<span class="ident">y</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Aassert_eq!(4%2C%20mem%3A%3Asize_of_val(%265i32))%3B%0A%0Alet%20x%3A%20%5Bu8%3B%2013%5D%20%3D%20%5B0%3B%2013%5D%3B%0Alet%20y%3A%20%26%5Bu8%5D%20%3D%20%26x%3B%0Aassert_eq!(13%2C%20mem%3A%3Asize_of_val(y))%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -89,7 +89,7 @@ then <code>size_of_val</code> can be used to get the dynamically-known size.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

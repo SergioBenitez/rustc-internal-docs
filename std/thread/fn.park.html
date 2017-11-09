@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/std/thread/mod.rs.html#779-802' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/std/thread/mod.rs.html#783-806' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn park()</pre><div class='docblock'><p>Blocks unless or until the current thread&#39;s token is made available.</p>
 
 <p>A call to <code>park</code> does not guarantee that the thread will remain parked
@@ -110,7 +110,7 @@ blocking/signaling.</p></li>
 <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Unpark the thread&quot;</span>);
 <span class="ident">parked_thread</span>.<span class="ident">thread</span>().<span class="ident">unpark</span>();
 
-<span class="ident">parked_thread</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Atime%3A%3ADuration%3B%0A%0Alet%20parked_thread%20%3D%20thread%3A%3ABuilder%3A%3Anew()%0A%20%20%20%20.spawn(%7C%7C%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Parking%20thread%22)%3B%0A%20%20%20%20%20%20%20%20thread%3A%3Apark()%3B%0A%20%20%20%20%20%20%20%20println!(%22Thread%20unparked%22)%3B%0A%20%20%20%20%7D)%0A%20%20%20%20.unwrap()%3B%0A%0A%2F%2F%20Let%20some%20time%20pass%20for%20the%20thread%20to%20be%20spawned.%0Athread%3A%3Asleep(Duration%3A%3Afrom_millis(10))%3B%0A%0Aprintln!(%22Unpark%20the%20thread%22)%3B%0Aparked_thread.thread().unpark()%3B%0A%0Aparked_thread.join().unwrap()%3B%0A%7D">Run</a></pre>
+<span class="ident">parked_thread</span>.<span class="ident">join</span>().<span class="ident">unwrap</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Atime%3A%3ADuration%3B%0A%0Alet%20parked_thread%20%3D%20thread%3A%3ABuilder%3A%3Anew()%0A%20%20%20%20.spawn(%7C%7C%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Parking%20thread%22)%3B%0A%20%20%20%20%20%20%20%20thread%3A%3Apark()%3B%0A%20%20%20%20%20%20%20%20println!(%22Thread%20unparked%22)%3B%0A%20%20%20%20%7D)%0A%20%20%20%20.unwrap()%3B%0A%0A%2F%2F%20Let%20some%20time%20pass%20for%20the%20thread%20to%20be%20spawned.%0Athread%3A%3Asleep(Duration%3A%3Afrom_millis(10))%3B%0A%0Aprintln!(%22Unpark%20the%20thread%22)%3B%0Aparked_thread.thread().unpark()%3B%0A%0Aparked_thread.join().unwrap()%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -136,7 +136,7 @@ blocking/signaling.</p></li>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -59,7 +59,7 @@
 <p>You can explicitly create a <a href="../../std/vec/struct.Vec.html"><code>Vec&lt;T&gt;</code></a> with <a href="../../std/vec/struct.Vec.html#method.new"><code>new</code></a>:</p>
 
 <pre class="rust rust-example-rendered">
-<span class="kw">let</span> <span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20v%3A%20Vec%3Ci32%3E%20%3D%20Vec%3A%3Anew()%3B%0A%7D">Run</a></pre>
+<span class="kw">let</span> <span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20v%3A%20Vec%3Ci32%3E%20%3D%20Vec%3A%3Anew()%3B%0A%7D">Run</a></pre>
 
 <p>...or by using the <a href="../../std/macro.vec.html"><code>vec!</code></a> macro:</p>
 
@@ -68,7 +68,7 @@
 
 <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
 
-<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">10</span>]; <span class="comment">// ten zeroes</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20v%3A%20Vec%3Ci32%3E%20%3D%20vec!%5B%5D%3B%0A%0Alet%20v%20%3D%20vec!%5B1%2C%202%2C%203%2C%204%2C%205%5D%3B%0A%0Alet%20v%20%3D%20vec!%5B0%3B%2010%5D%3B%20%2F%2F%20ten%20zeroes%0A%7D">Run</a></pre>
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">10</span>]; <span class="comment">// ten zeroes</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20v%3A%20Vec%3Ci32%3E%20%3D%20vec!%5B%5D%3B%0A%0Alet%20v%20%3D%20vec!%5B1%2C%202%2C%203%2C%204%2C%205%5D%3B%0A%0Alet%20v%20%3D%20vec!%5B0%3B%2010%5D%3B%20%2F%2F%20ten%20zeroes%0A%7D">Run</a></pre>
 
 <p>You can <a href="../../std/vec/struct.Vec.html#method.push"><code>push</code></a> values onto the end of a vector (which will grow the vector
 as needed):</p>
@@ -76,21 +76,21 @@ as needed):</p>
 <pre class="rust rust-example-rendered">
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>];
 
-<span class="ident">v</span>.<span class="ident">push</span>(<span class="number">3</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%5D%3B%0A%0Av.push(3)%3B%0A%7D">Run</a></pre>
+<span class="ident">v</span>.<span class="ident">push</span>(<span class="number">3</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%5D%3B%0A%0Av.push(3)%3B%0A%7D">Run</a></pre>
 
 <p>Popping values works in much the same way:</p>
 
 <pre class="rust rust-example-rendered">
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>];
 
-<span class="kw">let</span> <span class="ident">two</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">pop</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%5D%3B%0A%0Alet%20two%20%3D%20v.pop()%3B%0A%7D">Run</a></pre>
+<span class="kw">let</span> <span class="ident">two</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">pop</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%5D%3B%0A%0Alet%20two%20%3D%20v.pop()%3B%0A%7D">Run</a></pre>
 
 <p>Vectors also support indexing (through the <a href="../../std/ops/trait.Index.html"><code>Index</code></a> and <a href="../../std/ops/trait.IndexMut.html"><code>IndexMut</code></a> traits):</p>
 
 <pre class="rust rust-example-rendered">
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
 <span class="kw">let</span> <span class="ident">three</span> <span class="op">=</span> <span class="ident">v</span>[<span class="number">2</span>];
-<span class="ident">v</span>[<span class="number">1</span>] <span class="op">=</span> <span class="ident">v</span>[<span class="number">1</span>] <span class="op">+</span> <span class="number">5</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%2C%203%5D%3B%0Alet%20three%20%3D%20v%5B2%5D%3B%0Av%5B1%5D%20%3D%20v%5B1%5D%20%2B%205%3B%0A%7D">Run</a></pre>
+<span class="ident">v</span>[<span class="number">1</span>] <span class="op">=</span> <span class="ident">v</span>[<span class="number">1</span>] <span class="op">+</span> <span class="number">5</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%2C%203%5D%3B%0Alet%20three%20%3D%20v%5B2%5D%3B%0Av%5B1%5D%20%3D%20v%5B1%5D%20%2B%205%3B%0A%7D">Run</a></pre>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -159,7 +159,7 @@ as needed):</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

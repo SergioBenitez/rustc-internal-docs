@@ -75,7 +75,7 @@ returned guard also implements the <code>Write</code> trait for writing data.</p
     <span class="ident">handle</span>.<span class="ident">write</span>(<span class="string">b&quot;hello world&quot;</span>)<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3A%7Bself%2C%20Write%7D%3B%0A%0Afn%20foo()%20-%3E%20io%3A%3AResult%3C()%3E%20%7B%0A%20%20%20%20let%20stderr%20%3D%20io%3A%3Astderr()%3B%0A%20%20%20%20let%20mut%20handle%20%3D%20stderr.lock()%3B%0A%0A%20%20%20%20handle.write(b%22hello%20world%22)%3F%3B%0A%0A%20%20%20%20Ok(())%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3A%7Bself%2C%20Write%7D%3B%0A%0Afn%20foo()%20-%3E%20io%3A%3AResult%3C()%3E%20%7B%0A%20%20%20%20let%20stderr%20%3D%20io%3A%3Astderr()%3B%0A%20%20%20%20let%20mut%20handle%20%3D%20stderr.lock()%3B%0A%0A%20%20%20%20handle.write(b%22hello%20world%22)%3F%3B%0A%0A%20%20%20%20Ok(())%0A%7D%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -125,7 +125,7 @@ returned guard also implements the <code>Write</code> trait for writing data.</p
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

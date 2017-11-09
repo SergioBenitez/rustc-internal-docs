@@ -61,7 +61,7 @@
 <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="number">0xD834</span>, <span class="number">0xDD1E</span>, <span class="number">0x006d</span>, <span class="number">0x0075</span>,
           <span class="number">0xD800</span>, <span class="number">0x0069</span>, <span class="number">0x0063</span>];
 
-<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">String</span>::<span class="ident">from_utf16</span>(<span class="ident">v</span>).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%2F%2F%20%F0%9D%84%9Emu%3Cinvalid%3Eic%0Alet%20v%20%3D%20%26%5B0xD834%2C%200xDD1E%2C%200x006d%2C%200x0075%2C%0A%20%20%20%20%20%20%20%20%20%200xD800%2C%200x0069%2C%200x0063%5D%3B%0A%0Aassert!(String%3A%3Afrom_utf16(v).is_err())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">String</span>::<span class="ident">from_utf16</span>(<span class="ident">v</span>).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%2F%2F%20%F0%9D%84%9Emu%3Cinvalid%3Eic%0Alet%20v%20%3D%20%26%5B0xD834%2C%200xDD1E%2C%200x006d%2C%200x0075%2C%0A%20%20%20%20%20%20%20%20%20%200xD800%2C%200x0069%2C%200x0063%5D%3B%0A%0Aassert!(String%3A%3Afrom_utf16(v).is_err())%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -102,7 +102,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

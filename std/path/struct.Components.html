@@ -62,7 +62,7 @@ See its documentation for more.</p>
 
 <span class="kw">for</span> <span class="ident">component</span> <span class="kw">in</span> <span class="ident">path</span>.<span class="ident">components</span>() {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">component</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20path%20%3D%20Path%3A%3Anew(%22%2Ftmp%2Ffoo%2Fbar.txt%22)%3B%0A%0Afor%20component%20in%20path.components()%20%7B%0A%20%20%20%20println!(%22%7B%3A%3F%7D%22%2C%20component)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20path%20%3D%20Path%3A%3Anew(%22%2Ftmp%2Ffoo%2Fbar.txt%22)%3B%0A%0Afor%20component%20in%20path.components()%20%7B%0A%20%20%20%20println!(%22%7B%3A%3F%7D%22%2C%20component)%3B%0A%7D%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -79,7 +79,7 @@ See its documentation for more.</p>
 <span class="ident">components</span>.<span class="ident">next</span>();
 <span class="ident">components</span>.<span class="ident">next</span>();
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;foo/bar.txt&quot;</span>), <span class="ident">components</span>.<span class="ident">as_path</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20mut%20components%20%3D%20Path%3A%3Anew(%22%2Ftmp%2Ffoo%2Fbar.txt%22).components()%3B%0Acomponents.next()%3B%0Acomponents.next()%3B%0A%0Aassert_eq!(Path%3A%3Anew(%22foo%2Fbar.txt%22)%2C%20components.as_path())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;foo/bar.txt&quot;</span>), <span class="ident">components</span>.<span class="ident">as_path</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0Alet%20mut%20components%20%3D%20Path%3A%3Anew(%22%2Ftmp%2Ffoo%2Fbar.txt%22).components()%3B%0Acomponents.next()%3B%0Acomponents.next()%3B%0A%0Aassert_eq!(Path%3A%3Anew(%22foo%2Fbar.txt%22)%2C%20components.as_path())%3B%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -261,7 +261,7 @@ See its documentation for more.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

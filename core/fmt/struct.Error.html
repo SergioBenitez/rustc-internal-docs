@@ -67,7 +67,7 @@ have in scope.</p>
 <span class="kw">match</span> <span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">output</span>, <span class="macro">format_args</span><span class="macro">!</span>(<span class="string">&quot;Hello {}!&quot;</span>, <span class="string">&quot;world&quot;</span>)) {
     <span class="prelude-val">Err</span>(<span class="ident">fmt</span>::<span class="ident">Error</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;An error occurred&quot;</span>),
     _ <span class="op">=&gt;</span> (),
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3A%3A%7Bself%2C%20write%7D%3B%0A%0Alet%20mut%20output%20%3D%20String%3A%3Anew()%3B%0Amatch%20write(%26mut%20output%2C%20format_args!(%22Hello%20%7B%7D!%22%2C%20%22world%22))%20%7B%0A%20%20%20%20Err(fmt%3A%3AError)%20%3D%3E%20panic!(%22An%20error%20occurred%22)%2C%0A%20%20%20%20_%20%3D%3E%20()%2C%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3A%3A%7Bself%2C%20write%7D%3B%0A%0Alet%20mut%20output%20%3D%20String%3A%3Anew()%3B%0Amatch%20write(%26mut%20output%2C%20format_args!(%22Hello%20%7B%7D!%22%2C%20%22world%22))%20%7B%0A%20%20%20%20Err(fmt%3A%3AError)%20%3D%3E%20panic!(%22An%20error%20occurred%22)%2C%0A%20%20%20%20_%20%3D%3E%20()%2C%0A%7D%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -141,7 +141,7 @@ have in scope.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

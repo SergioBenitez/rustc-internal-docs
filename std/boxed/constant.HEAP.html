@@ -64,7 +64,7 @@ keyword allocates into when no place is supplied.</p>
 <span class="kw">fn</span> <span class="ident">main</span>() {
     <span class="kw">let</span> <span class="ident">foo</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw">in</span> <span class="ident">HEAP</span> { <span class="number">5</span> };
     <span class="kw">let</span> <span class="ident">foo</span> <span class="op">=</span> <span class="kw">box</span> <span class="number">5</span>;
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(box_heap)%5D%0A%0A%23!%5Bfeature(box_syntax%2C%20placement_in_syntax)%5D%0Ause%20std%3A%3Aboxed%3A%3AHEAP%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20foo%3A%20Box%3Ci32%3E%20%3D%20in%20HEAP%20%7B%205%20%7D%3B%0A%20%20%20%20let%20foo%20%3D%20box%205%3B%0A%7D%0A&amp;version=nightly">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(box_heap)%5D%0A%0A%23!%5Bfeature(box_syntax%2C%20placement_in_syntax)%5D%0Ause%20std%3A%3Aboxed%3A%3AHEAP%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20foo%3A%20Box%3Ci32%3E%20%3D%20in%20HEAP%20%7B%205%20%7D%3B%0A%20%20%20%20let%20foo%20%3D%20box%205%3B%0A%7D%0A&amp;version=nightly">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -90,7 +90,7 @@ keyword allocates into when no place is supplied.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

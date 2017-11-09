@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait AsciiExt</p><div class="block items"><li><a href="#associated-types">Associated Types</a></li><li><a href="#required-methods">Required Methods</a></li><li><a href="#provided-methods">Provided Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ascii</a></p><script>window.sidebarCurrent = {name: 'AsciiExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait AsciiExt</p><div class="block items"><a class="sidebar-title" href="#associated-types">Associated Types</a><div class="sidebar-links"><a href="#associatedtype.Owned">Owned</a></div><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.is_ascii">is_ascii</a><a href="#tymethod.to_ascii_uppercase">to_ascii_uppercase</a><a href="#tymethod.to_ascii_lowercase">to_ascii_lowercase</a><a href="#tymethod.eq_ignore_ascii_case">eq_ignore_ascii_case</a><a href="#tymethod.make_ascii_uppercase">make_ascii_uppercase</a><a href="#tymethod.make_ascii_lowercase">make_ascii_lowercase</a></div><a class="sidebar-title" href="#provided-methods">Provided Methods</a><div class="sidebar-links"><a href="#method.is_ascii_alphabetic">is_ascii_alphabetic</a><a href="#method.is_ascii_uppercase">is_ascii_uppercase</a><a href="#method.is_ascii_lowercase">is_ascii_lowercase</a><a href="#method.is_ascii_alphanumeric">is_ascii_alphanumeric</a><a href="#method.is_ascii_digit">is_ascii_digit</a><a href="#method.is_ascii_hexdigit">is_ascii_hexdigit</a><a href="#method.is_ascii_punctuation">is_ascii_punctuation</a><a href="#method.is_ascii_graphic">is_ascii_graphic</a><a href="#method.is_ascii_whitespace">is_ascii_whitespace</a><a href="#method.is_ascii_control">is_ascii_control</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ascii</a></p><script>window.sidebarCurrent = {name: 'AsciiExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -77,7 +77,7 @@ have unexpected results. Consider this example:</p>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ascii</span>::<span class="ident">AsciiExt</span>;
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AsciiExt</span>::<span class="ident">to_ascii_uppercase</span>(<span class="string">&quot;café&quot;</span>), <span class="string">&quot;CAFÉ&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AsciiExt</span>::<span class="ident">to_ascii_uppercase</span>(<span class="string">&quot;café&quot;</span>), <span class="string">&quot;CAFé&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aascii%3A%3AAsciiExt%3B%0A%0Aassert_eq!(AsciiExt%3A%3Ato_ascii_uppercase(%22cafe%CC%81%22)%2C%20%22CAFE%CC%81%22)%3B%0Aassert_eq!(AsciiExt%3A%3Ato_ascii_uppercase(%22caf%C3%A9%22)%2C%20%22CAF%C3%A9%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">AsciiExt</span>::<span class="ident">to_ascii_uppercase</span>(<span class="string">&quot;café&quot;</span>), <span class="string">&quot;CAFé&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aascii%3A%3AAsciiExt%3B%0A%0Aassert_eq!(AsciiExt%3A%3Ato_ascii_uppercase(%22cafe%CC%81%22)%2C%20%22CAFE%CC%81%22)%3B%0Aassert_eq!(AsciiExt%3A%3Ato_ascii_uppercase(%22caf%C3%A9%22)%2C%20%22CAF%C3%A9%22)%3B%0A%7D">Run</a></pre>
 
 <p>In the first example, the lowercased string is represented <code>&quot;cafe\u{301}&quot;</code>
 (the last character is an acute accent <a href="https://en.wikipedia.org/wiki/Combining_character">combining character</a>). Unlike the
@@ -300,7 +300,7 @@ inherent methods on <code>u8</code>, <code>char</code>, <code>[u8]</code> and <c
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

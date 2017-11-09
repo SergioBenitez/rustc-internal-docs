@@ -81,7 +81,7 @@ become available. Instead, it will return <a href="../../../std/option/enum.Opti
 
 <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">receiver</span>.<span class="ident">try_iter</span>() {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Got: {}&quot;</span>, <span class="ident">x</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Atime%3A%3ADuration%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20channel()%3B%0A%0A%2F%2F%20Nothing%20is%20in%20the%20buffer%20yet%0Aassert!(receiver.try_iter().next().is_none())%3B%0Aprintln!(%22Nothing%20in%20the%20buffer...%22)%3B%0A%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20sender.send(1).unwrap()%3B%0A%20%20%20%20sender.send(2).unwrap()%3B%0A%20%20%20%20sender.send(3).unwrap()%3B%0A%7D)%3B%0A%0Aprintln!(%22Going%20to%20sleep...%22)%3B%0Athread%3A%3Asleep(Duration%3A%3Afrom_secs(2))%3B%20%2F%2F%20block%20for%20two%20seconds%0A%0Afor%20x%20in%20receiver.try_iter()%20%7B%0A%20%20%20%20println!(%22Got%3A%20%7B%7D%22%2C%20x)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Atime%3A%3ADuration%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20channel()%3B%0A%0A%2F%2F%20Nothing%20is%20in%20the%20buffer%20yet%0Aassert!(receiver.try_iter().next().is_none())%3B%0Aprintln!(%22Nothing%20in%20the%20buffer...%22)%3B%0A%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20sender.send(1).unwrap()%3B%0A%20%20%20%20sender.send(2).unwrap()%3B%0A%20%20%20%20sender.send(3).unwrap()%3B%0A%7D)%3B%0A%0Aprintln!(%22Going%20to%20sleep...%22)%3B%0Athread%3A%3Asleep(Duration%3A%3Afrom_secs(2))%3B%20%2F%2F%20block%20for%20two%20seconds%0A%0Afor%20x%20in%20receiver.try_iter()%20%7B%0A%20%20%20%20println!(%22Got%3A%20%7B%7D%22%2C%20x)%3B%0A%7D%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -220,7 +220,7 @@ become available. Instead, it will return <a href="../../../std/option/enum.Opti
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

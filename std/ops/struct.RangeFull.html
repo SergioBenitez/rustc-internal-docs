@@ -58,7 +58,7 @@ It cannot serve as an <a href="../iter/trait.IntoIterator.html"><code>Iterator</
 <p>The <code>..</code> syntax is a <code>RangeFull</code>:</p>
 
 <pre class="rust rust-example-rendered">
-<span class="macro">assert_eq</span><span class="macro">!</span>((..), <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">RangeFull</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aassert_eq!((..)%2C%20std%3A%3Aops%3A%3ARangeFull)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>((..), <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">RangeFull</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!((..)%2C%20std%3A%3Aops%3A%3ARangeFull)%3B%0A%7D">Run</a></pre>
 
 <p>It does not have an <a href="../iter/trait.Iterator.html"><code>IntoIterator</code></a> implementation, so you can&#39;t use it in
 a <code>for</code> loop directly. This won&#39;t compile:</p>
@@ -66,7 +66,7 @@ a <code>for</code> loop directly. This won&#39;t compile:</p>
 <div class='information'><div class='tooltip compile_fail'>⚠<span class='tooltiptext'>This code doesn't compile so be extra careful!</span></div></div><pre class="rust rust-example-rendered compile_fail">
 <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> .. {
    <span class="comment">// ...</span>
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afor%20i%20in%20..%20%7B%0A%20%20%20%2F%2F%20...%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Afor%20i%20in%20..%20%7B%0A%20%20%20%2F%2F%20...%0A%7D%0A%7D">Run</a></pre>
 
 <p>Used as a <a href="../slice/trait.SliceIndex.html">slicing index</a>, <code>RangeFull</code> produces the full array as a slice.</p>
 
@@ -75,7 +75,7 @@ a <code>for</code> loop directly. This won&#39;t compile:</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">arr</span>[ .. ], [<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]);  <span class="comment">// RangeFull</span>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">arr</span>[ ..<span class="number">3</span>], [<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>  ]);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">arr</span>[<span class="number">1</span>.. ], [  <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">arr</span>[<span class="number">1</span>..<span class="number">3</span>], [  <span class="number">1</span>,<span class="number">2</span>  ]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20arr%20%3D%20%5B0%2C%201%2C%202%2C%203%5D%3B%0Aassert_eq!(arr%5B%20..%20%5D%2C%20%5B0%2C1%2C2%2C3%5D)%3B%20%20%2F%2F%20RangeFull%0Aassert_eq!(arr%5B%20..3%5D%2C%20%5B0%2C1%2C2%20%20%5D)%3B%0Aassert_eq!(arr%5B1..%20%5D%2C%20%5B%20%201%2C2%2C3%5D)%3B%0Aassert_eq!(arr%5B1..3%5D%2C%20%5B%20%201%2C2%20%20%5D)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">arr</span>[<span class="number">1</span>..<span class="number">3</span>], [  <span class="number">1</span>,<span class="number">2</span>  ]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20arr%20%3D%20%5B0%2C%201%2C%202%2C%203%5D%3B%0Aassert_eq!(arr%5B%20..%20%5D%2C%20%5B0%2C1%2C2%2C3%5D)%3B%20%20%2F%2F%20RangeFull%0Aassert_eq!(arr%5B%20..3%5D%2C%20%5B0%2C1%2C2%20%20%5D)%3B%0Aassert_eq!(arr%5B1..%20%5D%2C%20%5B%20%201%2C2%2C3%5D)%3B%0Aassert_eq!(arr%5B1..3%5D%2C%20%5B%20%201%2C2%20%20%5D)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -208,7 +208,7 @@ never panic.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

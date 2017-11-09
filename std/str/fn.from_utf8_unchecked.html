@@ -72,7 +72,7 @@ results, as the rest of Rust assumes that <a href="../../std/primitive.str.html"
     <span class="ident">str</span>::<span class="ident">from_utf8_unchecked</span>(<span class="kw-2">&amp;</span><span class="ident">sparkle_heart</span>)
 };
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;💖&quot;</span>, <span class="ident">sparkle_heart</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20bytes%2C%20in%20a%20vector%0Alet%20sparkle_heart%20%3D%20vec!%5B240%2C%20159%2C%20146%2C%20150%5D%3B%0A%0Alet%20sparkle_heart%20%3D%20unsafe%20%7B%0A%20%20%20%20str%3A%3Afrom_utf8_unchecked(%26sparkle_heart)%0A%7D%3B%0A%0Aassert_eq!(%22%F0%9F%92%96%22%2C%20sparkle_heart)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;💖&quot;</span>, <span class="ident">sparkle_heart</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20some%20bytes%2C%20in%20a%20vector%0Alet%20sparkle_heart%20%3D%20vec!%5B240%2C%20159%2C%20146%2C%20150%5D%3B%0A%0Alet%20sparkle_heart%20%3D%20unsafe%20%7B%0A%20%20%20%20str%3A%3Afrom_utf8_unchecked(%26sparkle_heart)%0A%7D%3B%0A%0Aassert_eq!(%22%F0%9F%92%96%22%2C%20sparkle_heart)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -98,7 +98,7 @@ results, as the rest of Rust assumes that <a href="../../std/primitive.str.html"
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

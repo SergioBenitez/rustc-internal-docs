@@ -74,7 +74,7 @@ limited to just these cases:</p>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>;
 
 <span class="kw">let</span> <span class="ident">attr</span> <span class="op">=</span> <span class="ident">fs</span>::<span class="ident">metadata</span>(<span class="string">&quot;/some/file/path.txt&quot;</span>)<span class="question-mark">?</span>;
-<span class="comment">// inspect attr ...</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Ause%20std%3A%3Afs%3B%0A%0Alet%20attr%20%3D%20fs%3A%3Ametadata(%22%2Fsome%2Ffile%2Fpath.txt%22)%3F%3B%0A%2F%2F%20inspect%20attr%20...%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="comment">// inspect attr ...</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Ause%20std%3A%3Afs%3B%0A%0Alet%20attr%20%3D%20fs%3A%3Ametadata(%22%2Fsome%2Ffile%2Fpath.txt%22)%3F%3B%0A%2F%2F%20inspect%20attr%20...%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -100,7 +100,7 @@ limited to just these cases:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

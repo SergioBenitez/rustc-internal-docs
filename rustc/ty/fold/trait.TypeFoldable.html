@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait TypeFoldable</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#provided-methods">Provided Methods</a></li><li><a href="#foreign-impls">Implementations on Foreign Types</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../../index.html'>rustc</a>::<wbr><a href='../index.html'>ty</a>::<wbr><a href='index.html'>fold</a></p><script>window.sidebarCurrent = {name: 'TypeFoldable', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait TypeFoldable</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.super_fold_with">super_fold_with</a><a href="#tymethod.super_visit_with">super_visit_with</a></div><a class="sidebar-title" href="#provided-methods">Provided Methods</a><div class="sidebar-links"><a href="#method.fold_with">fold_with</a><a href="#method.visit_with">visit_with</a><a href="#method.has_regions_escaping_depth">has_regions_escaping_depth</a><a href="#method.has_escaping_regions">has_escaping_regions</a><a href="#method.has_type_flags">has_type_flags</a><a href="#method.has_projections">has_projections</a><a href="#method.references_error">references_error</a><a href="#method.has_param_types">has_param_types</a><a href="#method.has_self_ty">has_self_ty</a><a href="#method.has_infer_types">has_infer_types</a><a href="#method.needs_infer">needs_infer</a><a href="#method.needs_subst">needs_subst</a><a href="#method.has_re_skol">has_re_skol</a><a href="#method.has_closure_types">has_closure_types</a><a href="#method.has_erasable_regions">has_erasable_regions</a><a href="#method.is_normalized_for_trans">is_normalized_for_trans</a><a href="#method.is_global">is_global</a></div><a class="sidebar-title" href="#foreign-impls">Implementations on Foreign Types</a><div class="sidebar-links"><a href="#impl-TypeFoldable%3C%27tcx%3E">()</a><a href="#impl-TypeFoldable%3C%27tcx%3E">Abi</a><a href="#impl-TypeFoldable%3C%27tcx%3E">(T, U)</a><a href="#impl-TypeFoldable%3C%27tcx%3E">Option&lt;T&gt;</a><a href="#impl-TypeFoldable%3C%27tcx%3E">Rc&lt;T&gt;</a><a href="#impl-TypeFoldable%3C%27tcx%3E">Box&lt;T&gt;</a><a href="#impl-TypeFoldable%3C%27tcx%3E">Vec&lt;T&gt;</a><a href="#impl-TypeFoldable%3C%27tcx%3E">IndexVec&lt;I, T&gt;</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../../index.html'>rustc</a>::<wbr><a href='../index.html'>ty</a>::<wbr><a href='index.html'>fold</a></p><script>window.sidebarCurrent = {name: 'TypeFoldable', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -107,7 +107,7 @@ types/lifetimes that are the same regardless of what fn we are
 in. This is used for caching. Errs on the side of returning
 false.</p>
 </div></div>
-                <h2 id='foreign-impls' class='section-header'>
+                <h2 id='foreign-impls' class='small-section-header'>
                   Implementations on Foreign Types<a href='#foreign-impls' class='anchor'></a>
                 </h2>
             <h3 id='impl-TypeFoldable%3C%27tcx%3E' class='impl'><span class='in-band'><code>impl&lt;'tcx&gt; <a class="trait" href="../../../rustc/ty/fold/trait.TypeFoldable.html" title="trait rustc::ty::fold::TypeFoldable">TypeFoldable</a>&lt;'tcx&gt; for <a class="primitive" href="../../../std/primitive.unit.html">()</a></code><a href='#impl-TypeFoldable%3C%27tcx%3E' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/rustc/ty/structural_impls.rs.html#515-523' title='goto source code'>[src]</a></span></h3>
@@ -524,7 +524,7 @@ false.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

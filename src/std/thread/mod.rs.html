@@ -1639,6 +1639,10 @@
 <span id="1594">1594</span>
 <span id="1595">1595</span>
 <span id="1596">1596</span>
+<span id="1597">1597</span>
+<span id="1598">1598</span>
+<span id="1599">1599</span>
+<span id="1600">1600</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1667,11 +1671,15 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Fatal logic errors in Rust cause *thread panic*, during which</span>
 <span class="doccomment">//! a thread will unwind the stack, running destructors and freeing</span>
-<span class="doccomment">//! owned resources. Thread panic is unrecoverable from within</span>
-<span class="doccomment">//! the panicking thread (i.e. there is no &#39;try/catch&#39; in Rust), but</span>
-<span class="doccomment">//! the panic may optionally be detected from a different thread. If</span>
-<span class="doccomment">//! the main thread panics, the application will exit with a non-zero</span>
-<span class="doccomment">//! exit code.</span>
+<span class="doccomment">//! owned resources. While not meant as a &#39;try/catch&#39; mechanism, panics</span>
+<span class="doccomment">//! in Rust can nonetheless be caught (unless compiling with `panic=abort`) with</span>
+<span class="doccomment">//! [`catch_unwind`](../../std/panic/fn.catch_unwind.html) and recovered</span>
+<span class="doccomment">//! from, or alternatively be resumed with</span>
+<span class="doccomment">//! [`resume_unwind`](../../std/panic/fn.resume_unwind.html). If the panic</span>
+<span class="doccomment">//! is not caught the thread will exit, but the panic may optionally be</span>
+<span class="doccomment">//! detected from a different thread with [`join`]. If the main thread panics</span>
+<span class="doccomment">//! without the panic being caught, the application will exit with a</span>
+<span class="doccomment">//! non-zero exit code.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! When the main thread of a Rust program terminates, the entire program shuts</span>
 <span class="doccomment">//! down, even if other threads are still running. However, this module provides</span>
@@ -3262,7 +3270,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

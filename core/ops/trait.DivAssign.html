@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait DivAssign</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'DivAssign', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait DivAssign</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.div_assign">div_assign</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'DivAssign', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -69,7 +69,7 @@
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">frequency</span> <span class="op">=</span> <span class="ident">Frequency</span> { <span class="ident">hertz</span>: <span class="number">200.0</span> };
 <span class="ident">frequency</span> <span class="op">/=</span> <span class="number">4.0</span>;
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Frequency</span> { <span class="ident">hertz</span>: <span class="number">50.0</span> }, <span class="ident">frequency</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ADivAssign%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Astruct%20Frequency%20%7B%20hertz%3A%20f64%20%7D%0A%0Aimpl%20DivAssign%3Cf64%3E%20for%20Frequency%20%7B%0A%20%20%20%20fn%20div_assign(%26mut%20self%2C%20rhs%3A%20f64)%20%7B%0A%20%20%20%20%20%20%20%20self.hertz%20%2F%3D%20rhs%3B%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20mut%20frequency%20%3D%20Frequency%20%7B%20hertz%3A%20200.0%20%7D%3B%0Afrequency%20%2F%3D%204.0%3B%0Aassert_eq!(Frequency%20%7B%20hertz%3A%2050.0%20%7D%2C%20frequency)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">Frequency</span> { <span class="ident">hertz</span>: <span class="number">50.0</span> }, <span class="ident">frequency</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ADivAssign%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Astruct%20Frequency%20%7B%20hertz%3A%20f64%20%7D%0A%0Aimpl%20DivAssign%3Cf64%3E%20for%20Frequency%20%7B%0A%20%20%20%20fn%20div_assign(%26mut%20self%2C%20rhs%3A%20f64)%20%7B%0A%20%20%20%20%20%20%20%20self.hertz%20%2F%3D%20rhs%3B%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20mut%20frequency%20%3D%20Frequency%20%7B%20hertz%3A%20200.0%20%7D%3B%0Afrequency%20%2F%3D%204.0%3B%0Aassert_eq!(Frequency%20%7B%20hertz%3A%2050.0%20%7D%2C%20frequency)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -160,7 +160,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

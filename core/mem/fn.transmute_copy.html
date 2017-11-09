@@ -84,7 +84,7 @@ same size. This function triggers <a href="../../reference/behavior-considered-u
 }
 
 <span class="comment">// The contents of &#39;foo_slice&#39; should not have changed</span>
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">foo_slice</span>, [<span class="number">10</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0A%23%5Brepr(packed)%5D%0Astruct%20Foo%20%7B%0A%20%20%20%20bar%3A%20u8%2C%0A%7D%0A%0Alet%20foo_slice%20%3D%20%5B10u8%5D%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20%2F%2F%20Copy%20the%20data%20from%20'foo_slice'%20and%20treat%20it%20as%20a%20'Foo'%0A%20%20%20%20let%20mut%20foo_struct%3A%20Foo%20%3D%20mem%3A%3Atransmute_copy(%26foo_slice)%3B%0A%20%20%20%20assert_eq!(foo_struct.bar%2C%2010)%3B%0A%0A%20%20%20%20%2F%2F%20Modify%20the%20copied%20data%0A%20%20%20%20foo_struct.bar%20%3D%2020%3B%0A%20%20%20%20assert_eq!(foo_struct.bar%2C%2020)%3B%0A%7D%0A%0A%2F%2F%20The%20contents%20of%20'foo_slice'%20should%20not%20have%20changed%0Aassert_eq!(foo_slice%2C%20%5B10%5D)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">foo_slice</span>, [<span class="number">10</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0A%23%5Brepr(packed)%5D%0Astruct%20Foo%20%7B%0A%20%20%20%20bar%3A%20u8%2C%0A%7D%0A%0Alet%20foo_slice%20%3D%20%5B10u8%5D%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20%2F%2F%20Copy%20the%20data%20from%20'foo_slice'%20and%20treat%20it%20as%20a%20'Foo'%0A%20%20%20%20let%20mut%20foo_struct%3A%20Foo%20%3D%20mem%3A%3Atransmute_copy(%26foo_slice)%3B%0A%20%20%20%20assert_eq!(foo_struct.bar%2C%2010)%3B%0A%0A%20%20%20%20%2F%2F%20Modify%20the%20copied%20data%0A%20%20%20%20foo_struct.bar%20%3D%2020%3B%0A%20%20%20%20assert_eq!(foo_struct.bar%2C%2020)%3B%0A%7D%0A%0A%2F%2F%20The%20contents%20of%20'foo_slice'%20should%20not%20have%20changed%0Aassert_eq!(foo_slice%2C%20%5B10%5D)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -110,7 +110,7 @@ same size. This function triggers <a href="../../reference/behavior-considered-u
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

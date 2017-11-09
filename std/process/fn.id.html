@@ -59,7 +59,7 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">getpid</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">process</span>;
 
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;My pid is {}&quot;</span>, <span class="ident">process</span>::<span class="ident">id</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(getpid)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aprocess%3B%0A%0Aprintln!(%22My%20pid%20is%20%7B%7D%22%2C%20process%3A%3Aid())%3B%0A%7D&amp;version=nightly">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;My pid is {}&quot;</span>, <span class="ident">process</span>::<span class="ident">id</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(getpid)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aprocess%3B%0A%0Aprintln!(%22My%20pid%20is%20%7B%7D%22%2C%20process%3A%3Aid())%3B%0A%7D&amp;version=nightly">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -85,7 +85,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait ExactSizeIterator</p><div class="block items"><li><a href="#provided-methods">Provided Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>iter</a></p><script>window.sidebarCurrent = {name: 'ExactSizeIterator', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait ExactSizeIterator</p><div class="block items"><a class="sidebar-title" href="#provided-methods">Provided Methods</a><div class="sidebar-links"><a href="#method.len">len</a><a href="#method.is_empty">is_empty</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>iter</a></p><script>window.sidebarCurrent = {name: 'ExactSizeIterator', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -74,7 +74,7 @@ implementation than the default, so overriding it in this case makes sense.</p>
 <span class="comment">// a finite range knows exactly how many times it will iterate</span>
 <span class="kw">let</span> <span class="ident">five</span> <span class="op">=</span> <span class="number">0</span>..<span class="number">5</span>;
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">five</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%2F%2F%20a%20finite%20range%20knows%20exactly%20how%20many%20times%20it%20will%20iterate%0Alet%20five%20%3D%200..5%3B%0A%0Aassert_eq!(5%2C%20five.len())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">five</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%2F%2F%20a%20finite%20range%20knows%20exactly%20how%20many%20times%20it%20will%20iterate%0Alet%20five%20%3D%200..5%3B%0A%0Aassert_eq!(5%2C%20five.len())%3B%0A%7D">Run</a></pre>
 
 <p>In the <a href="index.html">module level docs</a>, we implemented an <a href="trait.Iterator.html"><code>Iterator</code></a>,
 <code>Counter</code>. Let&#39;s implement <code>ExactSizeIterator</code> for it as well:</p>
@@ -91,7 +91,7 @@ implementation than the default, so overriding it in this case makes sense.</p>
 
 <span class="kw">let</span> <span class="ident">counter</span> <span class="op">=</span> <span class="ident">Counter</span>::<span class="ident">new</span>();
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">counter</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Astruct%20Counter%20%7B%0A%20%20%20%20count%3A%20usize%2C%0A%7D%0Aimpl%20Counter%20%7B%0A%20%20%20%20fn%20new()%20-%3E%20Counter%20%7B%0A%20%20%20%20%20%20%20%20Counter%20%7B%20count%3A%200%20%7D%0A%20%20%20%20%7D%0A%7D%0Aimpl%20Iterator%20for%20Counter%20%7B%0A%20%20%20%20type%20Item%20%3D%20usize%3B%0A%20%20%20%20fn%20next(%26mut%20self)%20-%3E%20Option%3Cusize%3E%20%7B%0A%20%20%20%20%20%20%20%20self.count%20%2B%3D%201%3B%0A%20%20%20%20%20%20%20%20if%20self.count%20%3C%206%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Some(self.count)%0A%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20None%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0Aimpl%20ExactSizeIterator%20for%20Counter%20%7B%0A%20%20%20%20%2F%2F%20We%20can%20easily%20calculate%20the%20remaining%20number%20of%20iterations.%0A%20%20%20%20fn%20len(%26self)%20-%3E%20usize%20%7B%0A%20%20%20%20%20%20%20%205%20-%20self.count%0A%20%20%20%20%7D%0A%7D%0A%0A%2F%2F%20And%20now%20we%20can%20use%20it!%0A%0Alet%20counter%20%3D%20Counter%3A%3Anew()%3B%0A%0Aassert_eq!(5%2C%20counter.len())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">counter</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Astruct%20Counter%20%7B%0A%20%20%20%20count%3A%20usize%2C%0A%7D%0Aimpl%20Counter%20%7B%0A%20%20%20%20fn%20new()%20-%3E%20Counter%20%7B%0A%20%20%20%20%20%20%20%20Counter%20%7B%20count%3A%200%20%7D%0A%20%20%20%20%7D%0A%7D%0Aimpl%20Iterator%20for%20Counter%20%7B%0A%20%20%20%20type%20Item%20%3D%20usize%3B%0A%20%20%20%20fn%20next(%26mut%20self)%20-%3E%20Option%3Cusize%3E%20%7B%0A%20%20%20%20%20%20%20%20self.count%20%2B%3D%201%3B%0A%20%20%20%20%20%20%20%20if%20self.count%20%3C%206%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Some(self.count)%0A%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20None%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0Aimpl%20ExactSizeIterator%20for%20Counter%20%7B%0A%20%20%20%20%2F%2F%20We%20can%20easily%20calculate%20the%20remaining%20number%20of%20iterations.%0A%20%20%20%20fn%20len(%26self)%20-%3E%20usize%20%7B%0A%20%20%20%20%20%20%20%205%20-%20self.count%0A%20%20%20%20%7D%0A%7D%0A%0A%2F%2F%20And%20now%20we%20can%20use%20it!%0A%0Alet%20counter%20%3D%20Counter%3A%3Anew()%3B%0A%0Aassert_eq!(5%2C%20counter.len())%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='provided-methods' class='small-section-header'>
               Provided Methods<a href='#provided-methods' class='anchor'></a>
@@ -114,7 +114,7 @@ function.</p>
 <span class="comment">// a finite range knows exactly how many times it will iterate</span>
 <span class="kw">let</span> <span class="ident">five</span> <span class="op">=</span> <span class="number">0</span>..<span class="number">5</span>;
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">five</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%2F%2F%20a%20finite%20range%20knows%20exactly%20how%20many%20times%20it%20will%20iterate%0Alet%20five%20%3D%200..5%3B%0A%0Aassert_eq!(5%2C%20five.len())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">five</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%2F%2F%20a%20finite%20range%20knows%20exactly%20how%20many%20times%20it%20will%20iterate%0Alet%20five%20%3D%200..5%3B%0A%0Aassert_eq!(5%2C%20five.len())%3B%0A%7D">Run</a></pre>
 </div><h3 id='method.is_empty' class='method'><span id='is_empty.v' class='invisible'><code>fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.bool.html">bool</a></code></span></h3><div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>exact_size_is_empty </code><a href="https://github.com/rust-lang/rust/issues/35428">#35428</a>)</div></div><div class='docblock'><p>Returns whether the iterator is empty.</p>
 
 <p>This method has a default implementation using <code>self.len()</code>, so you
@@ -132,7 +132,7 @@ don&#39;t need to implement it yourself.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">one_element</span>.<span class="ident">next</span>(), <span class="prelude-val">Some</span>(<span class="number">0</span>));
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">one_element</span>.<span class="ident">is_empty</span>());
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">one_element</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(exact_size_is_empty)%5D%0A%0Afn%20main()%20%7B%0Alet%20mut%20one_element%20%3D%200..1%3B%0Aassert!(!one_element.is_empty())%3B%0A%0Aassert_eq!(one_element.next()%2C%20Some(0))%3B%0Aassert!(one_element.is_empty())%3B%0A%0Aassert_eq!(one_element.next()%2C%20None)%3B%0A%7D&amp;version=nightly">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">one_element</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(exact_size_is_empty)%5D%0A%0Afn%20main()%20%7B%0Alet%20mut%20one_element%20%3D%200..1%3B%0Aassert!(!one_element.is_empty())%3B%0A%0Aassert_eq!(one_element.next()%2C%20Some(0))%3B%0Aassert!(one_element.is_empty())%3B%0A%0Aassert_eq!(one_element.next()%2C%20None)%3B%0A%7D&amp;version=nightly">Run</a></pre>
 </div></div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
@@ -212,8 +212,8 @@ don&#39;t need to implement it yourself.</p>
 <li><div class='out-of-band'><a class='srclink' href='../../src/std/collections/hash/set.rs.html#1062-1066' title='goto source code'>[src]</a></div><code>impl&lt;'a, K&gt; ExactSizeIterator for std::collections::hash_set::<a class="struct" href="../../std/collections/hash_set/struct.Iter.html" title="struct std::collections::hash_set::Iter">Iter</a>&lt;'a, K&gt;</code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/std/collections/hash/set.rs.html#1089-1093' title='goto source code'>[src]</a></div><code>impl&lt;K&gt; ExactSizeIterator for std::collections::hash_set::<a class="struct" href="../../std/collections/hash_set/struct.IntoIter.html" title="struct std::collections::hash_set::IntoIter">IntoIter</a>&lt;K&gt;</code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/std/collections/hash/set.rs.html#1120-1124' title='goto source code'>[src]</a></div><code>impl&lt;'a, K&gt; ExactSizeIterator for std::collections::hash_set::<a class="struct" href="../../std/collections/hash_set/struct.Drain.html" title="struct std::collections::hash_set::Drain">Drain</a>&lt;'a, K&gt;</code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/std/env.rs.html#729-732' title='goto source code'>[src]</a></div><code>impl ExactSizeIterator for <a class="struct" href="../../std/env/struct.Args.html" title="struct std::env::Args">Args</a></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/std/env.rs.html#758-761' title='goto source code'>[src]</a></div><code>impl ExactSizeIterator for <a class="struct" href="../../std/env/struct.ArgsOs.html" title="struct std::env::ArgsOs">ArgsOs</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/std/env.rs.html#733-736' title='goto source code'>[src]</a></div><code>impl ExactSizeIterator for <a class="struct" href="../../std/env/struct.Args.html" title="struct std::env::Args">Args</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/std/env.rs.html#762-765' title='goto source code'>[src]</a></div><code>impl ExactSizeIterator for <a class="struct" href="../../std/env/struct.ArgsOs.html" title="struct std::env::ArgsOs">ArgsOs</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/core/iter/traits/trait.ExactSizeIterator.js">
                  </script></section>
@@ -241,7 +241,7 @@ don&#39;t need to implement it yourself.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

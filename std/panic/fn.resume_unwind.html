@@ -70,7 +70,7 @@ not trigger an unwind.</p>
 
 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">result</span> {
     <span class="ident">panic</span>::<span class="ident">resume_unwind</span>(<span class="ident">err</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Alet%20result%20%3D%20panic%3A%3Acatch_unwind(%7C%7C%20%7B%0A%20%20%20%20panic!(%22oh%20no!%22)%3B%0A%7D)%3B%0A%0Aif%20let%20Err(err)%20%3D%20result%20%7B%0A%20%20%20%20panic%3A%3Aresume_unwind(err)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Alet%20result%20%3D%20panic%3A%3Acatch_unwind(%7C%7C%20%7B%0A%20%20%20%20panic!(%22oh%20no!%22)%3B%0A%7D)%3B%0A%0Aif%20let%20Err(err)%20%3D%20result%20%7B%0A%20%20%20%20panic%3A%3Aresume_unwind(err)%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -96,7 +96,7 @@ not trigger an unwind.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

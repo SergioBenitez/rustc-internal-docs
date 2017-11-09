@@ -84,7 +84,7 @@ because it will attempt to drop the value previously at <code>*src</code>.</p>
 
 <span class="kw">unsafe</span> {
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">read_volatile</span>(<span class="ident">y</span>), <span class="number">12</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20x%20%3D%2012%3B%0Alet%20y%20%3D%20%26x%20as%20*const%20i32%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20assert_eq!(std%3A%3Aptr%3A%3Aread_volatile(y)%2C%2012)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20x%20%3D%2012%3B%0Alet%20y%20%3D%20%26x%20as%20*const%20i32%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20assert_eq!(std%3A%3Aptr%3A%3Aread_volatile(y)%2C%2012)%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -110,7 +110,7 @@ because it will attempt to drop the value previously at <code>*src</code>.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

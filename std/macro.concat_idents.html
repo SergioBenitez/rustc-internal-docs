@@ -72,7 +72,7 @@ modules etc, you cannot define a new one with it.</p>
 <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="macro">concat_idents</span><span class="macro">!</span>(<span class="ident">foo</span>, <span class="ident">bar</span>);
 <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">f</span>());
 
-<span class="comment">// fn concat_idents!(new, fun, name) { } // not usable in this way!</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(concat_idents)%5D%0A%0Afn%20main()%20%7B%0Afn%20foobar()%20-%3E%20u32%20%7B%2023%20%7D%0A%0Alet%20f%20%3D%20concat_idents!(foo%2C%20bar)%3B%0Aprintln!(%22%7B%7D%22%2C%20f())%3B%0A%0A%2F%2F%20fn%20concat_idents!(new%2C%20fun%2C%20name)%20%7B%20%7D%20%2F%2F%20not%20usable%20in%20this%20way!%0A%7D%0A&amp;version=nightly">Run</a></pre>
+<span class="comment">// fn concat_idents!(new, fun, name) { } // not usable in this way!</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(concat_idents)%5D%0A%0Afn%20main()%20%7B%0Afn%20foobar()%20-%3E%20u32%20%7B%2023%20%7D%0A%0Alet%20f%20%3D%20concat_idents!(foo%2C%20bar)%3B%0Aprintln!(%22%7B%7D%22%2C%20f())%3B%0A%0A%2F%2F%20fn%20concat_idents!(new%2C%20fun%2C%20name)%20%7B%20%7D%20%2F%2F%20not%20usable%20in%20this%20way!%0A%7D%0A&amp;version=nightly">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -98,7 +98,7 @@ modules etc, you cannot define a new one with it.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -71,7 +71,7 @@ of valid memory, and the two memory ranges must not overlap.</p>
 }
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>, [<span class="number">7</span>, <span class="number">8</span>, <span class="number">3</span>, <span class="number">4</span>]);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">y</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">9</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(swap_nonoverlapping)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Aptr%3B%0A%0Alet%20mut%20x%20%3D%20%5B1%2C%202%2C%203%2C%204%5D%3B%0Alet%20mut%20y%20%3D%20%5B7%2C%208%2C%209%5D%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20ptr%3A%3Aswap_nonoverlapping(x.as_mut_ptr()%2C%20y.as_mut_ptr()%2C%202)%3B%0A%7D%0A%0Aassert_eq!(x%2C%20%5B7%2C%208%2C%203%2C%204%5D)%3B%0Aassert_eq!(y%2C%20%5B1%2C%202%2C%209%5D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">y</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">9</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(swap_nonoverlapping)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Aptr%3B%0A%0Alet%20mut%20x%20%3D%20%5B1%2C%202%2C%203%2C%204%5D%3B%0Alet%20mut%20y%20%3D%20%5B7%2C%208%2C%209%5D%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20ptr%3A%3Aswap_nonoverlapping(x.as_mut_ptr()%2C%20y.as_mut_ptr()%2C%202)%3B%0A%7D%0A%0Aassert_eq!(x%2C%20%5B7%2C%208%2C%203%2C%204%5D)%3B%0Aassert_eq!(y%2C%20%5B1%2C%202%2C%209%5D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -97,7 +97,7 @@ of valid memory, and the two memory ranges must not overlap.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

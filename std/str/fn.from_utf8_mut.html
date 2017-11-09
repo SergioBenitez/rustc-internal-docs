@@ -63,7 +63,7 @@
 <span class="comment">// As we know these bytes are valid, we can use `unwrap()`</span>
 <span class="kw">let</span> <span class="ident">outstr</span> <span class="op">=</span> <span class="ident">str</span>::<span class="ident">from_utf8_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hellorust</span>).<span class="ident">unwrap</span>();
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;Hello, Rust!&quot;</span>, <span class="ident">outstr</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20%22Hello%2C%20Rust!%22%20as%20a%20mutable%20vector%0Alet%20mut%20hellorust%20%3D%20vec!%5B72%2C%20101%2C%20108%2C%20108%2C%20111%2C%2044%2C%2032%2C%2082%2C%20117%2C%20115%2C%20116%2C%2033%5D%3B%0A%0A%2F%2F%20As%20we%20know%20these%20bytes%20are%20valid%2C%20we%20can%20use%20%60unwrap()%60%0Alet%20outstr%20%3D%20str%3A%3Afrom_utf8_mut(%26mut%20hellorust).unwrap()%3B%0A%0Aassert_eq!(%22Hello%2C%20Rust!%22%2C%20outstr)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;Hello, Rust!&quot;</span>, <span class="ident">outstr</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20%22Hello%2C%20Rust!%22%20as%20a%20mutable%20vector%0Alet%20mut%20hellorust%20%3D%20vec!%5B72%2C%20101%2C%20108%2C%20108%2C%20111%2C%2044%2C%2032%2C%2082%2C%20117%2C%20115%2C%20116%2C%2033%5D%3B%0A%0A%2F%2F%20As%20we%20know%20these%20bytes%20are%20valid%2C%20we%20can%20use%20%60unwrap()%60%0Alet%20outstr%20%3D%20str%3A%3Afrom_utf8_mut(%26mut%20hellorust).unwrap()%3B%0A%0Aassert_eq!(%22Hello%2C%20Rust!%22%2C%20outstr)%3B%0A%7D">Run</a></pre>
 
 <p>Incorrect bytes:</p>
 
@@ -73,7 +73,7 @@
 <span class="comment">// Some invalid bytes in a mutable vector</span>
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">invalid</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">128</span>, <span class="number">223</span>];
 
-<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">str</span>::<span class="ident">from_utf8_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">invalid</span>).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20Some%20invalid%20bytes%20in%20a%20mutable%20vector%0Alet%20mut%20invalid%20%3D%20vec!%5B128%2C%20223%5D%3B%0A%0Aassert!(str%3A%3Afrom_utf8_mut(%26mut%20invalid).is_err())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">str</span>::<span class="ident">from_utf8_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">invalid</span>).<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Astr%3B%0A%0A%2F%2F%20Some%20invalid%20bytes%20in%20a%20mutable%20vector%0Alet%20mut%20invalid%20%3D%20vec!%5B128%2C%20223%5D%3B%0A%0Aassert!(str%3A%3Afrom_utf8_mut(%26mut%20invalid).is_err())%3B%0A%7D">Run</a></pre>
 
 <p>See the docs for <a href="struct.Utf8Error.html"><code>Utf8Error</code></a> for more details on the kinds of
 errors that can be returned.</p>
@@ -102,7 +102,7 @@ errors that can be returned.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait PartialEq</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#provided-methods">Provided Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>cmp</a></p><script>window.sidebarCurrent = {name: 'PartialEq', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait PartialEq</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.eq">eq</a></div><a class="sidebar-title" href="#provided-methods">Provided Methods</a><div class="sidebar-links"><a href="#method.ne">ne</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>cmp</a></p><script>window.sidebarCurrent = {name: 'PartialEq', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -109,7 +109,7 @@ the same book if their ISBN matches, even if the formats differ:</p>
 <span class="kw">let</span> <span class="ident">b3</span> <span class="op">=</span> <span class="ident">Book</span> { <span class="ident">isbn</span>: <span class="number">10</span>, <span class="ident">format</span>: <span class="ident">BookFormat</span>::<span class="ident">Paperback</span> };
 
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">b1</span> <span class="op">==</span> <span class="ident">b2</span>);
-<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">b1</span> <span class="op">!=</span> <span class="ident">b3</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aenum%20BookFormat%20%7B%20Paperback%2C%20Hardback%2C%20Ebook%20%7D%0Astruct%20Book%20%7B%0A%20%20%20%20isbn%3A%20i32%2C%0A%20%20%20%20format%3A%20BookFormat%2C%0A%7D%0A%0Aimpl%20PartialEq%20for%20Book%20%7B%0A%20%20%20%20fn%20eq(%26self%2C%20other%3A%20%26Book)%20-%3E%20bool%20%7B%0A%20%20%20%20%20%20%20%20self.isbn%20%3D%3D%20other.isbn%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20b1%20%3D%20Book%20%7B%20isbn%3A%203%2C%20format%3A%20BookFormat%3A%3APaperback%20%7D%3B%0Alet%20b2%20%3D%20Book%20%7B%20isbn%3A%203%2C%20format%3A%20BookFormat%3A%3AEbook%20%7D%3B%0Alet%20b3%20%3D%20Book%20%7B%20isbn%3A%2010%2C%20format%3A%20BookFormat%3A%3APaperback%20%7D%3B%0A%0Aassert!(b1%20%3D%3D%20b2)%3B%0Aassert!(b1%20!%3D%20b3)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">b1</span> <span class="op">!=</span> <span class="ident">b3</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aenum%20BookFormat%20%7B%20Paperback%2C%20Hardback%2C%20Ebook%20%7D%0Astruct%20Book%20%7B%0A%20%20%20%20isbn%3A%20i32%2C%0A%20%20%20%20format%3A%20BookFormat%2C%0A%7D%0A%0Aimpl%20PartialEq%20for%20Book%20%7B%0A%20%20%20%20fn%20eq(%26self%2C%20other%3A%20%26Book)%20-%3E%20bool%20%7B%0A%20%20%20%20%20%20%20%20self.isbn%20%3D%3D%20other.isbn%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20b1%20%3D%20Book%20%7B%20isbn%3A%203%2C%20format%3A%20BookFormat%3A%3APaperback%20%7D%3B%0Alet%20b2%20%3D%20Book%20%7B%20isbn%3A%203%2C%20format%3A%20BookFormat%3A%3AEbook%20%7D%3B%0Alet%20b3%20%3D%20Book%20%7B%20isbn%3A%2010%2C%20format%3A%20BookFormat%3A%3APaperback%20%7D%3B%0A%0Aassert!(b1%20%3D%3D%20b2)%3B%0Aassert!(b1%20!%3D%20b3)%3B%0A%7D">Run</a></pre>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
@@ -117,7 +117,7 @@ the same book if their ISBN matches, even if the formats differ:</p>
 <span class="kw">let</span> <span class="ident">y</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="number">1</span>;
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span> <span class="op">==</span> <span class="ident">y</span>, <span class="bool-val">false</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">y</span>), <span class="bool-val">false</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20x%3A%20u32%20%3D%200%3B%0Alet%20y%3A%20u32%20%3D%201%3B%0A%0Aassert_eq!(x%20%3D%3D%20y%2C%20false)%3B%0Aassert_eq!(x.eq(%26y)%2C%20false)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>.<span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="ident">y</span>), <span class="bool-val">false</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20x%3A%20u32%20%3D%200%3B%0Alet%20y%3A%20u32%20%3D%201%3B%0A%0Aassert_eq!(x%20%3D%3D%20y%2C%20false)%3B%0Aassert_eq!(x.eq(%26y)%2C%20false)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -538,7 +538,7 @@ by <code>==</code>.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

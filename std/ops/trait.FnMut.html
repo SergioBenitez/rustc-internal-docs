@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait FnMut</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'FnMut', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait FnMut</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.call_mut">call_mut</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'FnMut', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -86,7 +86,7 @@ this can refer to <a href="../../nomicon/hrtb.html">the relevant section in the 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">square_x</span> <span class="op">=</span> <span class="op">||</span> <span class="ident">x</span> <span class="op">*=</span> <span class="ident">x</span>;
     <span class="ident">square_x</span>();
 }
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>, <span class="number">25</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20mut%20x%20%3D%205%3B%0A%7B%0A%20%20%20%20let%20mut%20square_x%20%3D%20%7C%7C%20x%20*%3D%20x%3B%0A%20%20%20%20square_x()%3B%0A%7D%0Aassert_eq!(x%2C%2025)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>, <span class="number">25</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20mut%20x%20%3D%205%3B%0A%7B%0A%20%20%20%20let%20mut%20square_x%20%3D%20%7C%7C%20x%20*%3D%20x%3B%0A%20%20%20%20square_x()%3B%0A%7D%0Aassert_eq!(x%2C%2025)%3B%0A%7D">Run</a></pre>
 
 <h2 id='using-a-fnmut-parameter' class='section-header'><a href='#using-a-fnmut-parameter'>Using a <code>FnMut</code> parameter</a></h2>
 <pre class="rust rust-example-rendered">
@@ -103,7 +103,7 @@ this can refer to <a href="../../nomicon/hrtb.html">the relevant section in the 
     <span class="ident">do_twice</span>(<span class="ident">add_two_to_x</span>);
 }
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>, <span class="number">5</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afn%20do_twice%3CF%3E(mut%20func%3A%20F)%0A%20%20%20%20where%20F%3A%20FnMut()%0A%7B%0A%20%20%20%20func()%3B%0A%20%20%20%20func()%3B%0A%7D%0A%0Alet%20mut%20x%3A%20usize%20%3D%201%3B%0A%7B%0A%20%20%20%20let%20add_two_to_x%20%3D%20%7C%7C%20x%20%2B%3D%202%3B%0A%20%20%20%20do_twice(add_two_to_x)%3B%0A%7D%0A%0Aassert_eq!(x%2C%205)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>, <span class="number">5</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Afn%20do_twice%3CF%3E(mut%20func%3A%20F)%0A%20%20%20%20where%20F%3A%20FnMut()%0A%7B%0A%20%20%20%20func()%3B%0A%20%20%20%20func()%3B%0A%7D%0A%0Alet%20mut%20x%3A%20usize%20%3D%201%3B%0A%7B%0A%20%20%20%20let%20add_two_to_x%20%3D%20%7C%7C%20x%20%2B%3D%202%3B%0A%20%20%20%20do_twice(add_two_to_x)%3B%0A%7D%0A%0Aassert_eq!(x%2C%205)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -144,7 +144,7 @@ this can refer to <a href="../../nomicon/hrtb.html">the relevant section in the 
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

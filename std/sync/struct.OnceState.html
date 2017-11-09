@@ -79,7 +79,7 @@ invocation of the closure passed to <a href="struct.Once.html#method.call_once_f
 
 <span class="ident">INIT</span>.<span class="ident">call_once_force</span>(<span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">state</span>.<span class="ident">poisoned</span>());
-});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(once_poison)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0Ause%20std%3A%3Athread%3B%0A%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0A%2F%2F%20poison%20the%20once%0Alet%20handle%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20INIT.call_once(%7C%7C%20panic!())%3B%0A%7D)%3B%0Aassert!(handle.join().is_err())%3B%0A%0AINIT.call_once_force(%7Cstate%7C%20%7B%0A%20%20%20%20assert!(state.poisoned())%3B%0A%7D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
+});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(once_poison)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0Ause%20std%3A%3Athread%3B%0A%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0A%2F%2F%20poison%20the%20once%0Alet%20handle%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20INIT.call_once(%7C%7C%20panic!())%3B%0A%7D)%3B%0Aassert!(handle.join().is_err())%3B%0A%0AINIT.call_once_force(%7Cstate%7C%20%7B%0A%20%20%20%20assert!(state.poisoned())%3B%0A%7D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
 
 <p>An unpoisoned <code>Once</code>:</p>
 
@@ -92,7 +92,7 @@ invocation of the closure passed to <a href="struct.Once.html#method.call_once_f
 
 <span class="ident">INIT</span>.<span class="ident">call_once_force</span>(<span class="op">|</span><span class="ident">state</span><span class="op">|</span> {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">state</span>.<span class="ident">poisoned</span>());
-});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(once_poison)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0A%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0AINIT.call_once_force(%7Cstate%7C%20%7B%0A%20%20%20%20assert!(!state.poisoned())%3B%0A%7D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
+});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(once_poison)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0A%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0AINIT.call_once_force(%7Cstate%7C%20%7B%0A%20%20%20%20assert!(!state.poisoned())%3B%0A%7D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -125,7 +125,7 @@ invocation of the closure passed to <a href="struct.Once.html#method.call_once_f
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

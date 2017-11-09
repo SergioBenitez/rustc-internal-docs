@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Into</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>convert</a></p><script>window.sidebarCurrent = {name: 'Into', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Into</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.into">into</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>convert</a></p><script>window.sidebarCurrent = {name: 'Into', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -81,7 +81,7 @@ take this crate:</p>
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">w</span>: <span class="ident">Wrapper</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="ident">w</span>.<span class="number">0</span>
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Astruct%20Wrapper%3CT%3E(Vec%3CT%3E)%3B%0Aimpl%3CT%3E%20From%3CWrapper%3CT%3E%3E%20for%20Vec%3CT%3E%20%7B%0A%20%20%20%20fn%20from(w%3A%20Wrapper%3CT%3E)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20w.0%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Astruct%20Wrapper%3CT%3E(Vec%3CT%3E)%3B%0Aimpl%3CT%3E%20From%3CWrapper%3CT%3E%3E%20for%20Vec%3CT%3E%20%7B%0A%20%20%20%20fn%20from(w%3A%20Wrapper%3CT%3E)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20w.0%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 
 <p>To fix this, you can implement <code>Into</code> directly:</p>
 
@@ -91,7 +91,7 @@ take this crate:</p>
     <span class="kw">fn</span> <span class="ident">into</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="number">0</span>
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Astruct%20Wrapper%3CT%3E(Vec%3CT%3E)%3B%0Aimpl%3CT%3E%20Into%3CVec%3CT%3E%3E%20for%20Wrapper%3CT%3E%20%7B%0A%20%20%20%20fn%20into(self)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20self.0%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Astruct%20Wrapper%3CT%3E(Vec%3CT%3E)%3B%0Aimpl%3CT%3E%20Into%3CVec%3CT%3E%3E%20for%20Wrapper%3CT%3E%20%7B%0A%20%20%20%20fn%20into(self)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20self.0%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 
 <p>This won&#39;t always allow the conversion: for example, <code>try!</code> and <code>?</code>
 always use <code>From</code>. However, in most cases, people use <code>Into</code> to do the
@@ -110,7 +110,7 @@ to <code>Into</code> if <code>From</code> can&#39;t be implemented.</p>
 }
 
 <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;hello&quot;</span>.<span class="ident">to_string</span>();
-<span class="ident">is_hello</span>(<span class="ident">s</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afn%20is_hello%3CT%3A%20Into%3CVec%3Cu8%3E%3E%3E(s%3A%20T)%20%7B%0A%20%20%20let%20bytes%20%3D%20b%22hello%22.to_vec()%3B%0A%20%20%20assert_eq!(bytes%2C%20s.into())%3B%0A%7D%0A%0Alet%20s%20%3D%20%22hello%22.to_string()%3B%0Ais_hello(s)%3B%0A%7D">Run</a></pre>
+<span class="ident">is_hello</span>(<span class="ident">s</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Afn%20is_hello%3CT%3A%20Into%3CVec%3Cu8%3E%3E%3E(s%3A%20T)%20%7B%0A%20%20%20let%20bytes%20%3D%20b%22hello%22.to_vec()%3B%0A%20%20%20assert_eq!(bytes%2C%20s.into())%3B%0A%7D%0A%0Alet%20s%20%3D%20%22hello%22.to_string()%3B%0Ais_hello(s)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -150,7 +150,7 @@ to <code>Into</code> if <code>From</code> can&#39;t be implemented.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

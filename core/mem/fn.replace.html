@@ -62,7 +62,7 @@ deinitializing either one.</p>
 
 <span class="kw">let</span> <span class="ident">old_v</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">v</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">2</span>, <span class="ident">old_v</span>.<span class="ident">len</span>());
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">v</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Alet%20mut%20v%3A%20Vec%3Ci32%3E%20%3D%20vec!%5B1%2C%202%5D%3B%0A%0Alet%20old_v%20%3D%20mem%3A%3Areplace(%26mut%20v%2C%20vec!%5B3%2C%204%2C%205%5D)%3B%0Aassert_eq!(2%2C%20old_v.len())%3B%0Aassert_eq!(3%2C%20v.len())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">v</span>.<span class="ident">len</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Alet%20mut%20v%3A%20Vec%3Ci32%3E%20%3D%20vec!%5B1%2C%202%5D%3B%0A%0Alet%20old_v%20%3D%20mem%3A%3Areplace(%26mut%20v%2C%20vec!%5B3%2C%204%2C%205%5D)%3B%0Aassert_eq!(2%2C%20old_v.len())%3B%0Aassert_eq!(3%2C%20v.len())%3B%0A%7D">Run</a></pre>
 
 <p><code>replace</code> allows consumption of a struct field by replacing it with another value.
 Without <code>replace</code> you can run into issues like these:</p>
@@ -77,7 +77,7 @@ Without <code>replace</code> you can run into issues like these:</p>
         <span class="self">self</span>.<span class="ident">buf</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
         <span class="ident">buf</span>
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Astruct%20Buffer%3CT%3E%20%7B%20buf%3A%20Vec%3CT%3E%20%7D%0A%0Aimpl%3CT%3E%20Buffer%3CT%3E%20%7B%0A%20%20%20%20fn%20get_and_reset(%26mut%20self)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20error%3A%20cannot%20move%20out%20of%20dereference%20of%20%60%26mut%60-pointer%0A%20%20%20%20%20%20%20%20let%20buf%20%3D%20self.buf%3B%0A%20%20%20%20%20%20%20%20self.buf%20%3D%20Vec%3A%3Anew()%3B%0A%20%20%20%20%20%20%20%20buf%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Astruct%20Buffer%3CT%3E%20%7B%20buf%3A%20Vec%3CT%3E%20%7D%0A%0Aimpl%3CT%3E%20Buffer%3CT%3E%20%7B%0A%20%20%20%20fn%20get_and_reset(%26mut%20self)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20error%3A%20cannot%20move%20out%20of%20dereference%20of%20%60%26mut%60-pointer%0A%20%20%20%20%20%20%20%20let%20buf%20%3D%20self.buf%3B%0A%20%20%20%20%20%20%20%20self.buf%20%3D%20Vec%3A%3Anew()%3B%0A%20%20%20%20%20%20%20%20buf%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 
 <p>Note that <code>T</code> does not necessarily implement <a href="../../std/clone/trait.Clone.html"><code>Clone</code></a>, so it can&#39;t even clone and reset
 <code>self.buf</code>. But <code>replace</code> can be used to disassociate the original value of <code>self.buf</code> from
@@ -90,7 +90,7 @@ Without <code>replace</code> you can run into issues like these:</p>
     <span class="kw">fn</span> <span class="ident">get_and_reset</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">buf</span>, <span class="ident">Vec</span>::<span class="ident">new</span>())
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(dead_code)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Astruct%20Buffer%3CT%3E%20%7B%20buf%3A%20Vec%3CT%3E%20%7D%0Aimpl%3CT%3E%20Buffer%3CT%3E%20%7B%0A%20%20%20%20fn%20get_and_reset(%26mut%20self)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20mem%3A%3Areplace(%26mut%20self.buf%2C%20Vec%3A%3Anew())%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Ballow(dead_code)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Astruct%20Buffer%3CT%3E%20%7B%20buf%3A%20Vec%3CT%3E%20%7D%0Aimpl%3CT%3E%20Buffer%3CT%3E%20%7B%0A%20%20%20%20fn%20get_and_reset(%26mut%20self)%20-%3E%20Vec%3CT%3E%20%7B%0A%20%20%20%20%20%20%20%20mem%3A%3Areplace(%26mut%20self.buf%2C%20Vec%3A%3Anew())%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -116,7 +116,7 @@ Without <code>replace</code> you can run into issues like these:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

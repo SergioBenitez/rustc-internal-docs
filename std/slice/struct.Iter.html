@@ -63,7 +63,7 @@
 <span class="comment">// Then, we iterate over it:</span>
 <span class="kw">for</span> <span class="ident">element</span> <span class="kw">in</span> <span class="ident">slice</span>.<span class="ident">iter</span>() {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">element</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%2F%2F%20First%2C%20we%20declare%20a%20type%20which%20has%20%60iter%60%20method%20to%20get%20the%20%60Iter%60%20struct%20(%26%5Busize%20here%5D)%3A%0Alet%20slice%20%3D%20%26%5B1%2C%202%2C%203%5D%3B%0A%0A%2F%2F%20Then%2C%20we%20iterate%20over%20it%3A%0Afor%20element%20in%20slice.iter()%20%7B%0A%20%20%20%20println!(%22%7B%7D%22%2C%20element)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%2F%2F%20First%2C%20we%20declare%20a%20type%20which%20has%20%60iter%60%20method%20to%20get%20the%20%60Iter%60%20struct%20(%26%5Busize%20here%5D)%3A%0Alet%20slice%20%3D%20%26%5B1%2C%202%2C%203%5D%3B%0A%0A%2F%2F%20Then%2C%20we%20iterate%20over%20it%3A%0Afor%20element%20in%20slice.iter()%20%7B%0A%20%20%20%20println!(%22%7B%7D%22%2C%20element)%3B%0A%7D%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -91,7 +91,7 @@ iterator can continue to be used while this exists.</p>
 <span class="comment">// Next, we move to the second element of the slice:</span>
 <span class="ident">iter</span>.<span class="ident">next</span>();
 <span class="comment">// Now `as_slice` returns &quot;[2, 3]&quot;:</span>
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">iter</span>.<span class="ident">as_slice</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%2F%2F%20First%2C%20we%20declare%20a%20type%20which%20has%20the%20%60iter%60%20method%20to%20get%20the%20%60Iter%60%0A%2F%2F%20struct%20(%26%5Busize%20here%5D)%3A%0Alet%20slice%20%3D%20%26%5B1%2C%202%2C%203%5D%3B%0A%0A%2F%2F%20Then%2C%20we%20get%20the%20iterator%3A%0Alet%20mut%20iter%20%3D%20slice.iter()%3B%0A%2F%2F%20So%20if%20we%20print%20what%20%60as_slice%60%20method%20returns%20here%2C%20we%20have%20%22%5B1%2C%202%2C%203%5D%22%3A%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20iter.as_slice())%3B%0A%0A%2F%2F%20Next%2C%20we%20move%20to%20the%20second%20element%20of%20the%20slice%3A%0Aiter.next()%3B%0A%2F%2F%20Now%20%60as_slice%60%20returns%20%22%5B2%2C%203%5D%22%3A%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20iter.as_slice())%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">iter</span>.<span class="ident">as_slice</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%2F%2F%20First%2C%20we%20declare%20a%20type%20which%20has%20the%20%60iter%60%20method%20to%20get%20the%20%60Iter%60%0A%2F%2F%20struct%20(%26%5Busize%20here%5D)%3A%0Alet%20slice%20%3D%20%26%5B1%2C%202%2C%203%5D%3B%0A%0A%2F%2F%20Then%2C%20we%20get%20the%20iterator%3A%0Alet%20mut%20iter%20%3D%20slice.iter()%3B%0A%2F%2F%20So%20if%20we%20print%20what%20%60as_slice%60%20method%20returns%20here%2C%20we%20have%20%22%5B1%2C%202%2C%203%5D%22%3A%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20iter.as_slice())%3B%0A%0A%2F%2F%20Next%2C%20we%20move%20to%20the%20second%20element%20of%20the%20slice%3A%0Aiter.next()%3B%0A%2F%2F%20Now%20%60as_slice%60%20returns%20%22%5B2%2C%203%5D%22%3A%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20iter.as_slice())%3B%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -254,7 +254,7 @@ iterator can continue to be used while this exists.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

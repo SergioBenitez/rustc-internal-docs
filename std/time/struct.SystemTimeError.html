@@ -64,7 +64,7 @@ lies.</p>
 <span class="kw">match</span> <span class="ident">sys_time</span>.<span class="ident">duration_since</span>(<span class="ident">new_sys_time</span>) {
     <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> {}
     <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;SystemTimeError difference: {:?}&quot;</span>, <span class="ident">e</span>.<span class="ident">duration</span>()),
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Athread%3A%3Asleep%3B%0Ause%20std%3A%3Atime%3A%3A%7BDuration%2C%20SystemTime%7D%3B%0A%0Alet%20sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Asleep(Duration%3A%3Afrom_secs(1))%3B%0Alet%20new_sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Amatch%20sys_time.duration_since(new_sys_time)%20%7B%0A%20%20%20%20Ok(_)%20%3D%3E%20%7B%7D%0A%20%20%20%20Err(e)%20%3D%3E%20println!(%22SystemTimeError%20difference%3A%20%7B%3A%3F%7D%22%2C%20e.duration())%2C%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3A%3Asleep%3B%0Ause%20std%3A%3Atime%3A%3A%7BDuration%2C%20SystemTime%7D%3B%0A%0Alet%20sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Asleep(Duration%3A%3Afrom_secs(1))%3B%0Alet%20new_sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Amatch%20sys_time.duration_since(new_sys_time)%20%7B%0A%20%20%20%20Ok(_)%20%3D%3E%20%7B%7D%0A%20%20%20%20Err(e)%20%3D%3E%20println!(%22SystemTimeError%20difference%3A%20%7B%3A%3F%7D%22%2C%20e.duration())%2C%0A%7D%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -89,7 +89,7 @@ in time than the <code>self</code> of the method call.</p>
 <span class="kw">match</span> <span class="ident">sys_time</span>.<span class="ident">duration_since</span>(<span class="ident">new_sys_time</span>) {
     <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> {}
     <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;SystemTimeError difference: {:?}&quot;</span>, <span class="ident">e</span>.<span class="ident">duration</span>()),
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Athread%3A%3Asleep%3B%0Ause%20std%3A%3Atime%3A%3A%7BDuration%2C%20SystemTime%7D%3B%0A%0Alet%20sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Asleep(Duration%3A%3Afrom_secs(1))%3B%0Alet%20new_sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Amatch%20sys_time.duration_since(new_sys_time)%20%7B%0A%20%20%20%20Ok(_)%20%3D%3E%20%7B%7D%0A%20%20%20%20Err(e)%20%3D%3E%20println!(%22SystemTimeError%20difference%3A%20%7B%3A%3F%7D%22%2C%20e.duration())%2C%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3A%3Asleep%3B%0Ause%20std%3A%3Atime%3A%3A%7BDuration%2C%20SystemTime%7D%3B%0A%0Alet%20sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Asleep(Duration%3A%3Afrom_secs(1))%3B%0Alet%20new_sys_time%20%3D%20SystemTime%3A%3Anow()%3B%0Amatch%20sys_time.duration_since(new_sys_time)%20%7B%0A%20%20%20%20Ok(_)%20%3D%3E%20%7B%7D%0A%20%20%20%20Err(e)%20%3D%3E%20println!(%22SystemTimeError%20difference%3A%20%7B%3A%3F%7D%22%2C%20e.duration())%2C%0A%7D%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -135,7 +135,7 @@ in time than the <code>self</code> of the method call.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

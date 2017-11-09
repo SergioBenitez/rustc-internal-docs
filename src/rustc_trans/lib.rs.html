@@ -387,6 +387,8 @@
 <span id="342">342</span>
 <span id="343">343</span>
 <span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -414,6 +416,7 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">custom_attribute</span>)]</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_attributes</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">i128_type</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">i128</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">libc</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">quote</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">rustc_diagnostic_macros</span>)]</span>
@@ -433,6 +436,7 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">owning_ref</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_allocator</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_apfloat</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_back</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_data_structures</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_incremental</span>;
@@ -758,7 +762,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait BitXorAssign</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'BitXorAssign', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait BitXorAssign</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.bitxor_assign">bitxor_assign</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'BitXorAssign', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -73,7 +73,7 @@
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">personality</span> <span class="op">=</span> <span class="ident">Personality</span> { <span class="ident">has_soul</span>: <span class="bool-val">false</span>, <span class="ident">likes_knitting</span>: <span class="bool-val">true</span> };
 <span class="ident">personality</span> <span class="op">^=</span> <span class="ident">Personality</span> { <span class="ident">has_soul</span>: <span class="bool-val">true</span>, <span class="ident">likes_knitting</span>: <span class="bool-val">true</span> };
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">personality</span>, <span class="ident">Personality</span> { <span class="ident">has_soul</span>: <span class="bool-val">true</span>, <span class="ident">likes_knitting</span>: <span class="bool-val">false</span>});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ABitXorAssign%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Astruct%20Personality%20%7B%0A%20%20%20%20has_soul%3A%20bool%2C%0A%20%20%20%20likes_knitting%3A%20bool%2C%0A%7D%0A%0Aimpl%20BitXorAssign%20for%20Personality%20%7B%0A%20%20%20%20fn%20bitxor_assign(%26mut%20self%2C%20rhs%3A%20Self)%20%7B%0A%20%20%20%20%20%20%20%20self.has_soul%20%5E%3D%20rhs.has_soul%3B%0A%20%20%20%20%20%20%20%20self.likes_knitting%20%5E%3D%20rhs.likes_knitting%3B%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20mut%20personality%20%3D%20Personality%20%7B%20has_soul%3A%20false%2C%20likes_knitting%3A%20true%20%7D%3B%0Apersonality%20%5E%3D%20Personality%20%7B%20has_soul%3A%20true%2C%20likes_knitting%3A%20true%20%7D%3B%0Aassert_eq!(personality%2C%20Personality%20%7B%20has_soul%3A%20true%2C%20likes_knitting%3A%20false%7D)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">personality</span>, <span class="ident">Personality</span> { <span class="ident">has_soul</span>: <span class="bool-val">true</span>, <span class="ident">likes_knitting</span>: <span class="bool-val">false</span>});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ABitXorAssign%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Astruct%20Personality%20%7B%0A%20%20%20%20has_soul%3A%20bool%2C%0A%20%20%20%20likes_knitting%3A%20bool%2C%0A%7D%0A%0Aimpl%20BitXorAssign%20for%20Personality%20%7B%0A%20%20%20%20fn%20bitxor_assign(%26mut%20self%2C%20rhs%3A%20Self)%20%7B%0A%20%20%20%20%20%20%20%20self.has_soul%20%5E%3D%20rhs.has_soul%3B%0A%20%20%20%20%20%20%20%20self.likes_knitting%20%5E%3D%20rhs.likes_knitting%3B%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20mut%20personality%20%3D%20Personality%20%7B%20has_soul%3A%20false%2C%20likes_knitting%3A%20true%20%7D%3B%0Apersonality%20%5E%3D%20Personality%20%7B%20has_soul%3A%20true%2C%20likes_knitting%3A%20true%20%7D%3B%0Aassert_eq!(personality%2C%20Personality%20%7B%20has_soul%3A%20true%2C%20likes_knitting%3A%20false%7D)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -162,7 +162,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

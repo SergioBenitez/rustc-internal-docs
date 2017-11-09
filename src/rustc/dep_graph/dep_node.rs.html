@@ -828,36 +828,6 @@
 <span id="783">783</span>
 <span id="784">784</span>
 <span id="785">785</span>
-<span id="786">786</span>
-<span id="787">787</span>
-<span id="788">788</span>
-<span id="789">789</span>
-<span id="790">790</span>
-<span id="791">791</span>
-<span id="792">792</span>
-<span id="793">793</span>
-<span id="794">794</span>
-<span id="795">795</span>
-<span id="796">796</span>
-<span id="797">797</span>
-<span id="798">798</span>
-<span id="799">799</span>
-<span id="800">800</span>
-<span id="801">801</span>
-<span id="802">802</span>
-<span id="803">803</span>
-<span id="804">804</span>
-<span id="805">805</span>
-<span id="806">806</span>
-<span id="807">807</span>
-<span id="808">808</span>
-<span id="809">809</span>
-<span id="810">810</span>
-<span id="811">811</span>
-<span id="812">812</span>
-<span id="813">813</span>
-<span id="814">814</span>
-<span id="815">815</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1320,10 +1290,6 @@
     <span class="comment">// Represents metadata from an extern crate.</span>
     [<span class="ident">input</span>] <span class="ident">CrateMetadata</span>(<span class="ident">CrateNum</span>),
 
-    <span class="comment">// Represents some artifact that we save to disk. Note that these</span>
-    <span class="comment">// do not have a def-id as part of their identifier.</span>
-    [] <span class="ident">WorkProduct</span>(<span class="ident">WorkProductId</span>),
-
     <span class="comment">// Represents different phases in the compiler.</span>
     [] <span class="ident">RegionScopeTree</span>(<span class="ident">DefId</span>),
     [<span class="ident">eval_always</span>] <span class="ident">Coherence</span>,
@@ -1398,38 +1364,19 @@
     <span class="comment">// The set of impls for a given trait.</span>
     [] <span class="ident">TraitImpls</span>(<span class="ident">DefId</span>),
 
-    [] <span class="ident">AllLocalTraitImpls</span>,
+    [<span class="ident">input</span>] <span class="ident">AllLocalTraitImpls</span>,
 
-    <span class="comment">// Trait selection cache is a little funny. Given a trait</span>
-    <span class="comment">// reference like `Foo: SomeTrait&lt;Bar&gt;`, there could be</span>
-    <span class="comment">// arbitrarily many def-ids to map on in there (e.g., `Foo`,</span>
-    <span class="comment">// `SomeTrait`, `Bar`). We could have a vector of them, but it</span>
-    <span class="comment">// requires heap-allocation, and trait sel in general can be a</span>
-    <span class="comment">// surprisingly hot path. So instead we pick two def-ids: the</span>
-    <span class="comment">// trait def-id, and the first def-id in the input types. If there</span>
-    <span class="comment">// is no def-id in the input types, then we use the trait def-id</span>
-    <span class="comment">// again. So for example:</span>
-    <span class="comment">//</span>
-    <span class="comment">// - `i32: Clone` -&gt; `TraitSelect { trait_def_id: Clone, self_def_id: Clone }`</span>
-    <span class="comment">// - `u32: Clone` -&gt; `TraitSelect { trait_def_id: Clone, self_def_id: Clone }`</span>
-    <span class="comment">// - `Clone: Clone` -&gt; `TraitSelect { trait_def_id: Clone, self_def_id: Clone }`</span>
-    <span class="comment">// - `Vec&lt;i32&gt;: Clone` -&gt; `TraitSelect { trait_def_id: Clone, self_def_id: Vec }`</span>
-    <span class="comment">// - `String: Clone` -&gt; `TraitSelect { trait_def_id: Clone, self_def_id: String }`</span>
-    <span class="comment">// - `Foo: Trait&lt;Bar&gt;` -&gt; `TraitSelect { trait_def_id: Trait, self_def_id: Foo }`</span>
-    <span class="comment">// - `Foo: Trait&lt;i32&gt;` -&gt; `TraitSelect { trait_def_id: Trait, self_def_id: Foo }`</span>
-    <span class="comment">// - `(Foo, Bar): Trait` -&gt; `TraitSelect { trait_def_id: Trait, self_def_id: Foo }`</span>
-    <span class="comment">// - `i32: Trait&lt;Foo&gt;` -&gt; `TraitSelect { trait_def_id: Trait, self_def_id: Foo }`</span>
-    <span class="comment">//</span>
-    <span class="comment">// You can see that we map many trait refs to the same</span>
-    <span class="comment">// trait-select node.  This is not a problem, it just means</span>
-    <span class="comment">// imprecision in our dep-graph tracking.  The important thing is</span>
-    <span class="comment">// that for any given trait-ref, we always map to the **same**</span>
-    <span class="comment">// trait-select node.</span>
     [<span class="ident">anon</span>] <span class="ident">TraitSelect</span>,
 
     [] <span class="ident">ParamEnv</span>(<span class="ident">DefId</span>),
     [] <span class="ident">DescribeDef</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">DefSpan</span>(<span class="ident">DefId</span>),
+
+    <span class="comment">// FIXME(mw): DefSpans are not really inputs since they are derived from</span>
+    <span class="comment">// HIR. But at the moment HIR hashing still contains some hacks that allow</span>
+    <span class="comment">// to make type debuginfo to be source location independent. Declaring</span>
+    <span class="comment">// DefSpan an input makes sure that changes to these are always detected</span>
+    <span class="comment">// regardless of HIR hashing.</span>
+    [<span class="ident">input</span>] <span class="ident">DefSpan</span>(<span class="ident">DefId</span>),
     [] <span class="ident">LookupStability</span>(<span class="ident">DefId</span>),
     [] <span class="ident">LookupDeprecationEntry</span>(<span class="ident">DefId</span>),
     [] <span class="ident">ItemBodyNestedBodies</span>(<span class="ident">DefId</span>),
@@ -1449,7 +1396,7 @@
     [<span class="ident">eval_always</span>] <span class="ident">LintLevels</span>,
     [] <span class="ident">Specializes</span> { <span class="ident">impl1</span>: <span class="ident">DefId</span>, <span class="ident">impl2</span>: <span class="ident">DefId</span> },
     [<span class="ident">input</span>] <span class="ident">InScopeTraits</span>(<span class="ident">DefIndex</span>),
-    [] <span class="ident">ModuleExports</span>(<span class="ident">DefId</span>),
+    [<span class="ident">input</span>] <span class="ident">ModuleExports</span>(<span class="ident">DefId</span>),
     [] <span class="ident">IsSanitizerRuntime</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">IsProfilerRuntime</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">GetPanicStrategy</span>(<span class="ident">CrateNum</span>),
@@ -1459,9 +1406,9 @@
     [] <span class="ident">NativeLibraries</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">PluginRegistrarFn</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">DeriveRegistrarFn</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">CrateDisambiguator</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">CrateHash</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">OriginalCrateName</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">CrateDisambiguator</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">CrateHash</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">OriginalCrateName</span>(<span class="ident">CrateNum</span>),
 
     [] <span class="ident">ImplementationsOfTrait</span> { <span class="ident">krate</span>: <span class="ident">CrateNum</span>, <span class="ident">trait_id</span>: <span class="ident">DefId</span> },
     [] <span class="ident">AllTraitImplementations</span>(<span class="ident">CrateNum</span>),
@@ -1469,27 +1416,27 @@
     [] <span class="ident">IsDllimportForeignItem</span>(<span class="ident">DefId</span>),
     [] <span class="ident">IsStaticallyIncludedForeignItem</span>(<span class="ident">DefId</span>),
     [] <span class="ident">NativeLibraryKind</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">LinkArgs</span>,
+    [<span class="ident">input</span>] <span class="ident">LinkArgs</span>,
 
-    [] <span class="ident">NamedRegion</span>(<span class="ident">DefIndex</span>),
-    [] <span class="ident">IsLateBound</span>(<span class="ident">DefIndex</span>),
-    [] <span class="ident">ObjectLifetimeDefaults</span>(<span class="ident">DefIndex</span>),
+    [<span class="ident">input</span>] <span class="ident">NamedRegion</span>(<span class="ident">DefIndex</span>),
+    [<span class="ident">input</span>] <span class="ident">IsLateBound</span>(<span class="ident">DefIndex</span>),
+    [<span class="ident">input</span>] <span class="ident">ObjectLifetimeDefaults</span>(<span class="ident">DefIndex</span>),
 
     [] <span class="ident">Visibility</span>(<span class="ident">DefId</span>),
     [] <span class="ident">DepKind</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">CrateName</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">CrateName</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">ItemChildren</span>(<span class="ident">DefId</span>),
     [] <span class="ident">ExternModStmtCnum</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">GetLangItems</span>,
+    [<span class="ident">input</span>] <span class="ident">GetLangItems</span>,
     [] <span class="ident">DefinedLangItems</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">MissingLangItems</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">ExternConstBody</span>(<span class="ident">DefId</span>),
     [] <span class="ident">VisibleParentMap</span>,
     [] <span class="ident">MissingExternCrateItem</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">UsedCrateSource</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">PostorderCnums</span>,
-    [] <span class="ident">HasCloneClosures</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">HasCopyClosures</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">PostorderCnums</span>,
+    [<span class="ident">input</span>] <span class="ident">HasCloneClosures</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">HasCopyClosures</span>(<span class="ident">CrateNum</span>),
 
     <span class="comment">// This query is not expected to have inputs -- as a result, it&#39;s</span>
     <span class="comment">// not a good candidate for &quot;replay&quot; because it&#39;s essentially a</span>
@@ -1499,11 +1446,11 @@
     <span class="comment">// may save a bit of time.</span>
     [<span class="ident">anon</span>] <span class="ident">EraseRegionsTy</span> { <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
 
-    [] <span class="ident">Freevars</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">MaybeUnusedTraitImport</span>(<span class="ident">DefId</span>),
+    [<span class="ident">input</span>] <span class="ident">Freevars</span>(<span class="ident">DefId</span>),
+    [<span class="ident">input</span>] <span class="ident">MaybeUnusedTraitImport</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MaybeUnusedExternCrates</span>,
     [] <span class="ident">StabilityIndex</span>,
-    [] <span class="ident">AllCrateNums</span>,
+    [<span class="ident">input</span>] <span class="ident">AllCrateNums</span>,
     [] <span class="ident">ExportedSymbols</span>(<span class="ident">CrateNum</span>),
     [<span class="ident">eval_always</span>] <span class="ident">CollectAndPartitionTranslationItems</span>,
     [] <span class="ident">ExportName</span>(<span class="ident">DefId</span>),
@@ -1511,7 +1458,7 @@
     [] <span class="ident">IsTranslatedFunction</span>(<span class="ident">DefId</span>),
     [] <span class="ident">CodegenUnit</span>(<span class="ident">InternedString</span>),
     [] <span class="ident">CompileCodegenUnit</span>(<span class="ident">InternedString</span>),
-    [] <span class="ident">OutputFilenames</span>,
+    [<span class="ident">input</span>] <span class="ident">OutputFilenames</span>,
     [<span class="ident">anon</span>] <span class="ident">NormalizeTy</span>,
     <span class="comment">// We use this for most things when incr. comp. is turned off.</span>
     [] <span class="ident">Null</span>,
@@ -1661,13 +1608,6 @@
             <span class="ident">hash</span>: <span class="ident">fingerprint</span>
         }
     }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_dep_node</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DepNode</span> {
-        <span class="ident">DepNode</span> {
-            <span class="ident">kind</span>: <span class="ident">DepKind</span>::<span class="ident">WorkProduct</span>,
-            <span class="ident">hash</span>: <span class="self">self</span>.<span class="ident">hash</span>,
-        }
-    }
 }
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> ::<span class="ident">dep_graph</span>::<span class="ident">WorkProductId</span> {
@@ -1700,7 +1640,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

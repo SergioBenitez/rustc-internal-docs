@@ -65,7 +65,7 @@ measurement lies, and using <code>UNIX_EPOCH + duration</code> can be used to cr
 <span class="kw">match</span> <span class="ident">SystemTime</span>::<span class="ident">now</span>().<span class="ident">duration_since</span>(<span class="ident">UNIX_EPOCH</span>) {
     <span class="prelude-val">Ok</span>(<span class="ident">n</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;1970-01-01 00:00:00 UTC was {} seconds ago!&quot;</span>, <span class="ident">n</span>.<span class="ident">as_secs</span>()),
     <span class="prelude-val">Err</span>(_) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;SystemTime before UNIX EPOCH!&quot;</span>),
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Atime%3A%3A%7BSystemTime%2C%20UNIX_EPOCH%7D%3B%0A%0Amatch%20SystemTime%3A%3Anow().duration_since(UNIX_EPOCH)%20%7B%0A%20%20%20%20Ok(n)%20%3D%3E%20println!(%221970-01-01%2000%3A00%3A00%20UTC%20was%20%7B%7D%20seconds%20ago!%22%2C%20n.as_secs())%2C%0A%20%20%20%20Err(_)%20%3D%3E%20panic!(%22SystemTime%20before%20UNIX%20EPOCH!%22)%2C%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Atime%3A%3A%7BSystemTime%2C%20UNIX_EPOCH%7D%3B%0A%0Amatch%20SystemTime%3A%3Anow().duration_since(UNIX_EPOCH)%20%7B%0A%20%20%20%20Ok(n)%20%3D%3E%20println!(%221970-01-01%2000%3A00%3A00%20UTC%20was%20%7B%7D%20seconds%20ago!%22%2C%20n.as_secs())%2C%0A%20%20%20%20Err(_)%20%3D%3E%20panic!(%22SystemTime%20before%20UNIX%20EPOCH!%22)%2C%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -91,7 +91,7 @@ measurement lies, and using <code>UNIX_EPOCH + duration</code> can be used to cr
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

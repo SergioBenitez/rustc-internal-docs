@@ -437,6 +437,23 @@
 <span id="392">392</span>
 <span id="393">393</span>
 <span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -461,25 +478,42 @@
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">error_reporting</span>::<span class="ident">util</span>::<span class="ident">AnonymousArgInfo</span>;
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="comment">// This method prints the error message for lifetime errors when both the concerned regions</span>
-    <span class="comment">// are anonymous.</span>
-    <span class="comment">// Consider a case where we have</span>
-    <span class="comment">// fn foo(x: &amp;mut Vec&lt;&amp;u8&gt;, y: &amp;u8)</span>
-    <span class="comment">//    { x.push(y); }.</span>
-    <span class="comment">// The example gives</span>
-    <span class="comment">// fn foo(x: &amp;mut Vec&lt;&amp;u8&gt;, y: &amp;u8) {</span>
-    <span class="comment">//                    ---      --- these references are declared with different lifetimes...</span>
-    <span class="comment">//            x.push(y);</span>
-    <span class="comment">//            ^ ...but data from `y` flows into `x` here</span>
-    <span class="comment">// It has been extended for the case of structs too.</span>
-    <span class="comment">// Consider the example</span>
-    <span class="comment">// struct Ref&lt;&#39;a&gt; { x: &amp;&#39;a u32 }</span>
-    <span class="comment">// fn foo(mut x: Vec&lt;Ref&gt;, y: Ref) {</span>
-    <span class="comment">//                   ---      --- these structs are declared with different lifetimes...</span>
-    <span class="comment">//               x.push(y);</span>
-    <span class="comment">//               ^ ...but data from `y` flows into `x` here</span>
-    <span class="comment">// }</span>
-    <span class="comment">// It will later be extended to trait objects.</span>
+    <span class="doccomment">/// Print the error message for lifetime errors when both the concerned regions are anonymous.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Consider a case where we have</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```no_run</span>
+    <span class="doccomment">/// fn foo(x: &amp;mut Vec&lt;&amp;u8&gt;, y: &amp;u8) {</span>
+    <span class="doccomment">///     x.push(y);</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The example gives</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```text</span>
+    <span class="doccomment">/// fn foo(x: &amp;mut Vec&lt;&amp;u8&gt;, y: &amp;u8) {</span>
+    <span class="doccomment">///                    ---      --- these references are declared with different lifetimes...</span>
+    <span class="doccomment">///     x.push(y);</span>
+    <span class="doccomment">///     ^ ...but data from `y` flows into `x` here</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// It has been extended for the case of structs too.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Consider the example</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```no_run</span>
+    <span class="doccomment">/// struct Ref&lt;&#39;a&gt; { x: &amp;&#39;a u32 }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```text</span>
+    <span class="doccomment">/// fn foo(mut x: Vec&lt;Ref&gt;, y: Ref) {</span>
+    <span class="doccomment">///                   ---      --- these structs are declared with different lifetimes...</span>
+    <span class="doccomment">///     x.push(y);</span>
+    <span class="doccomment">///     ^ ...but data from `y` flows into `x` here</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ````</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// It will later be extended to trait objects.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">try_report_anon_anon_conflict</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">error</span>: <span class="kw-2">&amp;</span><span class="ident">RegionResolutionError</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">let</span> (<span class="ident">span</span>, <span class="ident">sub</span>, <span class="ident">sup</span>) <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">error</span> {
             <span class="ident">ConcreteFailure</span>(<span class="kw-2">ref</span> <span class="ident">origin</span>, <span class="ident">sub</span>, <span class="ident">sup</span>) <span class="op">=&gt;</span> (<span class="ident">origin</span>.<span class="ident">span</span>(), <span class="ident">sub</span>, <span class="ident">sup</span>),
@@ -858,7 +892,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

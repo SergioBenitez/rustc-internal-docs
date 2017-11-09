@@ -6506,6 +6506,50 @@
 <span id="6461">6461</span>
 <span id="6462">6462</span>
 <span id="6463">6463</span>
+<span id="6464">6464</span>
+<span id="6465">6465</span>
+<span id="6466">6466</span>
+<span id="6467">6467</span>
+<span id="6468">6468</span>
+<span id="6469">6469</span>
+<span id="6470">6470</span>
+<span id="6471">6471</span>
+<span id="6472">6472</span>
+<span id="6473">6473</span>
+<span id="6474">6474</span>
+<span id="6475">6475</span>
+<span id="6476">6476</span>
+<span id="6477">6477</span>
+<span id="6478">6478</span>
+<span id="6479">6479</span>
+<span id="6480">6480</span>
+<span id="6481">6481</span>
+<span id="6482">6482</span>
+<span id="6483">6483</span>
+<span id="6484">6484</span>
+<span id="6485">6485</span>
+<span id="6486">6486</span>
+<span id="6487">6487</span>
+<span id="6488">6488</span>
+<span id="6489">6489</span>
+<span id="6490">6490</span>
+<span id="6491">6491</span>
+<span id="6492">6492</span>
+<span id="6493">6493</span>
+<span id="6494">6494</span>
+<span id="6495">6495</span>
+<span id="6496">6496</span>
+<span id="6497">6497</span>
+<span id="6498">6498</span>
+<span id="6499">6499</span>
+<span id="6500">6500</span>
+<span id="6501">6501</span>
+<span id="6502">6502</span>
+<span id="6503">6503</span>
+<span id="6504">6504</span>
+<span id="6505">6505</span>
+<span id="6506">6506</span>
+<span id="6507">6507</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -7483,11 +7527,12 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eat_to_tokens</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">kets</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Token</span>]) {
         <span class="kw">let</span> <span class="ident">handler</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">diagnostic</span>();
 
-        <span class="self">self</span>.<span class="ident">parse_seq_to_before_tokens</span>(<span class="ident">kets</span>,
-                                        <span class="ident">SeqSep</span>::<span class="ident">none</span>(),
-                                        <span class="ident">TokenExpectType</span>::<span class="ident">Expect</span>,
-                                        <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="prelude-val">Ok</span>(<span class="ident">p</span>.<span class="ident">parse_token_tree</span>()),
-                                        <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">e</span><span class="op">|</span> <span class="ident">handler</span>.<span class="ident">cancel</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">e</span>));
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">err</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_tokens</span>(<span class="ident">kets</span>,
+                                                                  <span class="ident">SeqSep</span>::<span class="ident">none</span>(),
+                                                                  <span class="ident">TokenExpectType</span>::<span class="ident">Expect</span>,
+                                                                  <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="prelude-val">Ok</span>(<span class="ident">p</span>.<span class="ident">parse_token_tree</span>())) {
+            <span class="ident">handler</span>.<span class="ident">cancel</span>(<span class="ident">err</span>);
+        }
     }
 
     <span class="doccomment">/// Parse a sequence, including the closing delimiter. The function</span>
@@ -7500,7 +7545,7 @@
                                   <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span> <span class="kw">where</span>
         <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>,  <span class="ident">T</span><span class="op">&gt;</span>,
     {
-        <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="ident">ket</span>, <span class="ident">sep</span>, <span class="ident">f</span>);
+        <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="ident">ket</span>, <span class="ident">sep</span>, <span class="ident">f</span>)<span class="question-mark">?</span>;
         <span class="self">self</span>.<span class="ident">bump</span>();
         <span class="prelude-val">Ok</span>(<span class="ident">val</span>)
     }
@@ -7512,22 +7557,19 @@
                                          <span class="ident">ket</span>: <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Token</span>,
                                          <span class="ident">sep</span>: <span class="ident">SeqSep</span>,
                                          <span class="ident">f</span>: <span class="ident">F</span>)
-                                         <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>,  <span class="ident">T</span><span class="op">&gt;</span>
+                                         <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>
     {
-        <span class="self">self</span>.<span class="ident">parse_seq_to_before_tokens</span>(<span class="kw-2">&amp;</span>[<span class="ident">ket</span>], <span class="ident">sep</span>, <span class="ident">TokenExpectType</span>::<span class="ident">Expect</span>, <span class="ident">f</span>, <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">emit</span>())
+        <span class="self">self</span>.<span class="ident">parse_seq_to_before_tokens</span>(<span class="kw-2">&amp;</span>[<span class="ident">ket</span>], <span class="ident">sep</span>, <span class="ident">TokenExpectType</span>::<span class="ident">Expect</span>, <span class="ident">f</span>)
     }
 
-    <span class="comment">// `fe` is an error handler.</span>
-    <span class="kw">fn</span> <span class="ident">parse_seq_to_before_tokens</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span>, <span class="ident">Fe</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+    <span class="kw">fn</span> <span class="ident">parse_seq_to_before_tokens</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                             <span class="ident">kets</span>: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Token</span>],
                                             <span class="ident">sep</span>: <span class="ident">SeqSep</span>,
                                             <span class="ident">expect</span>: <span class="ident">TokenExpectType</span>,
-                                            <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>,
-                                            <span class="kw-2">mut</span> <span class="ident">fe</span>: <span class="ident">Fe</span>)
-                                            <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>,  <span class="ident">T</span><span class="op">&gt;</span>,
-              <span class="ident">Fe</span>: <span class="ident">FnMut</span>(<span class="ident">DiagnosticBuilder</span>)
+                                            <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>)
+                                            <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span><span class="op">&gt;</span>
     {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">first</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
@@ -7540,14 +7582,14 @@
                 <span class="kw">if</span> <span class="ident">first</span> {
                     <span class="ident">first</span> <span class="op">=</span> <span class="bool-val">false</span>;
                 } <span class="kw">else</span> {
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">expect</span>(<span class="ident">t</span>) {
-                        <span class="ident">fe</span>(<span class="ident">e</span>);
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="kw-2">mut</span> <span class="ident">e</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">expect</span>(<span class="ident">t</span>) {
                         <span class="comment">// Attempt to keep parsing if it was a similar separator</span>
                         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">tokens</span>) <span class="op">=</span> <span class="ident">t</span>.<span class="ident">similar_tokens</span>() {
                             <span class="kw">if</span> <span class="ident">tokens</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">token</span>) {
                                 <span class="self">self</span>.<span class="ident">bump</span>();
                             }
                         }
+                        <span class="ident">e</span>.<span class="ident">emit</span>();
                         <span class="comment">// Attempt to keep parsing if it was an omitted separator</span>
                         <span class="kw">match</span> <span class="ident">f</span>(<span class="self">self</span>) {
                             <span class="prelude-val">Ok</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> {
@@ -7571,16 +7613,11 @@
                 <span class="kw">break</span>;
             }
 
-            <span class="kw">match</span> <span class="ident">f</span>(<span class="self">self</span>) {
-                <span class="prelude-val">Ok</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">v</span>.<span class="ident">push</span>(<span class="ident">t</span>),
-                <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">fe</span>(<span class="ident">e</span>);
-                    <span class="kw">break</span>;
-                }
-            }
+            <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">f</span>(<span class="self">self</span>)<span class="question-mark">?</span>;
+            <span class="ident">v</span>.<span class="ident">push</span>(<span class="ident">t</span>);
         }
 
-        <span class="ident">v</span>
+        <span class="prelude-val">Ok</span>(<span class="ident">v</span>)
     }
 
     <span class="doccomment">/// Parse a sequence, including the closing delimiter. The function</span>
@@ -7595,7 +7632,7 @@
         <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Parser</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>,  <span class="ident">T</span><span class="op">&gt;</span>,
     {
         <span class="self">self</span>.<span class="ident">expect</span>(<span class="ident">bra</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="ident">ket</span>, <span class="ident">sep</span>, <span class="ident">f</span>);
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="ident">ket</span>, <span class="ident">sep</span>, <span class="ident">f</span>)<span class="question-mark">?</span>;
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">ket</span> {
             <span class="self">self</span>.<span class="ident">bump</span>();
         }
@@ -7614,7 +7651,7 @@
     {
         <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
         <span class="self">self</span>.<span class="ident">expect</span>(<span class="ident">bra</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="ident">ket</span>, <span class="ident">sep</span>, <span class="ident">f</span>);
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="ident">ket</span>, <span class="ident">sep</span>, <span class="ident">f</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">hi</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
         <span class="self">self</span>.<span class="ident">bump</span>();
         <span class="prelude-val">Ok</span>(<span class="ident">respan</span>(<span class="ident">lo</span>.<span class="ident">to</span>(<span class="ident">hi</span>), <span class="ident">result</span>))
@@ -8060,7 +8097,7 @@
         };
 
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>);
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">node</span>, <span class="ident">span</span>: <span class="ident">span</span>, <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span> };
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">Ty</span> { <span class="ident">node</span>, <span class="ident">span</span>, <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span> };
 
         <span class="comment">// Try to recover from use of `+` with incorrect priority.</span>
         <span class="self">self</span>.<span class="ident">maybe_recover_from_bad_type_plus</span>(<span class="ident">allow_plus</span>, <span class="kw-2">&amp;</span><span class="ident">ty</span>)<span class="question-mark">?</span>;
@@ -8377,8 +8414,11 @@
         <span class="self">self</span>.<span class="ident">parse_path</span>(<span class="ident">style</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">parse_path_segments</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">segments</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathSegment</span><span class="op">&gt;</span>, <span class="ident">style</span>: <span class="ident">PathStyle</span>,
-                           <span class="ident">enable_warning</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, ()<span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">parse_path_segments</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                           <span class="ident">segments</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathSegment</span><span class="op">&gt;</span>,
+                           <span class="ident">style</span>: <span class="ident">PathStyle</span>,
+                           <span class="ident">enable_warning</span>: <span class="ident">bool</span>)
+                           <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, ()<span class="op">&gt;</span> {
         <span class="kw">loop</span> {
             <span class="ident">segments</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">parse_path_segment</span>(<span class="ident">style</span>, <span class="ident">enable_warning</span>)<span class="question-mark">?</span>);
 
@@ -8423,9 +8463,12 @@
             } <span class="kw">else</span> {
                 <span class="comment">// `(T, U) -&gt; R`</span>
                 <span class="self">self</span>.<span class="ident">bump</span>(); <span class="comment">// `(`</span>
-                <span class="kw">let</span> <span class="ident">inputs</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_end</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>),
-                                                   <span class="ident">SeqSep</span>::<span class="ident">trailing_allowed</span>(<span class="ident">token</span>::<span class="ident">Comma</span>),
-                                                   <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">parse_ty</span>())<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">inputs</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_tokens</span>(
+                    <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>)],
+                    <span class="ident">SeqSep</span>::<span class="ident">trailing_allowed</span>(<span class="ident">token</span>::<span class="ident">Comma</span>),
+                    <span class="ident">TokenExpectType</span>::<span class="ident">Expect</span>,
+                    <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">parse_ty</span>())<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">bump</span>(); <span class="comment">// `)`</span>
                 <span class="kw">let</span> <span class="ident">output</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">RArrow</span>) {
                     <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">parse_ty_no_plus</span>()<span class="question-mark">?</span>)
                 } <span class="kw">else</span> {
@@ -9824,9 +9867,11 @@
     }
 
     <span class="doccomment">/// Parse the RHS of a local variable declaration (e.g. &#39;= 14;&#39;)</span>
-    <span class="kw">fn</span> <span class="ident">parse_initializer</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">parse_initializer</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">skip_eq</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Eq</span>) {
             <span class="self">self</span>.<span class="ident">bump</span>();
+            <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">parse_expr</span>()<span class="question-mark">?</span>))
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">skip_eq</span> {
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">parse_expr</span>()<span class="question-mark">?</span>))
         } <span class="kw">else</span> {
             <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
@@ -10234,12 +10279,56 @@
         <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
         <span class="kw">let</span> <span class="ident">pat</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_pat</span>()<span class="question-mark">?</span>;
 
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Colon</span>) {
-            <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">parse_ty</span>()<span class="question-mark">?</span>)
+        <span class="kw">let</span> (<span class="ident">err</span>, <span class="ident">ty</span>) <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Colon</span>) {
+            <span class="comment">// Save the state of the parser before parsing type normally, in case there is a `:`</span>
+            <span class="comment">// instead of an `=` typo.</span>
+            <span class="kw">let</span> <span class="ident">parser_snapshot_before_type</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
+            <span class="kw">let</span> <span class="ident">colon_sp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prev_span</span>;
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">parse_ty</span>() {
+                <span class="prelude-val">Ok</span>(<span class="ident">ty</span>) <span class="op">=&gt;</span> (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">ty</span>)),
+                <span class="prelude-val">Err</span>(<span class="kw-2">mut</span> <span class="ident">err</span>) <span class="op">=&gt;</span> {
+                    <span class="comment">// Rewind to before attempting to parse the type and continue parsing</span>
+                    <span class="kw">let</span> <span class="ident">parser_snapshot_after_type</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clone</span>();
+                    <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="self">self</span>, <span class="ident">parser_snapshot_before_type</span>);
+
+                    <span class="kw">let</span> <span class="ident">snippet</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_snippet</span>(<span class="ident">pat</span>.<span class="ident">span</span>).<span class="ident">unwrap</span>();
+                    <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">pat</span>.<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;while parsing the type for `{}`&quot;</span>, <span class="ident">snippet</span>));
+                    (<span class="prelude-val">Some</span>((<span class="ident">parser_snapshot_after_type</span>, <span class="ident">colon_sp</span>, <span class="ident">err</span>)), <span class="prelude-val">None</span>)
+                }
+            }
         } <span class="kw">else</span> {
-            <span class="prelude-val">None</span>
+            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
         };
-        <span class="kw">let</span> <span class="ident">init</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_initializer</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">init</span> <span class="op">=</span> <span class="kw">match</span> (<span class="self">self</span>.<span class="ident">parse_initializer</span>(<span class="ident">err</span>.<span class="ident">is_some</span>()), <span class="ident">err</span>) {
+            (<span class="prelude-val">Ok</span>(<span class="ident">init</span>), <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {  <span class="comment">// init parsed, ty parsed</span>
+                <span class="ident">init</span>
+            }
+            (<span class="prelude-val">Ok</span>(<span class="ident">init</span>), <span class="prelude-val">Some</span>((_, <span class="ident">colon_sp</span>, <span class="kw-2">mut</span> <span class="ident">err</span>))) <span class="op">=&gt;</span> {  <span class="comment">// init parsed, ty error</span>
+                <span class="comment">// Could parse the type as if it were the initializer, it is likely there was a</span>
+                <span class="comment">// typo in the code: `:` instead of `=`. Add suggestion and emit the error.</span>
+                <span class="ident">err</span>.<span class="ident">span_suggestion_short</span>(<span class="ident">colon_sp</span>,
+                                          <span class="string">&quot;use `=` if you meant to assign&quot;</span>,
+                                          <span class="string">&quot;=&quot;</span>.<span class="ident">to_string</span>());
+                <span class="ident">err</span>.<span class="ident">emit</span>();
+                <span class="comment">// As this was parsed successfuly, continue as if the code has been fixed for the</span>
+                <span class="comment">// rest of the file. It will still fail due to the emitted error, but we avoid</span>
+                <span class="comment">// extra noise.</span>
+                <span class="ident">init</span>
+            }
+            (<span class="prelude-val">Err</span>(<span class="kw-2">mut</span> <span class="ident">init_err</span>), <span class="prelude-val">Some</span>((<span class="ident">snapshot</span>, _, <span class="ident">ty_err</span>))) <span class="op">=&gt;</span> {  <span class="comment">// init error, ty error</span>
+                <span class="ident">init_err</span>.<span class="ident">cancel</span>();
+                <span class="comment">// Couldn&#39;t parse the type nor the initializer, only raise the type error and</span>
+                <span class="comment">// return to the parser state before parsing the type as the initializer.</span>
+                <span class="comment">// let x: &lt;parse_error&gt;;</span>
+                <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="self">self</span>, <span class="ident">snapshot</span>);
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ty_err</span>);
+            }
+            (<span class="prelude-val">Err</span>(<span class="ident">err</span>), <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {  <span class="comment">// init error, ty parsed</span>
+                <span class="comment">// Couldn&#39;t parse the initializer and we&#39;re not attempting to recover a failed</span>
+                <span class="comment">// parse of the type, return the error.</span>
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>);
+            }
+        };
         <span class="kw">let</span> <span class="ident">hi</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span> <span class="op">==</span> <span class="ident">token</span>::<span class="ident">Semi</span> {
             <span class="self">self</span>.<span class="ident">span</span>
         } <span class="kw">else</span> {
@@ -11306,14 +11395,14 @@
             } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Comma</span>) {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fn_inputs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">self_arg</span>];
                 <span class="ident">fn_inputs</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(
-                    <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>), <span class="ident">sep</span>, <span class="ident">parse_arg_fn</span>)
+                    <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>), <span class="ident">sep</span>, <span class="ident">parse_arg_fn</span>)<span class="question-mark">?</span>
                 );
                 <span class="ident">fn_inputs</span>
             } <span class="kw">else</span> {
                 <span class="kw">return</span> <span class="self">self</span>.<span class="ident">unexpected</span>();
             }
         } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>), <span class="ident">sep</span>, <span class="ident">parse_arg_fn</span>)
+            <span class="self">self</span>.<span class="ident">parse_seq_to_before_end</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Paren</span>), <span class="ident">sep</span>, <span class="ident">parse_arg_fn</span>)<span class="question-mark">?</span>
         };
 
         <span class="comment">// Parse closing paren and return type.</span>
@@ -11336,9 +11425,8 @@
                     <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">Or</span>), <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">OrOr</span>],
                     <span class="ident">SeqSep</span>::<span class="ident">trailing_allowed</span>(<span class="ident">token</span>::<span class="ident">Comma</span>),
                     <span class="ident">TokenExpectType</span>::<span class="ident">NoExpect</span>,
-                    <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">parse_fn_block_arg</span>(),
-                    <span class="op">|</span><span class="kw-2">mut</span> <span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">emit</span>()
-                );
+                    <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">parse_fn_block_arg</span>()
+                )<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">expect_or</span>()<span class="question-mark">?</span>;
                 <span class="ident">args</span>
             }
@@ -12996,7 +13084,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

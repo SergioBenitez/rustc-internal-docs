@@ -113,7 +113,7 @@ other <a href="enum.Ordering.html#variant.SeqCst"><code>SeqCst</code></a> operat
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unlock</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">flag</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering</span>::<span class="ident">Release</span>);
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3AAtomicBool%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3Afence%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3AOrdering%3B%0A%0A%2F%2F%20A%20mutual%20exclusion%20primitive%20based%20on%20spinlock.%0Apub%20struct%20Mutex%20%7B%0A%20%20%20%20flag%3A%20AtomicBool%2C%0A%7D%0A%0Aimpl%20Mutex%20%7B%0A%20%20%20%20pub%20fn%20new()%20-%3E%20Mutex%20%7B%0A%20%20%20%20%20%20%20%20Mutex%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20flag%3A%20AtomicBool%3A%3Anew(false)%2C%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20pub%20fn%20lock(%26self)%20%7B%0A%20%20%20%20%20%20%20%20while%20!self.flag.compare_and_swap(false%2C%20true%2C%20Ordering%3A%3ARelaxed)%20%7B%7D%0A%20%20%20%20%20%20%20%20%2F%2F%20This%20fence%20synchronizes-with%20store%20in%20%60unlock%60.%0A%20%20%20%20%20%20%20%20fence(Ordering%3A%3AAcquire)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20pub%20fn%20unlock(%26self)%20%7B%0A%20%20%20%20%20%20%20%20self.flag.store(false%2C%20Ordering%3A%3ARelease)%3B%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3AAtomicBool%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3Afence%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3AOrdering%3B%0A%0A%2F%2F%20A%20mutual%20exclusion%20primitive%20based%20on%20spinlock.%0Apub%20struct%20Mutex%20%7B%0A%20%20%20%20flag%3A%20AtomicBool%2C%0A%7D%0A%0Aimpl%20Mutex%20%7B%0A%20%20%20%20pub%20fn%20new()%20-%3E%20Mutex%20%7B%0A%20%20%20%20%20%20%20%20Mutex%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20flag%3A%20AtomicBool%3A%3Anew(false)%2C%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20pub%20fn%20lock(%26self)%20%7B%0A%20%20%20%20%20%20%20%20while%20!self.flag.compare_and_swap(false%2C%20true%2C%20Ordering%3A%3ARelaxed)%20%7B%7D%0A%20%20%20%20%20%20%20%20%2F%2F%20This%20fence%20synchronizes-with%20store%20in%20%60unlock%60.%0A%20%20%20%20%20%20%20%20fence(Ordering%3A%3AAcquire)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20pub%20fn%20unlock(%26self)%20%7B%0A%20%20%20%20%20%20%20%20self.flag.store(false%2C%20Ordering%3A%3ARelease)%3B%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -139,7 +139,7 @@ other <a href="enum.Ordering.html#variant.SeqCst"><code>SeqCst</code></a> operat
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

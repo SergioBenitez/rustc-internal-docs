@@ -73,7 +73,7 @@ over and over and 🔁.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="number">4</span>), <span class="ident">fours</span>.<span class="ident">next</span>());
 
 <span class="comment">// yup, still four</span>
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="number">4</span>), <span class="ident">fours</span>.<span class="ident">next</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0A%0A%2F%2F%20the%20number%20four%204ever%3A%0Alet%20mut%20fours%20%3D%20iter%3A%3Arepeat(4)%3B%0A%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0A%0A%2F%2F%20yup%2C%20still%20four%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="number">4</span>), <span class="ident">fours</span>.<span class="ident">next</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0A%0A%2F%2F%20the%20number%20four%204ever%3A%0Alet%20mut%20fours%20%3D%20iter%3A%3Arepeat(4)%3B%0A%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0A%0A%2F%2F%20yup%2C%20still%20four%0Aassert_eq!(Some(4)%2C%20fours.next())%3B%0A%7D">Run</a></pre>
 
 <p>Going finite with <a href="trait.Iterator.html#method.take"><code>take</code></a>:</p>
 
@@ -89,7 +89,7 @@ over and over and 🔁.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="number">4</span>), <span class="ident">four_fours</span>.<span class="ident">next</span>());
 
 <span class="comment">// ... and now we&#39;re done</span>
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">four_fours</span>.<span class="ident">next</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0A%0A%2F%2F%20that%20last%20example%20was%20too%20many%20fours.%20Let's%20only%20have%20four%20fours.%0Alet%20mut%20four_fours%20%3D%20iter%3A%3Arepeat(4).take(4)%3B%0A%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0A%0A%2F%2F%20...%20and%20now%20we're%20done%0Aassert_eq!(None%2C%20four_fours.next())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">four_fours</span>.<span class="ident">next</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0A%0A%2F%2F%20that%20last%20example%20was%20too%20many%20fours.%20Let's%20only%20have%20four%20fours.%0Alet%20mut%20four_fours%20%3D%20iter%3A%3Arepeat(4).take(4)%3B%0A%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0Aassert_eq!(Some(4)%2C%20four_fours.next())%3B%0A%0A%2F%2F%20...%20and%20now%20we're%20done%0Aassert_eq!(None%2C%20four_fours.next())%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -115,7 +115,7 @@ over and over and 🔁.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

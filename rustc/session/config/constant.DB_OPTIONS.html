@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rustc/session/config.rs.html#660-662' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/rustc/session/config.rs.html#689-691' title='goto source code'>[src]</a></span></h1>
 <pre class='rust const'>pub const DB_OPTIONS: <a class="primitive" href="../../../std/primitive.slice.html">&amp;'static [</a><a class="primitive" href="../../../std/primitive.tuple.html">(</a>&amp;'static <a class="primitive" href="../../../std/primitive.str.html">str</a>, <a class="type" href="../../../rustc/session/config/type.DebuggingSetter.html" title="type rustc::session::config::DebuggingSetter">DebuggingSetter</a>, <a class="enum" href="../../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'static <a class="primitive" href="../../../std/primitive.str.html">str</a>&gt;, &amp;'static <a class="primitive" href="../../../std/primitive.str.html">str</a><a class="primitive" href="../../../std/primitive.tuple.html">)</a><a class="primitive" href="../../../std/primitive.slice.html">]</a><code> = </code><code>&amp;[(&quot;verbose&quot;, dbsetters::verbose, db_type_desc::parse_bool,
    &quot;in general, enable more debug printouts&quot;),
   (&quot;span_free_formats&quot;, dbsetters::span_free_formats,
@@ -129,6 +129,9 @@
   (&quot;incremental_dump_hash&quot;, dbsetters::incremental_dump_hash,
    db_type_desc::parse_bool,
    &quot;dump hash information in textual format to stdout&quot;),
+  (&quot;incremental_verify_ich&quot;, dbsetters::incremental_verify_ich,
+   db_type_desc::parse_bool,
+   &quot;verify incr. comp. hashes of green query instances&quot;),
   (&quot;dump_dep_graph&quot;, dbsetters::dump_dep_graph, db_type_desc::parse_bool,
    &quot;dump the dependency graph to $RUST_DEP_GRAPH (default: /tmp/dep_graph.gv)&quot;),
   (&quot;query_dep_graph&quot;, dbsetters::query_dep_graph, db_type_desc::parse_bool,
@@ -225,7 +228,12 @@
    &quot;enable ThinLTO when possible&quot;),
   (&quot;inline_in_all_cgus&quot;, dbsetters::inline_in_all_cgus,
    db_type_desc::parse_opt_bool,
-   &quot;control whether #[inline] functions are in all cgus&quot;)]</code></pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
+   &quot;control whether #[inline] functions are in all cgus&quot;),
+  (&quot;tls_model&quot;, dbsetters::tls_model, db_type_desc::parse_opt_string,
+   &quot;choose the TLS model to use (rustc --print tls-models for details)&quot;),
+  (&quot;saturating_float_casts&quot;, dbsetters::saturating_float_casts,
+   db_type_desc::parse_bool,
+   &quot;make casts between integers and floats safe: clip out-of-range inputs to the min/max integer or to infinity respectively, and turn `NAN` into 0 when casting to integers&quot;)]</code></pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div></section>
     <section id='search' class="content hidden"></section>
 
@@ -251,7 +259,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

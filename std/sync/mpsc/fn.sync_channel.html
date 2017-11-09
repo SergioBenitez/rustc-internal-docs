@@ -85,7 +85,7 @@ to <a href="struct.Receiver.html#method.recv"><code>recv</code></a>, the <a href
 });
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">receiver</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>(), <span class="number">1</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">receiver</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>(), <span class="number">2</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Async_channel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20sync_channel(1)%3B%0A%0A%2F%2F%20this%20returns%20immediately%0Asender.send(1).unwrap()%3B%0A%0Athread%3A%3Aspawn(move%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20this%20will%20block%20until%20the%20previous%20message%20has%20been%20received%0A%20%20%20%20sender.send(2).unwrap()%3B%0A%7D)%3B%0A%0Aassert_eq!(receiver.recv().unwrap()%2C%201)%3B%0Aassert_eq!(receiver.recv().unwrap()%2C%202)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">receiver</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>(), <span class="number">2</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Async_channel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20sync_channel(1)%3B%0A%0A%2F%2F%20this%20returns%20immediately%0Asender.send(1).unwrap()%3B%0A%0Athread%3A%3Aspawn(move%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20this%20will%20block%20until%20the%20previous%20message%20has%20been%20received%0A%20%20%20%20sender.send(2).unwrap()%3B%0A%7D)%3B%0A%0Aassert_eq!(receiver.recv().unwrap()%2C%201)%3B%0Aassert_eq!(receiver.recv().unwrap()%2C%202)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -111,7 +111,7 @@ to <a href="struct.Receiver.html#method.recv"><code>recv</code></a>, the <a href
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

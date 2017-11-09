@@ -1046,7 +1046,7 @@
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ptr</span>::<span class="ident">P</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
-<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">ItemLocalMap</span>;
+<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">ItemLocalSet</span>;
 
 <span class="comment">///////////////////////////////////////////////////////////////////////////</span>
 <span class="comment">// The Delegate trait</span>
@@ -1294,7 +1294,7 @@
                <span class="ident">param_env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                <span class="ident">region_scope_tree</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">region</span>::<span class="ident">ScopeTree</span>,
                <span class="ident">tables</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ty</span>::<span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-               <span class="ident">rvalue_promotable_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">ItemLocalMap</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>)
+               <span class="ident">rvalue_promotable_map</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">ItemLocalSet</span><span class="op">&gt;&gt;</span>)
                <span class="op">-&gt;</span> <span class="self">Self</span>
     {
         <span class="ident">ExprUseVisitor</span> {
@@ -2008,7 +2008,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

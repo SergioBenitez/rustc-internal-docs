@@ -73,7 +73,7 @@
             <span class="kw">break</span>;
         }
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3A%7BUnixStream%2C%20UnixListener%7D%3B%0A%0Afn%20handle_client(stream%3A%20UnixStream)%20%7B%0A%20%20%20%20%2F%2F%20...%0A%7D%0A%0Alet%20listener%20%3D%20UnixListener%3A%3Abind(%22%2Fpath%2Fto%2Fthe%2Fsocket%22).unwrap()%3B%0A%0Afor%20stream%20in%20listener.incoming()%20%7B%0A%20%20%20%20match%20stream%20%7B%0A%20%20%20%20%20%20%20%20Ok(stream)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20thread%3A%3Aspawn(%7C%7C%20handle_client(stream))%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20Err(err)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Anet%3A%3A%7BUnixStream%2C%20UnixListener%7D%3B%0A%0Afn%20handle_client(stream%3A%20UnixStream)%20%7B%0A%20%20%20%20%2F%2F%20...%0A%7D%0A%0Alet%20listener%20%3D%20UnixListener%3A%3Abind(%22%2Fpath%2Fto%2Fthe%2Fsocket%22).unwrap()%3B%0A%0Afor%20stream%20in%20listener.incoming()%20%7B%0A%20%20%20%20match%20stream%20%7B%0A%20%20%20%20%20%20%20%20Ok(stream)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20thread%3A%3Aspawn(%7C%7C%20handle_client(stream))%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20Err(err)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20break%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -212,7 +212,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

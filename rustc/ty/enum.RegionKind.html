@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Enum RegionKind</p><div class="block items"><li><a href="#variants">Variants</a></li><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.is_late_bound">is_late_bound</a><a href="#method.needs_infer">needs_infer</a><a href="#method.escapes_depth">escapes_depth</a><a href="#method.from_depth">from_depth</a><a href="#method.type_flags">type_flags</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-HashStable%3CStableHashingContext%3C%27gcx%3E%3E">HashStable&lt;StableHashingContext&lt;'gcx&gt;&gt;</a><a href="#impl-Clone">Clone</a><a href="#impl-PartialEq">PartialEq</a><a href="#impl-Eq">Eq</a><a href="#impl-Hash">Hash</a><a href="#impl-Copy">Copy</a><a href="#impl-Encodable">Encodable</a><a href="#impl-Decodable">Decodable</a><a href="#impl-Print">Print</a><a href="#impl-Display">Display</a><a href="#impl-Debug">Debug</a></div></div><p class='location'><a href='../index.html'>rustc</a>::<wbr><a href='index.html'>ty</a></p><script>window.sidebarCurrent = {name: 'RegionKind', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Enum RegionKind</p><div class="block items"><a class="sidebar-title" href="#variants">Variants</a><div class="sidebar-links"><a href="#variant.ReEarlyBound">ReEarlyBound</a><a href="#variant.ReLateBound">ReLateBound</a><a href="#variant.ReFree">ReFree</a><a href="#variant.ReScope">ReScope</a><a href="#variant.ReStatic">ReStatic</a><a href="#variant.ReVar">ReVar</a><a href="#variant.ReSkolemized">ReSkolemized</a><a href="#variant.ReEmpty">ReEmpty</a><a href="#variant.ReErased">ReErased</a></div><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.is_late_bound">is_late_bound</a><a href="#method.needs_infer">needs_infer</a><a href="#method.escapes_depth">escapes_depth</a><a href="#method.from_depth">from_depth</a><a href="#method.type_flags">type_flags</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-HashStable%3CStableHashingContext%3C%27gcx%3E%3E">HashStable&lt;StableHashingContext&lt;&#39;gcx&gt;&gt;</a><a href="#impl-Clone">Clone</a><a href="#impl-PartialEq">PartialEq</a><a href="#impl-Eq">Eq</a><a href="#impl-Hash">Hash</a><a href="#impl-Copy">Copy</a><a href="#impl-Encodable">Encodable</a><a href="#impl-Decodable">Decodable</a><a href="#impl-Print">Print</a><a href="#impl-Display">Display</a><a href="#impl-Debug">Debug</a></div></div><p class='location'><a href='../index.html'>rustc</a>::<wbr><a href='index.html'>ty</a></p><script>window.sidebarCurrent = {name: 'RegionKind', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -234,7 +234,7 @@ variable with no constraints.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

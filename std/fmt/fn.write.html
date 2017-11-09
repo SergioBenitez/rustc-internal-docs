@@ -64,7 +64,7 @@ into the output stream provided.</p>
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
 <span class="ident">fmt</span>::<span class="ident">write</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">output</span>, <span class="macro">format_args</span><span class="macro">!</span>(<span class="string">&quot;Hello {}!&quot;</span>, <span class="string">&quot;world&quot;</span>))
     .<span class="ident">expect</span>(<span class="string">&quot;Error occurred while trying to write in String&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">output</span>, <span class="string">&quot;Hello world!&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Alet%20mut%20output%20%3D%20String%3A%3Anew()%3B%0Afmt%3A%3Awrite(%26mut%20output%2C%20format_args!(%22Hello%20%7B%7D!%22%2C%20%22world%22))%0A%20%20%20%20.expect(%22Error%20occurred%20while%20trying%20to%20write%20in%20String%22)%3B%0Aassert_eq!(output%2C%20%22Hello%20world!%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">output</span>, <span class="string">&quot;Hello world!&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Alet%20mut%20output%20%3D%20String%3A%3Anew()%3B%0Afmt%3A%3Awrite(%26mut%20output%2C%20format_args!(%22Hello%20%7B%7D!%22%2C%20%22world%22))%0A%20%20%20%20.expect(%22Error%20occurred%20while%20trying%20to%20write%20in%20String%22)%3B%0Aassert_eq!(output%2C%20%22Hello%20world!%22)%3B%0A%7D">Run</a></pre>
 
 <p>Please note that using <a href="../../std/macro.write.html"><code>write!</code></a> might be preferrable. Example:</p>
 
@@ -74,7 +74,7 @@ into the output stream provided.</p>
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
 <span class="macro">write</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">output</span>, <span class="string">&quot;Hello {}!&quot;</span>, <span class="string">&quot;world&quot;</span>)
     .<span class="ident">expect</span>(<span class="string">&quot;Error occurred while trying to write in String&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">output</span>, <span class="string">&quot;Hello world!&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3A%3AWrite%3B%0A%0Alet%20mut%20output%20%3D%20String%3A%3Anew()%3B%0Awrite!(%26mut%20output%2C%20%22Hello%20%7B%7D!%22%2C%20%22world%22)%0A%20%20%20%20.expect(%22Error%20occurred%20while%20trying%20to%20write%20in%20String%22)%3B%0Aassert_eq!(output%2C%20%22Hello%20world!%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">output</span>, <span class="string">&quot;Hello world!&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3A%3AWrite%3B%0A%0Alet%20mut%20output%20%3D%20String%3A%3Anew()%3B%0Awrite!(%26mut%20output%2C%20%22Hello%20%7B%7D!%22%2C%20%22world%22)%0A%20%20%20%20.expect(%22Error%20occurred%20while%20trying%20to%20write%20in%20String%22)%3B%0Aassert_eq!(output%2C%20%22Hello%20world!%22)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -100,7 +100,7 @@ into the output stream provided.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

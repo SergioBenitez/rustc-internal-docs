@@ -76,7 +76,7 @@ success, and success is defined as a zero exit status.</p>
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;&#39;projects/&#39; directory created&quot;</span>);
 } <span class="kw">else</span> {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;failed to create &#39;projects/&#39; directory&quot;</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aprocess%3A%3ACommand%3B%0A%0Alet%20status%20%3D%20Command%3A%3Anew(%22mkdir%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.arg(%22projects%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.status()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.expect(%22failed%20to%20execute%20mkdir%22)%3B%0A%0Aif%20status.success()%20%7B%0A%20%20%20%20println!(%22'projects%2F'%20directory%20created%22)%3B%0A%7D%20else%20%7B%0A%20%20%20%20println!(%22failed%20to%20create%20'projects%2F'%20directory%22)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aprocess%3A%3ACommand%3B%0A%0Alet%20status%20%3D%20Command%3A%3Anew(%22mkdir%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.arg(%22projects%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.status()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.expect(%22failed%20to%20execute%20mkdir%22)%3B%0A%0Aif%20status.success()%20%7B%0A%20%20%20%20println!(%22'projects%2F'%20directory%20created%22)%3B%0A%7D%20else%20%7B%0A%20%20%20%20println!(%22failed%20to%20create%20'projects%2F'%20directory%22)%3B%0A%7D%0A%7D">Run</a></pre>
 </div><h4 id='method.code' class="method"><span id='code.v' class='invisible'><code>pub fn <a href='#method.code' class='fnname'>code</a>(&amp;self) -&gt; <a class="enum" href="../../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="../primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/process.rs.html#1059-1061' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns the exit code of the process, if any.</p>
 
@@ -96,7 +96,7 @@ extracting the signal and other details from the <code>ExitStatus</code>.</p>
 <span class="kw">match</span> <span class="ident">status</span>.<span class="ident">code</span>() {
     <span class="prelude-val">Some</span>(<span class="ident">code</span>) <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Exited with status code: {}&quot;</span>, <span class="ident">code</span>),
     <span class="prelude-val">None</span>       <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Process terminated by signal&quot;</span>)
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aprocess%3A%3ACommand%3B%0A%0Alet%20status%20%3D%20Command%3A%3Anew(%22mkdir%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.arg(%22projects%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.status()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.expect(%22failed%20to%20execute%20mkdir%22)%3B%0A%0Amatch%20status.code()%20%7B%0A%20%20%20%20Some(code)%20%3D%3E%20println!(%22Exited%20with%20status%20code%3A%20%7B%7D%22%2C%20code)%2C%0A%20%20%20%20None%20%20%20%20%20%20%20%3D%3E%20println!(%22Process%20terminated%20by%20signal%22)%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aprocess%3A%3ACommand%3B%0A%0Alet%20status%20%3D%20Command%3A%3Anew(%22mkdir%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.arg(%22projects%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.status()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.expect(%22failed%20to%20execute%20mkdir%22)%3B%0A%0Amatch%20status.code()%20%7B%0A%20%20%20%20Some(code)%20%3D%3E%20println!(%22Exited%20with%20status%20code%3A%20%7B%7D%22%2C%20code)%2C%0A%20%20%20%20None%20%20%20%20%20%20%20%3D%3E%20println!(%22Process%20terminated%20by%20signal%22)%0A%7D%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -152,7 +152,7 @@ extracting the signal and other details from the <code>ExitStatus</code>.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

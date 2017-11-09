@@ -1787,6 +1787,18 @@
 <span id="1742">1742</span>
 <span id="1743">1743</span>
 <span id="1744">1744</span>
+<span id="1745">1745</span>
+<span id="1746">1746</span>
+<span id="1747">1747</span>
+<span id="1748">1748</span>
+<span id="1749">1749</span>
+<span id="1750">1750</span>
+<span id="1751">1751</span>
+<span id="1752">1752</span>
+<span id="1753">1753</span>
+<span id="1754">1754</span>
+<span id="1755">1755</span>
+<span id="1756">1756</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2149,6 +2161,17 @@
     <span class="kw">pub</span> <span class="ident">len</span>: <span class="ident">usize</span>,
 }
 
+<span class="doccomment">/// LLVMThreadLocalMode</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ThreadLocalMode</span> {
+  <span class="ident">NotThreadLocal</span>,
+  <span class="ident">GeneralDynamic</span>,
+  <span class="ident">LocalDynamic</span>,
+  <span class="ident">InitialExec</span>,
+  <span class="ident">LocalExec</span>
+}
+
 <span class="comment">// Opaque pointer types</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_copy_implementations</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Module_opaque</span> {}
@@ -2499,6 +2522,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMGetInitializer</span>(<span class="ident">GlobalVar</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSetInitializer</span>(<span class="ident">GlobalVar</span>: <span class="ident">ValueRef</span>, <span class="ident">ConstantVal</span>: <span class="ident">ValueRef</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSetThreadLocal</span>(<span class="ident">GlobalVar</span>: <span class="ident">ValueRef</span>, <span class="ident">IsThreadLocal</span>: <span class="ident">Bool</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSetThreadLocalMode</span>(<span class="ident">GlobalVar</span>: <span class="ident">ValueRef</span>, <span class="ident">Mode</span>: <span class="ident">ThreadLocalMode</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMIsGlobalConstant</span>(<span class="ident">GlobalVar</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">Bool</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSetGlobalConstant</span>(<span class="ident">GlobalVar</span>: <span class="ident">ValueRef</span>, <span class="ident">IsConstant</span>: <span class="ident">Bool</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustGetNamedValue</span>(<span class="ident">M</span>: <span class="ident">ModuleRef</span>, <span class="ident">Name</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_char</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
@@ -3558,7 +3582,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -989,6 +989,12 @@
 <span id="944">944</span>
 <span id="945">945</span>
 <span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1303,6 +1309,9 @@
     <span class="kw">pub</span> <span class="ident">relocation_model</span>: <span class="ident">String</span>,
     <span class="doccomment">/// Code model to use. Corresponds to `llc -code-model=$code_model`. Defaults to &quot;default&quot;.</span>
     <span class="kw">pub</span> <span class="ident">code_model</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// TLS model to use. Options are &quot;global-dynamic&quot; (default), &quot;local-dynamic&quot;, &quot;initial-exec&quot;</span>
+    <span class="doccomment">/// and &quot;local-exec&quot;. This is similar to the -ftls-model option in GCC/Clang.</span>
+    <span class="kw">pub</span> <span class="ident">tls_model</span>: <span class="ident">String</span>,
     <span class="doccomment">/// Do not emit code that uses the &quot;red zone&quot;, if the ABI has one. Defaults to false.</span>
     <span class="kw">pub</span> <span class="ident">disable_redzone</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Eliminate frame pointers from stack frames if possible. Defaults to true.</span>
@@ -1442,6 +1451,7 @@
             <span class="ident">executables</span>: <span class="bool-val">false</span>,
             <span class="ident">relocation_model</span>: <span class="string">&quot;pic&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">code_model</span>: <span class="string">&quot;default&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">tls_model</span>: <span class="string">&quot;global-dynamic&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">disable_redzone</span>: <span class="bool-val">false</span>,
             <span class="ident">eliminate_frame_pointer</span>: <span class="bool-val">true</span>,
             <span class="ident">function_sections</span>: <span class="bool-val">true</span>,
@@ -1688,6 +1698,7 @@
         <span class="macro">key</span><span class="macro">!</span>(<span class="ident">executables</span>, <span class="ident">bool</span>);
         <span class="macro">key</span><span class="macro">!</span>(<span class="ident">relocation_model</span>);
         <span class="macro">key</span><span class="macro">!</span>(<span class="ident">code_model</span>);
+        <span class="macro">key</span><span class="macro">!</span>(<span class="ident">tls_model</span>);
         <span class="macro">key</span><span class="macro">!</span>(<span class="ident">disable_redzone</span>, <span class="ident">bool</span>);
         <span class="macro">key</span><span class="macro">!</span>(<span class="ident">eliminate_frame_pointer</span>, <span class="ident">bool</span>);
         <span class="macro">key</span><span class="macro">!</span>(<span class="ident">function_sections</span>, <span class="ident">bool</span>);
@@ -1880,6 +1891,7 @@
         <span class="macro">target_option_val</span><span class="macro">!</span>(<span class="ident">executables</span>);
         <span class="macro">target_option_val</span><span class="macro">!</span>(<span class="ident">relocation_model</span>);
         <span class="macro">target_option_val</span><span class="macro">!</span>(<span class="ident">code_model</span>);
+        <span class="macro">target_option_val</span><span class="macro">!</span>(<span class="ident">tls_model</span>);
         <span class="macro">target_option_val</span><span class="macro">!</span>(<span class="ident">disable_redzone</span>);
         <span class="macro">target_option_val</span><span class="macro">!</span>(<span class="ident">eliminate_frame_pointer</span>);
         <span class="macro">target_option_val</span><span class="macro">!</span>(<span class="ident">function_sections</span>);
@@ -1962,7 +1974,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

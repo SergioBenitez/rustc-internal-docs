@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Write</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#provided-methods">Provided Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>io</a></p><script>window.sidebarCurrent = {name: 'Write', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Write</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.write">write</a><a href="#tymethod.flush">flush</a></div><a class="sidebar-title" href="#provided-methods">Provided Methods</a><div class="sidebar-links"><a href="#method.write_all">write_all</a><a href="#method.write_fmt">write_fmt</a><a href="#method.by_ref">by_ref</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>io</a></p><script>window.sidebarCurrent = {name: 'Write', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -82,7 +82,7 @@ trait.</p>
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">create</span>(<span class="string">&quot;foo.txt&quot;</span>)<span class="question-mark">?</span>;
 
-<span class="ident">buffer</span>.<span class="ident">write</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0Abuffer.write(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="ident">buffer</span>.<span class="ident">write</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0Abuffer.write(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -123,7 +123,7 @@ write operation should be retried if there is nothing else to do.</p>
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">create</span>(<span class="string">&quot;foo.txt&quot;</span>)<span class="question-mark">?</span>;
 
 <span class="comment">// Writes some prefix of the byte string, not necessarily all of it.</span>
-<span class="ident">buffer</span>.<span class="ident">write</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0A%2F%2F%20Writes%20some%20prefix%20of%20the%20byte%20string%2C%20not%20necessarily%20all%20of%20it.%0Abuffer.write(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="ident">buffer</span>.<span class="ident">write</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0A%2F%2F%20Writes%20some%20prefix%20of%20the%20byte%20string%2C%20not%20necessarily%20all%20of%20it.%0Abuffer.write(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div><h3 id='tymethod.flush' class='method'><span id='flush.v' class='invisible'><code>fn <a href='#tymethod.flush' class='fnname'>flush</a>(&amp;mut self) -&gt; <a class="type" href="../../std/io/type.Result.html" title="type std::io::Result">Result</a>&lt;<a class="primitive" href="../primitive.unit.html">()</a>&gt;</code></span></h3><div class='docblock'><p>Flush this output stream, ensuring that all intermediately buffered
 contents reach their destination.</p>
 
@@ -140,7 +140,7 @@ I/O errors or EOF being reached.</p>
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">BufWriter</span>::<span class="ident">new</span>(<span class="ident">File</span>::<span class="ident">create</span>(<span class="string">&quot;foo.txt&quot;</span>)<span class="question-mark">?</span>);
 
 <span class="ident">buffer</span>.<span class="ident">write</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;
-<span class="ident">buffer</span>.<span class="ident">flush</span>()<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Aio%3A%3ABufWriter%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20BufWriter%3A%3Anew(File%3A%3Acreate(%22foo.txt%22)%3F)%3B%0A%0Abuffer.write(b%22some%20bytes%22)%3F%3B%0Abuffer.flush()%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="ident">buffer</span>.<span class="ident">flush</span>()<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Aio%3A%3ABufWriter%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20BufWriter%3A%3Anew(File%3A%3Acreate(%22foo.txt%22)%3F)%3B%0A%0Abuffer.write(b%22some%20bytes%22)%3F%3B%0Abuffer.flush()%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='provided-methods' class='small-section-header'>
               Provided Methods<a href='#provided-methods' class='anchor'></a>
@@ -166,7 +166,7 @@ non-<code>ErrorKind::Interrupted</code> kind that <code>write</code> returns.</p
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">create</span>(<span class="string">&quot;foo.txt&quot;</span>)<span class="question-mark">?</span>;
 
-<span class="ident">buffer</span>.<span class="ident">write_all</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0Abuffer.write_all(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="ident">buffer</span>.<span class="ident">write_all</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0Abuffer.write_all(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div><h3 id='method.write_fmt' class='method'><span id='write_fmt.v' class='invisible'><code>fn <a href='#method.write_fmt' class='fnname'>write_fmt</a>(&amp;mut self, fmt: <a class="struct" href="../../std/fmt/struct.Arguments.html" title="struct std::fmt::Arguments">Arguments</a>) -&gt; <a class="type" href="../../std/io/type.Result.html" title="type std::io::Result">Result</a>&lt;<a class="primitive" href="../primitive.unit.html">()</a>&gt;</code></span></h3><div class='docblock'><p>Writes a formatted string into this writer, returning any error
 encountered.</p>
 
@@ -193,7 +193,7 @@ this signature.</p>
 <span class="comment">// this call</span>
 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">buffer</span>, <span class="string">&quot;{:.*}&quot;</span>, <span class="number">2</span>, <span class="number">1.234567</span>)<span class="question-mark">?</span>;
 <span class="comment">// turns into this:</span>
-<span class="ident">buffer</span>.<span class="ident">write_fmt</span>(<span class="macro">format_args</span><span class="macro">!</span>(<span class="string">&quot;{:.*}&quot;</span>, <span class="number">2</span>, <span class="number">1.234567</span>))<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0A%2F%2F%20this%20call%0Awrite!(buffer%2C%20%22%7B%3A.*%7D%22%2C%202%2C%201.234567)%3F%3B%0A%2F%2F%20turns%20into%20this%3A%0Abuffer.write_fmt(format_args!(%22%7B%3A.*%7D%22%2C%202%2C%201.234567))%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="ident">buffer</span>.<span class="ident">write_fmt</span>(<span class="macro">format_args</span><span class="macro">!</span>(<span class="string">&quot;{:.*}&quot;</span>, <span class="number">2</span>, <span class="number">1.234567</span>))<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0A%2F%2F%20this%20call%0Awrite!(buffer%2C%20%22%7B%3A.*%7D%22%2C%202%2C%201.234567)%3F%3B%0A%2F%2F%20turns%20into%20this%3A%0Abuffer.write_fmt(format_args!(%22%7B%3A.*%7D%22%2C%202%2C%201.234567))%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div><h3 id='method.by_ref' class='method'><span id='by_ref.v' class='invisible'><code>fn <a href='#method.by_ref' class='fnname'>by_ref</a>(&amp;mut self) -&gt; <a class="primitive" href="../primitive.reference.html">&amp;mut </a>Self <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Self: <a class="trait" href="../../std/marker/trait.Sized.html" title="trait std::marker::Sized">Sized</a>,&nbsp;</span></code></span></h3><div class='docblock'><p>Creates a &quot;by reference&quot; adaptor for this instance of <code>Write</code>.</p>
 
 <p>The returned adaptor also implements <code>Write</code> and will simply borrow this
@@ -209,7 +209,7 @@ current writer.</p>
 <span class="kw">let</span> <span class="ident">reference</span> <span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">by_ref</span>();
 
 <span class="comment">// we can use reference just like our original buffer</span>
-<span class="ident">reference</span>.<span class="ident">write_all</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3AWrite%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0Alet%20reference%20%3D%20buffer.by_ref()%3B%0A%0A%2F%2F%20we%20can%20use%20reference%20just%20like%20our%20original%20buffer%0Areference.write_all(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
+<span class="ident">reference</span>.<span class="ident">write_all</span>(<span class="string">b&quot;some bytes&quot;</span>)<span class="question-mark">?</span>;<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3A%3AWrite%3B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20buffer%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0A%0Alet%20reference%20%3D%20buffer.by_ref()%3B%0A%0A%2F%2F%20we%20can%20use%20reference%20just%20like%20our%20original%20buffer%0Areference.write_all(b%22some%20bytes%22)%3F%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
 </div></div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
@@ -263,7 +263,7 @@ current writer.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

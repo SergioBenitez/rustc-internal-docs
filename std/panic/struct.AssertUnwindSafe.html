@@ -79,7 +79,7 @@ itself is unwind safe, bypassing all checks for all variables:</p>
 <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">panic</span>::<span class="ident">catch_unwind</span>(<span class="ident">AssertUnwindSafe</span>(<span class="op">||</span> {
     <span class="ident">variable</span> <span class="op">+=</span> <span class="number">3</span>;
 }));
-<span class="comment">// ...</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apanic%3A%3A%7Bself%2C%20AssertUnwindSafe%7D%3B%0A%0Alet%20mut%20variable%20%3D%204%3B%0A%0A%2F%2F%20This%20code%20will%20not%20compile%20because%20the%20closure%20captures%20%60%26mut%20variable%60%0A%2F%2F%20which%20is%20not%20considered%20unwind%20safe%20by%20default.%0A%0A%2F%2F%20panic%3A%3Acatch_unwind(%7C%7C%20%7B%0A%2F%2F%20%20%20%20%20variable%20%2B%3D%203%3B%0A%2F%2F%20%7D)%3B%0A%0A%2F%2F%20This%2C%20however%2C%20will%20compile%20due%20to%20the%20%60AssertUnwindSafe%60%20wrapper%0Alet%20result%20%3D%20panic%3A%3Acatch_unwind(AssertUnwindSafe(%7C%7C%20%7B%0A%20%20%20%20variable%20%2B%3D%203%3B%0A%7D))%3B%0A%2F%2F%20...%0A%7D">Run</a></pre>
+<span class="comment">// ...</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3A%3A%7Bself%2C%20AssertUnwindSafe%7D%3B%0A%0Alet%20mut%20variable%20%3D%204%3B%0A%0A%2F%2F%20This%20code%20will%20not%20compile%20because%20the%20closure%20captures%20%60%26mut%20variable%60%0A%2F%2F%20which%20is%20not%20considered%20unwind%20safe%20by%20default.%0A%0A%2F%2F%20panic%3A%3Acatch_unwind(%7C%7C%20%7B%0A%2F%2F%20%20%20%20%20variable%20%2B%3D%203%3B%0A%2F%2F%20%7D)%3B%0A%0A%2F%2F%20This%2C%20however%2C%20will%20compile%20due%20to%20the%20%60AssertUnwindSafe%60%20wrapper%0Alet%20result%20%3D%20panic%3A%3Acatch_unwind(AssertUnwindSafe(%7C%7C%20%7B%0A%20%20%20%20variable%20%2B%3D%203%3B%0A%7D))%3B%0A%2F%2F%20...%0A%7D">Run</a></pre>
 
 <p>Wrapping the entire closure amounts to a blanket assertion that all captured
 variables are unwind safe. This has the downside that if new captures are
@@ -102,7 +102,7 @@ not.</p>
         <span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">wrapper</span> <span class="op">+=</span> <span class="ident">other_capture</span>;
     })
 };
-<span class="comment">// ...</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apanic%3A%3A%7Bself%2C%20AssertUnwindSafe%7D%3B%0A%0Alet%20mut%20variable%20%3D%204%3B%0Alet%20other_capture%20%3D%203%3B%0A%0Alet%20result%20%3D%20%7B%0A%20%20%20%20let%20mut%20wrapper%20%3D%20AssertUnwindSafe(%26mut%20variable)%3B%0A%20%20%20%20panic%3A%3Acatch_unwind(move%20%7C%7C%20%7B%0A%20%20%20%20%20%20%20%20**wrapper%20%2B%3D%20other_capture%3B%0A%20%20%20%20%7D)%0A%7D%3B%0A%2F%2F%20...%0A%7D">Run</a></pre>
+<span class="comment">// ...</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3A%3A%7Bself%2C%20AssertUnwindSafe%7D%3B%0A%0Alet%20mut%20variable%20%3D%204%3B%0Alet%20other_capture%20%3D%203%3B%0A%0Alet%20result%20%3D%20%7B%0A%20%20%20%20let%20mut%20wrapper%20%3D%20AssertUnwindSafe(%26mut%20variable)%3B%0A%20%20%20%20panic%3A%3Acatch_unwind(move%20%7C%7C%20%7B%0A%20%20%20%20%20%20%20%20**wrapper%20%2B%3D%20other_capture%3B%0A%20%20%20%20%7D)%0A%7D%3B%0A%2F%2F%20...%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -150,7 +150,7 @@ not.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

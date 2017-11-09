@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/std/thread/mod.rs.html#11-1596' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/std/thread/mod.rs.html#11-1600' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Native threads.</p>
 
 <h2 id='the-threading-model' class='section-header'><a href='#the-threading-model'>The threading model</a></h2>
@@ -65,11 +65,15 @@ atomically-reference-counted container, <a href="../../std/sync/struct.Arc.html"
 
 <p>Fatal logic errors in Rust cause <em>thread panic</em>, during which
 a thread will unwind the stack, running destructors and freeing
-owned resources. Thread panic is unrecoverable from within
-the panicking thread (i.e. there is no &#39;try/catch&#39; in Rust), but
-the panic may optionally be detected from a different thread. If
-the main thread panics, the application will exit with a non-zero
-exit code.</p>
+owned resources. While not meant as a &#39;try/catch&#39; mechanism, panics
+in Rust can nonetheless be caught (unless compiling with <code>panic=abort</code>) with
+<a href="../../std/panic/fn.catch_unwind.html"><code>catch_unwind</code></a> and recovered
+from, or alternatively be resumed with
+<a href="../../std/panic/fn.resume_unwind.html"><code>resume_unwind</code></a>. If the panic
+is not caught the thread will exit, but the panic may optionally be
+detected from a different thread with <a href="../../std/thread/struct.JoinHandle.html#method.join"><code>join</code></a>. If the main thread panics
+without the panic being caught, the application will exit with a
+non-zero exit code.</p>
 
 <p>When the main thread of a Rust program terminates, the entire program shuts
 down, even if other threads are still running. However, this module provides
@@ -84,7 +88,7 @@ child thread (i.e., join).</p>
 
 <span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
     <span class="comment">// some work here</span>
-});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0A%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20some%20work%20here%0A%7D)%3B%0A%7D">Run</a></pre>
+});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0A%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20some%20work%20here%0A%7D)%3B%0A%7D">Run</a></pre>
 
 <p>In this example, the spawned thread is &quot;detached&quot; from the current
 thread. This means that it can outlive its parent (the thread that spawned
@@ -101,7 +105,7 @@ a <code>join</code> method for waiting:</p>
     <span class="comment">// some work here</span>
 });
 <span class="comment">// some work here</span>
-<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">child</span>.<span class="ident">join</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20child%20%3D%20thread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20some%20work%20here%0A%7D)%3B%0A%2F%2F%20some%20work%20here%0Alet%20res%20%3D%20child.join()%3B%0A%7D">Run</a></pre>
+<span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">child</span>.<span class="ident">join</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20child%20%3D%20thread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20some%20work%20here%0A%7D)%3B%0A%2F%2F%20some%20work%20here%0Alet%20res%20%3D%20child.join()%3B%0A%7D">Run</a></pre>
 
 <p>The <a href="../../std/thread/struct.JoinHandle.html#method.join"><code>join</code></a> method returns a <a href="../../std/thread/type.Result.html"><code>thread::Result</code></a> containing <a href="../../std/result/enum.Result.html#variant.Ok"><code>Ok</code></a> of the final
 value produced by the child thread, or <a href="../../std/result/enum.Result.html#variant.Err"><code>Err</code></a> of the value given to
@@ -116,7 +120,7 @@ which currently allows you to set the name and stack size for the child thread:<
 
 <span class="ident">thread</span>::<span class="ident">Builder</span>::<span class="ident">new</span>().<span class="ident">name</span>(<span class="string">&quot;child1&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Hello, world!&quot;</span>);
-});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused_must_use)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0A%0Athread%3A%3ABuilder%3A%3Anew().name(%22child1%22.to_string()).spawn(move%20%7C%7C%20%7B%0A%20%20%20%20println!(%22Hello%2C%20world!%22)%3B%0A%7D)%3B%0A%7D">Run</a></pre>
+});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Ballow(unused_must_use)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0A%0Athread%3A%3ABuilder%3A%3Anew().name(%22child1%22.to_string()).spawn(move%20%7C%7C%20%7B%0A%20%20%20%20println!(%22Hello%2C%20world!%22)%3B%0A%7D)%3B%0A%7D">Run</a></pre>
 
 <h2 id='the-thread-type' class='section-header'><a href='#the-thread-type'>The <code>Thread</code> type</a></h2>
 <p>Threads are represented via the <a href="../../std/thread/struct.Thread.html"><code>Thread</code></a> type, which you can get in one of
@@ -320,7 +324,7 @@ the specified duration has been reached (may wake spuriously).</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

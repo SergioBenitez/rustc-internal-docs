@@ -94,7 +94,7 @@ values one at a time and should use this API.</p>
             <span class="self">self</span>.<span class="ident">free_buffer</span>();
         }
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3A%7Bmem%2C%20ptr%7D%3B%0A%0Apub%20struct%20MyCollection%3CT%3E%20%7B%0A%20%20data%3A%20%5BT%3B%201%5D%2C%0A%20%20%20%20%2F*%20...%20*%2F%0A%7D%0Aimpl%3CT%3E%20MyCollection%3CT%3E%20%7B%0A%20%20fn%20iter_mut(%26mut%20self)%20-%3E%20%26mut%20%5BT%5D%20%7B%20%26mut%20self.data%20%7D%0A%20%20fn%20free_buffer(%26mut%20self)%20%7B%7D%0A%7D%0A%0Aimpl%3CT%3E%20Drop%20for%20MyCollection%3CT%3E%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20unsafe%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20drop%20the%20data%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20mem%3A%3Aneeds_drop%3A%3A%3CT%3E()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20x%20in%20self.iter_mut()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ptr%3A%3Adrop_in_place(x)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20self.free_buffer()%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3A%7Bmem%2C%20ptr%7D%3B%0A%0Apub%20struct%20MyCollection%3CT%3E%20%7B%0A%20%20data%3A%20%5BT%3B%201%5D%2C%0A%20%20%20%20%2F*%20...%20*%2F%0A%7D%0Aimpl%3CT%3E%20MyCollection%3CT%3E%20%7B%0A%20%20fn%20iter_mut(%26mut%20self)%20-%3E%20%26mut%20%5BT%5D%20%7B%20%26mut%20self.data%20%7D%0A%20%20fn%20free_buffer(%26mut%20self)%20%7B%7D%0A%7D%0A%0Aimpl%3CT%3E%20Drop%20for%20MyCollection%3CT%3E%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20unsafe%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%2F%2F%20drop%20the%20data%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20mem%3A%3Aneeds_drop%3A%3A%3CT%3E()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20x%20in%20self.iter_mut()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ptr%3A%3Adrop_in_place(x)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20self.free_buffer()%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -120,7 +120,7 @@ values one at a time and should use this API.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

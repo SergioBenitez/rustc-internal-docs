@@ -61,7 +61,7 @@ can be used to reverse order a part of a key.</p>
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];
 <span class="ident">v</span>.<span class="ident">sort_by_key</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">num</span><span class="op">|</span> (<span class="ident">num</span> <span class="op">&gt;</span> <span class="number">3</span>, <span class="ident">Reverse</span>(<span class="ident">num</span>)));
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Acmp%3A%3AReverse%3B%0A%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%2C%203%2C%204%2C%205%2C%206%5D%3B%0Av.sort_by_key(%7C%26num%7C%20(num%20%3E%203%2C%20Reverse(num)))%3B%0Aassert_eq!(v%2C%20vec!%5B3%2C%202%2C%201%2C%206%2C%205%2C%204%5D)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>]);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Acmp%3A%3AReverse%3B%0A%0Alet%20mut%20v%20%3D%20vec!%5B1%2C%202%2C%203%2C%204%2C%205%2C%206%5D%3B%0Av.sort_by_key(%7C%26num%7C%20(num%20%3E%203%2C%20Reverse(num)))%3B%0Aassert_eq!(v%2C%20vec!%5B3%2C%202%2C%201%2C%206%2C%205%2C%204%5D)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -118,7 +118,7 @@ can be used to reverse order a part of a key.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

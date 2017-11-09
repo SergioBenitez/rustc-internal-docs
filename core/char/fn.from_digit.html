@@ -75,7 +75,7 @@ the given radix.</p>
 <span class="comment">// Decimal 11 is a single digit in base 16</span>
 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">char</span>::<span class="ident">from_digit</span>(<span class="number">11</span>, <span class="number">16</span>);
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="string">&#39;b&#39;</span>), <span class="ident">c</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20c%20%3D%20char%3A%3Afrom_digit(4%2C%2010)%3B%0A%0Aassert_eq!(Some('4')%2C%20c)%3B%0A%0A%2F%2F%20Decimal%2011%20is%20a%20single%20digit%20in%20base%2016%0Alet%20c%20%3D%20char%3A%3Afrom_digit(11%2C%2016)%3B%0A%0Aassert_eq!(Some('b')%2C%20c)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="string">&#39;b&#39;</span>), <span class="ident">c</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20c%20%3D%20char%3A%3Afrom_digit(4%2C%2010)%3B%0A%0Aassert_eq!(Some('4')%2C%20c)%3B%0A%0A%2F%2F%20Decimal%2011%20is%20a%20single%20digit%20in%20base%2016%0Alet%20c%20%3D%20char%3A%3Afrom_digit(11%2C%2016)%3B%0A%0Aassert_eq!(Some('b')%2C%20c)%3B%0A%7D">Run</a></pre>
 
 <p>Returning <code>None</code> when the input is not a digit:</p>
 
@@ -84,7 +84,7 @@ the given radix.</p>
 
 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">char</span>::<span class="ident">from_digit</span>(<span class="number">20</span>, <span class="number">10</span>);
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">c</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20c%20%3D%20char%3A%3Afrom_digit(20%2C%2010)%3B%0A%0Aassert_eq!(None%2C%20c)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">c</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20c%20%3D%20char%3A%3Afrom_digit(20%2C%2010)%3B%0A%0Aassert_eq!(None%2C%20c)%3B%0A%7D">Run</a></pre>
 
 <p>Passing a large radix, causing a panic:</p>
 
@@ -97,7 +97,7 @@ the given radix.</p>
     <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">char</span>::<span class="ident">from_digit</span>(<span class="number">1</span>, <span class="number">37</span>);
 }).<span class="ident">join</span>();
 
-<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">result</span>.<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20result%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20this%20panics%0A%20%20%20%20let%20c%20%3D%20char%3A%3Afrom_digit(1%2C%2037)%3B%0A%7D).join()%3B%0A%0Aassert!(result.is_err())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">result</span>.<span class="ident">is_err</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Athread%3B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20result%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20this%20panics%0A%20%20%20%20let%20c%20%3D%20char%3A%3Afrom_digit(1%2C%2037)%3B%0A%7D).join()%3B%0A%0Aassert!(result.is_err())%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -123,7 +123,7 @@ the given radix.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

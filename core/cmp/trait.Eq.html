@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Eq</p><div class="block items"><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>cmp</a></p><script>window.sidebarCurrent = {name: 'Eq', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Eq</p><div class="block items"><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>cmp</a></p><script>window.sidebarCurrent = {name: 'Eq', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -85,7 +85,7 @@ always desired.</p>
         <span class="self">self</span>.<span class="ident">isbn</span> <span class="op">==</span> <span class="ident">other</span>.<span class="ident">isbn</span>
     }
 }
-<span class="kw">impl</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Book</span> {}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Aenum%20BookFormat%20%7B%20Paperback%2C%20Hardback%2C%20Ebook%20%7D%0Astruct%20Book%20%7B%0A%20%20%20%20isbn%3A%20i32%2C%0A%20%20%20%20format%3A%20BookFormat%2C%0A%7D%0Aimpl%20PartialEq%20for%20Book%20%7B%0A%20%20%20%20fn%20eq(%26self%2C%20other%3A%20%26Book)%20-%3E%20bool%20%7B%0A%20%20%20%20%20%20%20%20self.isbn%20%3D%3D%20other.isbn%0A%20%20%20%20%7D%0A%7D%0Aimpl%20Eq%20for%20Book%20%7B%7D%0A%7D">Run</a></pre>
+<span class="kw">impl</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Book</span> {}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aenum%20BookFormat%20%7B%20Paperback%2C%20Hardback%2C%20Ebook%20%7D%0Astruct%20Book%20%7B%0A%20%20%20%20isbn%3A%20i32%2C%0A%20%20%20%20format%3A%20BookFormat%2C%0A%7D%0Aimpl%20PartialEq%20for%20Book%20%7B%0A%20%20%20%20fn%20eq(%26self%2C%20other%3A%20%26Book)%20-%3E%20bool%20%7B%0A%20%20%20%20%20%20%20%20self.isbn%20%3D%3D%20other.isbn%0A%20%20%20%20%7D%0A%7D%0Aimpl%20Eq%20for%20Book%20%7B%7D%0A%7D">Run</a></pre>
 </div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
@@ -291,7 +291,7 @@ always desired.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

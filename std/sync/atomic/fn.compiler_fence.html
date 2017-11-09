@@ -112,7 +112,7 @@ Using a <code>compiler_fence</code> remedies this situation.</p>
     <span class="kw">if</span> <span class="ident">IS_READY</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>) {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">IMPORTANT_VARIABLE</span>.<span class="ident">load</span>(<span class="ident">Ordering</span>::<span class="ident">Relaxed</span>), <span class="number">42</span>);
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=use%20std%3A%3Async%3A%3Aatomic%3A%3A%7BAtomicBool%2C%20AtomicUsize%7D%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3A%7BATOMIC_BOOL_INIT%2C%20ATOMIC_USIZE_INIT%7D%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3AOrdering%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3Acompiler_fence%3B%0A%0Astatic%20IMPORTANT_VARIABLE%3A%20AtomicUsize%20%3D%20ATOMIC_USIZE_INIT%3B%0Astatic%20IS_READY%3A%20AtomicBool%20%3D%20ATOMIC_BOOL_INIT%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20IMPORTANT_VARIABLE.store(42%2C%20Ordering%3A%3ARelaxed)%3B%0A%20%20%20%20%2F%2F%20prevent%20earlier%20writes%20from%20being%20moved%20beyond%20this%20point%0A%20%20%20%20compiler_fence(Ordering%3A%3ARelease)%3B%0A%20%20%20%20IS_READY.store(true%2C%20Ordering%3A%3ARelaxed)%3B%0A%7D%0A%0Afn%20signal_handler()%20%7B%0A%20%20%20%20if%20IS_READY.load(Ordering%3A%3ARelaxed)%20%7B%0A%20%20%20%20%20%20%20%20assert_eq!(IMPORTANT_VARIABLE.load(Ordering%3A%3ARelaxed)%2C%2042)%3B%0A%20%20%20%20%7D%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3A%7BAtomicBool%2C%20AtomicUsize%7D%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3A%7BATOMIC_BOOL_INIT%2C%20ATOMIC_USIZE_INIT%7D%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3AOrdering%3B%0Ause%20std%3A%3Async%3A%3Aatomic%3A%3Acompiler_fence%3B%0A%0Astatic%20IMPORTANT_VARIABLE%3A%20AtomicUsize%20%3D%20ATOMIC_USIZE_INIT%3B%0Astatic%20IS_READY%3A%20AtomicBool%20%3D%20ATOMIC_BOOL_INIT%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20IMPORTANT_VARIABLE.store(42%2C%20Ordering%3A%3ARelaxed)%3B%0A%20%20%20%20%2F%2F%20prevent%20earlier%20writes%20from%20being%20moved%20beyond%20this%20point%0A%20%20%20%20compiler_fence(Ordering%3A%3ARelease)%3B%0A%20%20%20%20IS_READY.store(true%2C%20Ordering%3A%3ARelaxed)%3B%0A%7D%0A%0Afn%20signal_handler()%20%7B%0A%20%20%20%20if%20IS_READY.load(Ordering%3A%3ARelaxed)%20%7B%0A%20%20%20%20%20%20%20%20assert_eq!(IMPORTANT_VARIABLE.load(Ordering%3A%3ARelaxed)%2C%2042)%3B%0A%20%20%20%20%7D%0A%7D%0A">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -138,7 +138,7 @@ Using a <code>compiler_fence</code> remedies this situation.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

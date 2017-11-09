@@ -240,6 +240,17 @@
 <span id="195">195</span>
 <span id="196">196</span>
 <span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -368,6 +379,12 @@
                               <span class="prelude-val">None</span>,
                               <span class="ident">SymbolExportLevel</span>::<span class="ident">Rust</span>));
         }
+
+        <span class="comment">// Sort so we get a stable incr. comp. hash.</span>
+        <span class="ident">local_crate</span>.<span class="ident">sort_unstable_by</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">name1</span>, ..), <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">name2</span>, ..)<span class="op">|</span> {
+            <span class="ident">name1</span>.<span class="ident">cmp</span>(<span class="ident">name2</span>)
+        });
+
         <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">local_crate</span>)
     };
 }
@@ -391,7 +408,7 @@
         <span class="kw">let</span> <span class="ident">special_runtime_crate</span> <span class="op">=</span>
             <span class="ident">tcx</span>.<span class="ident">is_panic_runtime</span>(<span class="ident">cnum</span>) <span class="op">||</span> <span class="ident">tcx</span>.<span class="ident">is_compiler_builtins</span>(<span class="ident">cnum</span>);
 
-        <span class="kw">let</span> <span class="ident">crate_exports</span> <span class="op">=</span> <span class="ident">tcx</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">crate_exports</span>: <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">tcx</span>
             .<span class="ident">exported_symbol_ids</span>(<span class="ident">cnum</span>)
             .<span class="ident">iter</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">def_id</span><span class="op">|</span> {
@@ -418,6 +435,11 @@
                 (<span class="ident">str</span>::<span class="ident">to_owned</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>), <span class="prelude-val">Some</span>(<span class="ident">def_id</span>), <span class="ident">export_level</span>)
             })
             .<span class="ident">collect</span>();
+
+        <span class="comment">// Sort so we get a stable incr. comp. hash.</span>
+        <span class="ident">crate_exports</span>.<span class="ident">sort_unstable_by</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">name1</span>, ..), <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">name2</span>, ..)<span class="op">|</span> {
+            <span class="ident">name1</span>.<span class="ident">cmp</span>(<span class="ident">name2</span>)
+        });
 
         <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">crate_exports</span>)
     };
@@ -464,7 +486,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

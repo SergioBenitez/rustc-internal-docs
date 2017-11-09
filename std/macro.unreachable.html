@@ -87,7 +87,7 @@ optimize the code out of the release version entirely.</p>
         <span class="prelude-val">Some</span>(_)           <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(), <span class="comment">// compile error if commented out</span>
         <span class="prelude-val">None</span>              <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;None&quot;</span>)
     }
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%23%5Ballow(dead_code)%5D%0Afn%20foo(x%3A%20Option%3Ci32%3E)%20%7B%0A%20%20%20%20match%20x%20%7B%0A%20%20%20%20%20%20%20%20Some(n)%20if%20n%20%3E%3D%200%20%3D%3E%20println!(%22Some(Non-negative)%22)%2C%0A%20%20%20%20%20%20%20%20Some(n)%20if%20n%20%3C%20%200%20%3D%3E%20println!(%22Some(Negative)%22)%2C%0A%20%20%20%20%20%20%20%20Some(_)%20%20%20%20%20%20%20%20%20%20%20%3D%3E%20unreachable!()%2C%20%2F%2F%20compile%20error%20if%20commented%20out%0A%20%20%20%20%20%20%20%20None%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%3E%20println!(%22None%22)%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%23%5Ballow(dead_code)%5D%0Afn%20foo(x%3A%20Option%3Ci32%3E)%20%7B%0A%20%20%20%20match%20x%20%7B%0A%20%20%20%20%20%20%20%20Some(n)%20if%20n%20%3E%3D%200%20%3D%3E%20println!(%22Some(Non-negative)%22)%2C%0A%20%20%20%20%20%20%20%20Some(n)%20if%20n%20%3C%20%200%20%3D%3E%20println!(%22Some(Negative)%22)%2C%0A%20%20%20%20%20%20%20%20Some(_)%20%20%20%20%20%20%20%20%20%20%20%3D%3E%20unreachable!()%2C%20%2F%2F%20compile%20error%20if%20commented%20out%0A%20%20%20%20%20%20%20%20None%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%3E%20println!(%22None%22)%0A%20%20%20%20%7D%0A%7D%0A%7D">Run</a></pre>
 
 <p>Iterators:</p>
 
@@ -98,7 +98,7 @@ optimize the code out of the release version entirely.</p>
         <span class="kw">if</span> <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">3</span><span class="kw-2">*</span><span class="ident">i</span> { <span class="kw">return</span> <span class="ident">i</span><span class="op">-</span><span class="number">1</span>; }
     }
     <span class="macro">unreachable</span><span class="macro">!</span>();
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%23%5Ballow(dead_code)%5D%0Afn%20divide_by_three(x%3A%20u32)%20-%3E%20u32%20%7B%20%2F%2F%20one%20of%20the%20poorest%20implementations%20of%20x%2F3%0A%20%20%20%20for%20i%20in%200..%20%7B%0A%20%20%20%20%20%20%20%20if%203*i%20%3C%20i%20%7B%20panic!(%22u32%20overflow%22)%3B%20%7D%0A%20%20%20%20%20%20%20%20if%20x%20%3C%203*i%20%7B%20return%20i-1%3B%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20unreachable!()%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%23%5Ballow(dead_code)%5D%0Afn%20divide_by_three(x%3A%20u32)%20-%3E%20u32%20%7B%20%2F%2F%20one%20of%20the%20poorest%20implementations%20of%20x%2F3%0A%20%20%20%20for%20i%20in%200..%20%7B%0A%20%20%20%20%20%20%20%20if%203*i%20%3C%20i%20%7B%20panic!(%22u32%20overflow%22)%3B%20%7D%0A%20%20%20%20%20%20%20%20if%20x%20%3C%203*i%20%7B%20return%20i-1%3B%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20unreachable!()%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -124,7 +124,7 @@ optimize the code out of the release version entirely.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

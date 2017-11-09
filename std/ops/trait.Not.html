@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Not</p><div class="block items"><li><a href="#associated-types">Associated Types</a></li><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Not', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Not</p><div class="block items"><a class="sidebar-title" href="#associated-types">Associated Types</a><div class="sidebar-links"><a href="#associatedtype.Output">Output</a></div><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.not">not</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Not', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -80,7 +80,7 @@ invert its value.</p>
 }
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">Answer</span>::<span class="ident">Yes</span>, <span class="ident">Answer</span>::<span class="ident">No</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">Answer</span>::<span class="ident">No</span>, <span class="ident">Answer</span>::<span class="ident">Yes</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ANot%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Aenum%20Answer%20%7B%0A%20%20%20%20Yes%2C%0A%20%20%20%20No%2C%0A%7D%0A%0Aimpl%20Not%20for%20Answer%20%7B%0A%20%20%20%20type%20Output%20%3D%20Answer%3B%0A%0A%20%20%20%20fn%20not(self)%20-%3E%20Answer%20%7B%0A%20%20%20%20%20%20%20%20match%20self%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Answer%3A%3AYes%20%3D%3E%20Answer%3A%3ANo%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20Answer%3A%3ANo%20%3D%3E%20Answer%3A%3AYes%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%0Aassert_eq!(!Answer%3A%3AYes%2C%20Answer%3A%3ANo)%3B%0Aassert_eq!(!Answer%3A%3ANo%2C%20Answer%3A%3AYes)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">Answer</span>::<span class="ident">No</span>, <span class="ident">Answer</span>::<span class="ident">Yes</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aops%3A%3ANot%3B%0A%0A%23%5Bderive(Debug%2C%20PartialEq)%5D%0Aenum%20Answer%20%7B%0A%20%20%20%20Yes%2C%0A%20%20%20%20No%2C%0A%7D%0A%0Aimpl%20Not%20for%20Answer%20%7B%0A%20%20%20%20type%20Output%20%3D%20Answer%3B%0A%0A%20%20%20%20fn%20not(self)%20-%3E%20Answer%20%7B%0A%20%20%20%20%20%20%20%20match%20self%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20Answer%3A%3AYes%20%3D%3E%20Answer%3A%3ANo%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20Answer%3A%3ANo%20%3D%3E%20Answer%3A%3AYes%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%7D%0A%0Aassert_eq!(!Answer%3A%3AYes%2C%20Answer%3A%3ANo)%3B%0Aassert_eq!(!Answer%3A%3ANo%2C%20Answer%3A%3AYes)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='associated-types' class='small-section-header'>
               Associated Types<a href='#associated-types' class='anchor'></a>
@@ -175,7 +175,7 @@ invert its value.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

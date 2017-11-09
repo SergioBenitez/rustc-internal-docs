@@ -61,7 +61,7 @@ given an <code>x</code> with value <code>0</code>.</p>
 
 <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">0b0011_1000_u8</span>;
 <span class="kw">let</span> <span class="ident">num_trailing</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">cttz_nonzero</span>(<span class="ident">x</span>) };
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">num_trailing</span>, <span class="number">3</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(core_intrinsics)%5D%0A%0Aextern%20crate%20core%3B%0Afn%20main()%20%7B%0Ause%20std%3A%3Aintrinsics%3A%3Acttz_nonzero%3B%0A%0Alet%20x%20%3D%200b0011_1000_u8%3B%0Alet%20num_trailing%20%3D%20unsafe%20%7B%20cttz_nonzero(x)%20%7D%3B%0Aassert_eq!(num_trailing%2C%203)%3B%0A%7D&amp;version=nightly">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">num_trailing</span>, <span class="number">3</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(core_intrinsics)%5D%0A%0Aextern%20crate%20core%3B%0Afn%20main()%20%7B%0Ause%20std%3A%3Aintrinsics%3A%3Acttz_nonzero%3B%0A%0Alet%20x%20%3D%200b0011_1000_u8%3B%0Alet%20num_trailing%20%3D%20unsafe%20%7B%20cttz_nonzero(x)%20%7D%3B%0Aassert_eq!(num_trailing%2C%203)%3B%0A%7D&amp;version=nightly">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -87,7 +87,7 @@ given an <code>x</code> with value <code>0</code>.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

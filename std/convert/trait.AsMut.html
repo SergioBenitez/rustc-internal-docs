@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait AsMut</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>convert</a></p><script>window.sidebarCurrent = {name: 'AsMut', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait AsMut</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.as_mut">as_mut</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>convert</a></p><script>window.sidebarCurrent = {name: 'AsMut', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -76,7 +76,7 @@ reference (e.g.: <code>foo.as_ref()</code> will work the same if <code>foo</code
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">boxed_num</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="number">0</span>);
 <span class="ident">add_one</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">boxed_num</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">boxed_num</span>, <span class="number">1</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afn%20add_one%3CT%3A%20AsMut%3Cu64%3E%3E(num%3A%20%26mut%20T)%20%7B%0A%20%20%20%20*num.as_mut()%20%2B%3D%201%3B%0A%7D%0A%0Alet%20mut%20boxed_num%20%3D%20Box%3A%3Anew(0)%3B%0Aadd_one(%26mut%20boxed_num)%3B%0Aassert_eq!(*boxed_num%2C%201)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">boxed_num</span>, <span class="number">1</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Afn%20add_one%3CT%3A%20AsMut%3Cu64%3E%3E(num%3A%20%26mut%20T)%20%7B%0A%20%20%20%20*num.as_mut()%20%2B%3D%201%3B%0A%7D%0A%0Alet%20mut%20boxed_num%20%3D%20Box%3A%3Anew(0)%3B%0Aadd_one(%26mut%20boxed_num)%3B%0Aassert_eq!(*boxed_num%2C%201)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -153,7 +153,7 @@ reference (e.g.: <code>foo.as_ref()</code> will work the same if <code>foo</code
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

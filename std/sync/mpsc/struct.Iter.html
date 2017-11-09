@@ -70,7 +70,7 @@ when the corresponding channel has hung up.</p>
 
 <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">recv</span>.<span class="ident">iter</span>() {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Got: {}&quot;</span>, <span class="ident">x</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(send%2C%20recv)%20%3D%20channel()%3B%0A%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20send.send(1u8).unwrap()%3B%0A%20%20%20%20send.send(2u8).unwrap()%3B%0A%20%20%20%20send.send(3u8).unwrap()%3B%0A%7D)%3B%0A%0Afor%20x%20in%20recv.iter()%20%7B%0A%20%20%20%20println!(%22Got%3A%20%7B%7D%22%2C%20x)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(send%2C%20recv)%20%3D%20channel()%3B%0A%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20send.send(1u8).unwrap()%3B%0A%20%20%20%20send.send(2u8).unwrap()%3B%0A%20%20%20%20send.send(3u8).unwrap()%3B%0A%7D)%3B%0A%0Afor%20x%20in%20recv.iter()%20%7B%0A%20%20%20%20println!(%22Got%3A%20%7B%7D%22%2C%20x)%3B%0A%7D%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -209,7 +209,7 @@ when the corresponding channel has hung up.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

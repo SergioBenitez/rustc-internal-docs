@@ -86,7 +86,7 @@ defined.</p>
 
 <span class="kw">type</span> <span class="ident">MyBuildHasher</span> <span class="op">=</span> <span class="ident">BuildHasherDefault</span><span class="op">&lt;</span><span class="ident">MyHasher</span><span class="op">&gt;</span>;
 
-<span class="kw">let</span> <span class="ident">hash_map</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">MyBuildHasher</span><span class="op">&gt;</span>::<span class="ident">default</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Acollections%3A%3AHashMap%3B%0Ause%20std%3A%3Ahash%3A%3A%7BBuildHasherDefault%2C%20Hasher%7D%3B%0A%0A%23%5Bderive(Default)%5D%0Astruct%20MyHasher%3B%0A%0Aimpl%20Hasher%20for%20MyHasher%20%7B%0A%20%20%20%20fn%20write(%26mut%20self%2C%20bytes%3A%20%26%5Bu8%5D)%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20Your%20hashing%20algorithm%20goes%20here!%0A%20%20%20%20%20%20%20unimplemented!()%0A%20%20%20%20%7D%0A%0A%20%20%20%20fn%20finish(%26self)%20-%3E%20u64%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20Your%20hashing%20algorithm%20goes%20here!%0A%20%20%20%20%20%20%20%20unimplemented!()%0A%20%20%20%20%7D%0A%7D%0A%0Atype%20MyBuildHasher%20%3D%20BuildHasherDefault%3CMyHasher%3E%3B%0A%0Alet%20hash_map%20%3D%20HashMap%3A%3A%3Cu32%2C%20u32%2C%20MyBuildHasher%3E%3A%3Adefault()%3B%0A%7D">Run</a></pre>
+<span class="kw">let</span> <span class="ident">hash_map</span> <span class="op">=</span> <span class="ident">HashMap</span>::<span class="op">&lt;</span><span class="ident">u32</span>, <span class="ident">u32</span>, <span class="ident">MyBuildHasher</span><span class="op">&gt;</span>::<span class="ident">default</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Acollections%3A%3AHashMap%3B%0Ause%20std%3A%3Ahash%3A%3A%7BBuildHasherDefault%2C%20Hasher%7D%3B%0A%0A%23%5Bderive(Default)%5D%0Astruct%20MyHasher%3B%0A%0Aimpl%20Hasher%20for%20MyHasher%20%7B%0A%20%20%20%20fn%20write(%26mut%20self%2C%20bytes%3A%20%26%5Bu8%5D)%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20Your%20hashing%20algorithm%20goes%20here!%0A%20%20%20%20%20%20%20unimplemented!()%0A%20%20%20%20%7D%0A%0A%20%20%20%20fn%20finish(%26self)%20-%3E%20u64%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20Your%20hashing%20algorithm%20goes%20here!%0A%20%20%20%20%20%20%20%20unimplemented!()%0A%20%20%20%20%7D%0A%7D%0A%0Atype%20MyBuildHasher%20%3D%20BuildHasherDefault%3CMyHasher%3E%3B%0A%0Alet%20hash_map%20%3D%20HashMap%3A%3A%3Cu32%2C%20u32%2C%20MyBuildHasher%3E%3A%3Adefault()%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -132,7 +132,7 @@ defined.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

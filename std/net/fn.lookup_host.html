@@ -66,7 +66,7 @@ operating system.</p>
 
 <span class="kw">for</span> <span class="ident">host</span> <span class="kw">in</span> <span class="ident">net</span>::<span class="ident">lookup_host</span>(<span class="string">&quot;rust-lang.org&quot;</span>)<span class="question-mark">?</span> {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;found address: {}&quot;</span>, <span class="ident">host</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(lookup_host)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Anet%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Afor%20host%20in%20net%3A%3Alookup_host(%22rust-lang.org%22)%3F%20%7B%0A%20%20%20%20println!(%22found%20address%3A%20%7B%7D%22%2C%20host)%3B%0A%7D%0AOk(())%0A%7D%0A%7D&amp;version=nightly">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(lookup_host)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Anet%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Afor%20host%20in%20net%3A%3Alookup_host(%22rust-lang.org%22)%3F%20%7B%0A%20%20%20%20println!(%22found%20address%3A%20%7B%7D%22%2C%20host)%3B%0A%7D%0AOk(())%0A%7D%0A%7D&amp;version=nightly">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -92,7 +92,7 @@ operating system.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

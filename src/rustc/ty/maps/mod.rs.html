@@ -584,7 +584,7 @@
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">Layout</span>, <span class="ident">LayoutError</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">steal</span>::<span class="ident">Steal</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
-<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">DefIdSet</span>, <span class="ident">DefIdMap</span>, <span class="ident">ItemLocalMap</span>};
+<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">DefIdSet</span>, <span class="ident">DefIdMap</span>, <span class="ident">ItemLocalSet</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">common</span>::{<span class="ident">profq_msg</span>, <span class="ident">ProfileQueriesMsg</span>};
 
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_set</span>::<span class="ident">IdxSetBuf</span>;
@@ -783,7 +783,7 @@
     [] <span class="kw">fn</span> <span class="ident">is_exported_symbol</span>: <span class="ident">IsExportedSymbol</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
     [] <span class="kw">fn</span> <span class="ident">item_body_nested_bodies</span>: <span class="ident">ItemBodyNestedBodies</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">ExternBodyNestedBodies</span>,
     [] <span class="kw">fn</span> <span class="ident">const_is_rvalue_promotable_to_static</span>: <span class="ident">ConstIsRvaluePromotableToStatic</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
-    [] <span class="kw">fn</span> <span class="ident">rvalue_promotable_map</span>: <span class="ident">RvaluePromotableMap</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">ItemLocalMap</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;&gt;</span>,
+    [] <span class="kw">fn</span> <span class="ident">rvalue_promotable_map</span>: <span class="ident">RvaluePromotableMap</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">ItemLocalSet</span><span class="op">&gt;</span>,
     [] <span class="kw">fn</span> <span class="ident">is_mir_available</span>: <span class="ident">IsMirAvailable</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
     [] <span class="kw">fn</span> <span class="ident">vtable_methods</span>: <span class="ident">vtable_methods_node</span>(<span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                           <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">DefId</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)<span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
@@ -1072,7 +1072,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

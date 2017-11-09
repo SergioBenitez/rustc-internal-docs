@@ -83,7 +83,7 @@ slice and start asking questions:</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">file_stem</span>, <span class="prelude-val">Some</span>(<span class="ident">OsStr</span>::<span class="ident">new</span>(<span class="string">&quot;bar&quot;</span>)));
 
 <span class="kw">let</span> <span class="ident">extension</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">extension</span>();
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">extension</span>, <span class="prelude-val">Some</span>(<span class="ident">OsStr</span>::<span class="ident">new</span>(<span class="string">&quot;txt&quot;</span>)));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APath%3B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0A%0Alet%20path%20%3D%20Path%3A%3Anew(%22%2Ftmp%2Ffoo%2Fbar.txt%22)%3B%0A%0Alet%20parent%20%3D%20path.parent()%3B%0Aassert_eq!(parent%2C%20Some(Path%3A%3Anew(%22%2Ftmp%2Ffoo%22)))%3B%0A%0Alet%20file_stem%20%3D%20path.file_stem()%3B%0Aassert_eq!(file_stem%2C%20Some(OsStr%3A%3Anew(%22bar%22)))%3B%0A%0Alet%20extension%20%3D%20path.extension()%3B%0Aassert_eq!(extension%2C%20Some(OsStr%3A%3Anew(%22txt%22)))%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">extension</span>, <span class="prelude-val">Some</span>(<span class="ident">OsStr</span>::<span class="ident">new</span>(<span class="string">&quot;txt&quot;</span>)));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APath%3B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0A%0Alet%20path%20%3D%20Path%3A%3Anew(%22%2Ftmp%2Ffoo%2Fbar.txt%22)%3B%0A%0Alet%20parent%20%3D%20path.parent()%3B%0Aassert_eq!(parent%2C%20Some(Path%3A%3Anew(%22%2Ftmp%2Ffoo%22)))%3B%0A%0Alet%20file_stem%20%3D%20path.file_stem()%3B%0Aassert_eq!(file_stem%2C%20Some(OsStr%3A%3Anew(%22bar%22)))%3B%0A%0Alet%20extension%20%3D%20path.extension()%3B%0Aassert_eq!(extension%2C%20Some(OsStr%3A%3Anew(%22txt%22)))%3B%0A%7D">Run</a></pre>
 
 <p>To build or modify paths, use <a href="../../std/path/struct.PathBuf.html"><code>PathBuf</code></a>:</p>
 
@@ -100,7 +100,7 @@ slice and start asking questions:</p>
 
 <span class="comment">// ... but push is best used if you don&#39;t know everything up</span>
 <span class="comment">// front. If you do, this way is better:</span>
-<span class="kw">let</span> <span class="ident">path</span>: <span class="ident">PathBuf</span> <span class="op">=</span> [<span class="string">&quot;c:\\&quot;</span>, <span class="string">&quot;windows&quot;</span>, <span class="string">&quot;system32.dll&quot;</span>].<span class="ident">iter</span>().<span class="ident">collect</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APathBuf%3B%0A%0A%2F%2F%20This%20way%20works...%0Alet%20mut%20path%20%3D%20PathBuf%3A%3Afrom(%22c%3A%5C%5C%22)%3B%0A%0Apath.push(%22windows%22)%3B%0Apath.push(%22system32%22)%3B%0A%0Apath.set_extension(%22dll%22)%3B%0A%0A%2F%2F%20...%20but%20push%20is%20best%20used%20if%20you%20don't%20know%20everything%20up%0A%2F%2F%20front.%20If%20you%20do%2C%20this%20way%20is%20better%3A%0Alet%20path%3A%20PathBuf%20%3D%20%5B%22c%3A%5C%5C%22%2C%20%22windows%22%2C%20%22system32.dll%22%5D.iter().collect()%3B%0A%7D">Run</a></pre>
+<span class="kw">let</span> <span class="ident">path</span>: <span class="ident">PathBuf</span> <span class="op">=</span> [<span class="string">&quot;c:\\&quot;</span>, <span class="string">&quot;windows&quot;</span>, <span class="string">&quot;system32.dll&quot;</span>].<span class="ident">iter</span>().<span class="ident">collect</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apath%3A%3APathBuf%3B%0A%0A%2F%2F%20This%20way%20works...%0Alet%20mut%20path%20%3D%20PathBuf%3A%3Afrom(%22c%3A%5C%5C%22)%3B%0A%0Apath.push(%22windows%22)%3B%0Apath.push(%22system32%22)%3B%0A%0Apath.set_extension(%22dll%22)%3B%0A%0A%2F%2F%20...%20but%20push%20is%20best%20used%20if%20you%20don't%20know%20everything%20up%0A%2F%2F%20front.%20If%20you%20do%2C%20this%20way%20is%20better%3A%0Alet%20path%3A%20PathBuf%20%3D%20%5B%22c%3A%5C%5C%22%2C%20%22windows%22%2C%20%22system32.dll%22%5D.iter().collect()%3B%0A%7D">Run</a></pre>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -210,7 +210,7 @@ separators for the current platform.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

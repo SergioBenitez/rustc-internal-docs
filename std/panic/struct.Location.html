@@ -65,7 +65,7 @@
     }
 }));
 
-<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20in%20file%20'%7B%7D'%20at%20line%20%7B%7D%22%2C%20location.file()%2C%20location.line())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20in%20file%20'%7B%7D'%20at%20line%20%7B%7D%22%2C%20location.file()%2C%20location.line())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -86,7 +86,7 @@
     }
 }));
 
-<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20in%20file%20'%7B%7D'%22%2C%20location.file())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20in%20file%20'%7B%7D'%22%2C%20location.file())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.line' class="method"><span id='line.v' class='invisible'><code>pub fn <a href='#method.line' class='fnname'>line</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.u32.html">u32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/panicking.rs.html#310-312' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns the line number from which the panic originated.</p>
 
@@ -102,7 +102,7 @@
     }
 }));
 
-<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20at%20line%20%7B%7D%22%2C%20location.line())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20at%20line%20%7B%7D%22%2C%20location.line())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.column' class="method"><span id='column.v' class='invisible'><code>pub fn <a href='#method.column' class='fnname'>column</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.u32.html">u32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/panicking.rs.html#333-335' title='goto source code'>[src]</a></span></h4>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>panic_col </code><a href="https://github.com/rust-lang/rust/issues/42939">#42939</a>)</summary><p>recently added</p>
 </details></div></div><div class='docblock'><p>Returns the column from which the panic originated.</p>
@@ -120,7 +120,7 @@
     }
 }));
 
-<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(panic_col)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20at%20column%20%7B%7D%22%2C%20location.column())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D&amp;version=nightly">Run</a></pre>
+<span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Normal panic&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(panic_col)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apanic%3B%0A%0Apanic%3A%3Aset_hook(Box%3A%3Anew(%7Cpanic_info%7C%20%7B%0A%20%20%20%20if%20let%20Some(location)%20%3D%20panic_info.location()%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20at%20column%20%7B%7D%22%2C%20location.column())%3B%0A%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20println!(%22panic%20occurred%20but%20can't%20get%20location%20information...%22)%3B%0A%20%20%20%20%7D%0A%7D))%3B%0A%0Apanic!(%22Normal%20panic%22)%3B%0A%7D&amp;version=nightly">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -153,7 +153,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

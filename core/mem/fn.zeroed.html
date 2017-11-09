@@ -68,7 +68,7 @@ many of the same caveats.</p>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 
 <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">i32</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">mem</span>::<span class="ident">zeroed</span>() };
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">x</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Alet%20x%3A%20i32%20%3D%20unsafe%20%7B%20mem%3A%3Azeroed()%20%7D%3B%0Aassert_eq!(0%2C%20x)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">0</span>, <span class="ident">x</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Alet%20x%3A%20i32%20%3D%20unsafe%20%7B%20mem%3A%3Azeroed()%20%7D%3B%0Aassert_eq!(0%2C%20x)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -94,7 +94,7 @@ many of the same caveats.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

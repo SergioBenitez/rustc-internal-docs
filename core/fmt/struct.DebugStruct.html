@@ -78,7 +78,7 @@ method.</p>
 }
 
 <span class="comment">// prints &quot;Foo { bar: 10, baz: &quot;Hello World&quot; }&quot;</span>
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">Foo</span> { <span class="ident">bar</span>: <span class="number">10</span>, <span class="ident">baz</span>: <span class="string">&quot;Hello World&quot;</span>.<span class="ident">to_string</span>() });<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Foo%20%7B%0A%20%20%20%20bar%3A%20i32%2C%0A%20%20%20%20baz%3A%20String%2C%0A%7D%0A%0Aimpl%20fmt%3A%3ADebug%20for%20Foo%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20fmt%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20fmt.debug_struct(%22Foo%22)%0A%20%20%20%20%20%20%20%20%20%20%20.field(%22bar%22%2C%20%26self.bar)%0A%20%20%20%20%20%20%20%20%20%20%20.field(%22baz%22%2C%20%26self.baz)%0A%20%20%20%20%20%20%20%20%20%20%20.finish()%0A%20%20%20%20%7D%0A%7D%0A%0A%2F%2F%20prints%20%22Foo%20%7B%20bar%3A%2010%2C%20baz%3A%20%22Hello%20World%22%20%7D%22%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20Foo%20%7B%20bar%3A%2010%2C%20baz%3A%20%22Hello%20World%22.to_string()%20%7D)%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">Foo</span> { <span class="ident">bar</span>: <span class="number">10</span>, <span class="ident">baz</span>: <span class="string">&quot;Hello World&quot;</span>.<span class="ident">to_string</span>() });<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Foo%20%7B%0A%20%20%20%20bar%3A%20i32%2C%0A%20%20%20%20baz%3A%20String%2C%0A%7D%0A%0Aimpl%20fmt%3A%3ADebug%20for%20Foo%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20fmt%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20fmt.debug_struct(%22Foo%22)%0A%20%20%20%20%20%20%20%20%20%20%20.field(%22bar%22%2C%20%26self.bar)%0A%20%20%20%20%20%20%20%20%20%20%20.field(%22baz%22%2C%20%26self.baz)%0A%20%20%20%20%20%20%20%20%20%20%20.finish()%0A%20%20%20%20%7D%0A%7D%0A%0A%2F%2F%20prints%20%22Foo%20%7B%20bar%3A%2010%2C%20baz%3A%20%22Hello%20World%22%20%7D%22%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20Foo%20%7B%20bar%3A%2010%2C%20baz%3A%20%22Hello%20World%22.to_string()%20%7D)%3B%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -113,7 +113,7 @@ method.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Binary</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>fmt</a></p><script>window.sidebarCurrent = {name: 'Binary', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Binary</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.fmt">fmt</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>fmt</a></p><script>window.sidebarCurrent = {name: 'Binary', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -66,7 +66,7 @@
 <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">42</span>; <span class="comment">// 42 is &#39;101010&#39; in binary</span>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:b}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;101010&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:#b}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;0b101010&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20x%20%3D%2042%3B%20%2F%2F%2042%20is%20'101010'%20in%20binary%0A%0Aassert_eq!(format!(%22%7B%3Ab%7D%22%2C%20x)%2C%20%22101010%22)%3B%0Aassert_eq!(format!(%22%7B%3A%23b%7D%22%2C%20x)%2C%20%220b101010%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:#b}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;0b101010&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20x%20%3D%2042%3B%20%2F%2F%2042%20is%20'101010'%20in%20binary%0A%0Aassert_eq!(format!(%22%7B%3Ab%7D%22%2C%20x)%2C%20%22101010%22)%3B%0Aassert_eq!(format!(%22%7B%3A%23b%7D%22%2C%20x)%2C%20%220b101010%22)%3B%0A%7D">Run</a></pre>
 
 <p>Implementing <code>Binary</code> on a type:</p>
 
@@ -85,7 +85,7 @@
 
 <span class="kw">let</span> <span class="ident">l</span> <span class="op">=</span> <span class="ident">Length</span>(<span class="number">107</span>);
 
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;l as binary is: {:b}&quot;</span>, <span class="ident">l</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Length(i32)%3B%0A%0Aimpl%20fmt%3A%3ABinary%20for%20Length%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20let%20val%20%3D%20self.0%3B%0A%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22%7B%3Ab%7D%22%2C%20val)%20%2F%2F%20delegate%20to%20i32's%20implementation%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20l%20%3D%20Length(107)%3B%0A%0Aprintln!(%22l%20as%20binary%20is%3A%20%7B%3Ab%7D%22%2C%20l)%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;l as binary is: {:b}&quot;</span>, <span class="ident">l</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0Astruct%20Length(i32)%3B%0A%0Aimpl%20fmt%3A%3ABinary%20for%20Length%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20let%20val%20%3D%20self.0%3B%0A%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22%7B%3Ab%7D%22%2C%20val)%20%2F%2F%20delegate%20to%20i32's%20implementation%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20l%20%3D%20Length(107)%3B%0A%0Aprintln!(%22l%20as%20binary%20is%3A%20%7B%3Ab%7D%22%2C%20l)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -139,7 +139,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -89,7 +89,7 @@ limited to just these cases:</p>
         }
     }
     <span class="prelude-val">Ok</span>(())
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aio%3B%0Ause%20std%3A%3Afs%3A%3A%7Bself%2C%20DirEntry%7D%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0A%2F%2F%20one%20possible%20implementation%20of%20walking%20a%20directory%20only%20visiting%20files%0Afn%20visit_dirs(dir%3A%20%26Path%2C%20cb%3A%20%26Fn(%26DirEntry))%20-%3E%20io%3A%3AResult%3C()%3E%20%7B%0A%20%20%20%20if%20dir.is_dir()%20%7B%0A%20%20%20%20%20%20%20%20for%20entry%20in%20fs%3A%3Aread_dir(dir)%3F%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20entry%20%3D%20entry%3F%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20path%20%3D%20entry.path()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20path.is_dir()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20visit_dirs(%26path%2C%20cb)%3F%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20cb(%26entry)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20Ok(())%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3B%0Ause%20std%3A%3Afs%3A%3A%7Bself%2C%20DirEntry%7D%3B%0Ause%20std%3A%3Apath%3A%3APath%3B%0A%0A%2F%2F%20one%20possible%20implementation%20of%20walking%20a%20directory%20only%20visiting%20files%0Afn%20visit_dirs(dir%3A%20%26Path%2C%20cb%3A%20%26Fn(%26DirEntry))%20-%3E%20io%3A%3AResult%3C()%3E%20%7B%0A%20%20%20%20if%20dir.is_dir()%20%7B%0A%20%20%20%20%20%20%20%20for%20entry%20in%20fs%3A%3Aread_dir(dir)%3F%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20entry%20%3D%20entry%3F%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20let%20path%20%3D%20entry.path()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20path.is_dir()%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20visit_dirs(%26path%2C%20cb)%3F%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20cb(%26entry)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20Ok(())%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -115,7 +115,7 @@ limited to just these cases:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

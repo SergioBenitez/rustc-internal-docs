@@ -73,7 +73,7 @@ in all terms other than alignment.</p>
 } <span class="kw">else</span> {
     <span class="comment">// while the pointer can be aligned via `offset`, it would point</span>
     <span class="comment">// outside the allocation</span>
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(core_intrinsics)%5D%0Afn%20main()%20%7B%0Afn%20foo(n%3A%20usize)%20%7B%0Ause%20std%3A%3Aintrinsics%3A%3Aalign_offset%3B%0Ause%20std%3A%3Amem%3A%3Aalign_of%3B%0Aunsafe%20%7B%0Alet%20x%20%3D%20%5B5u8%2C%206u8%2C%207u8%2C%208u8%2C%209u8%5D%3B%0Alet%20ptr%20%3D%20%26x%5Bn%5D%20as%20*const%20u8%3B%0Alet%20offset%20%3D%20align_offset(ptr%20as%20*const%20()%2C%20align_of%3A%3A%3Cu16%3E())%3B%0Aif%20offset%20%3C%20x.len()%20-%20n%20-%201%20%7B%0A%20%20%20%20let%20u16_ptr%20%3D%20ptr.offset(offset%20as%20isize)%20as%20*const%20u16%3B%0A%20%20%20%20assert_ne!(*u16_ptr%2C%20500)%3B%0A%7D%20else%20%7B%0A%20%20%20%20%2F%2F%20while%20the%20pointer%20can%20be%20aligned%20via%20%60offset%60%2C%20it%20would%20point%0A%20%20%20%20%2F%2F%20outside%20the%20allocation%0A%7D%0A%7D%20%7D%0A%7D&amp;version=nightly">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(core_intrinsics)%5D%0Afn%20main()%20%7B%0Afn%20foo(n%3A%20usize)%20%7B%0Ause%20std%3A%3Aintrinsics%3A%3Aalign_offset%3B%0Ause%20std%3A%3Amem%3A%3Aalign_of%3B%0Aunsafe%20%7B%0Alet%20x%20%3D%20%5B5u8%2C%206u8%2C%207u8%2C%208u8%2C%209u8%5D%3B%0Alet%20ptr%20%3D%20%26x%5Bn%5D%20as%20*const%20u8%3B%0Alet%20offset%20%3D%20align_offset(ptr%20as%20*const%20()%2C%20align_of%3A%3A%3Cu16%3E())%3B%0Aif%20offset%20%3C%20x.len()%20-%20n%20-%201%20%7B%0A%20%20%20%20let%20u16_ptr%20%3D%20ptr.offset(offset%20as%20isize)%20as%20*const%20u16%3B%0A%20%20%20%20assert_ne!(*u16_ptr%2C%20500)%3B%0A%7D%20else%20%7B%0A%20%20%20%20%2F%2F%20while%20the%20pointer%20can%20be%20aligned%20via%20%60offset%60%2C%20it%20would%20point%0A%20%20%20%20%2F%2F%20outside%20the%20allocation%0A%7D%0A%7D%20%7D%0A%7D&amp;version=nightly">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -99,7 +99,7 @@ in all terms other than alignment.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

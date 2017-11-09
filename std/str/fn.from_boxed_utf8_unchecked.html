@@ -59,7 +59,7 @@ that the string contains valid UTF-8.</p>
 <span class="kw">let</span> <span class="ident">smile_utf8</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>([<span class="number">226</span>, <span class="number">152</span>, <span class="number">186</span>]);
 <span class="kw">let</span> <span class="ident">smile</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">std</span>::<span class="ident">str</span>::<span class="ident">from_boxed_utf8_unchecked</span>(<span class="ident">smile_utf8</span>) };
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;☺&quot;</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">smile</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20smile_utf8%20%3D%20Box%3A%3Anew(%5B226%2C%20152%2C%20186%5D)%3B%0Alet%20smile%20%3D%20unsafe%20%7B%20std%3A%3Astr%3A%3Afrom_boxed_utf8_unchecked(smile_utf8)%20%7D%3B%0A%0Aassert_eq!(%22%E2%98%BA%22%2C%20%26*smile)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&quot;☺&quot;</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">smile</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20smile_utf8%20%3D%20Box%3A%3Anew(%5B226%2C%20152%2C%20186%5D)%3B%0Alet%20smile%20%3D%20unsafe%20%7B%20std%3A%3Astr%3A%3Afrom_boxed_utf8_unchecked(smile_utf8)%20%7D%3B%0A%0Aassert_eq!(%22%E2%98%BA%22%2C%20%26*smile)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -85,7 +85,7 @@ that the string contains valid UTF-8.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

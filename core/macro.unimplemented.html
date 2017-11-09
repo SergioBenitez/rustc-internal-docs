@@ -70,7 +70,7 @@ methods, and you&#39;re only planning on using one of them.</p>
 <span class="kw">trait</span> <span class="ident">Foo</span> {
     <span class="kw">fn</span> <span class="ident">bar</span>(<span class="kw-2">&amp;</span><span class="self">self</span>);
     <span class="kw">fn</span> <span class="ident">baz</span>(<span class="kw-2">&amp;</span><span class="self">self</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Atrait%20Foo%20%7B%0A%20%20%20%20fn%20bar(%26self)%3B%0A%20%20%20%20fn%20baz(%26self)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Atrait%20Foo%20%7B%0A%20%20%20%20fn%20bar(%26self)%3B%0A%20%20%20%20fn%20baz(%26self)%3B%0A%7D%0A%7D">Run</a></pre>
 
 <p>We want to implement <code>Foo</code> on one of our types, but we also want to work on
 just <code>bar()</code> first. In order for our code to compile, we need to implement
@@ -95,7 +95,7 @@ just <code>bar()</code> first. In order for our code to compile, we need to impl
     <span class="ident">s</span>.<span class="ident">bar</span>();
 
     <span class="comment">// we aren&#39;t even using baz() yet, so this is fine.</span>
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=trait%20Foo%20%7B%0A%20%20%20%20fn%20bar(%26self)%3B%0A%20%20%20%20fn%20baz(%26self)%3B%0A%7D%0Astruct%20MyStruct%3B%0A%0Aimpl%20Foo%20for%20MyStruct%20%7B%0A%20%20%20%20fn%20bar(%26self)%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20implementation%20goes%20here%0A%20%20%20%20%7D%0A%0A%20%20%20%20fn%20baz(%26self)%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20let's%20not%20worry%20about%20implementing%20baz()%20for%20now%0A%20%20%20%20%20%20%20%20unimplemented!()%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20s%20%3D%20MyStruct%3B%0A%20%20%20%20s.bar()%3B%0A%0A%20%20%20%20%2F%2F%20we%20aren't%20even%20using%20baz()%20yet%2C%20so%20this%20is%20fine.%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Atrait%20Foo%20%7B%0A%20%20%20%20fn%20bar(%26self)%3B%0A%20%20%20%20fn%20baz(%26self)%3B%0A%7D%0Astruct%20MyStruct%3B%0A%0Aimpl%20Foo%20for%20MyStruct%20%7B%0A%20%20%20%20fn%20bar(%26self)%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20implementation%20goes%20here%0A%20%20%20%20%7D%0A%0A%20%20%20%20fn%20baz(%26self)%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20let's%20not%20worry%20about%20implementing%20baz()%20for%20now%0A%20%20%20%20%20%20%20%20unimplemented!()%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20s%20%3D%20MyStruct%3B%0A%20%20%20%20s.bar()%3B%0A%0A%20%20%20%20%2F%2F%20we%20aren't%20even%20using%20baz()%20yet%2C%20so%20this%20is%20fine.%0A%7D%0A">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -121,7 +121,7 @@ just <code>bar()</code> first. In order for our code to compile, we need to impl
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Drop</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Drop', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Drop</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.drop">drop</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>core</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Drop', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -81,7 +81,7 @@ for some more elaboration.</p>
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
     <span class="kw">let</span> <span class="ident">_x</span> <span class="op">=</span> <span class="ident">HasDrop</span>;
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=struct%20HasDrop%3B%0A%0Aimpl%20Drop%20for%20HasDrop%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Dropping!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_x%20%3D%20HasDrop%3B%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Astruct%20HasDrop%3B%0A%0Aimpl%20Drop%20for%20HasDrop%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Dropping!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_x%20%3D%20HasDrop%3B%0A%7D%0A">Run</a></pre>
 
 <h2 id='dropping-is-done-recursively' class='section-header'><a href='#dropping-is-done-recursively'>Dropping is done recursively</a></h2>
 <p>When <code>outer</code> goes out of scope, the <code>drop</code> method will be called first for
@@ -106,7 +106,7 @@ then <code>Dropping Inner!</code>.</p>
 
 <span class="kw">fn</span> <span class="ident">main</span>() {
     <span class="kw">let</span> <span class="ident">_x</span> <span class="op">=</span> <span class="ident">Outer</span>(<span class="ident">Inner</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=struct%20Inner%3B%0Astruct%20Outer(Inner)%3B%0A%0Aimpl%20Drop%20for%20Inner%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Dropping%20Inner!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Aimpl%20Drop%20for%20Outer%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Dropping%20Outer!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_x%20%3D%20Outer(Inner)%3B%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Astruct%20Inner%3B%0Astruct%20Outer(Inner)%3B%0A%0Aimpl%20Drop%20for%20Inner%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Dropping%20Inner!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Aimpl%20Drop%20for%20Outer%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22Dropping%20Outer!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_x%20%3D%20Outer(Inner)%3B%0A%7D%0A">Run</a></pre>
 
 <h2 id='variables-are-dropped-in-reverse-order-of-declaration' class='section-header'><a href='#variables-are-dropped-in-reverse-order-of-declaration'>Variables are dropped in reverse order of declaration</a></h2>
 <p><code>_first</code> is declared first and <code>_second</code> is declared second, so <code>main</code> will
@@ -124,7 +124,7 @@ print <code>Declared second!</code> and then <code>Declared first!</code>.</p>
 <span class="kw">fn</span> <span class="ident">main</span>() {
     <span class="kw">let</span> <span class="ident">_first</span> <span class="op">=</span> <span class="ident">PrintOnDrop</span>(<span class="string">&quot;Declared first!&quot;</span>);
     <span class="kw">let</span> <span class="ident">_second</span> <span class="op">=</span> <span class="ident">PrintOnDrop</span>(<span class="string">&quot;Declared second!&quot;</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=struct%20PrintOnDrop(%26'static%20str)%3B%0A%0Aimpl%20Drop%20for%20PrintOnDrop%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20self.0)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_first%20%3D%20PrintOnDrop(%22Declared%20first!%22)%3B%0A%20%20%20%20let%20_second%20%3D%20PrintOnDrop(%22Declared%20second!%22)%3B%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Astruct%20PrintOnDrop(%26'static%20str)%3B%0A%0Aimpl%20Drop%20for%20PrintOnDrop%20%7B%0A%20%20%20%20fn%20drop(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%7D%22%2C%20self.0)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20_first%20%3D%20PrintOnDrop(%22Declared%20first!%22)%3B%0A%20%20%20%20let%20_second%20%3D%20PrintOnDrop(%22Declared%20second!%22)%3B%0A%7D%0A">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -176,7 +176,7 @@ in a <code>drop</code> implementation will likely abort.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

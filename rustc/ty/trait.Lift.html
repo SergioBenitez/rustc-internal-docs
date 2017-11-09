@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Lift</p><div class="block items"><li><a href="#associated-types">Associated Types</a></li><li><a href="#required-methods">Required Methods</a></li><li><a href="#foreign-impls">Implementations on Foreign Types</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>rustc</a>::<wbr><a href='index.html'>ty</a></p><script>window.sidebarCurrent = {name: 'Lift', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Lift</p><div class="block items"><a class="sidebar-title" href="#associated-types">Associated Types</a><div class="sidebar-links"><a href="#associatedtype.Lifted">Lifted</a></div><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.lift_to_tcx">lift_to_tcx</a></div><a class="sidebar-title" href="#foreign-impls">Implementations on Foreign Types</a><div class="sidebar-links"><a href="#impl-Lift%3C%27tcx%3E">(A, B)</a><a href="#impl-Lift%3C%27tcx%3E">(A, B, C)</a><a href="#impl-Lift%3C%27tcx%3E">Option&lt;T&gt;</a><a href="#impl-Lift%3C%27tcx%3E">Result&lt;T, E&gt;</a><a href="#impl-Lift%3C%27tcx%3E">Box&lt;T&gt;</a><a href="#impl-Lift%3C%27tcx%3E">[T]</a><a href="#impl-Lift%3C%27tcx%3E">Vec&lt;T&gt;</a><a href="#impl-Lift%3C%27tcx%3E">()</a><a href="#impl-Lift%3C%27tcx%3E">Abi</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>rustc</a>::<wbr><a href='index.html'>ty</a></p><script>window.sidebarCurrent = {name: 'Lift', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -83,7 +83,7 @@ e.g. <code>()</code> or <code>u8</code>, was interned in a different context.</p
             <div class='methods'>
         <h3 id='tymethod.lift_to_tcx' class='method'><span id='lift_to_tcx.v' class='invisible'><code>fn <a href='#tymethod.lift_to_tcx' class='fnname'>lift_to_tcx</a>&lt;'a, 'gcx&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;self, <br>&nbsp;&nbsp;&nbsp;&nbsp;tcx: <a class="struct" href="../../rustc/ty/struct.TyCtxt.html" title="struct rustc::ty::TyCtxt">TyCtxt</a>&lt;'a, 'gcx, 'tcx&gt;<br>) -&gt; <a class="enum" href="../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self::<a class="type" href="../../rustc/ty/trait.Lift.html#associatedtype.Lifted" title="type rustc::ty::Lift::Lifted">Lifted</a>&gt;</code></span></h3><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div></div>
-                <h2 id='foreign-impls' class='section-header'>
+                <h2 id='foreign-impls' class='small-section-header'>
                   Implementations on Foreign Types<a href='#foreign-impls' class='anchor'></a>
                 </h2>
             <h3 id='impl-Lift%3C%27tcx%3E' class='impl'><span class='in-band'><code>impl&lt;'tcx, A:&nbsp;<a class="trait" href="../../rustc/ty/trait.Lift.html" title="trait rustc::ty::Lift">Lift</a>&lt;'tcx&gt;, B:&nbsp;<a class="trait" href="../../rustc/ty/trait.Lift.html" title="trait rustc::ty::Lift">Lift</a>&lt;'tcx&gt;&gt; <a class="trait" href="../../rustc/ty/trait.Lift.html" title="trait rustc::ty::Lift">Lift</a>&lt;'tcx&gt; for <a class="primitive" href="../../std/primitive.tuple.html">(</a>A, B<a class="primitive" href="../../std/primitive.tuple.html">)</a></code><a href='#impl-Lift%3C%27tcx%3E' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rustc/ty/structural_impls.rs.html#26-31' title='goto source code'>[src]</a></span></h3>
@@ -206,7 +206,7 @@ e.g. <code>()</code> or <code>u8</code>, was interned in a different context.</p
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

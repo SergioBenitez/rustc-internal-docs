@@ -79,7 +79,7 @@ return a <a href="struct.RecvError.html"><code>RecvError</code></a>.</p>
 <span class="comment">// Do some useful work for awhile</span>
 
 <span class="comment">// Let&#39;s see what that answer was</span>
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">receiver</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20channel()%3B%0A%0A%2F%2F%20Spawn%20off%20an%20expensive%20computation%0Athread%3A%3Aspawn(move%7C%7C%20%7B%0A%20%20fn%20expensive_computation()%20%7B%7D%0A%20%20%20%20sender.send(expensive_computation()).unwrap()%3B%0A%7D)%3B%0A%0A%2F%2F%20Do%20some%20useful%20work%20for%20awhile%0A%0A%2F%2F%20Let's%20see%20what%20that%20answer%20was%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20receiver.recv().unwrap())%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">receiver</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20channel()%3B%0A%0A%2F%2F%20Spawn%20off%20an%20expensive%20computation%0Athread%3A%3Aspawn(move%7C%7C%20%7B%0A%20%20fn%20expensive_computation()%20%7B%7D%0A%20%20%20%20sender.send(expensive_computation()).unwrap()%3B%0A%7D)%3B%0A%0A%2F%2F%20Do%20some%20useful%20work%20for%20awhile%0A%0A%2F%2F%20Let's%20see%20what%20that%20answer%20was%0Aprintln!(%22%7B%3A%3F%7D%22%2C%20receiver.recv().unwrap())%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -105,7 +105,7 @@ return a <a href="struct.RecvError.html"><code>RecvError</code></a>.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

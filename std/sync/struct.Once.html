@@ -62,7 +62,7 @@ value.</p>
 
 <span class="ident">START</span>.<span class="ident">call_once</span>(<span class="op">||</span> {
     <span class="comment">// run initialization here</span>
-});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0A%0Astatic%20START%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0ASTART.call_once(%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20run%20initialization%20here%0A%7D)%3B%0A%7D">Run</a></pre>
+});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0A%0Astatic%20START%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0ASTART.call_once(%7C%7C%20%7B%0A%20%20%20%20%2F%2F%20run%20initialization%20here%0A%7D)%3B%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -109,7 +109,7 @@ return).</p>
 
 <span class="kw">fn</span> <span class="ident">expensive_computation</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> {
     <span class="comment">// ...</span>
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0A%0Astatic%20mut%20VAL%3A%20usize%20%3D%200%3B%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0A%2F%2F%20Accessing%20a%20%60static%20mut%60%20is%20unsafe%20much%20of%20the%20time%2C%20but%20if%20we%20do%20so%0A%2F%2F%20in%20a%20synchronized%20fashion%20(e.g.%20write%20once%20or%20read%20all)%20then%20we're%0A%2F%2F%20good%20to%20go!%0A%2F%2F%0A%2F%2F%20This%20function%20will%20only%20call%20%60expensive_computation%60%20once%2C%20and%20will%0A%2F%2F%20otherwise%20always%20return%20the%20value%20returned%20from%20the%20first%20invocation.%0Afn%20get_cached_val()%20-%3E%20usize%20%7B%0A%20%20%20%20unsafe%20%7B%0A%20%20%20%20%20%20%20%20INIT.call_once(%7C%7C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20VAL%20%3D%20expensive_computation()%3B%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20VAL%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20expensive_computation()%20-%3E%20usize%20%7B%0A%20%20%20%20%2F%2F%20...%0A2%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0A%0Astatic%20mut%20VAL%3A%20usize%20%3D%200%3B%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0A%2F%2F%20Accessing%20a%20%60static%20mut%60%20is%20unsafe%20much%20of%20the%20time%2C%20but%20if%20we%20do%20so%0A%2F%2F%20in%20a%20synchronized%20fashion%20(e.g.%20write%20once%20or%20read%20all)%20then%20we're%0A%2F%2F%20good%20to%20go!%0A%2F%2F%0A%2F%2F%20This%20function%20will%20only%20call%20%60expensive_computation%60%20once%2C%20and%20will%0A%2F%2F%20otherwise%20always%20return%20the%20value%20returned%20from%20the%20first%20invocation.%0Afn%20get_cached_val()%20-%3E%20usize%20%7B%0A%20%20%20%20unsafe%20%7B%0A%20%20%20%20%20%20%20%20INIT.call_once(%7C%7C%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20VAL%20%3D%20expensive_computation()%3B%0A%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20VAL%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20expensive_computation()%20-%3E%20usize%20%7B%0A%20%20%20%20%2F%2F%20...%0A2%0A%7D%0A%7D">Run</a></pre>
 
 <h1 id='panics' class='section-header'><a href='#panics'>Panics</a></h1>
 <p>The closure <code>f</code> will only be executed once if this is called
@@ -159,7 +159,7 @@ to query the poison status of the <code>Once</code>.</p>
 });
 
 <span class="comment">// once any success happens, we stop propagating the poison</span>
-<span class="ident">INIT</span>.<span class="ident">call_once</span>(<span class="op">||</span> {});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(once_poison)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0Ause%20std%3A%3Athread%3B%0A%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0A%2F%2F%20poison%20the%20once%0Alet%20handle%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20INIT.call_once(%7C%7C%20panic!())%3B%0A%7D)%3B%0Aassert!(handle.join().is_err())%3B%0A%0A%2F%2F%20poisoning%20propagates%0Alet%20handle%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20INIT.call_once(%7C%7C%20%7B%7D)%3B%0A%7D)%3B%0Aassert!(handle.join().is_err())%3B%0A%0A%2F%2F%20call_once_force%20will%20still%20run%20and%20reset%20the%20poisoned%20state%0AINIT.call_once_force(%7Cstate%7C%20%7B%0A%20%20%20%20assert!(state.poisoned())%3B%0A%7D)%3B%0A%0A%2F%2F%20once%20any%20success%20happens%2C%20we%20stop%20propagating%20the%20poison%0AINIT.call_once(%7C%7C%20%7B%7D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
+<span class="ident">INIT</span>.<span class="ident">call_once</span>(<span class="op">||</span> {});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(once_poison)%5D%0A%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3A%7BOnce%2C%20ONCE_INIT%7D%3B%0Ause%20std%3A%3Athread%3B%0A%0Astatic%20INIT%3A%20Once%20%3D%20ONCE_INIT%3B%0A%0A%2F%2F%20poison%20the%20once%0Alet%20handle%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20INIT.call_once(%7C%7C%20panic!())%3B%0A%7D)%3B%0Aassert!(handle.join().is_err())%3B%0A%0A%2F%2F%20poisoning%20propagates%0Alet%20handle%20%3D%20thread%3A%3Aspawn(%7C%7C%20%7B%0A%20%20%20%20INIT.call_once(%7C%7C%20%7B%7D)%3B%0A%7D)%3B%0Aassert!(handle.join().is_err())%3B%0A%0A%2F%2F%20call_once_force%20will%20still%20run%20and%20reset%20the%20poisoned%20state%0AINIT.call_once_force(%7Cstate%7C%20%7B%0A%20%20%20%20assert!(state.poisoned())%3B%0A%7D)%3B%0A%0A%2F%2F%20once%20any%20success%20happens%2C%20we%20stop%20propagating%20the%20poison%0AINIT.call_once(%7C%7C%20%7B%7D)%3B%0A%7D&amp;version=nightly">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -194,7 +194,7 @@ to query the poison status of the <code>Once</code>.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -67,7 +67,7 @@ returned is the name of the crate currently being compiled.</p>
     }
 }
 
-<span class="ident">test</span>::<span class="ident">foo</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Amod%20test%20%7B%0A%20%20%20%20pub%20fn%20foo()%20%7B%0A%20%20%20%20%20%20%20%20assert!(module_path!().ends_with(%22test%22))%3B%0A%20%20%20%20%7D%0A%7D%0A%0Atest%3A%3Afoo()%3B%0A%7D">Run</a></pre>
+<span class="ident">test</span>::<span class="ident">foo</span>();<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Amod%20test%20%7B%0A%20%20%20%20pub%20fn%20foo()%20%7B%0A%20%20%20%20%20%20%20%20assert!(module_path!().ends_with(%22test%22))%3B%0A%20%20%20%20%7D%0A%7D%0A%0Atest%3A%3Afoo()%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -93,7 +93,7 @@ returned is the name of the crate currently being compiled.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

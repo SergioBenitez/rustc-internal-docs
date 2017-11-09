@@ -66,7 +66,7 @@ environment variable.</p>
         }
     }
     <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{} is not defined in the environment.&quot;</span>, <span class="ident">key</span>)
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0A%0Alet%20key%20%3D%20%22PATH%22%3B%0Amatch%20env%3A%3Avar_os(key)%20%7B%0A%20%20%20%20Some(paths)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20for%20path%20in%20env%3A%3Asplit_paths(%26paths)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20println!(%22'%7B%7D'%22%2C%20path.display())%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20None%20%3D%3E%20println!(%22%7B%7D%20is%20not%20defined%20in%20the%20environment.%22%2C%20key)%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aenv%3B%0A%0Alet%20key%20%3D%20%22PATH%22%3B%0Amatch%20env%3A%3Avar_os(key)%20%7B%0A%20%20%20%20Some(paths)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20for%20path%20in%20env%3A%3Asplit_paths(%26paths)%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20println!(%22'%7B%7D'%22%2C%20path.display())%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20None%20%3D%3E%20println!(%22%7B%7D%20is%20not%20defined%20in%20the%20environment.%22%2C%20key)%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -92,7 +92,7 @@ environment variable.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

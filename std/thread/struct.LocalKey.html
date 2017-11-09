@@ -90,7 +90,7 @@ on the first call to <code>with</code>.</p>
 <span class="comment">// we retain our original value of 2 despite the child thread</span>
 <span class="ident">FOO</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">f</span>.<span class="ident">borrow</span>(), <span class="number">2</span>);
-});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Acell%3A%3ARefCell%3B%0Ause%20std%3A%3Athread%3B%0A%0Athread_local!(static%20FOO%3A%20RefCell%3Cu32%3E%20%3D%20RefCell%3A%3Anew(1))%3B%0A%0AFOO.with(%7Cf%7C%20%7B%0A%20%20%20%20assert_eq!(*f.borrow()%2C%201)%3B%0A%20%20%20%20*f.borrow_mut()%20%3D%202%3B%0A%7D)%3B%0A%0A%2F%2F%20each%20thread%20starts%20out%20with%20the%20initial%20value%20of%201%0Athread%3A%3Aspawn(move%7C%7C%20%7B%0A%20%20%20%20FOO.with(%7Cf%7C%20%7B%0A%20%20%20%20%20%20%20%20assert_eq!(*f.borrow()%2C%201)%3B%0A%20%20%20%20%20%20%20%20*f.borrow_mut()%20%3D%203%3B%0A%20%20%20%20%7D)%3B%0A%7D)%3B%0A%0A%2F%2F%20we%20retain%20our%20original%20value%20of%202%20despite%20the%20child%20thread%0AFOO.with(%7Cf%7C%20%7B%0A%20%20%20%20assert_eq!(*f.borrow()%2C%202)%3B%0A%7D)%3B%0A%7D">Run</a></pre>
+});<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Acell%3A%3ARefCell%3B%0Ause%20std%3A%3Athread%3B%0A%0Athread_local!(static%20FOO%3A%20RefCell%3Cu32%3E%20%3D%20RefCell%3A%3Anew(1))%3B%0A%0AFOO.with(%7Cf%7C%20%7B%0A%20%20%20%20assert_eq!(*f.borrow()%2C%201)%3B%0A%20%20%20%20*f.borrow_mut()%20%3D%202%3B%0A%7D)%3B%0A%0A%2F%2F%20each%20thread%20starts%20out%20with%20the%20initial%20value%20of%201%0Athread%3A%3Aspawn(move%7C%7C%20%7B%0A%20%20%20%20FOO.with(%7Cf%7C%20%7B%0A%20%20%20%20%20%20%20%20assert_eq!(*f.borrow()%2C%201)%3B%0A%20%20%20%20%20%20%20%20*f.borrow_mut()%20%3D%203%3B%0A%20%20%20%20%7D)%3B%0A%7D)%3B%0A%0A%2F%2F%20we%20retain%20our%20original%20value%20of%202%20despite%20the%20child%20thread%0AFOO.with(%7Cf%7C%20%7B%0A%20%20%20%20assert_eq!(*f.borrow()%2C%202)%3B%0A%7D)%3B%0A%7D">Run</a></pre>
 
 <h1 id='platform-specific-behavior' class='section-header'><a href='#platform-specific-behavior'>Platform-specific behavior</a></h1>
 <p>Note that a &quot;best effort&quot; is made to ensure that destructors for types
@@ -195,7 +195,7 @@ key&#39;s initializer panics.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

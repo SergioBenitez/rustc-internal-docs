@@ -70,7 +70,7 @@
 
 <span class="kw">let</span> <span class="ident">pythagorean_triple</span> <span class="op">=</span> <span class="ident">Triangle</span> { <span class="ident">a</span>: <span class="number">3.0</span>, <span class="ident">b</span>: <span class="number">4.0</span>, <span class="ident">c</span>: <span class="number">5.0</span> };
 
-<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">pythagorean_triple</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0A%23%5Bderive(Debug)%5D%0Astruct%20Triangle%20%7B%0A%20%20%20%20a%3A%20f32%2C%0A%20%20%20%20b%3A%20f32%2C%0A%20%20%20%20c%3A%20f32%0A%7D%0A%0Aimpl%20fmt%3A%3ADisplay%20for%20Triangle%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22(%7B%7D%2C%20%7B%7D%2C%20%7B%7D)%22%2C%20self.a%2C%20self.b%2C%20self.c)%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20pythagorean_triple%20%3D%20Triangle%20%7B%20a%3A%203.0%2C%20b%3A%204.0%2C%20c%3A%205.0%20%7D%3B%0A%0Aprintln!(%22%7B%7D%22%2C%20pythagorean_triple)%3B%0A%7D">Run</a></pre>
+<span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">pythagorean_triple</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afmt%3B%0A%0A%23%5Bderive(Debug)%5D%0Astruct%20Triangle%20%7B%0A%20%20%20%20a%3A%20f32%2C%0A%20%20%20%20b%3A%20f32%2C%0A%20%20%20%20c%3A%20f32%0A%7D%0A%0Aimpl%20fmt%3A%3ADisplay%20for%20Triangle%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20fmt%3A%3AFormatter)%20-%3E%20fmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22(%7B%7D%2C%20%7B%7D%2C%20%7B%7D)%22%2C%20self.a%2C%20self.b%2C%20self.c)%0A%20%20%20%20%7D%0A%7D%0A%0Alet%20pythagorean_triple%20%3D%20Triangle%20%7B%20a%3A%203.0%2C%20b%3A%204.0%2C%20c%3A%205.0%20%7D%3B%0A%0Aprintln!(%22%7B%7D%22%2C%20pythagorean_triple)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -96,7 +96,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

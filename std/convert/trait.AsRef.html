@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait AsRef</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>convert</a></p><script>window.sidebarCurrent = {name: 'AsRef', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait AsRef</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.as_ref">as_ref</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>convert</a></p><script>window.sidebarCurrent = {name: 'AsRef', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -96,7 +96,7 @@ reference (e.g.: <code>foo.as_ref()</code> will work the same if <code>foo</code
 <span class="ident">is_hello</span>(<span class="ident">s</span>);
 
 <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;hello&quot;</span>.<span class="ident">to_string</span>();
-<span class="ident">is_hello</span>(<span class="ident">s</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afn%20is_hello%3CT%3A%20AsRef%3Cstr%3E%3E(s%3A%20T)%20%7B%0A%20%20%20assert_eq!(%22hello%22%2C%20s.as_ref())%3B%0A%7D%0A%0Alet%20s%20%3D%20%22hello%22%3B%0Ais_hello(s)%3B%0A%0Alet%20s%20%3D%20%22hello%22.to_string()%3B%0Ais_hello(s)%3B%0A%7D">Run</a></pre>
+<span class="ident">is_hello</span>(<span class="ident">s</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Afn%20is_hello%3CT%3A%20AsRef%3Cstr%3E%3E(s%3A%20T)%20%7B%0A%20%20%20assert_eq!(%22hello%22%2C%20s.as_ref())%3B%0A%7D%0A%0Alet%20s%20%3D%20%22hello%22%3B%0Ais_hello(s)%3B%0A%0Alet%20s%20%3D%20%22hello%22.to_string()%3B%0Ais_hello(s)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -202,7 +202,7 @@ reference (e.g.: <code>foo.as_ref()</code> will work the same if <code>foo</code
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

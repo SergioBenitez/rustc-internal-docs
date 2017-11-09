@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait Boxed</p><div class="block items"><li><a href="#associated-types">Associated Types</a></li><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Boxed', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait Boxed</p><div class="block items"><a class="sidebar-title" href="#associated-types">Associated Types</a><div class="sidebar-links"><a href="#associatedtype.Data">Data</a><a href="#associatedtype.Place">Place</a></div><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.finalize">finalize</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>ops</a></p><script>window.sidebarCurrent = {name: 'Boxed', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -64,7 +64,7 @@
 <span class="kw">unsafe</span> {
     ::<span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">write</span>(<span class="ident">raw_place</span>, <span class="ident">value</span>);
     <span class="ident">Boxed</span>::<span class="ident">finalize</span>(<span class="ident">place</span>)
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(placement_new_protocol)%5D%0Ause%20std%3A%3Aops%3A%3A%7BBoxPlace%2C%20Place%2C%20Boxed%7D%3B%0A%23%5Ballow(non_snake_case)%5D%0Afn%20main()%20%7B%0Alet%20EXPR%20%3D%201%3B%0Alet%20mut%20place%20%3D%20BoxPlace%3A%3Amake_place()%3B%0Alet%20raw_place%20%3D%20Place%3A%3Apointer(%26mut%20place)%3B%0Alet%20value%20%3D%20EXPR%3B%0Alet%20_%3A%20Box%3C_%3E%20%3D%0Aunsafe%20%7B%0A%20%20%20%20%3A%3Astd%3A%3Aptr%3A%3Awrite(raw_place%2C%20value)%3B%0A%20%20%20%20Boxed%3A%3Afinalize(place)%0A%7D%0A%3B%20%7D%0A&amp;version=nightly">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(placement_new_protocol)%5D%0Ause%20std%3A%3Aops%3A%3A%7BBoxPlace%2C%20Place%2C%20Boxed%7D%3B%0A%23%5Ballow(non_snake_case)%5D%0Afn%20main()%20%7B%0Alet%20EXPR%20%3D%201%3B%0Alet%20mut%20place%20%3D%20BoxPlace%3A%3Amake_place()%3B%0Alet%20raw_place%20%3D%20Place%3A%3Apointer(%26mut%20place)%3B%0Alet%20value%20%3D%20EXPR%3B%0Alet%20_%3A%20Box%3C_%3E%20%3D%0Aunsafe%20%7B%0A%20%20%20%20%3A%3Astd%3A%3Aptr%3A%3Awrite(raw_place%2C%20value)%3B%0A%20%20%20%20Boxed%3A%3Afinalize(place)%0A%7D%0A%3B%20%7D%0A&amp;version=nightly">Run</a></pre>
 
 <p>The type of <code>box EXPR</code> is supplied from its surrounding
 context; in the above expansion, the result type <code>T</code> is used
@@ -120,7 +120,7 @@ returned instance of <code>Self</code> and forgetting <code>filled</code>.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

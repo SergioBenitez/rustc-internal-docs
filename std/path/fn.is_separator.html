@@ -57,7 +57,7 @@ separators for the current platform.</p>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>;
 
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">path</span>::<span class="ident">is_separator</span>(<span class="string">&#39;/&#39;</span>)); <span class="comment">// &#39;/&#39; works for both Unix and Windows</span>
-<span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">path</span>::<span class="ident">is_separator</span>(<span class="string">&#39;❤&#39;</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Apath%3B%0A%0Aassert!(path%3A%3Ais_separator('%2F'))%3B%20%2F%2F%20'%2F'%20works%20for%20both%20Unix%20and%20Windows%0Aassert!(!path%3A%3Ais_separator('%E2%9D%A4'))%3B%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">path</span>::<span class="ident">is_separator</span>(<span class="string">&#39;❤&#39;</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Apath%3B%0A%0Aassert!(path%3A%3Ais_separator('%2F'))%3B%20%2F%2F%20'%2F'%20works%20for%20both%20Unix%20and%20Windows%0Aassert!(!path%3A%3Ais_separator('%E2%9D%A4'))%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -83,7 +83,7 @@ separators for the current platform.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -68,7 +68,7 @@ which works on iterators, but you only need to process one value.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="number">1</span>), <span class="ident">one</span>.<span class="ident">next</span>());
 
 <span class="comment">// just one, that&#39;s all we get</span>
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">one</span>.<span class="ident">next</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0A%0A%2F%2F%20one%20is%20the%20loneliest%20number%0Alet%20mut%20one%20%3D%20iter%3A%3Aonce(1)%3B%0A%0Aassert_eq!(Some(1)%2C%20one.next())%3B%0A%0A%2F%2F%20just%20one%2C%20that's%20all%20we%20get%0Aassert_eq!(None%2C%20one.next())%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">None</span>, <span class="ident">one</span>.<span class="ident">next</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0A%0A%2F%2F%20one%20is%20the%20loneliest%20number%0Alet%20mut%20one%20%3D%20iter%3A%3Aonce(1)%3B%0A%0Aassert_eq!(Some(1)%2C%20one.next())%3B%0A%0A%2F%2F%20just%20one%2C%20that's%20all%20we%20get%0Aassert_eq!(None%2C%20one.next())%3B%0A%7D">Run</a></pre>
 
 <p>Chaining together with another iterator. Let&#39;s say that we want to iterate
 over each file of the <code>.foo</code> directory, but also a configuration file,
@@ -94,7 +94,7 @@ over each file of the <code>.foo</code> directory, but also a configuration file
 <span class="comment">// this will give us all of the files in .foo as well as .foorc</span>
 <span class="kw">for</span> <span class="ident">f</span> <span class="kw">in</span> <span class="ident">files</span> {
     <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">f</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0Ause%20std%3A%3Afs%3B%0Ause%20std%3A%3Apath%3A%3APathBuf%3B%0A%0Alet%20dirs%20%3D%20fs%3A%3Aread_dir(%22.foo%22).unwrap()%3B%0A%0A%2F%2F%20we%20need%20to%20convert%20from%20an%20iterator%20of%20DirEntry-s%20to%20an%20iterator%20of%0A%2F%2F%20PathBufs%2C%20so%20we%20use%20map%0Alet%20dirs%20%3D%20dirs.map(%7Cfile%7C%20file.unwrap().path())%3B%0A%0A%2F%2F%20now%2C%20our%20iterator%20just%20for%20our%20config%20file%0Alet%20config%20%3D%20iter%3A%3Aonce(PathBuf%3A%3Afrom(%22.foorc%22))%3B%0A%0A%2F%2F%20chain%20the%20two%20iterators%20together%20into%20one%20big%20iterator%0Alet%20files%20%3D%20dirs.chain(config)%3B%0A%0A%2F%2F%20this%20will%20give%20us%20all%20of%20the%20files%20in%20.foo%20as%20well%20as%20.foorc%0Afor%20f%20in%20files%20%7B%0A%20%20%20%20println!(%22%7B%3A%3F%7D%22%2C%20f)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aiter%3B%0Ause%20std%3A%3Afs%3B%0Ause%20std%3A%3Apath%3A%3APathBuf%3B%0A%0Alet%20dirs%20%3D%20fs%3A%3Aread_dir(%22.foo%22).unwrap()%3B%0A%0A%2F%2F%20we%20need%20to%20convert%20from%20an%20iterator%20of%20DirEntry-s%20to%20an%20iterator%20of%0A%2F%2F%20PathBufs%2C%20so%20we%20use%20map%0Alet%20dirs%20%3D%20dirs.map(%7Cfile%7C%20file.unwrap().path())%3B%0A%0A%2F%2F%20now%2C%20our%20iterator%20just%20for%20our%20config%20file%0Alet%20config%20%3D%20iter%3A%3Aonce(PathBuf%3A%3Afrom(%22.foorc%22))%3B%0A%0A%2F%2F%20chain%20the%20two%20iterators%20together%20into%20one%20big%20iterator%0Alet%20files%20%3D%20dirs.chain(config)%3B%0A%0A%2F%2F%20this%20will%20give%20us%20all%20of%20the%20files%20in%20.foo%20as%20well%20as%20.foorc%0Afor%20f%20in%20files%20%7B%0A%20%20%20%20println!(%22%7B%3A%3F%7D%22%2C%20f)%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -120,7 +120,7 @@ over each file of the <code>.foo</code> directory, but also a configuration file
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

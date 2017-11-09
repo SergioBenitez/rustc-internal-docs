@@ -73,7 +73,7 @@ API</a>.</p>
     <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">t</span>, <span class="string">&quot;world!&quot;</span>).<span class="ident">unwrap</span>();
 
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">t</span>.<span class="ident">reset</span>().<span class="ident">unwrap</span>());
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Bfeature(rustc_private)%5D%0Aextern%20crate%20term%3B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20mut%20t%20%3D%20term%3A%3Astdout().unwrap()%3B%0A%0A%20%20%20%20t.fg(term%3A%3Acolor%3A%3AGREEN).unwrap()%3B%0A%20%20%20%20write!(t%2C%20%22hello%2C%20%22).unwrap()%3B%0A%0A%20%20%20%20t.fg(term%3A%3Acolor%3A%3ARED).unwrap()%3B%0A%20%20%20%20writeln!(t%2C%20%22world!%22).unwrap()%3B%0A%0A%20%20%20%20assert!(t.reset().unwrap())%3B%0A%7D%0A&amp;version=nightly">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0A%23!%5Bfeature(rustc_private)%5D%0Aextern%20crate%20term%3B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20mut%20t%20%3D%20term%3A%3Astdout().unwrap()%3B%0A%0A%20%20%20%20t.fg(term%3A%3Acolor%3A%3AGREEN).unwrap()%3B%0A%20%20%20%20write!(t%2C%20%22hello%2C%20%22).unwrap()%3B%0A%0A%20%20%20%20t.fg(term%3A%3Acolor%3A%3ARED).unwrap()%3B%0A%20%20%20%20writeln!(t%2C%20%22world!%22).unwrap()%3B%0A%0A%20%20%20%20assert!(t.reset().unwrap())%3B%0A%7D%0A&amp;version=nightly">Run</a></pre>
 </div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
 <table><tr><td><code>pub use terminfo::<a class="struct" href="../term/terminfo/struct.TerminfoTerminal.html" title="struct term::terminfo::TerminfoTerminal">TerminfoTerminal</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
@@ -164,7 +164,7 @@ opened.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

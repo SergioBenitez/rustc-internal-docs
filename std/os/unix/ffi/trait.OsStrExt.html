@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait OsStrExt</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../../../index.html'>std</a>::<wbr><a href='../../index.html'>os</a>::<wbr><a href='../index.html'>unix</a>::<wbr><a href='index.html'>ffi</a></p><script>window.sidebarCurrent = {name: 'OsStrExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait OsStrExt</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.from_bytes">from_bytes</a><a href="#tymethod.as_bytes">as_bytes</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../../../index.html'>std</a>::<wbr><a href='../../index.html'>os</a>::<wbr><a href='../index.html'>unix</a>::<wbr><a href='index.html'>ffi</a></p><script>window.sidebarCurrent = {name: 'OsStrExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -67,7 +67,7 @@
 
 <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="string">b&quot;foo&quot;</span>;
 <span class="kw">let</span> <span class="ident">os_str</span> <span class="op">=</span> <span class="ident">OsStr</span>::<span class="ident">from_bytes</span>(<span class="ident">bytes</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">os_str</span>.<span class="ident">to_str</span>(), <span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Affi%3A%3AOsStrExt%3B%0A%0Alet%20bytes%20%3D%20b%22foo%22%3B%0Alet%20os_str%20%3D%20OsStr%3A%3Afrom_bytes(bytes)%3B%0Aassert_eq!(os_str.to_str()%2C%20Some(%22foo%22))%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">os_str</span>.<span class="ident">to_str</span>(), <span class="prelude-val">Some</span>(<span class="string">&quot;foo&quot;</span>));<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Affi%3A%3AOsStrExt%3B%0A%0Alet%20bytes%20%3D%20b%22foo%22%3B%0Alet%20os_str%20%3D%20OsStr%3A%3Afrom_bytes(bytes)%3B%0Aassert_eq!(os_str.to_str()%2C%20Some(%22foo%22))%3B%0A%7D">Run</a></pre>
 </div><h3 id='tymethod.as_bytes' class='method'><span id='as_bytes.v' class='invisible'><code>fn <a href='#tymethod.as_bytes' class='fnname'>as_bytes</a>(&amp;self) -&gt; <a class="primitive" href="../../../primitive.slice.html">&amp;[</a><a class="primitive" href="../../../primitive.u8.html">u8</a><a class="primitive" href="../../../primitive.slice.html">]</a></code></span></h3><div class='stability'><div class='stab portability'>This is supported on <strong>Unix</strong> only.</div></div><div class='docblock'><p>Gets the underlying byte view of the <a href="../../../ffi/struct.OsStr.html"><code>OsStr</code></a> slice.</p>
 
 <h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
@@ -77,7 +77,7 @@
 
 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">os_str</span> <span class="op">=</span> <span class="ident">OsStr</span>::<span class="ident">new</span>(<span class="string">&quot;foo&quot;</span>);
 <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">os_str</span>.<span class="ident">as_bytes</span>();
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="string">b&quot;foo&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Affi%3A%3AOsStrExt%3B%0A%0Alet%20mut%20os_str%20%3D%20OsStr%3A%3Anew(%22foo%22)%3B%0Alet%20bytes%20%3D%20os_str.as_bytes()%3B%0Aassert_eq!(bytes%2C%20b%22foo%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">bytes</span>, <span class="string">b&quot;foo&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Affi%3A%3AOsStr%3B%0Ause%20std%3A%3Aos%3A%3Aunix%3A%3Affi%3A%3AOsStrExt%3B%0A%0Alet%20mut%20os_str%20%3D%20OsStr%3A%3Anew(%22foo%22)%3B%0Alet%20bytes%20%3D%20os_str.as_bytes()%3B%0Aassert_eq!(bytes%2C%20b%22foo%22)%3B%0A%7D">Run</a></pre>
 </div></div>
         <h2 id='implementors' class='small-section-header'>
           Implementors<a href='#implementors' class='anchor'></a>
@@ -111,7 +111,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

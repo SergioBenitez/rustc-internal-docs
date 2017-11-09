@@ -58,7 +58,7 @@
 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="string">&#39;💯&#39;</span>;
 <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">c</span> <span class="kw">as</span> <span class="ident">u32</span>;
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">128175</span>, <span class="ident">i</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20c%20%3D%20'%F0%9F%92%AF'%3B%0Alet%20i%20%3D%20c%20as%20u32%3B%0A%0Aassert_eq!(128175%2C%20i)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">128175</span>, <span class="ident">i</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20c%20%3D%20'%F0%9F%92%AF'%3B%0Alet%20i%20%3D%20c%20as%20u32%3B%0A%0Aassert_eq!(128175%2C%20i)%3B%0A%7D">Run</a></pre>
 
 <p>However, the reverse is not true: not all valid <a href="../../std/primitive.u32.html"><code>u32</code></a>s are valid
 <a href="../../std/primitive.char.html"><code>char</code></a>s. <code>from_u32_unchecked()</code> will ignore this, and blindly cast to
@@ -77,7 +77,7 @@
 
 <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">char</span>::<span class="ident">from_u32_unchecked</span>(<span class="number">0x2764</span>) };
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;❤&#39;</span>, <span class="ident">c</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20c%20%3D%20unsafe%20%7B%20char%3A%3Afrom_u32_unchecked(0x2764)%20%7D%3B%0A%0Aassert_eq!('%E2%9D%A4'%2C%20c)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="string">&#39;❤&#39;</span>, <span class="ident">c</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Achar%3B%0A%0Alet%20c%20%3D%20unsafe%20%7B%20char%3A%3Afrom_u32_unchecked(0x2764)%20%7D%3B%0A%0Aassert_eq!('%E2%9D%A4'%2C%20c)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -103,7 +103,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

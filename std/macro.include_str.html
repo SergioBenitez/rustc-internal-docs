@@ -77,7 +77,7 @@ contents:</p>
     <span class="kw">let</span> <span class="ident">my_str</span> <span class="op">=</span> <span class="macro">include_str</span><span class="macro">!</span>(<span class="string">&quot;spanish.in&quot;</span>);
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">my_str</span>, <span class="string">&quot;adiós\n&quot;</span>);
     <span class="macro">print</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">my_str</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A%20%20%20%20let%20my_str%20%3D%20include_str!(%22spanish.in%22)%3B%0A%20%20%20%20assert_eq!(my_str%2C%20%22adi%C3%B3s%5Cn%22)%3B%0A%20%20%20%20print!(%22%7B%7D%22%2C%20my_str)%3B%0A%7D%0A">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%20%20%20%20let%20my_str%20%3D%20include_str!(%22spanish.in%22)%3B%0A%20%20%20%20assert_eq!(my_str%2C%20%22adi%C3%B3s%5Cn%22)%3B%0A%20%20%20%20print!(%22%7B%7D%22%2C%20my_str)%3B%0A%7D%0A">Run</a></pre>
 
 <p>Compiling &#39;main.rs&#39; and running the resulting binary will print &quot;adiós&quot;.</p>
 </div></section>
@@ -105,7 +105,7 @@ contents:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

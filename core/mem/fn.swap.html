@@ -61,7 +61,7 @@
 <span class="ident">mem</span>::<span class="ident">swap</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">x</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">y</span>);
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">42</span>, <span class="ident">x</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">y</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Alet%20mut%20x%20%3D%205%3B%0Alet%20mut%20y%20%3D%2042%3B%0A%0Amem%3A%3Aswap(%26mut%20x%2C%20%26mut%20y)%3B%0A%0Aassert_eq!(42%2C%20x)%3B%0Aassert_eq!(5%2C%20y)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">5</span>, <span class="ident">y</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Amem%3B%0A%0Alet%20mut%20x%20%3D%205%3B%0Alet%20mut%20y%20%3D%2042%3B%0A%0Amem%3A%3Aswap(%26mut%20x%2C%20%26mut%20y)%3B%0A%0Aassert_eq!(42%2C%20x)%3B%0Aassert_eq!(5%2C%20y)%3B%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -87,7 +87,7 @@
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

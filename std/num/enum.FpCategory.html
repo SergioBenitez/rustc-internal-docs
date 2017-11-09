@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Enum FpCategory</p><div class="block items"><li><a href="#variants">Variants</a></li><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Clone">Clone</a><a href="#impl-Eq">Eq</a><a href="#impl-Copy">Copy</a><a href="#impl-Debug">Debug</a><a href="#impl-PartialEq%3CFpCategory%3E">PartialEq&lt;FpCategory&gt;</a></div></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>num</a></p><script>window.sidebarCurrent = {name: 'FpCategory', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Enum FpCategory</p><div class="block items"><a class="sidebar-title" href="#variants">Variants</a><div class="sidebar-links"><a href="#variant.Nan">Nan</a><a href="#variant.Infinite">Infinite</a><a href="#variant.Zero">Zero</a><a href="#variant.Subnormal">Subnormal</a><a href="#variant.Normal">Normal</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Clone">Clone</a><a href="#impl-Eq">Eq</a><a href="#impl-Copy">Copy</a><a href="#impl-Debug">Debug</a><a href="#impl-PartialEq%3CFpCategory%3E">PartialEq&lt;FpCategory&gt;</a></div></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>num</a></p><script>window.sidebarCurrent = {name: 'FpCategory', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -75,7 +75,7 @@ their documentation for more.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">inf</span>.<span class="ident">classify</span>(), <span class="ident">FpCategory</span>::<span class="ident">Infinite</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">zero</span>.<span class="ident">classify</span>(), <span class="ident">FpCategory</span>::<span class="ident">Zero</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">nan</span>.<span class="ident">classify</span>(), <span class="ident">FpCategory</span>::<span class="ident">Nan</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sub</span>.<span class="ident">classify</span>(), <span class="ident">FpCategory</span>::<span class="ident">Subnormal</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Anum%3A%3AFpCategory%3B%0Ause%20std%3A%3Af32%3B%0A%0Alet%20num%20%3D%2012.4_f32%3B%0Alet%20inf%20%3D%20f32%3A%3AINFINITY%3B%0Alet%20zero%20%3D%200f32%3B%0Alet%20sub%3A%20f32%20%3D%201.1754942e-38%3B%0Alet%20nan%20%3D%20f32%3A%3ANAN%3B%0A%0Aassert_eq!(num.classify()%2C%20FpCategory%3A%3ANormal)%3B%0Aassert_eq!(inf.classify()%2C%20FpCategory%3A%3AInfinite)%3B%0Aassert_eq!(zero.classify()%2C%20FpCategory%3A%3AZero)%3B%0Aassert_eq!(nan.classify()%2C%20FpCategory%3A%3ANan)%3B%0Aassert_eq!(sub.classify()%2C%20FpCategory%3A%3ASubnormal)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sub</span>.<span class="ident">classify</span>(), <span class="ident">FpCategory</span>::<span class="ident">Subnormal</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Anum%3A%3AFpCategory%3B%0Ause%20std%3A%3Af32%3B%0A%0Alet%20num%20%3D%2012.4_f32%3B%0Alet%20inf%20%3D%20f32%3A%3AINFINITY%3B%0Alet%20zero%20%3D%200f32%3B%0Alet%20sub%3A%20f32%20%3D%201.1754942e-38%3B%0Alet%20nan%20%3D%20f32%3A%3ANAN%3B%0A%0Aassert_eq!(num.classify()%2C%20FpCategory%3A%3ANormal)%3B%0Aassert_eq!(inf.classify()%2C%20FpCategory%3A%3AInfinite)%3B%0Aassert_eq!(zero.classify()%2C%20FpCategory%3A%3AZero)%3B%0Aassert_eq!(nan.classify()%2C%20FpCategory%3A%3ANan)%3B%0Aassert_eq!(sub.classify()%2C%20FpCategory%3A%3ASubnormal)%3B%0A%7D">Run</a></pre>
 </div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
 <span id="variant.Nan" class="variant small-section-header"><a href="#variant.Nan" class="anchor field"></a><span id='Nan.v' class='invisible'><code>Nan</code></span></span><div class='docblock'><p>&quot;Not a Number&quot;, often obtained by dividing by zero.</p>
@@ -127,7 +127,7 @@ their documentation for more.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

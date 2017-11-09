@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Trait FileExt</p><div class="block items"><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></div><p class='location'><a href='../../../index.html'>std</a>::<wbr><a href='../../index.html'>os</a>::<wbr><a href='../index.html'>unix</a>::<wbr><a href='index.html'>fs</a></p><script>window.sidebarCurrent = {name: 'FileExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait FileExt</p><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.read_at">read_at</a><a href="#tymethod.write_at">write_at</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../../../index.html'>std</a>::<wbr><a href='../../index.html'>os</a>::<wbr><a href='../index.html'>unix</a>::<wbr><a href='index.html'>fs</a></p><script>window.sidebarCurrent = {name: 'FileExt', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -48,11 +48,11 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#25-56' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#27-58' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait FileExt {
     fn <a href='#tymethod.read_at' class='fnname'>read_at</a>(&amp;self, buf: <a class="primitive" href="../../../primitive.slice.html">&amp;mut [</a><a class="primitive" href="../../../primitive.u8.html">u8</a><a class="primitive" href="../../../primitive.slice.html">]</a>, offset: <a class="primitive" href="../../../primitive.u64.html">u64</a>) -&gt; <a class="type" href="../../../../std/io/type.Result.html" title="type std::io::Result">Result</a>&lt;<a class="primitive" href="../../../primitive.usize.html">usize</a>&gt;;
 <div class='item-spacer'></div>    fn <a href='#tymethod.write_at' class='fnname'>write_at</a>(&amp;self, buf: <a class="primitive" href="../../../primitive.slice.html">&amp;[</a><a class="primitive" href="../../../primitive.u8.html">u8</a><a class="primitive" href="../../../primitive.slice.html">]</a>, offset: <a class="primitive" href="../../../primitive.u64.html">u64</a>) -&gt; <a class="type" href="../../../../std/io/type.Result.html" title="type std::io::Result">Result</a>&lt;<a class="primitive" href="../../../primitive.usize.html">usize</a>&gt;;
-}</pre><div class='stability'><div class='stab portability'>This is supported on <strong>Unix</strong> only.</div></div><div class='docblock'><p>Unix-specific extensions to <code>File</code></p>
+}</pre><div class='stability'><div class='stab portability'>This is supported on <strong>Unix</strong> only.</div></div><div class='docblock'><p>Unix-specific extensions to <a href="../../../../std/fs/struct.File.html"><code>File</code></a>.</p>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -88,7 +88,7 @@ short write.</p>
           Implementors<a href='#implementors' class='anchor'></a>
         </h2>
         <ul class='item-list' id='implementors-list'>
-    <li><div class='out-of-band'><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#59-66' title='goto source code'>[src]</a></div><code>impl FileExt for <a class="struct" href="../../../../std/fs/struct.File.html" title="struct std::fs::File">File</a></code></li>
+    <li><div class='out-of-band'><a class='srclink' href='../../../../src/std/sys/unix/ext/fs.rs.html#61-68' title='goto source code'>[src]</a></div><code>impl FileExt for <a class="struct" href="../../../../std/fs/struct.File.html" title="struct std::fs::File">File</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../../../implementors/std/os/unix/fs/trait.FileExt.js">
                  </script></section>
@@ -116,7 +116,7 @@ short write.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

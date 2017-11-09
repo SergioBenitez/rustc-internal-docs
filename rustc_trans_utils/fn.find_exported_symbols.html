@@ -48,8 +48,8 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rustc_trans_utils/lib.rs.html#80-120' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn find_exported_symbols(tcx: <a class="struct" href="../rustc/ty/context/struct.TyCtxt.html" title="struct rustc::ty::context::TyCtxt">TyCtxt</a>) -&gt; <a class="type" href="../rustc/util/nodemap/type.NodeSet.html" title="type rustc::util::nodemap::NodeSet">NodeSet</a></pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
+               </span><a class='srclink' href='../src/rustc_trans_utils/lib.rs.html#78-117' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn find_exported_symbols&lt;'a, 'tcx&gt;(tcx: <a class="struct" href="../rustc/ty/context/struct.TyCtxt.html" title="struct rustc::ty::context::TyCtxt">TyCtxt</a>&lt;'a, 'tcx, 'tcx&gt;) -&gt; <a class="type" href="../rustc/util/nodemap/type.NodeSet.html" title="type rustc::util::nodemap::NodeSet">NodeSet</a></pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>The context provided lists a set of reachable ids as calculated by
 middle::reachable, but this contains far more ids and symbols than we&#39;re
 actually exposing from the object file. This function will filter the set in
@@ -83,7 +83,7 @@ be exposed from a dynamic library and it&#39;s also encoded into the metadata.</
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

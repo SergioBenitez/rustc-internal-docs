@@ -88,7 +88,7 @@ memory that has previously been <code>read</code> from.</p>
 <span class="kw">unsafe</span> {
     <span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">write_volatile</span>(<span class="ident">y</span>, <span class="ident">z</span>);
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">std</span>::<span class="ident">ptr</span>::<span class="ident">read_volatile</span>(<span class="ident">y</span>), <span class="number">12</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20mut%20x%20%3D%200%3B%0Alet%20y%20%3D%20%26mut%20x%20as%20*mut%20i32%3B%0Alet%20z%20%3D%2012%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20std%3A%3Aptr%3A%3Awrite_volatile(y%2C%20z)%3B%0A%20%20%20%20assert_eq!(std%3A%3Aptr%3A%3Aread_volatile(y)%2C%2012)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20mut%20x%20%3D%200%3B%0Alet%20y%20%3D%20%26mut%20x%20as%20*mut%20i32%3B%0Alet%20z%20%3D%2012%3B%0A%0Aunsafe%20%7B%0A%20%20%20%20std%3A%3Aptr%3A%3Awrite_volatile(y%2C%20z)%3B%0A%20%20%20%20assert_eq!(std%3A%3Aptr%3A%3Aread_volatile(y)%2C%2012)%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -114,7 +114,7 @@ memory that has previously been <code>read</code> from.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

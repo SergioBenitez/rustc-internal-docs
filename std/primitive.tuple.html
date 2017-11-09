@@ -57,7 +57,7 @@
 of length <code>3</code>:</p>
 
 <pre class="rust rust-example-rendered">
-(<span class="string">&quot;hello&quot;</span>, <span class="number">5</span>, <span class="string">&#39;c&#39;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0A(%22hello%22%2C%205%2C%20'c')%3B%0A%7D">Run</a></pre>
+(<span class="string">&quot;hello&quot;</span>, <span class="number">5</span>, <span class="string">&#39;c&#39;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A(%22hello%22%2C%205%2C%20'c')%3B%0A%7D">Run</a></pre>
 
 <p>&#39;Length&#39; is also sometimes called &#39;arity&#39; here; each tuple of a different
 length is a different, distinct type.</p>
@@ -66,7 +66,7 @@ length is a different, distinct type.</p>
 have a different type. In that tuple above, it has the type:</p>
 
 <pre class="rust rust-example-rendered">
-(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">i32</span>, <span class="ident">char</span>)<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20_%3A%0A(%26'static%20str%2C%20i32%2C%20char)%0A%3D%20(%22hello%22%2C%205%2C%20'c')%3B%0A%7D">Run</a></pre>
+(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>, <span class="ident">i32</span>, <span class="ident">char</span>)<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20_%3A%0A(%26'static%20str%2C%20i32%2C%20char)%0A%3D%20(%22hello%22%2C%205%2C%20'c')%3B%0A%7D">Run</a></pre>
 
 <p>Tuples are a <em>sequence</em>. This means that they can be accessed by position;
 this is called &#39;tuple indexing&#39;, and it looks like this:</p>
@@ -76,7 +76,7 @@ this is called &#39;tuple indexing&#39;, and it looks like this:</p>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tuple</span>.<span class="number">0</span>, <span class="string">&quot;hello&quot;</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tuple</span>.<span class="number">1</span>, <span class="number">5</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tuple</span>.<span class="number">2</span>, <span class="string">&#39;c&#39;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20tuple%20%3D%20(%22hello%22%2C%205%2C%20'c')%3B%0A%0Aassert_eq!(tuple.0%2C%20%22hello%22)%3B%0Aassert_eq!(tuple.1%2C%205)%3B%0Aassert_eq!(tuple.2%2C%20'c')%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tuple</span>.<span class="number">2</span>, <span class="string">&#39;c&#39;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20tuple%20%3D%20(%22hello%22%2C%205%2C%20'c')%3B%0A%0Aassert_eq!(tuple.0%2C%20%22hello%22)%3B%0Aassert_eq!(tuple.1%2C%205)%3B%0Aassert_eq!(tuple.2%2C%20'c')%3B%0A%7D">Run</a></pre>
 
 <p>For more about tuples, see <a href="../book/first-edition/primitive-types.html#tuples">the book</a>.</p>
 
@@ -105,7 +105,7 @@ implemented on tuples of arity 12 or less. In the future, this may change.</p>
 <pre class="rust rust-example-rendered">
 <span class="kw">let</span> <span class="ident">tuple</span> <span class="op">=</span> (<span class="string">&quot;hello&quot;</span>, <span class="number">5</span>, <span class="string">&#39;c&#39;</span>);
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tuple</span>.<span class="number">0</span>, <span class="string">&quot;hello&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20tuple%20%3D%20(%22hello%22%2C%205%2C%20'c')%3B%0A%0Aassert_eq!(tuple.0%2C%20%22hello%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tuple</span>.<span class="number">0</span>, <span class="string">&quot;hello&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20tuple%20%3D%20(%22hello%22%2C%205%2C%20'c')%3B%0A%0Aassert_eq!(tuple.0%2C%20%22hello%22)%3B%0A%7D">Run</a></pre>
 
 <p>Tuples are often used as a return type when you want to return more than
 one value:</p>
@@ -126,7 +126,7 @@ one value:</p>
 <span class="kw">let</span> (<span class="ident">x</span>, <span class="ident">y</span>) <span class="op">=</span> <span class="ident">calculate_point</span>();
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">x</span>, <span class="number">4</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">y</span>, <span class="number">5</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Afn%20calculate_point()%20-%3E%20(i32%2C%20i32)%20%7B%0A%20%20%20%20%2F%2F%20Don't%20do%20a%20calculation%2C%20that's%20not%20the%20point%20of%20the%20example%0A%20%20%20%20(4%2C%205)%0A%7D%0A%0Alet%20point%20%3D%20calculate_point()%3B%0A%0Aassert_eq!(point.0%2C%204)%3B%0Aassert_eq!(point.1%2C%205)%3B%0A%0A%2F%2F%20Combining%20this%20with%20patterns%20can%20be%20nicer.%0A%0Alet%20(x%2C%20y)%20%3D%20calculate_point()%3B%0A%0Aassert_eq!(x%2C%204)%3B%0Aassert_eq!(y%2C%205)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">y</span>, <span class="number">5</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Afn%20calculate_point()%20-%3E%20(i32%2C%20i32)%20%7B%0A%20%20%20%20%2F%2F%20Don't%20do%20a%20calculation%2C%20that's%20not%20the%20point%20of%20the%20example%0A%20%20%20%20(4%2C%205)%0A%7D%0A%0Alet%20point%20%3D%20calculate_point()%3B%0A%0Aassert_eq!(point.0%2C%204)%3B%0Aassert_eq!(point.1%2C%205)%3B%0A%0A%2F%2F%20Combining%20this%20with%20patterns%20can%20be%20nicer.%0A%0Alet%20(x%2C%20y)%20%3D%20calculate_point()%3B%0A%0Aassert_eq!(x%2C%204)%3B%0Aassert_eq!(y%2C%205)%3B%0A%7D">Run</a></pre>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -610,7 +610,7 @@ one value:</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

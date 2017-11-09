@@ -79,7 +79,7 @@ annotation.</p>
 <span class="kw">let</span> <span class="ident">amt</span> <span class="op">=</span> <span class="number">10</span>;
 <span class="kw">unsafe</span> {
     <span class="kw">let</span> <span class="ident">slice</span> <span class="op">=</span> <span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span>, <span class="ident">amt</span>);
-}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Aslice%3B%0A%0A%2F%2F%20manifest%20a%20slice%20out%20of%20thin%20air!%0Alet%20ptr%20%3D%200x1234%20as%20*const%20usize%3B%0Alet%20amt%20%3D%2010%3B%0Aunsafe%20%7B%0A%20%20%20%20let%20slice%20%3D%20slice%3A%3Afrom_raw_parts(ptr%2C%20amt)%3B%0A%7D%0A%7D">Run</a></pre>
+}<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aslice%3B%0A%0A%2F%2F%20manifest%20a%20slice%20out%20of%20thin%20air!%0Alet%20ptr%20%3D%200x1234%20as%20*const%20usize%3B%0Alet%20amt%20%3D%2010%3B%0Aunsafe%20%7B%0A%20%20%20%20let%20slice%20%3D%20slice%3A%3Afrom_raw_parts(ptr%2C%20amt)%3B%0A%7D%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -105,7 +105,7 @@ annotation.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

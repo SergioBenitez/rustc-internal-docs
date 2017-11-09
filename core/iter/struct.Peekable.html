@@ -93,7 +93,7 @@ examples below.</p>
 
 <span class="comment">// After the iterator is finished, so is `peek()`</span>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">peek</span>(), <span class="prelude-val">None</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Alet%20xs%20%3D%20%5B1%2C%202%2C%203%5D%3B%0A%0Alet%20mut%20iter%20%3D%20xs.iter().peekable()%3B%0A%0A%2F%2F%20peek()%20lets%20us%20see%20into%20the%20future%0Aassert_eq!(iter.peek()%2C%20Some(%26%261))%3B%0Aassert_eq!(iter.next()%2C%20Some(%261))%3B%0A%0Aassert_eq!(iter.next()%2C%20Some(%262))%3B%0A%0A%2F%2F%20The%20iterator%20does%20not%20advance%20even%20if%20we%20%60peek%60%20multiple%20times%0Aassert_eq!(iter.peek()%2C%20Some(%26%263))%3B%0Aassert_eq!(iter.peek()%2C%20Some(%26%263))%3B%0A%0Aassert_eq!(iter.next()%2C%20Some(%263))%3B%0A%0A%2F%2F%20After%20the%20iterator%20is%20finished%2C%20so%20is%20%60peek()%60%0Aassert_eq!(iter.peek()%2C%20None)%3B%0Aassert_eq!(iter.next()%2C%20None)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">iter</span>.<span class="ident">next</span>(), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20xs%20%3D%20%5B1%2C%202%2C%203%5D%3B%0A%0Alet%20mut%20iter%20%3D%20xs.iter().peekable()%3B%0A%0A%2F%2F%20peek()%20lets%20us%20see%20into%20the%20future%0Aassert_eq!(iter.peek()%2C%20Some(%26%261))%3B%0Aassert_eq!(iter.next()%2C%20Some(%261))%3B%0A%0Aassert_eq!(iter.next()%2C%20Some(%262))%3B%0A%0A%2F%2F%20The%20iterator%20does%20not%20advance%20even%20if%20we%20%60peek%60%20multiple%20times%0Aassert_eq!(iter.peek()%2C%20Some(%26%263))%3B%0Aassert_eq!(iter.peek()%2C%20Some(%26%263))%3B%0A%0Aassert_eq!(iter.next()%2C%20Some(%263))%3B%0A%0A%2F%2F%20After%20the%20iterator%20is%20finished%2C%20so%20is%20%60peek()%60%0Aassert_eq!(iter.peek()%2C%20None)%3B%0Aassert_eq!(iter.next()%2C%20None)%3B%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -243,7 +243,7 @@ examples below.</p>
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

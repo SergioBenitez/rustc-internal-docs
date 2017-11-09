@@ -75,7 +75,7 @@ owned by one thread, but it can be cloned to send to other threads.</p>
 <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="ident">receiver</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>();
 <span class="kw">let</span> <span class="ident">msg2</span> <span class="op">=</span> <span class="ident">receiver</span>.<span class="ident">recv</span>().<span class="ident">unwrap</span>();
 
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">msg</span> <span class="op">+</span> <span class="ident">msg2</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20channel()%3B%0Alet%20sender2%20%3D%20sender.clone()%3B%0A%0A%2F%2F%20First%20thread%20owns%20sender%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20sender.send(1).unwrap()%3B%0A%7D)%3B%0A%0A%2F%2F%20Second%20thread%20owns%20sender2%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20sender2.send(2).unwrap()%3B%0A%7D)%3B%0A%0Alet%20msg%20%3D%20receiver.recv().unwrap()%3B%0Alet%20msg2%20%3D%20receiver.recv().unwrap()%3B%0A%0Aassert_eq!(3%2C%20msg%20%2B%20msg2)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">3</span>, <span class="ident">msg</span> <span class="op">+</span> <span class="ident">msg2</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0Ause%20std%3A%3Athread%3B%0A%0Alet%20(sender%2C%20receiver)%20%3D%20channel()%3B%0Alet%20sender2%20%3D%20sender.clone()%3B%0A%0A%2F%2F%20First%20thread%20owns%20sender%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20sender.send(1).unwrap()%3B%0A%7D)%3B%0A%0A%2F%2F%20Second%20thread%20owns%20sender2%0Athread%3A%3Aspawn(move%20%7C%7C%20%7B%0A%20%20%20%20sender2.send(2).unwrap()%3B%0A%7D)%3B%0A%0Alet%20msg%20%3D%20receiver.recv().unwrap()%3B%0Alet%20msg2%20%3D%20receiver.recv().unwrap()%3B%0A%0Aassert_eq!(3%2C%20msg%20%2B%20msg2)%3B%0A%7D">Run</a></pre>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
@@ -106,7 +106,7 @@ hang up immediately after this function returns <a href="../../../std/result/enu
 
 <span class="comment">// This send will fail because the receiver is gone</span>
 <span class="ident">drop</span>(<span class="ident">rx</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tx</span>.<span class="ident">send</span>(<span class="number">1</span>).<span class="ident">unwrap_err</span>().<span class="number">0</span>, <span class="number">1</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=fn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0A%0Alet%20(tx%2C%20rx)%20%3D%20channel()%3B%0A%0A%2F%2F%20This%20send%20is%20always%20successful%0Atx.send(1).unwrap()%3B%0A%0A%2F%2F%20This%20send%20will%20fail%20because%20the%20receiver%20is%20gone%0Adrop(rx)%3B%0Aassert_eq!(tx.send(1).unwrap_err().0%2C%201)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">tx</span>.<span class="ident">send</span>(<span class="number">1</span>).<span class="ident">unwrap_err</span>().<span class="number">0</span>, <span class="number">1</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Async%3A%3Ampsc%3A%3Achannel%3B%0A%0Alet%20(tx%2C%20rx)%20%3D%20channel()%3B%0A%0A%2F%2F%20This%20send%20is%20always%20successful%0Atx.send(1).unwrap()%3B%0A%0A%2F%2F%20This%20send%20will%20fail%20because%20the%20receiver%20is%20gone%0Adrop(rx)%3B%0Aassert_eq!(tx.send(1).unwrap_err().0%2C%201)%3B%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
@@ -149,7 +149,7 @@ hang up immediately after this function returns <a href="../../../std/result/enu
                     <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
