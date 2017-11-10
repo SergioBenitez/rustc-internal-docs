@@ -909,8 +909,8 @@
             <span class="ident">BinOp</span>(<span class="ident">Or</span>) <span class="op">|</span> <span class="ident">OrOr</span>                  <span class="op">|</span> <span class="comment">// closure</span>
             <span class="ident">BinOp</span>(<span class="ident">And</span>)                        <span class="op">|</span> <span class="comment">// reference</span>
             <span class="ident">AndAnd</span>                            <span class="op">|</span> <span class="comment">// double reference</span>
+            <span class="comment">// DotDotDot is no longer supported, but we need some way to display the error</span>
             <span class="ident">DotDot</span> <span class="op">|</span> <span class="ident">DotDotDot</span> <span class="op">|</span> <span class="ident">DotDotEq</span>     <span class="op">|</span> <span class="comment">// range notation</span>
-                <span class="comment">// SNAP remove DotDotDot</span>
             <span class="ident">Lt</span> <span class="op">|</span> <span class="ident">BinOp</span>(<span class="ident">Shl</span>)                   <span class="op">|</span> <span class="comment">// associated path</span>
             <span class="ident">ModSep</span>                            <span class="op">|</span> <span class="comment">// global path</span>
             <span class="ident">Pound</span>                             <span class="op">=&gt;</span> <span class="bool-val">true</span>, <span class="comment">// expression attributes</span>

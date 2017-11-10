@@ -442,7 +442,7 @@
     <span class="kw">fn</span> <span class="ident">find_filemap_prev_bytepos</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                  <span class="ident">prev_bytepos</span>: <span class="ident">BytePos</span>)
                                  <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">BytePos</span>, <span class="ident">StableFilemapId</span>)<span class="op">&gt;</span> {
-        <span class="kw">for</span> (<span class="ident">start</span>, <span class="ident">id</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">prev_filemap_starts</span>.<span class="ident">range</span>(<span class="ident">BytePos</span>(<span class="number">0</span>) ... <span class="ident">prev_bytepos</span>).<span class="ident">rev</span>() {
+        <span class="kw">for</span> (<span class="ident">start</span>, <span class="ident">id</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">prev_filemap_starts</span>.<span class="ident">range</span>(<span class="ident">BytePos</span>(<span class="number">0</span>) ..= <span class="ident">prev_bytepos</span>).<span class="ident">rev</span>() {
             <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="kw-2">*</span><span class="ident">start</span>, <span class="kw-2">*</span><span class="ident">id</span>))
         }
 
