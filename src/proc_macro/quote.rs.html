@@ -306,6 +306,8 @@
 <span id="261">261</span>
 <span id="262">262</span>
 <span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -320,254 +322,256 @@
 <span class="doccomment">//! # Quasiquoter</span>
 <span class="doccomment">//! This file contains the implementation internals of the quasiquoter provided by `quote!`.</span>
 
-<span class="doccomment">//! This quasiquoter uses macros 2.0 hygiene to reliably use items from `__rt`,</span>
-<span class="doccomment">//! including re-exported API `libsyntax`, to build a `syntax::tokenstream::TokenStream`</span>
-<span class="doccomment">//! and wrap it into a `proc_macro::TokenStream`.</span>
+<span class="doccomment">//! This quasiquoter uses macros 2.0 hygiene to reliably access</span>
+<span class="doccomment">//! items from `proc_macro`, to build a `proc_macro::TokenStream`.</span>
 
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::<span class="ident">Ident</span>;
+<span class="kw">use</span> {<span class="ident">Delimiter</span>, <span class="ident">Literal</span>, <span class="ident">Spacing</span>, <span class="ident">Span</span>, <span class="ident">Term</span>, <span class="ident">TokenNode</span>, <span class="ident">TokenStream</span>, <span class="ident">TokenTree</span>};
+
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ext</span>::<span class="ident">base</span>::{<span class="ident">ExtCtxt</span>, <span class="ident">ProcMacro</span>};
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>::<span class="ident">token</span>::{<span class="self">self</span>, <span class="ident">Token</span>, <span class="ident">Lit</span>};
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">tokenstream</span>::{<span class="ident">Delimited</span>, <span class="ident">TokenTree</span>, <span class="ident">TokenStream</span>, <span class="ident">TokenStreamBuilder</span>};
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">DUMMY_SP</span>, <span class="ident">Span</span>};
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">hygiene</span>::<span class="ident">SyntaxContext</span>;
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>::<span class="ident">token</span>;
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">tokenstream</span>;
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Quoter</span>;
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">__rt</span> {
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::<span class="ident">Ident</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>::<span class="ident">token</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">tokenstream</span>::{<span class="ident">TokenStream</span>, <span class="ident">TokenStreamBuilder</span>, <span class="ident">TokenTree</span>, <span class="ident">Delimited</span>};
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ctxt</span>, <span class="ident">span</span>};
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unquote</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span>::<span class="ident">TokenStream</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span>(<span class="ident">tokens</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="ident">T</span>::<span class="ident">into</span>(<span class="ident">tokens</span>.<span class="ident">clone</span>()).<span class="number">0</span>
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ctxt</span>() <span class="op">-&gt;</span> <span class="ident">SyntaxContext</span> {
-    ::<span class="ident">__internal</span>::<span class="ident">with_sess</span>(<span class="op">|</span>(_, <span class="ident">mark</span>)<span class="op">|</span> <span class="ident">SyntaxContext</span>::<span class="ident">empty</span>().<span class="ident">apply_mark</span>(<span class="ident">mark</span>))
-}
-
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">span</span>() <span class="op">-&gt;</span> <span class="ident">Span</span> {
-    ::<span class="ident">Span</span>::<span class="ident">default</span>().<span class="number">0</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unquote</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span>(<span class="ident">tokens</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+    <span class="ident">T</span>::<span class="ident">into</span>(<span class="ident">tokens</span>.<span class="ident">clone</span>())
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Quote</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span>;
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span>;
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">quote_tok</span> {
-    (,) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Comma</span> };
-    (.) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Dot</span> };
-    (:) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Colon</span> };
-    (::) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">ModSep</span> };
-    (<span class="op">!</span>) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Not</span> };
-    (<span class="op">&lt;</span>) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Lt</span> };
-    (<span class="op">&gt;</span>) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Gt</span> };
-    (_) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Underscore</span> };
-    (<span class="number">0</span>) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="ident">Integer</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="string">&quot;0&quot;</span>)), <span class="prelude-val">None</span>) };
-    (<span class="kw-2">&amp;</span>) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">BinOp</span>(<span class="ident">token</span>::<span class="ident">And</span>) };
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> { <span class="ident">Token</span>::<span class="ident">Ident</span>(<span class="ident">Ident</span> { <span class="ident">name</span>: <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="macro">stringify</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>)), <span class="ident">ctxt</span>: <span class="ident">ctxt</span>() }) };
+    (,) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;,&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (.) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;.&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (:) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;:&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (::) <span class="op">=&gt;</span> {
+        [
+            <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;:&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Joint</span>),
+            <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;:&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>)
+        ].<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span>()
+    };
+    (<span class="op">!</span>) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;!&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (<span class="op">&lt;</span>) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;&lt;&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (<span class="op">&gt;</span>) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;&gt;&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (_) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;_&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (<span class="number">0</span>) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Literal</span>(::<span class="ident">Literal</span>::<span class="ident">integer</span>(<span class="number">0</span>)) };
+    (<span class="kw-2">&amp;</span>) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;&amp;&#39;</span>, <span class="ident">Spacing</span>::<span class="ident">Alone</span>) };
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Term</span>(<span class="ident">Term</span>::<span class="ident">intern</span>(<span class="macro">stringify</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>))) };
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">quote_tree</span> {
-    ((<span class="ident">unquote</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> { <span class="ident">TokenStream</span>::<span class="ident">from</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>) };
+    ((<span class="ident">unquote</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="op">*</span> };
     ((<span class="ident">quote</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> { ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>).<span class="ident">quote</span>() };
-    (($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> { <span class="ident">delimit</span>(<span class="ident">token</span>::<span class="ident">Paren</span>, <span class="macro">quote</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)) };
-    ([$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>]) <span class="op">=&gt;</span> { <span class="ident">delimit</span>(<span class="ident">token</span>::<span class="ident">Bracket</span>, <span class="macro">quote</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)) };
-    ({$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>}) <span class="op">=&gt;</span> { <span class="ident">delimit</span>(<span class="ident">token</span>::<span class="ident">Brace</span>, <span class="macro">quote</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)) };
-    (<span class="ident">rt</span>) <span class="op">=&gt;</span> { <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">__internal</span>::<span class="ident">__rt</span>) };
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> { <span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="ident">TokenTree</span>::<span class="ident">Token</span>(<span class="ident">span</span>(), <span class="macro">quote_tok</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>))) };
-}
-
-<span class="kw">fn</span> <span class="ident">delimit</span>(<span class="ident">delim</span>: <span class="ident">token</span>::<span class="ident">DelimToken</span>, <span class="ident">stream</span>: <span class="ident">TokenStream</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-    <span class="ident">TokenTree</span>::<span class="ident">Delimited</span>(<span class="ident">span</span>(), <span class="ident">Delimited</span> { <span class="ident">delim</span>: <span class="ident">delim</span>, <span class="ident">tts</span>: <span class="ident">stream</span>.<span class="ident">into</span>() }).<span class="ident">into</span>()
+    (($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Group</span>(<span class="ident">Delimiter</span>::<span class="ident">Parenthesis</span>, <span class="macro">quote</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)) };
+    ([$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>]) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Group</span>(<span class="ident">Delimiter</span>::<span class="ident">Bracket</span>, <span class="macro">quote</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)) };
+    ({$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>}) <span class="op">=&gt;</span> { <span class="ident">TokenNode</span>::<span class="ident">Group</span>(<span class="ident">Delimiter</span>::<span class="ident">Brace</span>, <span class="macro">quote</span><span class="macro">!</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)<span class="kw-2">*</span>)) };
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>) <span class="op">=&gt;</span> { <span class="macro">quote_tok</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>) };
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">quote</span> {
     () <span class="op">=&gt;</span> { <span class="ident">TokenStream</span>::<span class="ident">empty</span>() };
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { [ $( <span class="macro">quote_tree</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>), )<span class="op">*</span> ].<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span>() };
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        [
+            $(<span class="ident">TokenStream</span>::<span class="ident">from</span>(<span class="macro">quote_tree</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>)),)<span class="op">*</span>
+        ].<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span>()
+    };
 }
 
 <span class="kw">impl</span> <span class="ident">ProcMacro</span> <span class="kw">for</span> <span class="ident">Quoter</span> {
-    <span class="kw">fn</span> <span class="ident">expand</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;cx</span> <span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>, _: <span class="ident">Span</span>, <span class="ident">stream</span>: <span class="ident">TokenStream</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+    <span class="kw">fn</span> <span class="ident">expand</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;cx</span> <span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>,
+                   _: ::<span class="ident">syntax_pos</span>::<span class="ident">Span</span>,
+                   <span class="ident">stream</span>: <span class="ident">tokenstream</span>::<span class="ident">TokenStream</span>)
+                   <span class="op">-&gt;</span> <span class="ident">tokenstream</span>::<span class="ident">TokenStream</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">info</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">current_expansion</span>.<span class="ident">mark</span>.<span class="ident">expn_info</span>().<span class="ident">unwrap</span>();
         <span class="ident">info</span>.<span class="ident">callee</span>.<span class="ident">allow_internal_unstable</span> <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="ident">cx</span>.<span class="ident">current_expansion</span>.<span class="ident">mark</span>.<span class="ident">set_expn_info</span>(<span class="ident">info</span>);
-        ::<span class="ident">__internal</span>::<span class="ident">set_sess</span>(<span class="ident">cx</span>, <span class="op">||</span> <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">TokenStream</span> { <span class="number">0</span>: (<span class="ident">quote</span> <span class="ident">stream</span>) }))
+        ::<span class="ident">__internal</span>::<span class="ident">set_sess</span>(<span class="ident">cx</span>, <span class="op">||</span> <span class="ident">TokenStream</span>(<span class="ident">stream</span>).<span class="ident">quote</span>().<span class="number">0</span>)
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Quote</span><span class="op">&gt;</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">t</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="prelude-val">Some</span>((<span class="ident">quote</span> <span class="ident">t</span>))),
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="prelude-val">Some</span>((<span class="ident">quote</span> <span class="ident">t</span>))),
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="prelude-val">None</span>),
         }
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">TokenStream</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">TokenStreamBuilder</span>::<span class="ident">new</span>();
-        <span class="ident">builder</span>.<span class="ident">push</span>(<span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">TokenStreamBuilder</span>::<span class="ident">new</span>()));
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">trees</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trees</span>();
-        <span class="kw">loop</span> {
-            <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">tree</span>, <span class="kw-2">mut</span> <span class="ident">is_joint</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">trees</span>.<span class="ident">next_as_stream</span>() {
-                <span class="prelude-val">Some</span>(<span class="ident">next</span>) <span class="op">=&gt;</span> <span class="ident">next</span>.<span class="ident">as_tree</span>(),
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">builder</span>.<span class="ident">add</span>(<span class="macro">quote</span><span class="macro">!</span>(.<span class="ident">build</span>())).<span class="ident">build</span>(),
-            };
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TokenTree</span>::<span class="ident">Token</span>(_, <span class="ident">Token</span>::<span class="ident">Dollar</span>) <span class="op">=</span> <span class="ident">tree</span> {
-                <span class="kw">let</span> (<span class="ident">next_tree</span>, <span class="ident">next_is_joint</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">trees</span>.<span class="ident">next_as_stream</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">next</span>) <span class="op">=&gt;</span> <span class="ident">next</span>.<span class="ident">as_tree</span>(),
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;unexpected trailing `$` in `quote!`&quot;</span>),
-                };
-                <span class="kw">match</span> <span class="ident">next_tree</span> {
-                    <span class="ident">TokenTree</span>::<span class="ident">Token</span>(_, <span class="ident">Token</span>::<span class="ident">Ident</span>(..)) <span class="op">=&gt;</span> {
-                        <span class="ident">builder</span>.<span class="ident">push</span>(<span class="macro">quote</span><span class="macro">!</span>(.<span class="ident">add</span>(<span class="ident">rt</span>::<span class="ident">unquote</span>(<span class="kw-2">&amp;</span>(<span class="ident">unquote</span> <span class="ident">next_tree</span>)))));
-                        <span class="kw">continue</span>
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">TokenStream</span>::<span class="ident">empty</span>());
+        }
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">after_dollar</span> <span class="op">=</span> <span class="bool-val">false</span>;
+        <span class="kw">let</span> <span class="ident">tokens</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">into_iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">tree</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">after_dollar</span> {
+                <span class="ident">after_dollar</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                <span class="kw">match</span> <span class="ident">tree</span>.<span class="ident">kind</span> {
+                    <span class="ident">TokenNode</span>::<span class="ident">Term</span>(_) <span class="op">=&gt;</span> {
+                        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">__internal</span>::<span class="ident">unquote</span>(<span class="kw-2">&amp;</span>(<span class="ident">unquote</span> <span class="ident">tree</span>)),));
                     }
-                    <span class="ident">TokenTree</span>::<span class="ident">Token</span>(_, <span class="ident">Token</span>::<span class="ident">Dollar</span>) <span class="op">=&gt;</span> {
-                        <span class="ident">tree</span> <span class="op">=</span> <span class="ident">next_tree</span>;
-                        <span class="ident">is_joint</span> <span class="op">=</span> <span class="ident">next_is_joint</span>;
-                    }
+                    <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;$&#39;</span>, _) <span class="op">=&gt;</span> {}
                     _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;`$` must be followed by an ident or `$` in `quote!`&quot;</span>),
                 }
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TokenNode</span>::<span class="ident">Op</span>(<span class="string">&#39;$&#39;</span>, _) <span class="op">=</span> <span class="ident">tree</span>.<span class="ident">kind</span> {
+                <span class="ident">after_dollar</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                <span class="kw">return</span> <span class="prelude-val">None</span>;
             }
 
-            <span class="ident">builder</span>.<span class="ident">push</span>(<span class="kw">match</span> <span class="ident">is_joint</span> {
-                <span class="bool-val">true</span> <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(.<span class="ident">add</span>((<span class="ident">quote</span> <span class="ident">tree</span>).<span class="ident">joint</span>())),
-                <span class="bool-val">false</span> <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(.<span class="ident">add</span>(<span class="ident">rt</span>::<span class="ident">TokenStream</span>::<span class="ident">from</span>((<span class="ident">quote</span> <span class="ident">tree</span>)))),
-            });
+            <span class="prelude-val">Some</span>(<span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">TokenStream</span>::<span class="ident">from</span>((<span class="ident">quote</span> <span class="ident">tree</span>)),))
+        }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">TokenStream</span><span class="op">&gt;</span>();
+
+        <span class="kw">if</span> <span class="ident">after_dollar</span> {
+            <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;unexpected trailing `$` in `quote!`&quot;</span>);
         }
+
+        <span class="macro">quote</span><span class="macro">!</span>([(<span class="ident">unquote</span> <span class="ident">tokens</span>)].<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">collect</span>::<span class="op">&lt;</span>::<span class="ident">TokenStream</span><span class="op">&gt;</span>())
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">TokenTree</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">TokenTree</span>::<span class="ident">Token</span>(<span class="ident">span</span>, <span class="kw-2">ref</span> <span class="ident">token</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span> {
-                <span class="ident">rt</span>::<span class="ident">TokenTree</span>::<span class="ident">Token</span>((<span class="ident">quote</span> <span class="ident">span</span>), (<span class="ident">quote</span> <span class="ident">token</span>))
-            },
-            <span class="ident">TokenTree</span>::<span class="ident">Delimited</span>(<span class="ident">span</span>, <span class="kw-2">ref</span> <span class="ident">delimited</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span> {
-                <span class="ident">rt</span>::<span class="ident">TokenTree</span>::<span class="ident">Delimited</span>((<span class="ident">quote</span> <span class="ident">span</span>), (<span class="ident">quote</span> <span class="ident">delimited</span>))
-            },
-        }
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">TokenTree</span> { <span class="ident">span</span>: (<span class="ident">quote</span> <span class="self">self</span>.<span class="ident">span</span>), <span class="ident">kind</span>: (<span class="ident">quote</span> <span class="self">self</span>.<span class="ident">kind</span>) })
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Delimited</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">Delimited</span> { <span class="ident">delim</span>: (<span class="ident">quote</span> <span class="self">self</span>.<span class="ident">delim</span>), <span class="ident">tts</span>: (<span class="ident">quote</span> <span class="self">self</span>.<span class="ident">stream</span>()).<span class="ident">into</span>() })
+<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">TokenNode</span> {
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">gen_match</span> {
+            ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>:<span class="ident">ident</span>),<span class="op">+</span>)),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="ident">TokenNode</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>),<span class="op">+</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span> {
+                        ::<span class="ident">TokenNode</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>($((<span class="ident">quote</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">arg</span>)),<span class="op">+</span>)
+                    },)<span class="op">*</span>
+                }
+            }
+        }
+
+        <span class="macro">gen_match</span><span class="macro">!</span> { <span class="ident">Op</span>(<span class="ident">op</span>, <span class="ident">kind</span>), <span class="ident">Group</span>(<span class="ident">delim</span>, <span class="ident">tokens</span>), <span class="ident">Term</span>(<span class="ident">term</span>), <span class="ident">Literal</span>(<span class="ident">lit</span>) }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">char</span> {
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="ident">TokenNode</span>::<span class="ident">Literal</span>(<span class="ident">Literal</span>::<span class="ident">character</span>(<span class="self">self</span>)).<span class="ident">into</span>()
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="ident">TokenTree</span>::<span class="ident">Token</span>(<span class="ident">span</span>(), <span class="ident">Token</span>::<span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="ident">Str_</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="self">self</span>)), <span class="prelude-val">None</span>))
-            .<span class="ident">into</span>()
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="ident">TokenNode</span>::<span class="ident">Literal</span>(<span class="ident">Literal</span>::<span class="ident">string</span>(<span class="self">self</span>)).<span class="ident">into</span>()
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">usize</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="kw">let</span> <span class="ident">integer_symbol</span> <span class="op">=</span> <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">to_string</span>());
-        <span class="ident">TokenTree</span>::<span class="ident">Token</span>(<span class="ident">DUMMY_SP</span>, <span class="ident">Token</span>::<span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="ident">Integer</span>(<span class="ident">integer_symbol</span>), <span class="prelude-val">None</span>))
-            .<span class="ident">into</span>()
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="ident">TokenNode</span>::<span class="ident">Literal</span>(<span class="ident">Literal</span>::<span class="ident">integer</span>(<span class="self">self</span> <span class="kw">as</span> <span class="ident">i128</span>)).<span class="ident">into</span>()
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Ident</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">Ident</span> { <span class="ident">name</span>: (<span class="ident">quote</span> <span class="self">self</span>.<span class="ident">name</span>), <span class="ident">ctxt</span>: <span class="ident">rt</span>::<span class="ident">ctxt</span>() })
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Symbol</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">Symbol</span>::<span class="ident">intern</span>((<span class="ident">quote</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>.<span class="ident">as_str</span>())))
+<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Term</span> {
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">Term</span>::<span class="ident">intern</span>((<span class="ident">quote</span> <span class="self">self</span>.<span class="ident">as_str</span>())))
     }
 }
 
 <span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Span</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">span</span>())
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">Span</span>::<span class="ident">default</span>())
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Token</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">gen_match</span> {
-            ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-                    $( <span class="ident">Token</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>), )<span class="op">*</span>
-                    $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">t</span> )<span class="op">*</span>
-                }
-            }
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">literals</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LiteralKind</span> {
+            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>,)<span class="op">*</span>
+            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>(<span class="ident">usize</span>),)<span class="op">*</span>
         }
 
-        <span class="macro">gen_match</span><span class="macro">!</span> {
-            <span class="ident">Eq</span>, <span class="ident">Lt</span>, <span class="ident">Le</span>, <span class="ident">EqEq</span>, <span class="ident">Ne</span>, <span class="ident">Ge</span>, <span class="ident">Gt</span>, <span class="ident">AndAnd</span>, <span class="ident">OrOr</span>, <span class="ident">Not</span>, <span class="ident">Tilde</span>, <span class="ident">At</span>, <span class="ident">Dot</span>, <span class="ident">DotDot</span>, <span class="ident">DotDotDot</span>,
-            <span class="ident">DotDotEq</span>, <span class="ident">Comma</span>, <span class="ident">Semi</span>, <span class="ident">Colon</span>, <span class="ident">ModSep</span>, <span class="ident">RArrow</span>, <span class="ident">LArrow</span>, <span class="ident">FatArrow</span>, <span class="ident">Pound</span>, <span class="ident">Dollar</span>,
-            <span class="ident">Question</span>, <span class="ident">Underscore</span>;
-
-            <span class="ident">Token</span>::<span class="ident">OpenDelim</span>(<span class="ident">delim</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">OpenDelim</span>((<span class="ident">quote</span> <span class="ident">delim</span>))),
-            <span class="ident">Token</span>::<span class="ident">CloseDelim</span>(<span class="ident">delim</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">CloseDelim</span>((<span class="ident">quote</span> <span class="ident">delim</span>))),
-            <span class="ident">Token</span>::<span class="ident">BinOp</span>(<span class="ident">tok</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">BinOp</span>((<span class="ident">quote</span> <span class="ident">tok</span>))),
-            <span class="ident">Token</span>::<span class="ident">BinOpEq</span>(<span class="ident">tok</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">BinOpEq</span>((<span class="ident">quote</span> <span class="ident">tok</span>))),
-            <span class="ident">Token</span>::<span class="ident">Ident</span>(<span class="ident">ident</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">Ident</span>((<span class="ident">quote</span> <span class="ident">ident</span>))),
-            <span class="ident">Token</span>::<span class="ident">Lifetime</span>(<span class="ident">ident</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">Lifetime</span>((<span class="ident">quote</span> <span class="ident">ident</span>))),
-            <span class="ident">Token</span>::<span class="ident">Literal</span>(<span class="ident">lit</span>, <span class="ident">sfx</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">Literal</span>((<span class="ident">quote</span> <span class="ident">lit</span>), (<span class="ident">quote</span> <span class="ident">sfx</span>))),
-            _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unhandled case!&quot;</span>),
-        }
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">token</span>::<span class="ident">BinOpToken</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">gen_match</span> {
-            ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-                    $( <span class="ident">token</span>::<span class="ident">BinOpToken</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">BinOpToken</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>), )<span class="op">*</span>
-                }
-            }
-        }
-
-        <span class="macro">gen_match</span><span class="macro">!</span>(<span class="ident">Plus</span>, <span class="ident">Minus</span>, <span class="ident">Star</span>, <span class="ident">Slash</span>, <span class="ident">Percent</span>, <span class="ident">Caret</span>, <span class="ident">And</span>, <span class="ident">Or</span>, <span class="ident">Shl</span>, <span class="ident">Shr</span>)
-    }
-}
-
-<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Lit</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">gen_match</span> {
-            ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>; $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-                    $( <span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>(<span class="ident">lit</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>((<span class="ident">quote</span> <span class="ident">lit</span>))), )<span class="op">*</span>
-                    $( <span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>(<span class="ident">lit</span>, <span class="ident">n</span>) <span class="op">=&gt;</span> {
-                        <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">syntax</span>::<span class="ident">parse</span>::<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>((<span class="ident">quote</span> <span class="ident">lit</span>), (<span class="ident">quote</span> <span class="ident">n</span>)))
+        <span class="kw">impl</span> <span class="ident">LiteralKind</span> {
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">with_contents_and_suffix</span>(<span class="self">self</span>, <span class="ident">contents</span>: <span class="ident">Term</span>, <span class="ident">suffix</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Term</span><span class="op">&gt;</span>)
+                                            <span class="op">-&gt;</span> <span class="ident">Literal</span> {
+                <span class="kw">let</span> <span class="ident">contents</span> <span class="op">=</span> <span class="ident">contents</span>.<span class="number">0</span>;
+                <span class="kw">let</span> <span class="ident">suffix</span> <span class="op">=</span> <span class="ident">suffix</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="number">0</span>);
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> {
+                        <span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>(<span class="ident">contents</span>), <span class="ident">suffix</span>))
+                    })<span class="op">*</span>
+                    $(<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>(<span class="ident">n</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>(<span class="ident">contents</span>, <span class="ident">n</span>), <span class="ident">suffix</span>))
                     })<span class="op">*</span>
                 }
             }
         }
 
-        <span class="macro">gen_match</span><span class="macro">!</span>(<span class="ident">Byte</span>, <span class="ident">Char</span>, <span class="ident">Float</span>, <span class="ident">Str_</span>, <span class="ident">Integer</span>, <span class="ident">ByteStr</span>; <span class="ident">StrRaw</span>, <span class="ident">ByteStrRaw</span>)
-    }
-}
+        <span class="kw">impl</span> <span class="ident">Literal</span> {
+            <span class="kw">fn</span> <span class="ident">kind_contents_and_suffix</span>(<span class="self">self</span>) <span class="op">-&gt;</span> (<span class="ident">LiteralKind</span>, <span class="ident">Term</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Term</span><span class="op">&gt;</span>) {
+                <span class="kw">let</span> (<span class="ident">lit</span>, <span class="ident">suffix</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="number">0</span> {
+                    <span class="ident">token</span>::<span class="ident">Literal</span>(<span class="ident">lit</span>, <span class="ident">suffix</span>) <span class="op">=&gt;</span> (<span class="ident">lit</span>, <span class="ident">suffix</span>),
+                    _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;unsupported literal {:?}&quot;</span>, <span class="self">self</span>.<span class="number">0</span>),
+                };
 
-<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">token</span>::<span class="ident">DelimToken</span> {
-    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">gen_match</span> {
-            ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-                    $(<span class="ident">token</span>::<span class="ident">DelimToken</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> { <span class="macro">quote</span><span class="macro">!</span>(<span class="ident">rt</span>::<span class="ident">token</span>::<span class="ident">DelimToken</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>) })<span class="op">*</span>
+                <span class="kw">let</span> (<span class="ident">kind</span>, <span class="ident">contents</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">lit</span> {
+                    $(<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>(<span class="ident">contents</span>) <span class="op">=&gt;</span> (<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>, <span class="ident">contents</span>),)<span class="op">*</span>
+                    $(<span class="ident">token</span>::<span class="ident">Lit</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>(<span class="ident">contents</span>, <span class="ident">n</span>) <span class="op">=&gt;</span> (<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>(<span class="ident">n</span>), <span class="ident">contents</span>),)<span class="op">*</span>
+                };
+                (<span class="ident">kind</span>, <span class="ident">Term</span>(<span class="ident">contents</span>), <span class="ident">suffix</span>.<span class="ident">map</span>(<span class="ident">Term</span>))
+            }
+        }
+
+        <span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">LiteralKind</span> {
+            <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span> {
+                        ::<span class="ident">__internal</span>::<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>
+                    },)<span class="op">*</span>
+                    $(<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>(<span class="ident">n</span>) <span class="op">=&gt;</span> <span class="macro">quote</span><span class="macro">!</span> {
+                        ::<span class="ident">__internal</span>::<span class="ident">LiteralKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">raw</span>((<span class="ident">quote</span> <span class="ident">n</span>))
+                    },)<span class="op">*</span>
                 }
             }
         }
 
-        <span class="macro">gen_match</span><span class="macro">!</span>(<span class="ident">Paren</span>, <span class="ident">Bracket</span>, <span class="ident">Brace</span>, <span class="ident">NoDelim</span>)
+        <span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Literal</span> {
+            <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+                <span class="kw">let</span> (<span class="ident">kind</span>, <span class="ident">contents</span>, <span class="ident">suffix</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">kind_contents_and_suffix</span>();
+                <span class="macro">quote</span><span class="macro">!</span> {
+                    (<span class="ident">quote</span> <span class="ident">kind</span>).<span class="ident">with_contents_and_suffix</span>((<span class="ident">quote</span> <span class="ident">contents</span>), (<span class="ident">quote</span> <span class="ident">suffix</span>))
+                }
+            }
+        }
+    }
+}
+
+<span class="macro">literals</span><span class="macro">!</span>(<span class="ident">Byte</span>, <span class="ident">Char</span>, <span class="ident">Float</span>, <span class="ident">Str_</span>, <span class="ident">Integer</span>, <span class="ident">ByteStr</span>; <span class="ident">StrRaw</span>, <span class="ident">ByteStrRaw</span>);
+
+<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Delimiter</span> {
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">gen_match</span> {
+            ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="ident">Delimiter</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> { <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">Delimiter</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>) })<span class="op">*</span>
+                }
+            }
+        }
+
+        <span class="macro">gen_match</span><span class="macro">!</span>(<span class="ident">Parenthesis</span>, <span class="ident">Brace</span>, <span class="ident">Bracket</span>, <span class="prelude-val">None</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Spacing</span> {
+    <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
+        <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">gen_match</span> {
+            ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>:<span class="ident">ident</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="ident">Spacing</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span> <span class="op">=&gt;</span> { <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">Spacing</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">i</span>) })<span class="op">*</span>
+                }
+            }
+        }
+
+        <span class="macro">gen_match</span><span class="macro">!</span>(<span class="ident">Alone</span>, <span class="ident">Joint</span>)
     }
 }
 </pre>

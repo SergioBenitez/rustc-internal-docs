@@ -1065,7 +1065,7 @@
 <span class="doccomment">/// This is needed to implement a custom quoter.</span>
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;proc_macro&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;38356&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quote_span</span>(<span class="ident">span</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-    <span class="ident">TokenStream</span>(<span class="ident">quote</span>::<span class="ident">Quote</span>::<span class="ident">quote</span>(<span class="kw-2">&amp;</span><span class="ident">span</span>.<span class="number">0</span>))
+    <span class="ident">quote</span>::<span class="ident">Quote</span>::<span class="ident">quote</span>(<span class="ident">span</span>)
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">diagnostic_method</span> {
@@ -1602,7 +1602,7 @@
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;proc_macro_internals&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27812&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">__internal</span> {
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">Quoter</span>, <span class="ident">__rt</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">LiteralKind</span>, <span class="ident">Quoter</span>, <span class="ident">unquote</span>};
 
     <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::<span class="ident">Cell</span>;
 

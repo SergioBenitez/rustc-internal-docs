@@ -1313,6 +1313,7 @@
 <span id="1268">1268</span>
 <span id="1269">1269</span>
 <span id="1270">1270</span>
+<span id="1271">1271</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2519,7 +2520,8 @@
         <span class="ident">simd_add</span>: <span class="ident">TyUint</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">add</span>, <span class="ident">TyFloat</span> <span class="op">=&gt;</span> <span class="ident">fadd</span>;
         <span class="ident">simd_sub</span>: <span class="ident">TyUint</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">sub</span>, <span class="ident">TyFloat</span> <span class="op">=&gt;</span> <span class="ident">fsub</span>;
         <span class="ident">simd_mul</span>: <span class="ident">TyUint</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">mul</span>, <span class="ident">TyFloat</span> <span class="op">=&gt;</span> <span class="ident">fmul</span>;
-        <span class="ident">simd_div</span>: <span class="ident">TyFloat</span> <span class="op">=&gt;</span> <span class="ident">fdiv</span>;
+        <span class="ident">simd_div</span>: <span class="ident">TyUint</span> <span class="op">=&gt;</span> <span class="ident">udiv</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">sdiv</span>, <span class="ident">TyFloat</span> <span class="op">=&gt;</span> <span class="ident">fdiv</span>;
+        <span class="ident">simd_rem</span>: <span class="ident">TyUint</span> <span class="op">=&gt;</span> <span class="ident">urem</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">srem</span>, <span class="ident">TyFloat</span> <span class="op">=&gt;</span> <span class="ident">frem</span>;
         <span class="ident">simd_shl</span>: <span class="ident">TyUint</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">shl</span>;
         <span class="ident">simd_shr</span>: <span class="ident">TyUint</span> <span class="op">=&gt;</span> <span class="ident">lshr</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">ashr</span>;
         <span class="ident">simd_and</span>: <span class="ident">TyUint</span>, <span class="ident">TyInt</span> <span class="op">=&gt;</span> <span class="ident">and</span>;
