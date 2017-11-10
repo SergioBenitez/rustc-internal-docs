@@ -2148,6 +2148,16 @@
 <span id="2103">2103</span>
 <span id="2104">2104</span>
 <span id="2105">2105</span>
+<span id="2106">2106</span>
+<span id="2107">2107</span>
+<span id="2108">2108</span>
+<span id="2109">2109</span>
+<span id="2110">2110</span>
+<span id="2111">2111</span>
+<span id="2112">2112</span>
+<span id="2113">2113</span>
+<span id="2114">2114</span>
+<span id="2115">2115</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2184,6 +2194,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>, <span class="ident">Formatter</span>, <span class="ident">Write</span>};
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">iter</span>, <span class="ident">u32</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{<span class="ident">Index</span>, <span class="ident">IndexMut</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::<span class="ident">Rc</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">vec</span>::<span class="ident">IntoIter</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">Name</span>};
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
@@ -3832,6 +3843,15 @@
     <span class="kw">pub</span> <span class="ident">source_info</span>: <span class="ident">SourceInfo</span>,
     <span class="kw">pub</span> <span class="ident">description</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
     <span class="kw">pub</span> <span class="ident">lint_node_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">NodeId</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UnsafetyCheckResult</span> {
+    <span class="doccomment">/// Violations that are propagated *upwards* from this function</span>
+    <span class="kw">pub</span> <span class="ident">violations</span>: <span class="ident">Rc</span><span class="op">&lt;</span>[<span class="ident">UnsafetyViolation</span>]<span class="op">&gt;</span>,
+    <span class="doccomment">/// unsafe blocks in this function, along with whether they are used. This is</span>
+    <span class="doccomment">/// used for the &quot;unused_unsafe&quot; lint.</span>
+    <span class="kw">pub</span> <span class="ident">unsafe_blocks</span>: <span class="ident">Rc</span><span class="op">&lt;</span>[(<span class="ident">ast</span>::<span class="ident">NodeId</span>, <span class="ident">bool</span>)]<span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// The layout of generator state</span>

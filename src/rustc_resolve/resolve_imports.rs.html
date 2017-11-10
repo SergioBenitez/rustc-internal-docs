@@ -998,7 +998,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>};
 
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::{<span class="ident">Ident</span>, <span class="ident">SpannedIdent</span>, <span class="ident">NodeId</span>};
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::{<span class="ident">Ident</span>, <span class="ident">Name</span>, <span class="ident">SpannedIdent</span>, <span class="ident">NodeId</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ext</span>::<span class="ident">base</span>::<span class="ident">Determinacy</span>::{<span class="self">self</span>, <span class="ident">Determined</span>, <span class="ident">Undetermined</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ext</span>::<span class="ident">hygiene</span>::<span class="ident">Mark</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>::<span class="ident">token</span>;
@@ -1023,7 +1023,7 @@
         <span class="ident">max_vis</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">Visibility</span><span class="op">&gt;</span>, <span class="comment">// The visibility of the greatest reexport.</span>
         <span class="comment">// n.b. `max_vis` is only used in `finalize_import` to check for reexport errors.</span>
     },
-    <span class="ident">ExternCrate</span>,
+    <span class="ident">ExternCrate</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Name</span><span class="op">&gt;</span>),
     <span class="ident">MacroUse</span>,
 }
 
@@ -1898,7 +1898,7 @@
     <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">subclass</span> {
         <span class="ident">SingleImport</span> { <span class="ident">source</span>, .. } <span class="op">=&gt;</span> <span class="ident">source</span>.<span class="ident">to_string</span>(),
         <span class="ident">GlobImport</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;*&quot;</span>.<span class="ident">to_string</span>(),
-        <span class="ident">ExternCrate</span> <span class="op">=&gt;</span> <span class="string">&quot;&lt;extern crate&gt;&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="ident">ExternCrate</span>(_) <span class="op">=&gt;</span> <span class="string">&quot;&lt;extern crate&gt;&quot;</span>.<span class="ident">to_string</span>(),
         <span class="ident">MacroUse</span> <span class="op">=&gt;</span> <span class="string">&quot;#[macro_use]&quot;</span>.<span class="ident">to_string</span>(),
     }
 }

@@ -2776,16 +2776,16 @@
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// let mut v = String::from(&quot;🗻∈🌏&quot;);</span>
+    <span class="doccomment">/// let v = String::from(&quot;🗻∈🌏&quot;);</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// assert_eq!(Some(&quot;🗻&quot;), v.get(0..4));</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// // indices not on UTF-8 sequence boundaries</span>
-    <span class="doccomment">/// assert!(v.get_mut(1..).is_none());</span>
-    <span class="doccomment">/// assert!(v.get_mut(..8).is_none());</span>
+    <span class="doccomment">/// assert!(v.get(1..).is_none());</span>
+    <span class="doccomment">/// assert!(v.get(..8).is_none());</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// // out of bounds</span>
-    <span class="doccomment">/// assert!(v.get_mut(..42).is_none());</span>
+    <span class="doccomment">/// assert!(v.get(..42).is_none());</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;str_checked_slicing&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.20.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>

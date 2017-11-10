@@ -1667,6 +1667,7 @@
             <span class="macro">force</span><span class="macro">!</span>(<span class="ident">crate_inherent_impls_overlap_check</span>, <span class="ident">LOCAL_CRATE</span>)
         },
         <span class="ident">DepKind</span>::<span class="ident">PrivacyAccessLevels</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">privacy_access_levels</span>, <span class="ident">LOCAL_CRATE</span>); }
+        <span class="ident">DepKind</span>::<span class="ident">MirBuilt</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_built</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">MirConstQualif</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_const_qualif</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">MirConst</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_const</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">MirValidated</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_validated</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
@@ -1674,7 +1675,7 @@
 
         <span class="ident">DepKind</span>::<span class="ident">BorrowCheck</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">borrowck</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">MirBorrowCheck</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_borrowck</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
-        <span class="ident">DepKind</span>::<span class="ident">UnsafetyViolations</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">unsafety_violations</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
+        <span class="ident">DepKind</span>::<span class="ident">UnsafetyCheckResult</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">unsafety_check_result</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">Reachability</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">reachable_set</span>, <span class="ident">LOCAL_CRATE</span>); }
         <span class="ident">DepKind</span>::<span class="ident">MirKeys</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_keys</span>, <span class="ident">LOCAL_CRATE</span>); }
         <span class="ident">DepKind</span>::<span class="ident">CrateVariances</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">crate_variances</span>, <span class="ident">LOCAL_CRATE</span>); }
@@ -1807,7 +1808,6 @@
 
     <span class="bool-val">true</span>
 }
-
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

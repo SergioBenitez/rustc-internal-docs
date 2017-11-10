@@ -1300,6 +1300,7 @@
     <span class="comment">// Represents the MIR for a fn; also used as the task node for</span>
     <span class="comment">// things read/modify that MIR.</span>
     [] <span class="ident">MirConstQualif</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">MirBuilt</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MirConst</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MirValidated</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MirOptimized</span>(<span class="ident">DefId</span>),
@@ -1308,7 +1309,7 @@
     [] <span class="ident">BorrowCheckKrate</span>,
     [] <span class="ident">BorrowCheck</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MirBorrowCheck</span>(<span class="ident">DefId</span>),
-    [] <span class="ident">UnsafetyViolations</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">UnsafetyCheckResult</span>(<span class="ident">DefId</span>),
 
     [] <span class="ident">Reachability</span>,
     [] <span class="ident">MirKeys</span>,
@@ -1613,7 +1614,6 @@
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> ::<span class="ident">dep_graph</span>::<span class="ident">WorkProductId</span> {
     <span class="ident">hash</span>
 });
-
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

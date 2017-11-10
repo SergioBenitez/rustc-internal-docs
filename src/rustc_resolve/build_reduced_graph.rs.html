@@ -1157,7 +1157,7 @@
                 }
             }
 
-            <span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(_) <span class="op">=&gt;</span> {
+            <span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(<span class="ident">as_name</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">crate_loader</span>.<span class="ident">process_item</span>(<span class="ident">item</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">definitions</span>);
 
                 <span class="comment">// n.b. we don&#39;t need to look at the path option here, because cstore already did</span>
@@ -1172,7 +1172,7 @@
                     <span class="ident">id</span>: <span class="ident">item</span>.<span class="ident">id</span>,
                     <span class="ident">parent</span>,
                     <span class="ident">imported_module</span>: <span class="ident">Cell</span>::<span class="ident">new</span>(<span class="prelude-val">Some</span>(<span class="ident">module</span>)),
-                    <span class="ident">subclass</span>: <span class="ident">ImportDirectiveSubclass</span>::<span class="ident">ExternCrate</span>,
+                    <span class="ident">subclass</span>: <span class="ident">ImportDirectiveSubclass</span>::<span class="ident">ExternCrate</span>(<span class="ident">as_name</span>),
                     <span class="ident">span</span>: <span class="ident">item</span>.<span class="ident">span</span>,
                     <span class="ident">module_path</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
                     <span class="ident">vis</span>: <span class="ident">Cell</span>::<span class="ident">new</span>(<span class="ident">vis</span>),
