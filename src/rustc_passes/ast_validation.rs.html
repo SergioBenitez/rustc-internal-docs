@@ -408,15 +408,6 @@
 <span id="363">363</span>
 <span id="364">364</span>
 <span id="365">365</span>
-<span id="366">366</span>
-<span id="367">367</span>
-<span id="368">368</span>
-<span id="369">369</span>
-<span id="370">370</span>
-<span id="371">371</span>
-<span id="372">372</span>
-<span id="373">373</span>
-<span id="374">374</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -492,7 +483,8 @@
             <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">pat</span>.<span class="ident">node</span> {
                 <span class="ident">PatKind</span>::<span class="ident">Ident</span>(<span class="ident">BindingMode</span>::<span class="ident">ByValue</span>(<span class="ident">Mutability</span>::<span class="ident">Immutable</span>), _, <span class="prelude-val">None</span>) <span class="op">|</span>
                 <span class="ident">PatKind</span>::<span class="ident">Wild</span> <span class="op">=&gt;</span> {}
-                <span class="ident">PatKind</span>::<span class="ident">Ident</span>(..) <span class="op">=&gt;</span> <span class="ident">report_err</span>(<span class="ident">arg</span>.<span class="ident">pat</span>.<span class="ident">span</span>, <span class="bool-val">true</span>),
+                <span class="ident">PatKind</span>::<span class="ident">Ident</span>(<span class="ident">BindingMode</span>::<span class="ident">ByValue</span>(<span class="ident">Mutability</span>::<span class="ident">Mutable</span>), _, <span class="prelude-val">None</span>) <span class="op">=&gt;</span>
+                    <span class="ident">report_err</span>(<span class="ident">arg</span>.<span class="ident">pat</span>.<span class="ident">span</span>, <span class="bool-val">true</span>),
                 _ <span class="op">=&gt;</span> <span class="ident">report_err</span>(<span class="ident">arg</span>.<span class="ident">pat</span>.<span class="ident">span</span>, <span class="bool-val">false</span>),
             }
         }
@@ -571,14 +563,8 @@
         <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">node</span> {
             <span class="ident">TyKind</span>::<span class="ident">BareFn</span>(<span class="kw-2">ref</span> <span class="ident">bfty</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">check_decl_no_pat</span>(<span class="kw-2">&amp;</span><span class="ident">bfty</span>.<span class="ident">decl</span>, <span class="op">|</span><span class="ident">span</span>, _<span class="op">|</span> {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">session</span>,
-                                                   <span class="ident">span</span>,
-                                                   <span class="ident">E0561</span>,
-                                                   <span class="string">&quot;patterns aren&#39;t allowed in function pointer \
-                                                    types&quot;</span>);
-                    <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="ident">span</span>,
-                                  <span class="string">&quot;this is a recent error, see issue #35203 for more details&quot;</span>);
-                    <span class="ident">err</span>.<span class="ident">emit</span>();
+                    <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">session</span>, <span class="ident">span</span>, <span class="ident">E0561</span>,
+                                     <span class="string">&quot;patterns aren&#39;t allowed in function pointer types&quot;</span>).<span class="ident">emit</span>();
                 });
             }
             <span class="ident">TyKind</span>::<span class="ident">TraitObject</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>, ..) <span class="op">=&gt;</span> {
@@ -680,12 +666,16 @@
                     <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TraitItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, <span class="kw-2">ref</span> <span class="ident">block</span>) <span class="op">=</span> <span class="ident">trait_item</span>.<span class="ident">node</span> {
                         <span class="self">self</span>.<span class="ident">check_trait_fn_not_const</span>(<span class="ident">sig</span>.<span class="ident">constness</span>);
                         <span class="kw">if</span> <span class="ident">block</span>.<span class="ident">is_none</span>() {
-                            <span class="self">self</span>.<span class="ident">check_decl_no_pat</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>, <span class="op">|</span><span class="ident">span</span>, _<span class="op">|</span> {
-                                <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">buffer_lint</span>(
-                                    <span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">PATTERNS_IN_FNS_WITHOUT_BODY</span>,
-                                    <span class="ident">trait_item</span>.<span class="ident">id</span>, <span class="ident">span</span>,
-                                    <span class="string">&quot;patterns aren&#39;t allowed in methods \
-                                     without bodies&quot;</span>);
+                            <span class="self">self</span>.<span class="ident">check_decl_no_pat</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>, <span class="op">|</span><span class="ident">span</span>, <span class="ident">mut_ident</span><span class="op">|</span> {
+                                <span class="kw">if</span> <span class="ident">mut_ident</span> {
+                                    <span class="self">self</span>.<span class="ident">session</span>.<span class="ident">buffer_lint</span>(
+                                        <span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">PATTERNS_IN_FNS_WITHOUT_BODY</span>,
+                                        <span class="ident">trait_item</span>.<span class="ident">id</span>, <span class="ident">span</span>,
+                                        <span class="string">&quot;patterns aren&#39;t allowed in methods without bodies&quot;</span>);
+                                } <span class="kw">else</span> {
+                                    <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">session</span>, <span class="ident">span</span>, <span class="ident">E0642</span>,
+                                        <span class="string">&quot;patterns aren&#39;t allowed in methods without bodies&quot;</span>).<span class="ident">emit</span>();
+                                }
                             });
                         }
                     }
@@ -719,18 +709,10 @@
     <span class="kw">fn</span> <span class="ident">visit_foreign_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">fi</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ForeignItem</span>) {
         <span class="kw">match</span> <span class="ident">fi</span>.<span class="ident">node</span> {
             <span class="ident">ForeignItemKind</span>::<span class="ident">Fn</span>(<span class="kw-2">ref</span> <span class="ident">decl</span>, _) <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">check_decl_no_pat</span>(<span class="ident">decl</span>, <span class="op">|</span><span class="ident">span</span>, <span class="ident">is_recent</span><span class="op">|</span> {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">session</span>,
-                                                   <span class="ident">span</span>,
-                                                   <span class="ident">E0130</span>,
-                                                   <span class="string">&quot;patterns aren&#39;t allowed in foreign function \
-                                                    declarations&quot;</span>);
-                    <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="string">&quot;pattern not allowed in foreign function&quot;</span>);
-                    <span class="kw">if</span> <span class="ident">is_recent</span> {
-                        <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="ident">span</span>,
-                                      <span class="string">&quot;this is a recent error, see issue #35203 for more details&quot;</span>);
-                    }
-                    <span class="ident">err</span>.<span class="ident">emit</span>();
+                <span class="self">self</span>.<span class="ident">check_decl_no_pat</span>(<span class="ident">decl</span>, <span class="op">|</span><span class="ident">span</span>, _<span class="op">|</span> {
+                    <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">session</span>, <span class="ident">span</span>, <span class="ident">E0130</span>,
+                                     <span class="string">&quot;patterns aren&#39;t allowed in foreign function declarations&quot;</span>)
+                        .<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="string">&quot;pattern not allowed in foreign function&quot;</span>).<span class="ident">emit</span>();
                 });
             }
             <span class="ident">ForeignItemKind</span>::<span class="ident">Static</span>(..) <span class="op">|</span> <span class="ident">ForeignItemKind</span>::<span class="ident">Ty</span> <span class="op">=&gt;</span> {}
