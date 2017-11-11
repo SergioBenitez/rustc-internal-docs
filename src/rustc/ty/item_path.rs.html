@@ -463,6 +463,20 @@
 <span id="418">418</span>
 <span id="419">419</span>
 <span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -617,9 +631,23 @@
                 }
             }
 
-            <span class="ident">cur_path</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">def_key</span>(<span class="ident">cur_def</span>)
-                              .<span class="ident">disambiguated_data</span>.<span class="ident">data</span>.<span class="ident">get_opt_name</span>().<span class="ident">unwrap_or_else</span>(<span class="op">||</span>
-                <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="string">&quot;&lt;unnamed&gt;&quot;</span>).<span class="ident">as_str</span>()));
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur_def_key</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def_key</span>(<span class="ident">cur_def</span>);
+
+            <span class="comment">// For a UnitStruct or TupleStruct we want the name of its parent rather than &lt;unnamed&gt;.</span>
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">DefPathData</span>::<span class="ident">StructCtor</span> <span class="op">=</span> <span class="ident">cur_def_key</span>.<span class="ident">disambiguated_data</span>.<span class="ident">data</span> {
+                <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="ident">DefId</span> {
+                    <span class="ident">krate</span>: <span class="ident">cur_def</span>.<span class="ident">krate</span>,
+                    <span class="ident">index</span>: <span class="ident">cur_def_key</span>.<span class="ident">parent</span>.<span class="ident">expect</span>(<span class="string">&quot;DefPathData::StructCtor missing a parent&quot;</span>),
+                };
+
+                <span class="ident">cur_def_key</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">def_key</span>(<span class="ident">parent</span>);
+            }
+
+            <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">cur_def_key</span>.<span class="ident">disambiguated_data</span>.<span class="ident">data</span>;
+            <span class="kw">let</span> <span class="ident">symbol</span> <span class="op">=</span>
+                <span class="ident">data</span>.<span class="ident">get_opt_name</span>().<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="string">&quot;&lt;unnamed&gt;&quot;</span>).<span class="ident">as_str</span>());
+            <span class="ident">cur_path</span>.<span class="ident">push</span>(<span class="ident">symbol</span>);
+
             <span class="kw">match</span> <span class="ident">visible_parent_map</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">cur_def</span>) {
                 <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">def</span>) <span class="op">=&gt;</span> <span class="ident">cur_def</span> <span class="op">=</span> <span class="ident">def</span>,
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>,

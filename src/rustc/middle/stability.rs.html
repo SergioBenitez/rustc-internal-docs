@@ -813,6 +813,8 @@
 <span id="768">768</span>
 <span id="769">769</span>
 <span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1332,11 +1334,13 @@
             <span class="kw">return</span>;
         }
 
-        <span class="kw">let</span> <span class="ident">lint_deprecated</span> <span class="op">=</span> <span class="op">|</span><span class="ident">note</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Symbol</span><span class="op">&gt;</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="ident">lint_deprecated</span> <span class="op">=</span> <span class="op">|</span><span class="ident">def_id</span>: <span class="ident">DefId</span>, <span class="ident">note</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Symbol</span><span class="op">&gt;</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>);
+
             <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">note</span>) <span class="op">=</span> <span class="ident">note</span> {
-                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;use of deprecated item: {}&quot;</span>, <span class="ident">note</span>)
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;use of deprecated item &#39;{}&#39;: {}&quot;</span>, <span class="ident">path</span>, <span class="ident">note</span>)
             } <span class="kw">else</span> {
-                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;use of deprecated item&quot;</span>)
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;use of deprecated item &#39;{}&#39;&quot;</span>, <span class="ident">path</span>)
             };
 
             <span class="self">self</span>.<span class="ident">lint_node</span>(<span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">DEPRECATED</span>, <span class="ident">id</span>, <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
@@ -1354,7 +1358,7 @@
             };
 
             <span class="kw">if</span> <span class="op">!</span><span class="ident">skip</span> {
-                <span class="ident">lint_deprecated</span>(<span class="ident">depr_entry</span>.<span class="ident">attr</span>.<span class="ident">note</span>);
+                <span class="ident">lint_deprecated</span>(<span class="ident">def_id</span>, <span class="ident">depr_entry</span>.<span class="ident">attr</span>.<span class="ident">note</span>);
             }
         }
 
@@ -1373,7 +1377,7 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Stability</span>{<span class="ident">rustc_depr</span>: <span class="prelude-val">Some</span>(<span class="ident">attr</span>::<span class="ident">RustcDeprecation</span> { <span class="ident">reason</span>, .. }), ..})
                 <span class="op">=</span> <span class="ident">stability</span> {
             <span class="kw">if</span> <span class="ident">id</span> <span class="op">!=</span> <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span> {
-                <span class="ident">lint_deprecated</span>(<span class="prelude-val">Some</span>(<span class="ident">reason</span>));
+                <span class="ident">lint_deprecated</span>(<span class="ident">def_id</span>, <span class="prelude-val">Some</span>(<span class="ident">reason</span>));
             }
         }
 
