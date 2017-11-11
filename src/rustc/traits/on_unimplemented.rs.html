@@ -607,7 +607,7 @@
                         }
                     },
                     <span class="comment">// `{:1}` and `{}` are not to be used</span>
-                    <span class="ident">Position</span>::<span class="ident">ArgumentIs</span>(_) <span class="op">=&gt;</span> {
+                    <span class="ident">Position</span>::<span class="ident">ArgumentIs</span>(_) <span class="op">|</span> <span class="ident">Position</span>::<span class="ident">ArgumentImplicitlyIs</span>(_) <span class="op">=&gt;</span> {
                         <span class="macro">span_err</span><span class="macro">!</span>(<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0231</span>,
                                   <span class="string">&quot;only named substitution \
                                    parameters are allowed&quot;</span>);

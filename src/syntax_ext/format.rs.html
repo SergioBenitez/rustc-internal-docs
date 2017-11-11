@@ -876,6 +876,57 @@
 <span id="831">831</span>
 <span id="832">832</span>
 <span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -989,6 +1040,8 @@
     <span class="doccomment">/// still existed in this phase of processing.</span>
     <span class="doccomment">/// Used only for `all_pieces_simple` tracking in `trans_piece`.</span>
     <span class="ident">curarg</span>: <span class="ident">usize</span>,
+    <span class="doccomment">/// Keep track of invalid references to positional arguments</span>
+    <span class="ident">invalid_refs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Parses the arguments from the given list of tokens, returning None</span>
@@ -1105,7 +1158,7 @@
                 <span class="comment">// argument second, if it&#39;s an implicit positional parameter</span>
                 <span class="comment">// it&#39;s written second, so it should come after width/precision.</span>
                 <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">position</span> {
-                    <span class="ident">parse</span>::<span class="ident">ArgumentIs</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">Exact</span>(<span class="ident">i</span>),
+                    <span class="ident">parse</span>::<span class="ident">ArgumentIs</span>(<span class="ident">i</span>) <span class="op">|</span> <span class="ident">parse</span>::<span class="ident">ArgumentImplicitlyIs</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">Exact</span>(<span class="ident">i</span>),
                     <span class="ident">parse</span>::<span class="ident">ArgumentNamed</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> <span class="ident">Named</span>(<span class="ident">s</span>.<span class="ident">to_string</span>()),
                 };
 
@@ -1130,10 +1183,45 @@
 
     <span class="kw">fn</span> <span class="ident">describe_num_args</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>() {
-            <span class="number">0</span> <span class="op">=&gt;</span> <span class="string">&quot;no arguments given&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="number">0</span> <span class="op">=&gt;</span> <span class="string">&quot;no arguments were given&quot;</span>.<span class="ident">to_string</span>(),
             <span class="number">1</span> <span class="op">=&gt;</span> <span class="string">&quot;there is 1 argument&quot;</span>.<span class="ident">to_string</span>(),
             <span class="ident">x</span> <span class="op">=&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;there are {} arguments&quot;</span>, <span class="ident">x</span>),
         }
+    }
+
+    <span class="doccomment">/// Handle invalid references to positional arguments. Output different</span>
+    <span class="doccomment">/// errors for the case where all arguments are positional and for when</span>
+    <span class="doccomment">/// there are named arguments or numbered positional arguments in the</span>
+    <span class="doccomment">/// format string.</span>
+    <span class="kw">fn</span> <span class="ident">report_invalid_references</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">numbered_position_args</span>: <span class="ident">bool</span>) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">refs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">invalid_refs</span>
+                                        .<span class="ident">iter</span>()
+                                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">to_string</span>())
+                                        .<span class="ident">collect</span>();
+
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">names</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">numbered_position_args</span> {
+            <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ecx</span>.<span class="ident">mut_span_err</span>(<span class="self">self</span>.<span class="ident">fmtsp</span>,
+                <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{} positional argument{} in format string, but {}&quot;</span>,
+                         <span class="self">self</span>.<span class="ident">pieces</span>.<span class="ident">len</span>(),
+                         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">pieces</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">1</span> { <span class="string">&quot;s&quot;</span> } <span class="kw">else</span> { <span class="string">&quot;&quot;</span> },
+                         <span class="self">self</span>.<span class="ident">describe_num_args</span>()));
+        } <span class="kw">else</span> {
+            <span class="kw">let</span> <span class="ident">arg_list</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">refs</span>.<span class="ident">len</span>() {
+                <span class="number">1</span> <span class="op">=&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;argument {}&quot;</span>, <span class="ident">refs</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>()),
+                _ <span class="op">=&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;arguments {head} and {tail}&quot;</span>,
+                             <span class="ident">tail</span><span class="op">=</span><span class="ident">refs</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>(),
+                             <span class="ident">head</span><span class="op">=</span><span class="ident">refs</span>.<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>))
+            };
+
+            <span class="ident">e</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ecx</span>.<span class="ident">mut_span_err</span>(<span class="self">self</span>.<span class="ident">fmtsp</span>,
+                <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;invalid reference to positional {} ({})&quot;</span>,
+                        <span class="ident">arg_list</span>,
+                        <span class="self">self</span>.<span class="ident">describe_num_args</span>()));
+            <span class="ident">e</span>.<span class="ident">note</span>(<span class="string">&quot;positional arguments are zero-based&quot;</span>);
+        };
+
+        <span class="ident">e</span>.<span class="ident">emit</span>();
     }
 
     <span class="doccomment">/// Actually verifies and tracks a given format placeholder</span>
@@ -1142,11 +1230,7 @@
         <span class="kw">match</span> <span class="ident">arg</span> {
             <span class="ident">Exact</span>(<span class="ident">arg</span>) <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">args</span>.<span class="ident">len</span>() <span class="op">&lt;=</span> <span class="ident">arg</span> {
-                    <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;invalid reference to argument `{}` ({})&quot;</span>,
-                                      <span class="ident">arg</span>,
-                                      <span class="self">self</span>.<span class="ident">describe_num_args</span>());
-
-                    <span class="self">self</span>.<span class="ident">ecx</span>.<span class="ident">span_err</span>(<span class="self">self</span>.<span class="ident">fmtsp</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>[..]);
+                    <span class="self">self</span>.<span class="ident">invalid_refs</span>.<span class="ident">push</span>(<span class="ident">arg</span>);
                     <span class="kw">return</span>;
                 }
                 <span class="kw">match</span> <span class="ident">ty</span> {
@@ -1282,7 +1366,8 @@
                         }
                     };
                     <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">position</span> {
-                        <span class="ident">parse</span>::<span class="ident">ArgumentIs</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">parse</span>::<span class="ident">ArgumentIs</span>(<span class="ident">i</span>)
+                        <span class="op">|</span> <span class="ident">parse</span>::<span class="ident">ArgumentImplicitlyIs</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> {
                             <span class="comment">// Map to index in final generated argument array</span>
                             <span class="comment">// in case of multiple types specified</span>
                             <span class="kw">let</span> <span class="ident">arg_idx</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">arg_index_consumed</span>.<span class="ident">get_mut</span>(<span class="ident">i</span>) {
@@ -1570,6 +1655,7 @@
         <span class="ident">all_pieces_simple</span>: <span class="bool-val">true</span>,
         <span class="ident">macsp</span>,
         <span class="ident">fmtsp</span>: <span class="ident">fmt</span>.<span class="ident">span</span>,
+        <span class="ident">invalid_refs</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
     };
 
     <span class="kw">let</span> <span class="ident">fmt_str</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">fmt</span>.<span class="ident">node</span>.<span class="number">0</span>.<span class="ident">as_str</span>();
@@ -1589,6 +1675,18 @@
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">break</span>,
         }
     }
+
+    <span class="kw">let</span> <span class="ident">numbered_position_args</span> <span class="op">=</span> <span class="ident">pieces</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="ident">parse</span>::<span class="ident">Piece</span><span class="op">|</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">arg</span> {
+            <span class="ident">parse</span>::<span class="ident">String</span>(_) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">parse</span>::<span class="ident">NextArgument</span>(<span class="ident">arg</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">position</span> {
+                    <span class="ident">parse</span>::<span class="ident">Position</span>::<span class="ident">ArgumentIs</span>(_) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+                    _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+                }
+            }
+        }
+    });
 
     <span class="ident">cx</span>.<span class="ident">build_index_map</span>();
 
@@ -1613,6 +1711,10 @@
     <span class="kw">if</span> <span class="op">!</span><span class="ident">cx</span>.<span class="ident">literal</span>.<span class="ident">is_empty</span>() {
         <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">trans_literal_string</span>();
         <span class="ident">cx</span>.<span class="ident">str_pieces</span>.<span class="ident">push</span>(<span class="ident">s</span>);
+    }
+
+    <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">invalid_refs</span>.<span class="ident">len</span>() <span class="op">&gt;=</span> <span class="number">1</span> {
+        <span class="ident">cx</span>.<span class="ident">report_invalid_references</span>(<span class="ident">numbered_position_args</span>);
     }
 
     <span class="comment">// Make sure that all arguments were used and all arguments have types.</span>
