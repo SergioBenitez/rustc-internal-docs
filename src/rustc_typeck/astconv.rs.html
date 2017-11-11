@@ -1492,23 +1492,6 @@
 <span id="1447">1447</span>
 <span id="1448">1448</span>
 <span id="1449">1449</span>
-<span id="1450">1450</span>
-<span id="1451">1451</span>
-<span id="1452">1452</span>
-<span id="1453">1453</span>
-<span id="1454">1454</span>
-<span id="1455">1455</span>
-<span id="1456">1456</span>
-<span id="1457">1457</span>
-<span id="1458">1458</span>
-<span id="1459">1459</span>
-<span id="1460">1460</span>
-<span id="1461">1461</span>
-<span id="1462">1462</span>
-<span id="1463">1463</span>
-<span id="1464">1464</span>
-<span id="1465">1465</span>
-<span id="1466">1466</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2084,8 +2067,8 @@
             <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">trait_bounds</span>[<span class="number">0</span>];
             <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">trait_ref</span>.<span class="ident">path</span>.<span class="ident">span</span>;
             <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0225</span>,
-                <span class="string">&quot;only Send/Sync traits can be used as additional traits in a trait object&quot;</span>)
-                .<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="string">&quot;non-Send/Sync additional trait&quot;</span>)
+                <span class="string">&quot;only auto traits can be used as additional traits in a trait object&quot;</span>)
+                .<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="string">&quot;non-auto additional trait&quot;</span>)
                 .<span class="ident">emit</span>();
         }
 
@@ -2769,27 +2752,10 @@
     <span class="op">-&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DefId</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="ident">hir</span>::<span class="ident">PolyTraitRef</span><span class="op">&gt;</span>)
 {
     <span class="kw">let</span> (<span class="ident">auto_traits</span>, <span class="ident">trait_bounds</span>): (<span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span>, _) <span class="op">=</span> <span class="ident">trait_bounds</span>.<span class="ident">iter</span>().<span class="ident">partition</span>(<span class="op">|</span><span class="ident">bound</span><span class="op">|</span> {
+        <span class="comment">// Checks whether `trait_did` is an auto trait and adds it to `auto_traits` if so.</span>
         <span class="kw">match</span> <span class="ident">bound</span>.<span class="ident">trait_ref</span>.<span class="ident">path</span>.<span class="ident">def</span> {
-            <span class="ident">Def</span>::<span class="ident">Trait</span>(<span class="ident">trait_did</span>) <span class="op">=&gt;</span> {
-                <span class="comment">// Checks whether `trait_did` refers to one of the builtin</span>
-                <span class="comment">// traits, like `Send`, and adds it to `auto_traits` if so.</span>
-                <span class="kw">if</span> <span class="prelude-val">Some</span>(<span class="ident">trait_did</span>) <span class="op">==</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">send_trait</span>() <span class="op">||</span>
-                    <span class="prelude-val">Some</span>(<span class="ident">trait_did</span>) <span class="op">==</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">sync_trait</span>() {
-                    <span class="kw">let</span> <span class="ident">segments</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">bound</span>.<span class="ident">trait_ref</span>.<span class="ident">path</span>.<span class="ident">segments</span>;
-                    <span class="ident">segments</span>[<span class="ident">segments</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>].<span class="ident">with_parameters</span>(<span class="op">|</span><span class="ident">parameters</span><span class="op">|</span> {
-                        <span class="kw">if</span> <span class="op">!</span><span class="ident">parameters</span>.<span class="ident">types</span>.<span class="ident">is_empty</span>() {
-                            <span class="ident">check_type_argument_count</span>(<span class="ident">tcx</span>, <span class="ident">bound</span>.<span class="ident">trait_ref</span>.<span class="ident">path</span>.<span class="ident">span</span>,
-                                                      <span class="ident">parameters</span>.<span class="ident">types</span>.<span class="ident">len</span>(), <span class="kw-2">&amp;</span>[]);
-                        }
-                        <span class="kw">if</span> <span class="op">!</span><span class="ident">parameters</span>.<span class="ident">lifetimes</span>.<span class="ident">is_empty</span>() {
-                            <span class="ident">report_lifetime_number_error</span>(<span class="ident">tcx</span>, <span class="ident">bound</span>.<span class="ident">trait_ref</span>.<span class="ident">path</span>.<span class="ident">span</span>,
-                                                         <span class="ident">parameters</span>.<span class="ident">lifetimes</span>.<span class="ident">len</span>(), <span class="number">0</span>);
-                        }
-                    });
-                    <span class="bool-val">true</span>
-                } <span class="kw">else</span> {
-                    <span class="bool-val">false</span>
-                }
+            <span class="ident">Def</span>::<span class="ident">Trait</span>(<span class="ident">trait_did</span>) <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">trait_is_auto</span>(<span class="ident">trait_did</span>) <span class="op">=&gt;</span> {
+                <span class="bool-val">true</span>
             }
             _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
         }
