@@ -1680,6 +1680,10 @@
 <span id="1635">1635</span>
 <span id="1636">1636</span>
 <span id="1637">1637</span>
+<span id="1638">1638</span>
+<span id="1639">1639</span>
+<span id="1640">1640</span>
+<span id="1641">1641</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2316,11 +2320,15 @@
 
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;RegionVarBindings: add_constraint({:?})&quot;</span>, <span class="ident">constraint</span>);
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">constraints</span>.<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">constraint</span>, <span class="ident">origin</span>).<span class="ident">is_none</span>() {
+        <span class="comment">// never overwrite an existing (constraint, origin) - only insert one if it isn&#39;t</span>
+        <span class="comment">// present in the map yet. This prevents origins from outside the snapshot being</span>
+        <span class="comment">// replaced with &quot;less informative&quot; origins e.g. during calls to `can_eq`</span>
+        <span class="self">self</span>.<span class="ident">constraints</span>.<span class="ident">borrow_mut</span>().<span class="ident">entry</span>(<span class="ident">constraint</span>).<span class="ident">or_insert_with</span>(<span class="op">||</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">in_snapshot</span>() {
                 <span class="self">self</span>.<span class="ident">undo_log</span>.<span class="ident">borrow_mut</span>().<span class="ident">push</span>(<span class="ident">AddConstraint</span>(<span class="ident">constraint</span>));
             }
-        }
+            <span class="ident">origin</span>
+        });
     }
 
     <span class="kw">fn</span> <span class="ident">add_verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">verify</span>: <span class="ident">Verify</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {

@@ -1431,67 +1431,6 @@
 <span id="1386">1386</span>
 <span id="1387">1387</span>
 <span id="1388">1388</span>
-<span id="1389">1389</span>
-<span id="1390">1390</span>
-<span id="1391">1391</span>
-<span id="1392">1392</span>
-<span id="1393">1393</span>
-<span id="1394">1394</span>
-<span id="1395">1395</span>
-<span id="1396">1396</span>
-<span id="1397">1397</span>
-<span id="1398">1398</span>
-<span id="1399">1399</span>
-<span id="1400">1400</span>
-<span id="1401">1401</span>
-<span id="1402">1402</span>
-<span id="1403">1403</span>
-<span id="1404">1404</span>
-<span id="1405">1405</span>
-<span id="1406">1406</span>
-<span id="1407">1407</span>
-<span id="1408">1408</span>
-<span id="1409">1409</span>
-<span id="1410">1410</span>
-<span id="1411">1411</span>
-<span id="1412">1412</span>
-<span id="1413">1413</span>
-<span id="1414">1414</span>
-<span id="1415">1415</span>
-<span id="1416">1416</span>
-<span id="1417">1417</span>
-<span id="1418">1418</span>
-<span id="1419">1419</span>
-<span id="1420">1420</span>
-<span id="1421">1421</span>
-<span id="1422">1422</span>
-<span id="1423">1423</span>
-<span id="1424">1424</span>
-<span id="1425">1425</span>
-<span id="1426">1426</span>
-<span id="1427">1427</span>
-<span id="1428">1428</span>
-<span id="1429">1429</span>
-<span id="1430">1430</span>
-<span id="1431">1431</span>
-<span id="1432">1432</span>
-<span id="1433">1433</span>
-<span id="1434">1434</span>
-<span id="1435">1435</span>
-<span id="1436">1436</span>
-<span id="1437">1437</span>
-<span id="1438">1438</span>
-<span id="1439">1439</span>
-<span id="1440">1440</span>
-<span id="1441">1441</span>
-<span id="1442">1442</span>
-<span id="1443">1443</span>
-<span id="1444">1444</span>
-<span id="1445">1445</span>
-<span id="1446">1446</span>
-<span id="1447">1447</span>
-<span id="1448">1448</span>
-<span id="1449">1449</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2879,67 +2818,6 @@
         }
 
         <span class="ident">vec</span>
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ExplicitSelf</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="ident">ByValue</span>,
-    <span class="ident">ByReference</span>(<span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">hir</span>::<span class="ident">Mutability</span>),
-    <span class="ident">ByBox</span>
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">ExplicitSelf</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// We wish to (for now) categorize an explicit self</span>
-    <span class="doccomment">/// declaration like `self: SomeType` into either `self`,</span>
-    <span class="doccomment">/// `&amp;self`, `&amp;mut self`, or `Box&lt;self&gt;`. We do this here</span>
-    <span class="doccomment">/// by some simple pattern matching. A more precise check</span>
-    <span class="doccomment">/// is done later in `check_method_receiver()`.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Examples:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// impl Foo for &amp;T {</span>
-    <span class="doccomment">///     // Legal declarations:</span>
-    <span class="doccomment">///     fn method1(self: &amp;&amp;T); // ExplicitSelf::ByReference</span>
-    <span class="doccomment">///     fn method2(self: &amp;T); // ExplicitSelf::ByValue</span>
-    <span class="doccomment">///     fn method3(self: Box&lt;&amp;T&gt;); // ExplicitSelf::ByBox</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">///     // Invalid cases will be caught later by `check_method_receiver`:</span>
-    <span class="doccomment">///     fn method_err1(self: &amp;mut T); // ExplicitSelf::ByReference</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// To do the check we just count the number of &quot;modifiers&quot;</span>
-    <span class="doccomment">/// on each type and compare them. If they are the same or</span>
-    <span class="doccomment">/// the impl has more, we call it &quot;by value&quot;. Otherwise, we</span>
-    <span class="doccomment">/// look at the outermost modifier on the method decl and</span>
-    <span class="doccomment">/// call it by-ref, by-box as appropriate. For method1, for</span>
-    <span class="doccomment">/// example, the impl type has one modifier, but the method</span>
-    <span class="doccomment">/// type has two, so we end up with</span>
-    <span class="doccomment">/// ExplicitSelf::ByReference.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">determine</span>(<span class="ident">untransformed_self_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                     <span class="ident">self_arg_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                     <span class="op">-&gt;</span> <span class="ident">ExplicitSelf</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="kw">fn</span> <span class="ident">count_modifiers</span>(<span class="ident">ty</span>: <span class="ident">Ty</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
-            <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
-                <span class="ident">ty</span>::<span class="ident">TyRef</span>(_, <span class="ident">mt</span>) <span class="op">=&gt;</span> <span class="ident">count_modifiers</span>(<span class="ident">mt</span>.<span class="ident">ty</span>) <span class="op">+</span> <span class="number">1</span>,
-                <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">def</span>, _) <span class="kw">if</span> <span class="ident">def</span>.<span class="ident">is_box</span>() <span class="op">=&gt;</span> <span class="ident">count_modifiers</span>(<span class="ident">ty</span>.<span class="ident">boxed_ty</span>()) <span class="op">+</span> <span class="number">1</span>,
-                _ <span class="op">=&gt;</span> <span class="number">0</span>,
-            }
-        }
-
-        <span class="kw">let</span> <span class="ident">impl_modifiers</span> <span class="op">=</span> <span class="ident">count_modifiers</span>(<span class="ident">untransformed_self_ty</span>);
-        <span class="kw">let</span> <span class="ident">method_modifiers</span> <span class="op">=</span> <span class="ident">count_modifiers</span>(<span class="ident">self_arg_ty</span>);
-
-        <span class="kw">if</span> <span class="ident">impl_modifiers</span> <span class="op">&gt;=</span> <span class="ident">method_modifiers</span> {
-            <span class="ident">ExplicitSelf</span>::<span class="ident">ByValue</span>
-        } <span class="kw">else</span> {
-            <span class="kw">match</span> <span class="ident">self_arg_ty</span>.<span class="ident">sty</span> {
-                <span class="ident">ty</span>::<span class="ident">TyRef</span>(<span class="ident">r</span>, <span class="ident">mt</span>) <span class="op">=&gt;</span> <span class="ident">ExplicitSelf</span>::<span class="ident">ByReference</span>(<span class="ident">r</span>, <span class="ident">mt</span>.<span class="ident">mutbl</span>),
-                <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">def</span>, _) <span class="kw">if</span> <span class="ident">def</span>.<span class="ident">is_box</span>() <span class="op">=&gt;</span> <span class="ident">ExplicitSelf</span>::<span class="ident">ByBox</span>,
-                _ <span class="op">=&gt;</span> <span class="ident">ExplicitSelf</span>::<span class="ident">ByValue</span>,
-            }
-        }
     }
 }
 </pre>

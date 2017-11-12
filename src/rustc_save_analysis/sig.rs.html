@@ -992,27 +992,6 @@
 <span id="947">947</span>
 <span id="948">948</span>
 <span id="949">949</span>
-<span id="950">950</span>
-<span id="951">951</span>
-<span id="952">952</span>
-<span id="953">953</span>
-<span id="954">954</span>
-<span id="955">955</span>
-<span id="956">956</span>
-<span id="957">957</span>
-<span id="958">958</span>
-<span id="959">959</span>
-<span id="960">960</span>
-<span id="961">961</span>
-<span id="962">962</span>
-<span id="963">963</span>
-<span id="964">964</span>
-<span id="965">965</span>
-<span id="966">966</span>
-<span id="967">967</span>
-<span id="968">968</span>
-<span id="969">969</span>
-<span id="970">970</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1051,9 +1030,9 @@
 <span class="comment">//</span>
 <span class="comment">// FIXME where clauses need implementing, defs/refs in generics are mostly missing.</span>
 
-<span class="kw">use</span> {<span class="ident">SaveContext</span>, <span class="ident">id_from_def_id</span>, <span class="ident">id_from_node_id</span>};
+<span class="kw">use</span> {<span class="ident">id_from_def_id</span>, <span class="ident">id_from_node_id</span>, <span class="ident">SaveContext</span>};
 
-<span class="kw">use</span> <span class="ident">rls_data</span>::{<span class="ident">Signature</span>, <span class="ident">SigElement</span>};
+<span class="kw">use</span> <span class="ident">rls_data</span>::{<span class="ident">SigElement</span>, <span class="ident">Signature</span>};
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def</span>::<span class="ident">Def</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">NodeId</span>};
@@ -1091,36 +1070,39 @@
     <span class="ident">variant</span>.<span class="ident">node</span>.<span class="ident">make</span>(<span class="number">0</span>, <span class="prelude-val">None</span>, <span class="ident">scx</span>).<span class="ident">ok</span>()
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">method_signature</span>(<span class="ident">id</span>: <span class="ident">NodeId</span>,
-                        <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
-                        <span class="ident">generics</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Generics</span>,
-                        <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">MethodSig</span>,
-                        <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>)
-                        <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Signature</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">method_signature</span>(
+    <span class="ident">id</span>: <span class="ident">NodeId</span>,
+    <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
+    <span class="ident">generics</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Generics</span>,
+    <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">MethodSig</span>,
+    <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Signature</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="op">!</span><span class="ident">scx</span>.<span class="ident">config</span>.<span class="ident">signatures</span> {
         <span class="kw">return</span> <span class="prelude-val">None</span>;
     }
     <span class="ident">make_method_signature</span>(<span class="ident">id</span>, <span class="ident">ident</span>, <span class="ident">generics</span>, <span class="ident">m</span>, <span class="ident">scx</span>).<span class="ident">ok</span>()
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assoc_const_signature</span>(<span class="ident">id</span>: <span class="ident">NodeId</span>,
-                             <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Name</span>,
-                             <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span>,
-                             <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span>,
-                             <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>)
-                             <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Signature</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assoc_const_signature</span>(
+    <span class="ident">id</span>: <span class="ident">NodeId</span>,
+    <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Name</span>,
+    <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span>,
+    <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span>,
+    <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Signature</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="op">!</span><span class="ident">scx</span>.<span class="ident">config</span>.<span class="ident">signatures</span> {
         <span class="kw">return</span> <span class="prelude-val">None</span>;
     }
     <span class="ident">make_assoc_const_signature</span>(<span class="ident">id</span>, <span class="ident">ident</span>, <span class="ident">ty</span>, <span class="ident">default</span>, <span class="ident">scx</span>).<span class="ident">ok</span>()
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assoc_type_signature</span>(<span class="ident">id</span>: <span class="ident">NodeId</span>,
-                            <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
-                            <span class="ident">bounds</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">TyParamBounds</span><span class="op">&gt;</span>,
-                            <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span><span class="op">&gt;</span>,
-                            <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>)
-                            <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Signature</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">assoc_type_signature</span>(
+    <span class="ident">id</span>: <span class="ident">NodeId</span>,
+    <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
+    <span class="ident">bounds</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">TyParamBounds</span><span class="op">&gt;</span>,
+    <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span><span class="op">&gt;</span>,
+    <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Signature</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="op">!</span><span class="ident">scx</span>.<span class="ident">config</span>.<span class="ident">signatures</span> {
         <span class="kw">return</span> <span class="prelude-val">None</span>;
     }
@@ -1133,11 +1115,12 @@
     <span class="kw">fn</span> <span class="ident">make</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NodeId</span><span class="op">&gt;</span>, <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span>;
 }
 
-<span class="kw">fn</span> <span class="ident">extend_sig</span>(<span class="kw-2">mut</span> <span class="ident">sig</span>: <span class="ident">Signature</span>,
-              <span class="ident">text</span>: <span class="ident">String</span>,
-              <span class="ident">defs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SigElement</span><span class="op">&gt;</span>,
-              <span class="ident">refs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SigElement</span><span class="op">&gt;</span>)
-              <span class="op">-&gt;</span> <span class="ident">Signature</span> {
+<span class="kw">fn</span> <span class="ident">extend_sig</span>(
+    <span class="kw-2">mut</span> <span class="ident">sig</span>: <span class="ident">Signature</span>,
+    <span class="ident">text</span>: <span class="ident">String</span>,
+    <span class="ident">defs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SigElement</span><span class="op">&gt;</span>,
+    <span class="ident">refs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SigElement</span><span class="op">&gt;</span>,
+) <span class="op">-&gt;</span> <span class="ident">Signature</span> {
     <span class="ident">sig</span>.<span class="ident">text</span> <span class="op">=</span> <span class="ident">text</span>;
     <span class="ident">sig</span>.<span class="ident">defs</span>.<span class="ident">extend</span>(<span class="ident">defs</span>.<span class="ident">into_iter</span>());
     <span class="ident">sig</span>.<span class="ident">refs</span>.<span class="ident">extend</span>(<span class="ident">refs</span>.<span class="ident">into_iter</span>());
@@ -1158,8 +1141,12 @@
 
     <span class="kw">let</span> (<span class="ident">defs</span>, <span class="ident">refs</span>): (<span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span>) <span class="op">=</span> <span class="ident">sigs</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> (<span class="ident">s</span>.<span class="ident">defs</span>, <span class="ident">s</span>.<span class="ident">refs</span>)).<span class="ident">unzip</span>();
 
-    <span class="ident">result</span>.<span class="ident">defs</span>.<span class="ident">extend</span>(<span class="ident">defs</span>.<span class="ident">into_iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">ds</span><span class="op">|</span> <span class="ident">ds</span>.<span class="ident">into_iter</span>()));
-    <span class="ident">result</span>.<span class="ident">refs</span>.<span class="ident">extend</span>(<span class="ident">refs</span>.<span class="ident">into_iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">rs</span><span class="op">|</span> <span class="ident">rs</span>.<span class="ident">into_iter</span>()));
+    <span class="ident">result</span>
+        .<span class="ident">defs</span>
+        .<span class="ident">extend</span>(<span class="ident">defs</span>.<span class="ident">into_iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">ds</span><span class="op">|</span> <span class="ident">ds</span>.<span class="ident">into_iter</span>()));
+    <span class="ident">result</span>
+        .<span class="ident">refs</span>
+        .<span class="ident">extend</span>(<span class="ident">refs</span>.<span class="ident">into_iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">rs</span><span class="op">|</span> <span class="ident">rs</span>.<span class="ident">into_iter</span>()));
 
     <span class="ident">result</span>
 }
@@ -1204,9 +1191,7 @@
                 <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}{}&quot;</span>, <span class="ident">prefix</span>, <span class="ident">nested</span>.<span class="ident">text</span>);
                 <span class="prelude-val">Ok</span>(<span class="ident">replace_text</span>(<span class="ident">nested</span>, <span class="ident">text</span>))
             }
-            <span class="ident">ast</span>::<span class="ident">TyKind</span>::<span class="ident">Never</span> <span class="op">=&gt;</span> {
-                <span class="prelude-val">Ok</span>(<span class="ident">text_sig</span>(<span class="string">&quot;!&quot;</span>.<span class="ident">to_owned</span>()))
-            },
+            <span class="ident">ast</span>::<span class="ident">TyKind</span>::<span class="ident">Never</span> <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">text_sig</span>(<span class="string">&quot;!&quot;</span>.<span class="ident">to_owned</span>())),
             <span class="ident">ast</span>::<span class="ident">TyKind</span>::<span class="ident">Tup</span>(<span class="kw-2">ref</span> <span class="ident">ts</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;(&quot;</span>.<span class="ident">to_owned</span>();
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
@@ -1231,8 +1216,11 @@
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">f</span>.<span class="ident">lifetimes</span>.<span class="ident">is_empty</span>() {
                     <span class="comment">// FIXME defs, bounds on lifetimes</span>
                     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;for&lt;&quot;</span>);
-                    <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>.<span class="ident">lifetimes</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span>
-                        <span class="ident">l</span>.<span class="ident">lifetime</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>()).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>().<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>));
+                    <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">f</span>.<span class="ident">lifetimes</span>
+                        .<span class="ident">iter</span>()
+                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">lifetime</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>())
+                        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()
+                        .<span class="ident">join</span>(<span class="string">&quot;, &quot;</span>));
                     <span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;&gt;&#39;</span>);
                 }
 
@@ -1267,9 +1255,7 @@
 
                 <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> { <span class="ident">text</span>, <span class="ident">defs</span>, <span class="ident">refs</span> })
             }
-            <span class="ident">ast</span>::<span class="ident">TyKind</span>::<span class="ident">Path</span>(<span class="prelude-val">None</span>, <span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">=&gt;</span> {
-                <span class="ident">path</span>.<span class="ident">make</span>(<span class="ident">offset</span>, <span class="ident">id</span>, <span class="ident">scx</span>)
-            }
+            <span class="ident">ast</span>::<span class="ident">TyKind</span>::<span class="ident">Path</span>(<span class="prelude-val">None</span>, <span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">=&gt;</span> <span class="ident">path</span>.<span class="ident">make</span>(<span class="ident">offset</span>, <span class="ident">id</span>, <span class="ident">scx</span>),
             <span class="ident">ast</span>::<span class="ident">TyKind</span>::<span class="ident">Path</span>(<span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">qself</span>), <span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">nested_ty</span> <span class="op">=</span> <span class="ident">qself</span>.<span class="ident">ty</span>.<span class="ident">make</span>(<span class="ident">offset</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">id</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">qself</span>.<span class="ident">position</span> <span class="op">==</span> <span class="number">0</span> {
@@ -1341,11 +1327,13 @@
                     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;mut &quot;</span>);
                 }
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>();
-                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SigElement</span> {
-                    <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
-                    <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
-                    <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
-                }];
+                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="ident">SigElement</span> {
+                        <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
+                        <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
+                        <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
+                    },
+                ];
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>);
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;: &quot;</span>);
 
@@ -1362,11 +1350,13 @@
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Const</span>(<span class="kw-2">ref</span> <span class="ident">ty</span>, <span class="kw-2">ref</span> <span class="ident">expr</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;const &quot;</span>.<span class="ident">to_owned</span>();
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>();
-                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SigElement</span> {
-                    <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
-                    <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
-                    <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
-                }];
+                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="ident">SigElement</span> {
+                        <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
+                        <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
+                        <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
+                    },
+                ];
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>);
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;: &quot;</span>);
 
@@ -1395,12 +1385,7 @@
                 }
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;fn &quot;</span>);
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                                <span class="ident">offset</span>,
-                                                <span class="ident">generics</span>,
-                                                <span class="self">self</span>.<span class="ident">id</span>,
-                                                <span class="self">self</span>.<span class="ident">ident</span>,
-                                                <span class="ident">scx</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="ident">offset</span>, <span class="ident">generics</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
 
                 <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;(&#39;</span>);
                 <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">inputs</span> {
@@ -1429,11 +1414,13 @@
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Mod</span>(<span class="kw-2">ref</span> <span class="ident">_mod</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;mod &quot;</span>.<span class="ident">to_owned</span>();
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>();
-                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SigElement</span> {
-                    <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
-                    <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
-                    <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
-                }];
+                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="ident">SigElement</span> {
+                        <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
+                        <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
+                        <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
+                    },
+                ];
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>);
                 <span class="comment">// Could be either `mod foo;` or `mod foo { ... }`, but we&#39;ll just puck one.</span>
                 <span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;;&#39;</span>);
@@ -1446,12 +1433,7 @@
             }
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Ty</span>(<span class="kw-2">ref</span> <span class="ident">ty</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;type &quot;</span>.<span class="ident">to_owned</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                                <span class="ident">offset</span>,
-                                                <span class="ident">generics</span>,
-                                                <span class="self">self</span>.<span class="ident">id</span>,
-                                                <span class="self">self</span>.<span class="ident">ident</span>,
-                                                <span class="ident">scx</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="ident">offset</span>, <span class="ident">generics</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
 
                 <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot; = &quot;</span>);
                 <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">make</span>(<span class="ident">offset</span> <span class="op">+</span> <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">len</span>(), <span class="ident">id</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
@@ -1462,34 +1444,19 @@
             }
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Enum</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;enum &quot;</span>.<span class="ident">to_owned</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                                <span class="ident">offset</span>,
-                                                <span class="ident">generics</span>,
-                                                <span class="self">self</span>.<span class="ident">id</span>,
-                                                <span class="self">self</span>.<span class="ident">ident</span>,
-                                                <span class="ident">scx</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="ident">offset</span>, <span class="ident">generics</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
                 <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot; {}&quot;</span>);
                 <span class="prelude-val">Ok</span>(<span class="ident">sig</span>)
             }
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Struct</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;struct &quot;</span>.<span class="ident">to_owned</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                                <span class="ident">offset</span>,
-                                                <span class="ident">generics</span>,
-                                                <span class="self">self</span>.<span class="ident">id</span>,
-                                                <span class="self">self</span>.<span class="ident">ident</span>,
-                                                <span class="ident">scx</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="ident">offset</span>, <span class="ident">generics</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
                 <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot; {}&quot;</span>);
                 <span class="prelude-val">Ok</span>(<span class="ident">sig</span>)
             }
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Union</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;union &quot;</span>.<span class="ident">to_owned</span>();
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                                <span class="ident">offset</span>,
-                                                <span class="ident">generics</span>,
-                                                <span class="self">self</span>.<span class="ident">id</span>,
-                                                <span class="self">self</span>.<span class="ident">ident</span>,
-                                                <span class="ident">scx</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="ident">offset</span>, <span class="ident">generics</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
                 <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot; {}&quot;</span>);
                 <span class="prelude-val">Ok</span>(<span class="ident">sig</span>)
             }
@@ -1504,12 +1471,7 @@
                     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;unsafe &quot;</span>);
                 }
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;trait &quot;</span>);
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                                <span class="ident">offset</span>,
-                                                <span class="ident">generics</span>,
-                                                <span class="self">self</span>.<span class="ident">id</span>,
-                                                <span class="self">self</span>.<span class="ident">ident</span>,
-                                                <span class="ident">scx</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="ident">offset</span>, <span class="ident">generics</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
 
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">bounds</span>.<span class="ident">is_empty</span>() {
                     <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;: &quot;</span>);
@@ -1531,13 +1493,15 @@
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot; for .. {}&quot;</span>);
                 <span class="prelude-val">Ok</span>(<span class="ident">replace_text</span>(<span class="ident">trait_sig</span>, <span class="ident">text</span>))
             }
-            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Impl</span>(<span class="ident">unsafety</span>,
-                                <span class="ident">polarity</span>,
-                                <span class="ident">defaultness</span>,
-                                <span class="kw-2">ref</span> <span class="ident">generics</span>,
-                                <span class="kw-2">ref</span> <span class="ident">opt_trait</span>,
-                                <span class="kw-2">ref</span> <span class="ident">ty</span>,
-                                _) <span class="op">=&gt;</span> {
+            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Impl</span>(
+                <span class="ident">unsafety</span>,
+                <span class="ident">polarity</span>,
+                <span class="ident">defaultness</span>,
+                <span class="kw-2">ref</span> <span class="ident">generics</span>,
+                <span class="kw-2">ref</span> <span class="ident">opt_trait</span>,
+                <span class="kw-2">ref</span> <span class="ident">ty</span>,
+                _,
+            ) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ast</span>::<span class="ident">Defaultness</span>::<span class="ident">Default</span> <span class="op">=</span> <span class="ident">defaultness</span> {
                     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;default &quot;</span>);
@@ -1578,8 +1542,7 @@
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(_) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;extern crate&quot;</span>),
             <span class="comment">// FIXME should implement this (e.g., pub use).</span>
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Use</span>(_) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;import&quot;</span>),
-            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Mac</span>(..) <span class="op">|</span>
-            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(_) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Macro&quot;</span>),
+            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Mac</span>(..) <span class="op">|</span> <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(_) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Macro&quot;</span>),
         }
     }
 }
@@ -1589,19 +1552,14 @@
         <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">scx</span>.<span class="ident">get_path_def</span>(<span class="ident">id</span>.<span class="ident">ok_or</span>(<span class="string">&quot;Missing id for Path&quot;</span>)<span class="question-mark">?</span>);
 
         <span class="kw">let</span> (<span class="ident">name</span>, <span class="ident">start</span>, <span class="ident">end</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">def</span> {
-            <span class="ident">Def</span>::<span class="ident">Label</span>(..)  <span class="op">|</span>
-            <span class="ident">Def</span>::<span class="ident">PrimTy</span>(..) <span class="op">|</span>
-            <span class="ident">Def</span>::<span class="ident">SelfTy</span>(..) <span class="op">|</span>
-            <span class="ident">Def</span>::<span class="prelude-val">Err</span> <span class="op">=&gt;</span> {
+            <span class="ident">Def</span>::<span class="ident">Label</span>(..) <span class="op">|</span> <span class="ident">Def</span>::<span class="ident">PrimTy</span>(..) <span class="op">|</span> <span class="ident">Def</span>::<span class="ident">SelfTy</span>(..) <span class="op">|</span> <span class="ident">Def</span>::<span class="prelude-val">Err</span> <span class="op">=&gt;</span> {
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> {
                     <span class="ident">text</span>: <span class="ident">pprust</span>::<span class="ident">path_to_string</span>(<span class="self">self</span>),
                     <span class="ident">defs</span>: <span class="macro">vec</span><span class="macro">!</span>[],
                     <span class="ident">refs</span>: <span class="macro">vec</span><span class="macro">!</span>[],
                 })
             }
-            <span class="ident">Def</span>::<span class="ident">AssociatedConst</span>(..) <span class="op">|</span>
-            <span class="ident">Def</span>::<span class="ident">Variant</span>(..) <span class="op">|</span>
-            <span class="ident">Def</span>::<span class="ident">VariantCtor</span>(..) <span class="op">=&gt;</span> {
+            <span class="ident">Def</span>::<span class="ident">AssociatedConst</span>(..) <span class="op">|</span> <span class="ident">Def</span>::<span class="ident">Variant</span>(..) <span class="op">|</span> <span class="ident">Def</span>::<span class="ident">VariantCtor</span>(..) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">segments</span>.<span class="ident">len</span>();
                 <span class="kw">if</span> <span class="ident">len</span> <span class="op">&lt;</span> <span class="number">2</span> {
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Bad path&quot;</span>);
@@ -1651,9 +1609,11 @@
 
             <span class="kw">if</span> <span class="op">!</span><span class="ident">l</span>.<span class="ident">bounds</span>.<span class="ident">is_empty</span>() {
                 <span class="ident">l_text</span>.<span class="ident">push_str</span>(<span class="string">&quot;: &quot;</span>);
-                <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">bounds</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> {
-                    <span class="ident">l</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>()
-                }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>().<span class="ident">join</span>(<span class="string">&quot; + &quot;</span>);
+                <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">l</span>.<span class="ident">bounds</span>
+                    .<span class="ident">iter</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">l</span><span class="op">|</span> <span class="ident">l</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>())
+                    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()
+                    .<span class="ident">join</span>(<span class="string">&quot; + &quot;</span>);
                 <span class="ident">l_text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">bounds</span>);
                 <span class="comment">// FIXME add lifetime bounds refs.</span>
             }
@@ -1678,7 +1638,11 @@
         }
 
         <span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;&gt;&#39;</span>);
-        <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> {<span class="ident">text</span>, <span class="ident">defs</span>, <span class="ident">refs</span>: <span class="macro">vec</span><span class="macro">!</span>[] })
+        <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> {
+            <span class="ident">text</span>,
+            <span class="ident">defs</span>,
+            <span class="ident">refs</span>: <span class="macro">vec</span><span class="macro">!</span>[],
+        })
     }
 }
 
@@ -1726,11 +1690,7 @@
                     <span class="ident">refs</span>.<span class="ident">extend</span>(<span class="ident">field_sig</span>.<span class="ident">refs</span>.<span class="ident">into_iter</span>());
                 }
                 <span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;}&#39;</span>);
-                <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> {
-                    <span class="ident">text</span>,
-                    <span class="ident">defs</span>,
-                    <span class="ident">refs</span>,
-                })
+                <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> { <span class="ident">text</span>, <span class="ident">defs</span>, <span class="ident">refs</span> })
             }
             <span class="ident">ast</span>::<span class="ident">VariantData</span>::<span class="ident">Tuple</span>(<span class="kw-2">ref</span> <span class="ident">fields</span>, <span class="ident">id</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">name_def</span> <span class="op">=</span> <span class="ident">SigElement</span> {
@@ -1749,11 +1709,7 @@
                     <span class="ident">refs</span>.<span class="ident">extend</span>(<span class="ident">field_sig</span>.<span class="ident">refs</span>.<span class="ident">into_iter</span>());
                 }
                 <span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;)&#39;</span>);
-                <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> {
-                    <span class="ident">text</span>,
-                    <span class="ident">defs</span>,
-                    <span class="ident">refs</span>,
-                })
+                <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> { <span class="ident">text</span>, <span class="ident">defs</span>, <span class="ident">refs</span> })
             }
             <span class="ident">ast</span>::<span class="ident">VariantData</span>::<span class="ident">Unit</span>(<span class="ident">id</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">name_def</span> <span class="op">=</span> <span class="ident">SigElement</span> {
@@ -1779,12 +1735,7 @@
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;fn &quot;</span>);
 
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                                <span class="ident">offset</span>,
-                                                <span class="ident">generics</span>,
-                                                <span class="self">self</span>.<span class="ident">id</span>,
-                                                <span class="self">self</span>.<span class="ident">ident</span>,
-                                                <span class="ident">scx</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="ident">offset</span>, <span class="ident">generics</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
 
                 <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;(&#39;</span>);
                 <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">inputs</span> {
@@ -1816,11 +1767,13 @@
                     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;mut &quot;</span>);
                 }
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>();
-                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SigElement</span> {
-                    <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
-                    <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
-                    <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
-                }];
+                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="ident">SigElement</span> {
+                        <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
+                        <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
+                        <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
+                    },
+                ];
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>);
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;: &quot;</span>);
 
@@ -1832,11 +1785,13 @@
             <span class="ident">ast</span>::<span class="ident">ForeignItemKind</span>::<span class="ident">Ty</span> <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;type &quot;</span>.<span class="ident">to_owned</span>();
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ident</span>.<span class="ident">to_string</span>();
-                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SigElement</span> {
-                    <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
-                    <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
-                    <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
-                }];
+                <span class="kw">let</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+                    <span class="ident">SigElement</span> {
+                        <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">scx</span>),
+                        <span class="ident">start</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>(),
+                        <span class="ident">end</span>: <span class="ident">offset</span> <span class="op">+</span> <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
+                    },
+                ];
                 <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>);
                 <span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;;&#39;</span>);
 
@@ -1850,13 +1805,14 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">name_and_generics</span>(<span class="kw-2">mut</span> <span class="ident">text</span>: <span class="ident">String</span>,
-                     <span class="ident">offset</span>: <span class="ident">usize</span>,
-                     <span class="ident">generics</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Generics</span>,
-                     <span class="ident">id</span>: <span class="ident">NodeId</span>,
-                     <span class="ident">name</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
-                     <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>)
-                     <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
+<span class="kw">fn</span> <span class="ident">name_and_generics</span>(
+    <span class="kw-2">mut</span> <span class="ident">text</span>: <span class="ident">String</span>,
+    <span class="ident">offset</span>: <span class="ident">usize</span>,
+    <span class="ident">generics</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Generics</span>,
+    <span class="ident">id</span>: <span class="ident">NodeId</span>,
+    <span class="ident">name</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
+    <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">to_string</span>();
     <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="ident">SigElement</span> {
         <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="ident">id</span>, <span class="ident">scx</span>),
@@ -1871,19 +1827,22 @@
 }
 
 
-<span class="kw">fn</span> <span class="ident">make_assoc_type_signature</span>(<span class="ident">id</span>: <span class="ident">NodeId</span>,
-                             <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
-                             <span class="ident">bounds</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">TyParamBounds</span><span class="op">&gt;</span>,
-                             <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span><span class="op">&gt;</span>,
-                             <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>)
-                             <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
+<span class="kw">fn</span> <span class="ident">make_assoc_type_signature</span>(
+    <span class="ident">id</span>: <span class="ident">NodeId</span>,
+    <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
+    <span class="ident">bounds</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">TyParamBounds</span><span class="op">&gt;</span>,
+    <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span><span class="op">&gt;</span>,
+    <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;type &quot;</span>.<span class="ident">to_owned</span>();
     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">ident</span>.<span class="ident">to_string</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SigElement</span> {
-        <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="ident">id</span>, <span class="ident">scx</span>),
-        <span class="ident">start</span>: <span class="ident">text</span>.<span class="ident">len</span>(),
-        <span class="ident">end</span>: <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
-    }];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+        <span class="ident">SigElement</span> {
+            <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="ident">id</span>, <span class="ident">scx</span>),
+            <span class="ident">start</span>: <span class="ident">text</span>.<span class="ident">len</span>(),
+            <span class="ident">end</span>: <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
+        },
+    ];
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">refs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>);
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">bounds</span>) <span class="op">=</span> <span class="ident">bounds</span> {
@@ -1902,19 +1861,22 @@
     <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> { <span class="ident">text</span>, <span class="ident">defs</span>, <span class="ident">refs</span> })
 }
 
-<span class="kw">fn</span> <span class="ident">make_assoc_const_signature</span>(<span class="ident">id</span>: <span class="ident">NodeId</span>,
-                              <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Name</span>,
-                              <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span>,
-                              <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span>,
-                              <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>)
-                              <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
+<span class="kw">fn</span> <span class="ident">make_assoc_const_signature</span>(
+    <span class="ident">id</span>: <span class="ident">NodeId</span>,
+    <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Name</span>,
+    <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Ty</span>,
+    <span class="ident">default</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span>,
+    <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="string">&quot;const &quot;</span>.<span class="ident">to_owned</span>();
     <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">ident</span>.<span class="ident">to_string</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SigElement</span> {
-        <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="ident">id</span>, <span class="ident">scx</span>),
-        <span class="ident">start</span>: <span class="ident">text</span>.<span class="ident">len</span>(),
-        <span class="ident">end</span>: <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
-    }];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">defs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
+        <span class="ident">SigElement</span> {
+            <span class="ident">id</span>: <span class="ident">id_from_node_id</span>(<span class="ident">id</span>, <span class="ident">scx</span>),
+            <span class="ident">start</span>: <span class="ident">text</span>.<span class="ident">len</span>(),
+            <span class="ident">end</span>: <span class="ident">text</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">name</span>.<span class="ident">len</span>(),
+        },
+    ];
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">refs</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>);
     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;: &quot;</span>);
@@ -1932,12 +1894,13 @@
     <span class="prelude-val">Ok</span>(<span class="ident">Signature</span> { <span class="ident">text</span>, <span class="ident">defs</span>, <span class="ident">refs</span> })
 }
 
-<span class="kw">fn</span> <span class="ident">make_method_signature</span>(<span class="ident">id</span>: <span class="ident">NodeId</span>,
-                         <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
-                         <span class="ident">generics</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Generics</span>,
-                         <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">MethodSig</span>,
-                         <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>)
-                         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
+<span class="kw">fn</span> <span class="ident">make_method_signature</span>(
+    <span class="ident">id</span>: <span class="ident">NodeId</span>,
+    <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>,
+    <span class="ident">generics</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Generics</span>,
+    <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">MethodSig</span>,
+    <span class="ident">scx</span>: <span class="kw-2">&amp;</span><span class="ident">SaveContext</span>,
+) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
     <span class="comment">// FIXME code dup with function signature</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">text</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
     <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">constness</span>.<span class="ident">node</span> <span class="op">==</span> <span class="ident">ast</span>::<span class="ident">Constness</span>::<span class="ident">Const</span> {
@@ -1953,12 +1916,7 @@
     }
     <span class="ident">text</span>.<span class="ident">push_str</span>(<span class="string">&quot;fn &quot;</span>);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>,
-                                    <span class="number">0</span>,
-                                    <span class="ident">generics</span>,
-                                    <span class="ident">id</span>,
-                                    <span class="ident">ident</span>,
-                                    <span class="ident">scx</span>)<span class="question-mark">?</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">name_and_generics</span>(<span class="ident">text</span>, <span class="number">0</span>, <span class="ident">generics</span>, <span class="ident">id</span>, <span class="ident">ident</span>, <span class="ident">scx</span>)<span class="question-mark">?</span>;
 
     <span class="ident">sig</span>.<span class="ident">text</span>.<span class="ident">push</span>(<span class="string">&#39;(&#39;</span>);
     <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">decl</span>.<span class="ident">inputs</span> {
