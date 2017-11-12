@@ -3895,8 +3895,8 @@
     <span class="ident">tls_model</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">TRACKED</span>],
          <span class="string">&quot;choose the TLS model to use (rustc --print tls-models for details)&quot;</span>),
     <span class="ident">saturating_float_casts</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
-        <span class="string">&quot;make casts between integers and floats safe: clip out-of-range inputs to the min/max \
-         integer or to infinity respectively, and turn `NAN` into 0 when casting to integers&quot;</span>),
+        <span class="string">&quot;make float-&gt;int casts UB-free: numbers outside the integer type&#39;s range are clipped to \
+         the max/min integer respectively, and NaN is mapped to 0&quot;</span>),
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">default_lib_output</span>() <span class="op">-&gt;</span> <span class="ident">CrateType</span> {
