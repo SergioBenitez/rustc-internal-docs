@@ -5709,11 +5709,11 @@
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">deprecated</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_absolute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="op">!</span><span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>) {
-            <span class="self">self</span>.<span class="ident">has_root</span>() <span class="op">&amp;&amp;</span> (<span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">unix</span>) <span class="op">||</span> <span class="self">self</span>.<span class="ident">prefix</span>().<span class="ident">is_some</span>())
-        } <span class="kw">else</span> {
+        <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>) {
             <span class="comment">// FIXME: Allow Redox prefixes</span>
-            <span class="ident">has_redox_scheme</span>(<span class="self">self</span>.<span class="ident">as_u8_slice</span>())
+            <span class="self">self</span>.<span class="ident">has_root</span>() <span class="op">||</span> <span class="ident">has_redox_scheme</span>(<span class="self">self</span>.<span class="ident">as_u8_slice</span>())
+        } <span class="kw">else</span> {
+            <span class="self">self</span>.<span class="ident">has_root</span>() <span class="op">&amp;&amp;</span> (<span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">unix</span>) <span class="op">||</span> <span class="self">self</span>.<span class="ident">prefix</span>().<span class="ident">is_some</span>())
         }
     }
 

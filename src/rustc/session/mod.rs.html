@@ -1038,6 +1038,8 @@
 <span id="993">993</span>
 <span id="994">994</span>
 <span id="995">995</span>
+<span id="996">996</span>
+<span id="997">997</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1205,11 +1207,13 @@
     <span class="comment">// add more variants as needed to support one-time diagnostics</span>
 }
 
-<span class="doccomment">/// Diagnostic message id - used in order to avoid emitting the same message more than once</span>
+<span class="doccomment">/// Diagnostic message ID—used by `Session.one_time_diagnostics` to avoid</span>
+<span class="doccomment">/// emitting the same message more than once</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DiagnosticMessageId</span> {
+    <span class="ident">ErrorId</span>(<span class="ident">u16</span>), <span class="comment">// EXXXX error code as integer</span>
     <span class="ident">LintId</span>(<span class="ident">lint</span>::<span class="ident">LintId</span>),
-    <span class="ident">StabilityId</span>(<span class="ident">u32</span>)
+    <span class="ident">StabilityId</span>(<span class="ident">u32</span>) <span class="comment">// issue number</span>
 }
 
 <span class="kw">impl</span> <span class="ident">Session</span> {

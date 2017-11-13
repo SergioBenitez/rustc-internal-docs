@@ -893,7 +893,7 @@
         <span class="comment">// first one is zero:</span>
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">intern</span>(<span class="string">&quot;dog&quot;</span>), <span class="ident">Symbol</span>(<span class="number">0</span>));
         <span class="comment">// re-use gets the same entry:</span>
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">intern</span> (<span class="string">&quot;dog&quot;</span>), <span class="ident">Symbol</span>(<span class="number">0</span>));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">intern</span>(<span class="string">&quot;dog&quot;</span>), <span class="ident">Symbol</span>(<span class="number">0</span>));
         <span class="comment">// different string gets a different #:</span>
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">intern</span>(<span class="string">&quot;cat&quot;</span>), <span class="ident">Symbol</span>(<span class="number">1</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">intern</span>(<span class="string">&quot;cat&quot;</span>), <span class="ident">Symbol</span>(<span class="number">1</span>));
