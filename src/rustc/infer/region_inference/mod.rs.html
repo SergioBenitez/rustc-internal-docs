@@ -1684,6 +1684,13 @@
 <span id="1639">1639</span>
 <span id="1640">1640</span>
 <span id="1641">1641</span>
+<span id="1642">1642</span>
+<span id="1643">1643</span>
+<span id="1644">1644</span>
+<span id="1645">1645</span>
+<span id="1646">1646</span>
+<span id="1647">1647</span>
+<span id="1648">1648</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1715,6 +1722,7 @@
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">ReEmpty</span>, <span class="ident">ReStatic</span>, <span class="ident">ReFree</span>, <span class="ident">ReEarlyBound</span>, <span class="ident">ReErased</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">ReLateBound</span>, <span class="ident">ReScope</span>, <span class="ident">ReVar</span>, <span class="ident">ReSkolemized</span>, <span class="ident">BrFresh</span>};
 
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
@@ -1723,7 +1731,7 @@
 <span class="kw">mod</span> <span class="ident">graphviz</span>;
 
 <span class="doccomment">/// A constraint that influences the inference process.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Constraint</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="doccomment">/// One region variable is subregion of another</span>
     <span class="ident">ConstrainVarSubVar</span>(<span class="ident">RegionVid</span>, <span class="ident">RegionVid</span>),
@@ -1873,7 +1881,13 @@
     <span class="doccomment">/// Constraints of the form `A &lt;= B` introduced by the region</span>
     <span class="doccomment">/// checker.  Here at least one of `A` and `B` must be a region</span>
     <span class="doccomment">/// variable.</span>
-    <span class="ident">constraints</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">Constraint</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">SubregionOrigin</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Using `BTreeMap` because the order in which we iterate over</span>
+    <span class="doccomment">/// these constraints can affect the way we build the region graph,</span>
+    <span class="doccomment">/// which in turn affects the way that region errors are reported,</span>
+    <span class="doccomment">/// leading to small variations in error output across runs and</span>
+    <span class="doccomment">/// platforms.</span>
+    <span class="ident">constraints</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">Constraint</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">SubregionOrigin</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// A &quot;verify&quot; is something that we need to verify after inference is</span>
     <span class="doccomment">/// done, but which does not directly affect inference in any way.</span>
@@ -2044,7 +2058,7 @@
             <span class="ident">tcx</span>,
             <span class="ident">var_origins</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
             <span class="ident">values</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="prelude-val">None</span>),
-            <span class="ident">constraints</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashMap</span>()),
+            <span class="ident">constraints</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">BTreeMap</span>::<span class="ident">new</span>()),
             <span class="ident">verifys</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
             <span class="ident">givens</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashSet</span>()),
             <span class="ident">lubs</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashMap</span>()),

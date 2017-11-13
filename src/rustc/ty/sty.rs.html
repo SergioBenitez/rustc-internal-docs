@@ -2220,7 +2220,7 @@
 <span class="doccomment">/// is the outer fn.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// [dbi]: http://en.wikipedia.org/wiki/De_Bruijn_index</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DebruijnIndex</span> {
     <span class="doccomment">/// We maintain the invariant that this is never 0. So 1 indicates</span>
     <span class="doccomment">/// the innermost binder. To ensure this, create with `DebruijnIndex::new`.</span>
@@ -2285,7 +2285,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// [1] http://smallcultfollowing.com/babysteps/blog/2013/10/29/intermingled-parameter-lists/</span>
 <span class="doccomment">/// [2] http://smallcultfollowing.com/babysteps/blog/2013/11/04/intermingled-parameter-lists/</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Copy</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Copy</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RegionKind</span> {
     <span class="comment">// Region bound in a type or fn declaration which will be</span>
     <span class="comment">// substituted &#39;early&#39; -- that is, at the same time when type</span>
@@ -2331,7 +2331,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">serialize</span>::<span class="ident">UseSpecializedDecodable</span> <span class="kw">for</span> <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {}
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Debug</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EarlyBoundRegion</span> {
     <span class="kw">pub</span> <span class="ident">def_id</span>: <span class="ident">DefId</span>,
     <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u32</span>,
@@ -2353,12 +2353,12 @@
     <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u32</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Copy</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Copy</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RegionVid</span> {
     <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u32</span>,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SkolemizedRegionVid</span> {
     <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u32</span>,
 }
