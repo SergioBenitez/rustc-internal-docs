@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/str/mod.rs.html#72-99' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/str/mod.rs.html#72-102' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait FromStr {
     type <a href='#associatedtype.Err' class="type">Err</a>;
     fn <a href='#tymethod.from_str' class='fnname'>from_str</a>(s: &amp;<a class="primitive" href="../primitive.str.html">str</a>) -&gt; <a class="enum" href="../../std/result/enum.Result.html" title="enum std::result::Result">Result</a>&lt;Self, Self::<a class="type" href="../../std/str/trait.FromStr.html#associatedtype.Err" title="type std::str::FromStr::Err">Err</a>&gt;;
@@ -101,9 +101,9 @@ string.</p>
             <div class='methods'>
         <h3 id='tymethod.from_str' class='method'><span id='from_str.v' class='invisible'><code>fn <a href='#tymethod.from_str' class='fnname'>from_str</a>(s: &amp;<a class="primitive" href="../primitive.str.html">str</a>) -&gt; <a class="enum" href="../../std/result/enum.Result.html" title="enum std::result::Result">Result</a>&lt;Self, Self::<a class="type" href="../../std/str/trait.FromStr.html#associatedtype.Err" title="type std::str::FromStr::Err">Err</a>&gt;</code></span></h3><div class='docblock'><p>Parses a string <code>s</code> to return a value of this type.</p>
 
-<p>If parsing succeeds, return the value inside <code>Ok</code>, otherwise
+<p>If parsing succeeds, return the value inside <a href="../../std/result/enum.Result.html#variant.Ok"><code>Ok</code></a>, otherwise
 when the string is ill-formatted return an error specific to the
-inside <code>Err</code>. The error type is specific to implementation of the trait.</p>
+inside <a href="../../std/result/enum.Result.html#variant.Err"><code>Err</code></a>. The error type is specific to implementation of the trait.</p>
 
 <h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
 <p>Basic usage with <a href="../../std/primitive.i32.html"><code>i32</code></a>, a type that implements <code>FromStr</code>:</p>
@@ -122,7 +122,7 @@ inside <code>Err</code>. The error type is specific to implementation of the tra
         <ul class='item-list' id='implementors-list'>
     <li><div class='out-of-band'><a class='srclink' href='../../src/alloc/string.rs.html#1979-1985' title='goto source code'>[src]</a></div><code>impl FromStr for <a class="struct" href="../../std/string/struct.String.html" title="struct std::string::String">String</a><span class="where fmt-newline">  type <a href='#associatedtype.Err' class="type">Err</a> = <a class="enum" href="../../std/string/enum.ParseError.html" title="enum std::string::ParseError">ParseError</a>;</span></code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/core/num/mod.rs.html#3020-3025' title='goto source code'>[src]</a></div><code>impl FromStr for <a class="primitive" href="../primitive.i32.html">i32</a><span class="where fmt-newline">  type <a href='#associatedtype.Err' class="type">Err</a> = <a class="struct" href="../../std/num/struct.ParseIntError.html" title="struct std::num::ParseIntError">ParseIntError</a>;</span></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/core/str/mod.rs.html#102-135' title='goto source code'>[src]</a></div><code>impl FromStr for <a class="primitive" href="../primitive.bool.html">bool</a><span class="where fmt-newline">  type <a href='#associatedtype.Err' class="type">Err</a> = <a class="struct" href="../../std/str/struct.ParseBoolError.html" title="struct std::str::ParseBoolError">ParseBoolError</a>;</span></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/core/str/mod.rs.html#105-138' title='goto source code'>[src]</a></div><code>impl FromStr for <a class="primitive" href="../primitive.bool.html">bool</a><span class="where fmt-newline">  type <a href='#associatedtype.Err' class="type">Err</a> = <a class="struct" href="../../std/str/struct.ParseBoolError.html" title="struct std::str::ParseBoolError">ParseBoolError</a>;</span></code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/core/num/dec2flt/mod.rs.html#112-143' title='goto source code'>[src]</a></div><code>impl FromStr for <a class="primitive" href="../primitive.f32.html">f32</a><span class="where fmt-newline">  type <a href='#associatedtype.Err' class="type">Err</a> = <a class="struct" href="../../std/num/struct.ParseFloatError.html" title="struct std::num::ParseFloatError">ParseFloatError</a>;</span></code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/core/num/mod.rs.html#3020-3025' title='goto source code'>[src]</a></div><code>impl FromStr for <a class="primitive" href="../primitive.i16.html">i16</a><span class="where fmt-newline">  type <a href='#associatedtype.Err' class="type">Err</a> = <a class="struct" href="../../std/num/struct.ParseIntError.html" title="struct std::num::ParseIntError">ParseIntError</a>;</span></code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/core/num/mod.rs.html#3020-3025' title='goto source code'>[src]</a></div><code>impl FromStr for <a class="primitive" href="../primitive.i8.html">i8</a><span class="where fmt-newline">  type <a href='#associatedtype.Err' class="type">Err</a> = <a class="struct" href="../../std/num/struct.ParseIntError.html" title="struct std::num::ParseIntError">ParseIntError</a>;</span></code></li>

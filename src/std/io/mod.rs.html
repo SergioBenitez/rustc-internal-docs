@@ -3139,7 +3139,7 @@
     <span class="doccomment">/// Transforms this `Read` instance to an [`Iterator`] over its bytes.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The returned type implements [`Iterator`] where the `Item` is</span>
-    <span class="doccomment">/// [`Result`]`&lt;`[`u8`]`, `[`io::Error`]&gt;`.</span>
+    <span class="doccomment">/// [`Result`]`&lt;`[`u8`]`, `[`io::Error`]`&gt;`.</span>
     <span class="doccomment">/// The yielded item is [`Ok`] if a byte was successfully read and [`Err`]</span>
     <span class="doccomment">/// otherwise. EOF is mapped to returning [`None`] from this iterator.</span>
     <span class="doccomment">///</span>
@@ -3150,7 +3150,7 @@
     <span class="doccomment">/// [file]: ../fs/struct.File.html</span>
     <span class="doccomment">/// [`Iterator`]: ../../std/iter/trait.Iterator.html</span>
     <span class="doccomment">/// [`Result`]: ../../std/result/enum.Result.html</span>
-    <span class="doccomment">/// [`io::Error``]: ../../std/io/struct.Error.html</span>
+    <span class="doccomment">/// [`io::Error`]: ../../std/io/struct.Error.html</span>
     <span class="doccomment">/// [`u8`]: ../../std/primitive.u8.html</span>
     <span class="doccomment">/// [`Ok`]: ../../std/result/enum.Result.html#variant.Ok</span>
     <span class="doccomment">/// [`Err`]: ../../std/result/enum.Result.html#variant.Err</span>

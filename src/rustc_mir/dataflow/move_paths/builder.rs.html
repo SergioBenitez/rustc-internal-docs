@@ -562,21 +562,21 @@
             <span class="comment">// move out of union - always move the entire union</span>
             <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">adt</span>, _) <span class="kw">if</span> <span class="ident">adt</span>.<span class="ident">is_union</span>() <span class="op">=&gt;</span>
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">MoveError</span>::<span class="ident">UnionMove</span> { <span class="ident">path</span>: <span class="ident">base</span> }),
-            <span class="ident">ty</span>::<span class="ident">TySlice</span>(<span class="ident">elem_ty</span>) <span class="op">=&gt;</span>
+            <span class="ident">ty</span>::<span class="ident">TySlice</span>(_) <span class="op">=&gt;</span>
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">MoveError</span>::<span class="ident">cannot_move_out_of</span>(
                     <span class="ident">mir</span>.<span class="ident">source_info</span>(<span class="self">self</span>.<span class="ident">loc</span>).<span class="ident">span</span>,
-                    <span class="ident">InteriorOfSlice</span> {
-                        <span class="ident">elem_ty</span>, <span class="ident">is_index</span>: <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
+                    <span class="ident">InteriorOfSliceOrArray</span> {
+                        <span class="ident">ty</span>: <span class="ident">lv_ty</span>, <span class="ident">is_index</span>: <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
                             <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
                             _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
                         },
                     })),
-            <span class="ident">ty</span>::<span class="ident">TyArray</span>(<span class="ident">elem_ty</span>, <span class="ident">_num_elems</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
+            <span class="ident">ty</span>::<span class="ident">TyArray</span>(..) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
                 <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(..) <span class="op">=&gt;</span>
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">MoveError</span>::<span class="ident">cannot_move_out_of</span>(
                         <span class="ident">mir</span>.<span class="ident">source_info</span>(<span class="self">self</span>.<span class="ident">loc</span>).<span class="ident">span</span>,
-                        <span class="ident">InteriorOfArray</span> {
-                            <span class="ident">elem_ty</span>, <span class="ident">is_index</span>: <span class="bool-val">true</span>
+                        <span class="ident">InteriorOfSliceOrArray</span> {
+                            <span class="ident">ty</span>: <span class="ident">lv_ty</span>, <span class="ident">is_index</span>: <span class="bool-val">true</span>
                         })),
                 _ <span class="op">=&gt;</span> {
                     <span class="comment">// FIXME: still badly broken</span>

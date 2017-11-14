@@ -235,7 +235,7 @@ that point, we <code>break</code> out of the loop, and we&#39;re done iterating.
 <p>There&#39;s one more subtle bit here: the standard library contains an
 interesting implementation of <a href="trait.IntoIterator.html"><code>IntoIterator</code></a>:</p>
 
-<div class='information'><div class='tooltip ignore'>⚠<span class='tooltiptext'>Be careful when using this code, it's not being tested!</span></div></div><pre class="rust rust-example-rendered ignore">
+<div class='information'><div class='tooltip ignore'>ⓘ<span class='tooltiptext'>This example is not tested</span></div></div><pre class="rust rust-example-rendered ignore">
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span><span class="op">&gt;</span> <span class="ident">IntoIterator</span> <span class="kw">for</span> <span class="ident">I</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aimpl%3CI%3A%20Iterator%3E%20IntoIterator%20for%20I%0A%7D">Run</a></pre>
 
 <p>In other words, all <a href="trait.Iterator.html"><code>Iterator</code></a>s implement <a href="trait.IntoIterator.html"><code>IntoIterator</code></a>, by just

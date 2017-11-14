@@ -690,6 +690,25 @@
 <span id="645">645</span>
 <span id="646">646</span>
 <span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1000,6 +1019,8 @@
     <span class="ident">cached_resume_block</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
     <span class="doccomment">/// cached block with the RETURN terminator</span>
     <span class="ident">cached_return_block</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// cached block with the UNREACHABLE terminator</span>
+    <span class="ident">cached_unreachable_block</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">struct</span> <span class="ident">CFG</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -1093,6 +1114,11 @@
                               <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: <span class="ident">return_block</span> });
         <span class="ident">builder</span>.<span class="ident">cfg</span>.<span class="ident">terminate</span>(<span class="ident">return_block</span>, <span class="ident">source_info</span>,
                               <span class="ident">TerminatorKind</span>::<span class="ident">Return</span>);
+        <span class="comment">// Attribute any unreachable codepaths to the function&#39;s closing brace</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">unreachable_block</span>) <span class="op">=</span> <span class="ident">builder</span>.<span class="ident">cached_unreachable_block</span> {
+            <span class="ident">builder</span>.<span class="ident">cfg</span>.<span class="ident">terminate</span>(<span class="ident">unreachable_block</span>, <span class="ident">source_info</span>,
+                                  <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span>);
+        }
         <span class="ident">return_block</span>.<span class="ident">unit</span>()
     }));
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">block</span>, <span class="ident">builder</span>.<span class="ident">return_block</span>());
@@ -1195,7 +1221,8 @@
             <span class="ident">var_indices</span>: <span class="ident">NodeMap</span>(),
             <span class="ident">unit_temp</span>: <span class="prelude-val">None</span>,
             <span class="ident">cached_resume_block</span>: <span class="prelude-val">None</span>,
-            <span class="ident">cached_return_block</span>: <span class="prelude-val">None</span>
+            <span class="ident">cached_return_block</span>: <span class="prelude-val">None</span>,
+            <span class="ident">cached_unreachable_block</span>: <span class="prelude-val">None</span>,
         };
 
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">builder</span>.<span class="ident">cfg</span>.<span class="ident">start_new_block</span>(), <span class="ident">START_BLOCK</span>);
@@ -1321,6 +1348,17 @@
                 <span class="kw">let</span> <span class="ident">rb</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">start_new_block</span>();
                 <span class="self">self</span>.<span class="ident">cached_return_block</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rb</span>);
                 <span class="ident">rb</span>
+            }
+        }
+    }
+
+    <span class="kw">fn</span> <span class="ident">unreachable_block</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">cached_unreachable_block</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">ub</span>) <span class="op">=&gt;</span> <span class="ident">ub</span>,
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">ub</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">start_new_block</span>();
+                <span class="self">self</span>.<span class="ident">cached_unreachable_block</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ub</span>);
+                <span class="ident">ub</span>
             }
         }
     }

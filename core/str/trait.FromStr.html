@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/str/mod.rs.html#72-99' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/str/mod.rs.html#72-102' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait FromStr: <a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a> {
     type <a href='#associatedtype.Err' class="type">Err</a>;
     fn <a href='#tymethod.from_str' class='fnname'>from_str</a>(s: &amp;str) -&gt; <a class="enum" href="../../core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, Self::<a class="type" href="../../core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>&gt;;
@@ -101,9 +101,9 @@ string.</p>
             <div class='methods'>
         <h3 id='tymethod.from_str' class='method'><span id='from_str.v' class='invisible'><code>fn <a href='#tymethod.from_str' class='fnname'>from_str</a>(s: &amp;str) -&gt; <a class="enum" href="../../core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, Self::<a class="type" href="../../core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>&gt;</code></span></h3><div class='docblock'><p>Parses a string <code>s</code> to return a value of this type.</p>
 
-<p>If parsing succeeds, return the value inside <code>Ok</code>, otherwise
+<p>If parsing succeeds, return the value inside <a href="../../std/result/enum.Result.html#variant.Ok"><code>Ok</code></a>, otherwise
 when the string is ill-formatted return an error specific to the
-inside <code>Err</code>. The error type is specific to implementation of the trait.</p>
+inside <a href="../../std/result/enum.Result.html#variant.Err"><code>Err</code></a>. The error type is specific to implementation of the trait.</p>
 
 <h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
 <p>Basic usage with <a href="../../std/primitive.i32.html"><code>i32</code></a>, a type that implements <code>FromStr</code>:</p>

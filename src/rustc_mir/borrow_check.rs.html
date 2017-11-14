@@ -1891,8 +1891,6 @@
 <span id="1846">1846</span>
 <span id="1847">1847</span>
 <span id="1848">1848</span>
-<span id="1849">1849</span>
-<span id="1850">1850</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1989,9 +1987,7 @@
                         <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of</span>(<span class="ident">span</span>, <span class="string">&quot;borrowed_content&quot;</span>, <span class="ident">origin</span>),
                     <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">InteriorOfTypeWithDestructor</span> { <span class="ident">container_ty</span>: <span class="ident">ty</span> } <span class="op">=&gt;</span>
                         <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of_interior_of_drop</span>(<span class="ident">span</span>, <span class="ident">ty</span>, <span class="ident">origin</span>),
-                    <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">InteriorOfSlice</span> { <span class="ident">elem_ty</span>: <span class="ident">ty</span>, <span class="ident">is_index</span> } <span class="op">=&gt;</span>
-                        <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of_interior_noncopy</span>(<span class="ident">span</span>, <span class="ident">ty</span>, <span class="ident">is_index</span>, <span class="ident">origin</span>),
-                    <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">InteriorOfArray</span> { <span class="ident">elem_ty</span>: <span class="ident">ty</span>, <span class="ident">is_index</span> } <span class="op">=&gt;</span>
+                    <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">InteriorOfSliceOrArray</span> { <span class="ident">ty</span>, <span class="ident">is_index</span> } <span class="op">=&gt;</span>
                         <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of_interior_noncopy</span>(<span class="ident">span</span>, <span class="ident">ty</span>, <span class="ident">is_index</span>, <span class="ident">origin</span>),
                 };
                 <span class="ident">err</span>.<span class="ident">emit</span>();

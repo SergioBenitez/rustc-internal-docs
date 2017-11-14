@@ -308,7 +308,6 @@
 <span id="263">263</span>
 <span id="264">264</span>
 <span id="265">265</span>
-<span id="266">266</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -551,8 +550,7 @@
     <span class="ident">Static</span>,
     <span class="ident">BorrowedContent</span>,
     <span class="ident">InteriorOfTypeWithDestructor</span> { <span class="ident">container_ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
-    <span class="ident">InteriorOfSlice</span> { <span class="ident">elem_ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">is_index</span>: <span class="ident">bool</span>, },
-    <span class="ident">InteriorOfArray</span> { <span class="ident">elem_ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">is_index</span>: <span class="ident">bool</span>, },
+    <span class="ident">InteriorOfSliceOrArray</span> { <span class="ident">ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">is_index</span>: <span class="ident">bool</span>, },
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
