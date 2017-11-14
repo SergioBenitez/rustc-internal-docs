@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["emit_mir",""]],"struct":[["Disambiguator",""],["DumpMir",""],["Marker",""]]});
+initSidebarItems({"fn":[["emit_mir",""],["on_mir_pass",""]],"struct":[["Disambiguator",""],["Marker",""]]});

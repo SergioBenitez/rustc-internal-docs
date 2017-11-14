@@ -1019,9 +1019,6 @@
 <span id="974">974</span>
 <span id="975">975</span>
 <span id="976">976</span>
-<span id="977">977</span>
-<span id="978">978</span>
-<span id="979">979</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1116,9 +1113,9 @@ should go to.
 <span class="kw">use</span> <span class="ident">hair</span>::<span class="ident">LintLevel</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">region</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">LOCAL_CRATE</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">MirSource</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::<span class="ident">FxHashMap</span>;
@@ -1621,16 +1618,13 @@ should go to.
     <span class="doccomment">/// When building statics/constants, returns `None` since</span>
     <span class="doccomment">/// intermediate values do not have to be dropped in that case.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">local_scope</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">region</span>::<span class="ident">Scope</span><span class="op">&gt;</span> {
-        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">src</span> {
-            <span class="ident">MirSource</span>::<span class="ident">Const</span>(_) <span class="op">|</span>
-            <span class="ident">MirSource</span>::<span class="ident">Static</span>(..) <span class="op">=&gt;</span>
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">body_owner_kind</span> {
+            <span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Const</span> <span class="op">|</span>
+            <span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span>
                 <span class="comment">// No need to free storage in this context.</span>
                 <span class="prelude-val">None</span>,
-            <span class="ident">MirSource</span>::<span class="ident">Fn</span>(_) <span class="op">=&gt;</span>
+            <span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Fn</span> <span class="op">=&gt;</span>
                 <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">topmost_scope</span>()),
-            <span class="ident">MirSource</span>::<span class="ident">Promoted</span>(..) <span class="op">|</span>
-            <span class="ident">MirSource</span>::<span class="ident">GeneratorDrop</span>(..) <span class="op">=&gt;</span>
-                <span class="macro">bug</span><span class="macro">!</span>(),
         }
     }
 

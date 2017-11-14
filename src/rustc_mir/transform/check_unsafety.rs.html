@@ -448,25 +448,6 @@
 <span id="403">403</span>
 <span id="404">404</span>
 <span id="405">405</span>
-<span id="406">406</span>
-<span id="407">407</span>
-<span id="408">408</span>
-<span id="409">409</span>
-<span id="410">410</span>
-<span id="411">411</span>
-<span id="412">412</span>
-<span id="413">413</span>
-<span id="414">414</span>
-<span id="415">415</span>
-<span id="416">416</span>
-<span id="417">417</span>
-<span id="418">418</span>
-<span id="419">419</span>
-<span id="420">420</span>
-<span id="421">421</span>
-<span id="422">422</span>
-<span id="423">423</span>
-<span id="424">424</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -484,9 +465,8 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def</span>::<span class="ident">Def</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">map</span>::{<span class="ident">DefPathData</span>, <span class="ident">Node</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">DefPathData</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">lint</span>::<span class="ident">builtin</span>::{<span class="ident">SAFE_EXTERN_STATICS</span>, <span class="ident">UNUSED_UNSAFE</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">Visitor</span>};
@@ -659,7 +639,7 @@
                 <span class="comment">// locals are safe</span>
             }
             <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Static</span>(<span class="kw">box</span> <span class="ident">Static</span> { <span class="ident">def_id</span>, <span class="ident">ty</span>: _ }) <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_static_mut</span>(<span class="ident">def_id</span>) {
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_static_mut</span>(<span class="ident">def_id</span>) {
                     <span class="self">self</span>.<span class="ident">require_unsafe</span>(<span class="string">&quot;use of mutable static&quot;</span>);
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_foreign_item</span>(<span class="ident">def_id</span>) {
                     <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">source_info</span>;
@@ -678,24 +658,6 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">UnsafetyChecker</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">is_static_mut</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_if_local</span>(<span class="ident">def_id</span>) {
-            <span class="kw">match</span> <span class="ident">node</span> {
-                <span class="ident">Node</span>::<span class="ident">NodeItem</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Item</span> {
-                    <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">ItemStatic</span>(_, <span class="ident">hir</span>::<span class="ident">MutMutable</span>, _), ..
-                }) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-                <span class="ident">Node</span>::<span class="ident">NodeForeignItem</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">ForeignItem</span> {
-                    <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">ForeignItemStatic</span>(_, <span class="ident">mutbl</span>), ..
-                }) <span class="op">=&gt;</span> <span class="ident">mutbl</span>,
-                _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
-            }
-        } <span class="kw">else</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">describe_def</span>(<span class="ident">def_id</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">Def</span>::<span class="ident">Static</span>(_, <span class="ident">mutbl</span>)) <span class="op">=&gt;</span> <span class="ident">mutbl</span>,
-                _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
-            }
-        }
-    }
     <span class="kw">fn</span> <span class="ident">require_unsafe</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                       <span class="ident">description</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>)
     {

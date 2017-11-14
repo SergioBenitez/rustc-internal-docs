@@ -293,9 +293,9 @@
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="self">self</span>, <span class="ident">Mir</span>, <span class="ident">Location</span>};
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_set</span>::<span class="ident">IdxSetBuf</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
+<span class="kw">use</span> <span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
 
 <span class="kw">use</span> <span class="ident">dataflow</span>::<span class="ident">do_dataflow</span>;
 <span class="kw">use</span> <span class="ident">dataflow</span>::<span class="ident">MoveDataParamEnv</span>;
@@ -313,8 +313,8 @@
 <span class="kw">impl</span> <span class="ident">MirPass</span> <span class="kw">for</span> <span class="ident">SanityCheck</span> {
     <span class="kw">fn</span> <span class="ident">run_pass</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                           <span class="ident">src</span>: <span class="ident">MirSource</span>, <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">src</span>.<span class="ident">item_id</span>();
-        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">id</span>);
+        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">src</span>.<span class="ident">def_id</span>;
+        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
         <span class="kw">if</span> <span class="op">!</span><span class="ident">tcx</span>.<span class="ident">has_attr</span>(<span class="ident">def_id</span>, <span class="string">&quot;rustc_mir_borrowck&quot;</span>) {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;skipping rustc_peek::SanityCheck on {}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>));
             <span class="kw">return</span>;

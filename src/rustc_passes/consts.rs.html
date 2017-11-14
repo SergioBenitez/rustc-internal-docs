@@ -677,7 +677,6 @@
 <span id="632">632</span>
 <span id="633">633</span>
 <span id="634">634</span>
-<span id="635">635</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -718,7 +717,6 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">expr_use_visitor</span> <span class="kw">as</span> <span class="ident">euv</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">mem_categorization</span> <span class="kw">as</span> <span class="ident">mc</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">mem_categorization</span>::<span class="ident">Categorization</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">MirSource</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">maps</span>::{<span class="ident">queries</span>, <span class="ident">Providers</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
@@ -865,9 +863,9 @@
         <span class="self">self</span>.<span class="ident">in_fn</span> <span class="op">=</span> <span class="bool-val">false</span>;
         <span class="self">self</span>.<span class="ident">in_static</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
-        <span class="kw">match</span> <span class="ident">MirSource</span>::<span class="ident">from_node</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">item_id</span>) {
-            <span class="ident">MirSource</span>::<span class="ident">Fn</span>(_) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">in_fn</span> <span class="op">=</span> <span class="bool-val">true</span>,
-            <span class="ident">MirSource</span>::<span class="ident">Static</span>(_, _) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">in_static</span> <span class="op">=</span> <span class="bool-val">true</span>,
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">body_owner_kind</span>(<span class="ident">item_id</span>) {
+            <span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Fn</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">in_fn</span> <span class="op">=</span> <span class="bool-val">true</span>,
+            <span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">in_static</span> <span class="op">=</span> <span class="bool-val">true</span>,
             _ <span class="op">=&gt;</span> {}
         };
 

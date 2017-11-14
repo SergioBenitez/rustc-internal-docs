@@ -1407,58 +1407,6 @@
 <span id="1362">1362</span>
 <span id="1363">1363</span>
 <span id="1364">1364</span>
-<span id="1365">1365</span>
-<span id="1366">1366</span>
-<span id="1367">1367</span>
-<span id="1368">1368</span>
-<span id="1369">1369</span>
-<span id="1370">1370</span>
-<span id="1371">1371</span>
-<span id="1372">1372</span>
-<span id="1373">1373</span>
-<span id="1374">1374</span>
-<span id="1375">1375</span>
-<span id="1376">1376</span>
-<span id="1377">1377</span>
-<span id="1378">1378</span>
-<span id="1379">1379</span>
-<span id="1380">1380</span>
-<span id="1381">1381</span>
-<span id="1382">1382</span>
-<span id="1383">1383</span>
-<span id="1384">1384</span>
-<span id="1385">1385</span>
-<span id="1386">1386</span>
-<span id="1387">1387</span>
-<span id="1388">1388</span>
-<span id="1389">1389</span>
-<span id="1390">1390</span>
-<span id="1391">1391</span>
-<span id="1392">1392</span>
-<span id="1393">1393</span>
-<span id="1394">1394</span>
-<span id="1395">1395</span>
-<span id="1396">1396</span>
-<span id="1397">1397</span>
-<span id="1398">1398</span>
-<span id="1399">1399</span>
-<span id="1400">1400</span>
-<span id="1401">1401</span>
-<span id="1402">1402</span>
-<span id="1403">1403</span>
-<span id="1404">1404</span>
-<span id="1405">1405</span>
-<span id="1406">1406</span>
-<span id="1407">1407</span>
-<span id="1408">1408</span>
-<span id="1409">1409</span>
-<span id="1410">1410</span>
-<span id="1411">1411</span>
-<span id="1412">1412</span>
-<span id="1413">1413</span>
-<span id="1414">1414</span>
-<span id="1415">1415</span>
-<span id="1416">1416</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1484,7 +1432,6 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::{<span class="self">self</span>, <span class="ident">stability</span>, <span class="ident">reachable</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">cstore</span>::<span class="ident">CrateStore</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">privacy</span>::<span class="ident">AccessLevels</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::{<span class="ident">MIR_CONST</span>, <span class="ident">MIR_VALIDATED</span>, <span class="ident">MIR_OPTIMIZED</span>, <span class="ident">Passes</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>, <span class="ident">Resolutions</span>, <span class="ident">GlobalArenas</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">traits</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">common</span>::{<span class="ident">ErrorReported</span>, <span class="ident">time</span>};
@@ -2451,63 +2398,12 @@
     <span class="comment">// FIXME(eddyb) get rid of this once we replace const_eval with miri.</span>
     <span class="ident">rustc_const_eval</span>::<span class="ident">provide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">extern_providers</span>);
 
-    <span class="comment">// Setup the MIR passes that we want to run.</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">passes</span> <span class="op">=</span> <span class="ident">Passes</span>::<span class="ident">new</span>();
-    <span class="ident">passes</span>.<span class="ident">push_hook</span>(<span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">dump_mir</span>::<span class="ident">DumpMir</span>);
-
-    <span class="comment">// Remove all `EndRegion` statements that are not involved in borrows.</span>
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_CONST</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">clean_end_regions</span>::<span class="ident">CleanEndRegions</span>);
-
-    <span class="comment">// What we need to do constant evaluation.</span>
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_CONST</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">simplify</span>::<span class="ident">SimplifyCfg</span>::<span class="ident">new</span>(<span class="string">&quot;initial&quot;</span>));
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_CONST</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">type_check</span>::<span class="ident">TypeckMir</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_CONST</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">rustc_peek</span>::<span class="ident">SanityCheck</span>);
-
-    <span class="comment">// We compute &quot;constant qualifications&quot; between MIR_CONST and MIR_VALIDATED.</span>
-
-    <span class="comment">// What we need to run borrowck etc.</span>
-
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_VALIDATED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">qualify_consts</span>::<span class="ident">QualifyAndPromoteConstants</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_VALIDATED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">simplify</span>::<span class="ident">SimplifyCfg</span>::<span class="ident">new</span>(<span class="string">&quot;qualify-consts&quot;</span>));
-
-    <span class="comment">// borrowck runs between MIR_VALIDATED and MIR_OPTIMIZED.</span>
-
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">no_landing_pads</span>::<span class="ident">NoLandingPads</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>,
-                     <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">simplify_branches</span>::<span class="ident">SimplifyBranches</span>::<span class="ident">new</span>(<span class="string">&quot;initial&quot;</span>));
-
-    <span class="comment">// These next passes must be executed together</span>
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">add_call_guards</span>::<span class="ident">CriticalCallEdges</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">elaborate_drops</span>::<span class="ident">ElaborateDrops</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">no_landing_pads</span>::<span class="ident">NoLandingPads</span>);
-    <span class="comment">// AddValidation needs to run after ElaborateDrops and before EraseRegions, and it needs</span>
-    <span class="comment">// an AllCallEdges pass right before it.</span>
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">add_call_guards</span>::<span class="ident">AllCallEdges</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">add_validation</span>::<span class="ident">AddValidation</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">simplify</span>::<span class="ident">SimplifyCfg</span>::<span class="ident">new</span>(<span class="string">&quot;elaborate-drops&quot;</span>));
-    <span class="comment">// No lifetime analysis based on borrowing can be done from here on out.</span>
-
-    <span class="comment">// From here on out, regions are gone.</span>
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">erase_regions</span>::<span class="ident">EraseRegions</span>);
-
-    <span class="comment">// Optimizations begin.</span>
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">inline</span>::<span class="ident">Inline</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">instcombine</span>::<span class="ident">InstCombine</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">deaggregator</span>::<span class="ident">Deaggregator</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">copy_prop</span>::<span class="ident">CopyPropagation</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">simplify</span>::<span class="ident">SimplifyLocals</span>);
-
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">generator</span>::<span class="ident">StateTransform</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">add_call_guards</span>::<span class="ident">CriticalCallEdges</span>);
-    <span class="ident">passes</span>.<span class="ident">push_pass</span>(<span class="ident">MIR_OPTIMIZED</span>, <span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">dump_mir</span>::<span class="ident">Marker</span>(<span class="string">&quot;PreTrans&quot;</span>));
-
     <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">mpsc</span>::<span class="ident">channel</span>();
 
     <span class="ident">TyCtxt</span>::<span class="ident">create_and_enter</span>(<span class="ident">sess</span>,
                              <span class="ident">cstore</span>,
                              <span class="ident">local_providers</span>,
                              <span class="ident">extern_providers</span>,
-                             <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">passes</span>),
                              <span class="ident">arenas</span>,
                              <span class="ident">arena</span>,
                              <span class="ident">resolutions</span>,

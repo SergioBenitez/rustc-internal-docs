@@ -689,6 +689,7 @@
 <span id="644">644</span>
 <span id="645">645</span>
 <span id="646">646</span>
+<span id="647">647</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -708,7 +709,6 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">region</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::<span class="ident">MirSource</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">MutVisitor</span>, <span class="ident">TyContext</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
@@ -722,6 +722,7 @@
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">keywords</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
+<span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">MirSource</span>;
 <span class="kw">use</span> <span class="ident">util</span> <span class="kw">as</span> <span class="ident">mir_util</span>;
 
 <span class="doccomment">/// Construct the MIR for a given def-id.</span>
@@ -775,12 +776,11 @@
         _ <span class="op">=&gt;</span> <span class="ident">unsupported</span>(),
     };
 
-    <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="ident">MirSource</span>::<span class="ident">from_node</span>(<span class="ident">tcx</span>, <span class="ident">id</span>);
     <span class="ident">tcx</span>.<span class="ident">infer_ctxt</span>().<span class="ident">enter</span>(<span class="op">|</span><span class="ident">infcx</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="ident">cx</span> <span class="op">=</span> <span class="ident">Cx</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">infcx</span>, <span class="ident">src</span>);
+        <span class="kw">let</span> <span class="ident">cx</span> <span class="op">=</span> <span class="ident">Cx</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">infcx</span>, <span class="ident">id</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mir</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">tables</span>().<span class="ident">tainted_by_errors</span> {
             <span class="ident">build</span>::<span class="ident">construct_error</span>(<span class="ident">cx</span>, <span class="ident">body_id</span>)
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">MirSource</span>::<span class="ident">Fn</span>(<span class="ident">id</span>) <span class="op">=</span> <span class="ident">src</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Fn</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">body_owner_kind</span> {
             <span class="comment">// fetch the fully liberated fn signature (that is, all bound</span>
             <span class="comment">// types/lifetimes replaced)</span>
             <span class="kw">let</span> <span class="ident">fn_hir_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">id</span>);
@@ -842,7 +842,8 @@
             <span class="ident">mem</span>::<span class="ident">transmute</span>::<span class="op">&lt;</span><span class="ident">Mir</span>, <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="ident">mir</span>)
         };
 
-        <span class="ident">mir_util</span>::<span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="prelude-val">None</span>, <span class="string">&quot;mir_map&quot;</span>, <span class="kw-2">&amp;</span><span class="number">0</span>, <span class="ident">src</span>, <span class="kw-2">&amp;</span><span class="ident">mir</span>, <span class="op">|</span>_, _<span class="op">|</span> <span class="prelude-val">Ok</span>(()) );
+        <span class="ident">mir_util</span>::<span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="prelude-val">None</span>, <span class="string">&quot;mir_map&quot;</span>, <span class="kw-2">&amp;</span><span class="number">0</span>,
+                           <span class="ident">MirSource</span>::<span class="ident">item</span>(<span class="ident">def_id</span>), <span class="kw-2">&amp;</span><span class="ident">mir</span>, <span class="op">|</span>_, _<span class="op">|</span> <span class="prelude-val">Ok</span>(()) );
 
         <span class="ident">mir</span>
     })
@@ -906,8 +907,7 @@
     <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span</span>(<span class="ident">ctor_id</span>);
     <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">VariantData</span>::<span class="ident">Tuple</span>(<span class="kw-2">ref</span> <span class="ident">fields</span>, <span class="ident">ctor_id</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">v</span> {
         <span class="ident">tcx</span>.<span class="ident">infer_ctxt</span>().<span class="ident">enter</span>(<span class="op">|</span><span class="ident">infcx</span><span class="op">|</span> {
-            <span class="kw">let</span> (<span class="kw-2">mut</span> <span class="ident">mir</span>, <span class="ident">src</span>) <span class="op">=</span>
-                <span class="ident">shim</span>::<span class="ident">build_adt_ctor</span>(<span class="kw-2">&amp;</span><span class="ident">infcx</span>, <span class="ident">ctor_id</span>, <span class="ident">fields</span>, <span class="ident">span</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mir</span> <span class="op">=</span> <span class="ident">shim</span>::<span class="ident">build_adt_ctor</span>(<span class="kw-2">&amp;</span><span class="ident">infcx</span>, <span class="ident">ctor_id</span>, <span class="ident">fields</span>, <span class="ident">span</span>);
 
             <span class="comment">// Convert the Mir to global types.</span>
             <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="ident">infcx</span>.<span class="ident">tcx</span>.<span class="ident">global_tcx</span>();
@@ -920,7 +920,9 @@
                 <span class="ident">mem</span>::<span class="ident">transmute</span>::<span class="op">&lt;</span><span class="ident">Mir</span>, <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="ident">mir</span>)
             };
 
-            <span class="ident">mir_util</span>::<span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="prelude-val">None</span>, <span class="string">&quot;mir_map&quot;</span>, <span class="kw-2">&amp;</span><span class="number">0</span>, <span class="ident">src</span>, <span class="kw-2">&amp;</span><span class="ident">mir</span>, <span class="op">|</span>_, _<span class="op">|</span> <span class="prelude-val">Ok</span>(()) );
+            <span class="ident">mir_util</span>::<span class="ident">dump_mir</span>(<span class="ident">tcx</span>, <span class="prelude-val">None</span>, <span class="string">&quot;mir_map&quot;</span>, <span class="kw-2">&amp;</span><span class="number">0</span>,
+                               <span class="ident">MirSource</span>::<span class="ident">item</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">ctor_id</span>)),
+                               <span class="kw-2">&amp;</span><span class="ident">mir</span>, <span class="op">|</span>_, _<span class="op">|</span> <span class="prelude-val">Ok</span>(()) );
 
             <span class="ident">mir</span>
         })

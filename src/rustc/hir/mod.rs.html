@@ -2028,6 +2028,18 @@
 <span id="1983">1983</span>
 <span id="1984">1984</span>
 <span id="1985">1985</span>
+<span id="1986">1986</span>
+<span id="1987">1987</span>
+<span id="1988">1988</span>
+<span id="1989">1989</span>
+<span id="1990">1990</span>
+<span id="1991">1991</span>
+<span id="1992">1992</span>
+<span id="1993">1993</span>
+<span id="1994">1994</span>
+<span id="1995">1995</span>
+<span id="1996">1996</span>
+<span id="1997">1997</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3057,6 +3069,18 @@
             <span class="ident">node_id</span>: <span class="self">self</span>.<span class="ident">value</span>.<span class="ident">id</span>
         }
     }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">BodyOwnerKind</span> {
+    <span class="doccomment">/// Functions and methods.</span>
+    <span class="ident">Fn</span>,
+
+    <span class="doccomment">/// Constants and associated constants.</span>
+    <span class="ident">Const</span>,
+
+    <span class="doccomment">/// Initializer of a `static` item.</span>
+    <span class="ident">Static</span>(<span class="ident">Mutability</span>),
 }
 
 <span class="doccomment">/// An expression</span>

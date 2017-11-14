@@ -1,1 +1,1 @@
-initSidebarItems({"constant":[["DIAGNOSTICS",""]],"fn":[["provide",""]],"mod":[["transform",""],["util",""]]});
+initSidebarItems({"constant":[["DIAGNOSTICS",""]],"fn":[["provide",""]],"macro":[["run_passes",""]],"mod":[["transform",""],["util",""]]});

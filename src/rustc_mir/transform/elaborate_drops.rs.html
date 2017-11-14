@@ -682,6 +682,11 @@
 <span id="637">637</span>
 <span id="638">638</span>
 <span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -700,13 +705,14 @@
 <span class="kw">use</span> <span class="ident">dataflow</span>::{<span class="ident">drop_flag_effects_for_location</span>, <span class="ident">on_lookup_result_bits</span>};
 <span class="kw">use</span> <span class="ident">dataflow</span>::<span class="ident">MoveDataParamEnv</span>;
 <span class="kw">use</span> <span class="ident">dataflow</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">FxHashMap</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_set</span>::<span class="ident">IdxSetBuf</span>;
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
+<span class="kw">use</span> <span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">patch</span>::<span class="ident">MirPatch</span>;
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">elaborate_drops</span>::{<span class="ident">DropFlagState</span>, <span class="ident">Unwind</span>, <span class="ident">elaborate_drop</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">elaborate_drops</span>::{<span class="ident">DropElaborator</span>, <span class="ident">DropStyle</span>, <span class="ident">DropFlagMode</span>};
@@ -724,12 +730,16 @@
                           <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
     {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;elaborate_drops({:?} @ {:?})&quot;</span>, <span class="ident">src</span>, <span class="ident">mir</span>.<span class="ident">span</span>);
-        <span class="kw">match</span> <span class="ident">src</span> {
-            <span class="ident">MirSource</span>::<span class="ident">Fn</span>(..) <span class="op">=&gt;</span> {},
+
+        <span class="comment">// Don&#39;t run on constant MIR, because trans might not be able to</span>
+        <span class="comment">// evaluate the modified MIR.</span>
+        <span class="comment">// FIXME(eddyb) Remove check after miri is merged.</span>
+        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">src</span>.<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
+        <span class="kw">match</span> (<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">body_owner_kind</span>(<span class="ident">id</span>), <span class="ident">src</span>.<span class="ident">promoted</span>) {
+            (<span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Fn</span>, <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {},
             _ <span class="op">=&gt;</span> <span class="kw">return</span>
         }
-        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">src</span>.<span class="ident">item_id</span>();
-        <span class="kw">let</span> <span class="ident">param_env</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">param_env</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">id</span>));
+        <span class="kw">let</span> <span class="ident">param_env</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">param_env</span>(<span class="ident">src</span>.<span class="ident">def_id</span>);
         <span class="kw">let</span> <span class="ident">move_data</span> <span class="op">=</span> <span class="ident">MoveData</span>::<span class="ident">gather_moves</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>, <span class="ident">param_env</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">elaborate_patch</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">mir</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">mir</span>;

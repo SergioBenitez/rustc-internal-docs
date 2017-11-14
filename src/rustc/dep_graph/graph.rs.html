@@ -992,6 +992,14 @@
 <span id="947">947</span>
 <span id="948">948</span>
 <span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1519,14 +1527,22 @@
                             <span class="ident">current_deps</span>.<span class="ident">push</span>(<span class="ident">node_index</span>);
                             <span class="kw">continue</span>;
                         }
-                    } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">debug_assertions</span>) {
+                    } <span class="kw">else</span> {
                         <span class="kw">match</span> <span class="ident">dep_dep_node</span>.<span class="ident">kind</span> {
                             <span class="ident">DepKind</span>::<span class="ident">Hir</span> <span class="op">|</span>
                             <span class="ident">DepKind</span>::<span class="ident">HirBody</span> <span class="op">|</span>
                             <span class="ident">DepKind</span>::<span class="ident">CrateMetadata</span> <span class="op">=&gt;</span> {
-                                <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">dep_dep_node</span>.<span class="ident">extract_def_id</span>(<span class="ident">tcx</span>).<span class="ident">is_none</span>(),
-                                    <span class="string">&quot;Input {:?} should have been pre-allocated but wasn&#39;t.&quot;</span>,
-                                    <span class="ident">dep_dep_node</span>);
+                                <span class="kw">if</span> <span class="ident">dep_node</span>.<span class="ident">extract_def_id</span>(<span class="ident">tcx</span>).<span class="ident">is_none</span>() {
+                                    <span class="comment">// If the node does not exist anymore, we</span>
+                                    <span class="comment">// just fail to mark green.</span>
+                                    <span class="kw">return</span> <span class="prelude-val">None</span>
+                                } <span class="kw">else</span> {
+                                    <span class="comment">// If the node does exist, it should have</span>
+                                    <span class="comment">// been pre-allocated.</span>
+                                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;DepNode {:?} should have been \
+                                          pre-allocated but wasn&#39;t.&quot;</span>,
+                                          <span class="ident">dep_dep_node</span>)
+                                }
                             }
                             _ <span class="op">=&gt;</span> {
                                 <span class="comment">// For other kinds of inputs it&#39;s OK to be</span>
