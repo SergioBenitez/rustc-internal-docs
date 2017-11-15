@@ -447,7 +447,6 @@
 <span id="402">402</span>
 <span id="403">403</span>
 <span id="404">404</span>
-<span id="405">405</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -466,7 +465,6 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">DefPathData</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">lint</span>::<span class="ident">builtin</span>::{<span class="ident">SAFE_EXTERN_STATICS</span>, <span class="ident">UNUSED_UNSAFE</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">Visitor</span>};
@@ -813,11 +811,11 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_unsafety</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;check_unsafety({:?})&quot;</span>, <span class="ident">def_id</span>);
-    <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">def_key</span>(<span class="ident">def_id</span>).<span class="ident">disambiguated_data</span>.<span class="ident">data</span> {
-        <span class="comment">// closures are handled by their parent fn.</span>
-        <span class="ident">DefPathData</span>::<span class="ident">ClosureExpr</span> <span class="op">=&gt;</span> <span class="kw">return</span>,
-        _ <span class="op">=&gt;</span> {}
-    };
+
+    <span class="comment">// closures are handled by their parent fn.</span>
+    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">is_closure</span>(<span class="ident">def_id</span>) {
+        <span class="kw">return</span>;
+    }
 
     <span class="kw">let</span> <span class="ident">UnsafetyCheckResult</span> {
         <span class="ident">violations</span>,

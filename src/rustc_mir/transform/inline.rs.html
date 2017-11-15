@@ -833,6 +833,45 @@
 <span id="788">788</span>
 <span id="789">789</span>
 <span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1386,36 +1425,75 @@
         <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">cast_tmp</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">make_call_args</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
-                      <span class="ident">callsite</span>: <span class="kw-2">&amp;</span><span class="ident">CallSite</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">caller_mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">make_call_args</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">callsite</span>: <span class="kw-2">&amp;</span><span class="ident">CallSite</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">caller_mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
+
+        <span class="comment">// A closure is passed its self-type and a tuple like `(arg1, arg2, ...)`,</span>
+        <span class="comment">// hence mappings to tuple fields are needed.</span>
+        <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">is_closure</span>(<span class="ident">callsite</span>.<span class="ident">callee</span>) {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">args</span>.<span class="ident">into_iter</span>();
+            <span class="kw">let</span> <span class="ident">self_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_temp_if_necessary</span>(<span class="ident">args</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">callsite</span>, <span class="ident">caller_mir</span>);
+            <span class="kw">let</span> <span class="ident">tuple</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_temp_if_necessary</span>(<span class="ident">args</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">callsite</span>, <span class="ident">caller_mir</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">args</span>.<span class="ident">next</span>().<span class="ident">is_none</span>());
+
+            <span class="kw">let</span> <span class="ident">tuple_tys</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyTuple</span>(<span class="ident">s</span>, _) <span class="op">=</span> <span class="ident">tuple</span>.<span class="ident">ty</span>(<span class="ident">caller_mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>).<span class="ident">sty</span> {
+                <span class="ident">s</span>
+            } <span class="kw">else</span> {
+                <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Closure arguments are not passed as a tuple&quot;</span>);
+            };
+
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">1</span> <span class="op">+</span> <span class="ident">tuple_tys</span>.<span class="ident">len</span>());
+            <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">self_</span>));
+            <span class="ident">res</span>.<span class="ident">extend</span>(<span class="ident">tuple_tys</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">ty</span>)<span class="op">|</span> {
+                <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">tuple</span>.<span class="ident">clone</span>().<span class="ident">field</span>(<span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">i</span>), <span class="ident">ty</span>))
+            }));
+            <span class="ident">res</span>
+        } <span class="kw">else</span> {
+            <span class="ident">args</span>.<span class="ident">into_iter</span>()
+                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="self">self</span>.<span class="ident">create_temp_if_necessary</span>(<span class="ident">a</span>, <span class="ident">callsite</span>, <span class="ident">caller_mir</span>)))
+                .<span class="ident">collect</span>()
+        }
+    }
+
+    <span class="doccomment">/// If `arg` is already a temporary, returns it. Otherwise, introduces a fresh</span>
+    <span class="doccomment">/// temporary `T` and an instruction `T = arg`, and returns `T`.</span>
+    <span class="kw">fn</span> <span class="ident">create_temp_if_necessary</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">arg</span>: <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">callsite</span>: <span class="kw-2">&amp;</span><span class="ident">CallSite</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">caller_mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="comment">// FIXME: Analysis of the usage of the arguments to avoid</span>
         <span class="comment">// unnecessary temporaries.</span>
-        <span class="ident">args</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>)) <span class="op">=</span> <span class="ident">a</span> {
-                <span class="kw">if</span> <span class="ident">caller_mir</span>.<span class="ident">local_kind</span>(<span class="ident">local</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Temp</span> {
-                    <span class="comment">// Reuse the operand if it&#39;s a temporary already</span>
-                    <span class="kw">return</span> <span class="ident">a</span>;
-                }
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>)) <span class="op">=</span> <span class="ident">arg</span> {
+            <span class="kw">if</span> <span class="ident">caller_mir</span>.<span class="ident">local_kind</span>(<span class="ident">local</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Temp</span> {
+                <span class="comment">// Reuse the operand if it&#39;s a temporary already</span>
+                <span class="kw">return</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>);
             }
+        }
 
-            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Creating temp for argument&quot;</span>);
-            <span class="comment">// Otherwise, create a temporary for the arg</span>
-            <span class="kw">let</span> <span class="ident">arg</span> <span class="op">=</span> <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">a</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Creating temp for argument {:?}&quot;</span>, <span class="ident">arg</span>);
+        <span class="comment">// Otherwise, create a temporary for the arg</span>
+        <span class="kw">let</span> <span class="ident">arg</span> <span class="op">=</span> <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">arg</span>);
 
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">ty</span>(<span class="ident">caller_mir</span>, <span class="ident">tcx</span>);
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">ty</span>(<span class="ident">caller_mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>);
 
-            <span class="kw">let</span> <span class="ident">arg_tmp</span> <span class="op">=</span> <span class="ident">LocalDecl</span>::<span class="ident">new_temp</span>(<span class="ident">ty</span>, <span class="ident">callsite</span>.<span class="ident">location</span>.<span class="ident">span</span>);
-            <span class="kw">let</span> <span class="ident">arg_tmp</span> <span class="op">=</span> <span class="ident">caller_mir</span>.<span class="ident">local_decls</span>.<span class="ident">push</span>(<span class="ident">arg_tmp</span>);
-            <span class="kw">let</span> <span class="ident">arg_tmp</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">arg_tmp</span>);
+        <span class="kw">let</span> <span class="ident">arg_tmp</span> <span class="op">=</span> <span class="ident">LocalDecl</span>::<span class="ident">new_temp</span>(<span class="ident">ty</span>, <span class="ident">callsite</span>.<span class="ident">location</span>.<span class="ident">span</span>);
+        <span class="kw">let</span> <span class="ident">arg_tmp</span> <span class="op">=</span> <span class="ident">caller_mir</span>.<span class="ident">local_decls</span>.<span class="ident">push</span>(<span class="ident">arg_tmp</span>);
+        <span class="kw">let</span> <span class="ident">arg_tmp</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">arg_tmp</span>);
 
-            <span class="kw">let</span> <span class="ident">stmt</span> <span class="op">=</span> <span class="ident">Statement</span> {
-                <span class="ident">source_info</span>: <span class="ident">callsite</span>.<span class="ident">location</span>,
-                <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">arg_tmp</span>.<span class="ident">clone</span>(), <span class="ident">arg</span>)
-            };
-            <span class="ident">caller_mir</span>[<span class="ident">callsite</span>.<span class="ident">bb</span>].<span class="ident">statements</span>.<span class="ident">push</span>(<span class="ident">stmt</span>);
-            <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">arg_tmp</span>)
-        }).<span class="ident">collect</span>()
+        <span class="kw">let</span> <span class="ident">stmt</span> <span class="op">=</span> <span class="ident">Statement</span> {
+            <span class="ident">source_info</span>: <span class="ident">callsite</span>.<span class="ident">location</span>,
+            <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">arg_tmp</span>.<span class="ident">clone</span>(), <span class="ident">arg</span>),
+        };
+        <span class="ident">caller_mir</span>[<span class="ident">callsite</span>.<span class="ident">bb</span>].<span class="ident">statements</span>.<span class="ident">push</span>(<span class="ident">stmt</span>);
+        <span class="ident">arg_tmp</span>
     }
 }
 
