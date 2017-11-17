@@ -1492,7 +1492,7 @@
 <span class="doccomment">//! the parent links in the region hierarchy.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Most of the documentation on regions can be found in</span>
-<span class="doccomment">//! `middle/infer/region_inference/README.md`</span>
+<span class="doccomment">//! `middle/infer/region_constraints/README.md`</span>
 
 <span class="kw">use</span> <span class="ident">ich</span>::{<span class="ident">StableHashingContext</span>, <span class="ident">NodeIdHashingMode</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>};
@@ -1800,7 +1800,7 @@
     <span class="doccomment">/// hierarchy based on their lexical mapping. This is used to</span>
     <span class="doccomment">/// handle the relationships between regions in a fn and in a</span>
     <span class="doccomment">/// closure defined by that fn. See the &quot;Modeling closures&quot;</span>
-    <span class="doccomment">/// section of the README in infer::region_inference for</span>
+    <span class="doccomment">/// section of the README in infer::region_constraints for</span>
     <span class="doccomment">/// more details.</span>
     <span class="ident">closure_tree</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">ItemLocalId</span>, <span class="ident">hir</span>::<span class="ident">ItemLocalId</span><span class="op">&gt;</span>,
 
@@ -1887,7 +1887,7 @@
     <span class="doccomment">/// of the innermost fn body. Each fn forms its own disjoint tree</span>
     <span class="doccomment">/// in the region hierarchy. These fn bodies are themselves</span>
     <span class="doccomment">/// arranged into a tree. See the &quot;Modeling closures&quot; section of</span>
-    <span class="doccomment">/// the README in infer::region_inference for more</span>
+    <span class="doccomment">/// the README in infer::region_constraints for more</span>
     <span class="doccomment">/// details.</span>
     <span class="ident">root_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">ItemLocalId</span><span class="op">&gt;</span>,
 
@@ -2126,7 +2126,7 @@
             <span class="comment">// different functions.  Compare those fn for lexical</span>
             <span class="comment">// nesting. The reasoning behind this is subtle.  See the</span>
             <span class="comment">// &quot;Modeling closures&quot; section of the README in</span>
-            <span class="comment">// infer::region_inference for more details.</span>
+            <span class="comment">// infer::region_constraints for more details.</span>
             <span class="kw">let</span> <span class="ident">a_root_scope</span> <span class="op">=</span> <span class="ident">a_ancestors</span>[<span class="ident">a_index</span>];
             <span class="kw">let</span> <span class="ident">b_root_scope</span> <span class="op">=</span> <span class="ident">a_ancestors</span>[<span class="ident">a_index</span>];
             <span class="kw">return</span> <span class="kw">match</span> (<span class="ident">a_root_scope</span>.<span class="ident">data</span>(), <span class="ident">b_root_scope</span>.<span class="ident">data</span>()) {

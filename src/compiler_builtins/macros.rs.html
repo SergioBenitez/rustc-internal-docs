@@ -359,7 +359,7 @@
 <span class="doccomment">/// A quick overview of attributes supported right now are:</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// * `use_c_shim_if` - takes a #[cfg] directive and falls back to the</span>
-<span class="doccomment">///   C-compiled version if `feature = &quot;c&quot;` is specified.</span>
+<span class="doccomment">///   C-compiled version if `use_c` is specified.</span>
 <span class="doccomment">/// * `aapcs_on_arm` - forces the ABI of the function to be `&quot;aapcs&quot;` on ARM and</span>
 <span class="doccomment">///   the specified ABI everywhere else.</span>
 <span class="doccomment">/// * `unadjusted_on_win64` - like `aapcs_on_arm` this switches to the</span>
@@ -396,7 +396,7 @@
         $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">rest</span>:<span class="ident">tt</span>)<span class="op">*</span>
     ) <span class="op">=&gt;</span> (
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;c&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cfg_clause</span>)<span class="kw-2">*</span>))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">all</span>(<span class="ident">use_c</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cfg_clause</span>)<span class="kw-2">*</span>))]</span>
         <span class="kw">pub</span> <span class="kw">extern</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">abi</span> <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">argname</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>),<span class="op">*</span> ) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ret</span> {
             <span class="kw">extern</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">abi</span> {
                 <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">argname</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>),<span class="kw-2">*</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ret</span>;
@@ -406,7 +406,7 @@
             }
         }
 
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;c&quot;</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cfg_clause</span>)<span class="kw-2">*</span>)))]</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">all</span>(<span class="ident">use_c</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cfg_clause</span>)<span class="kw-2">*</span>)))]</span>
         <span class="macro">intrinsics</span><span class="macro">!</span> {
             $(<span class="attribute">#[$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>)<span class="kw-2">*</span>]</span>)<span class="op">*</span>
             <span class="kw">pub</span> <span class="kw">extern</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">abi</span> <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">argname</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>),<span class="op">*</span> ) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ret</span> {

@@ -194,6 +194,7 @@
 <span id="149">149</span>
 <span id="150">150</span>
 <span id="151">151</span>
+<span id="152">152</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -334,7 +335,8 @@
         <span class="comment">// from the &quot;cause&quot; field, we could perhaps give more tailored</span>
         <span class="comment">// error messages.</span>
         <span class="kw">let</span> <span class="ident">origin</span> <span class="op">=</span> <span class="ident">SubregionOrigin</span>::<span class="ident">Subtype</span>(<span class="self">self</span>.<span class="ident">fields</span>.<span class="ident">trace</span>.<span class="ident">clone</span>());
-        <span class="self">self</span>.<span class="ident">fields</span>.<span class="ident">infcx</span>.<span class="ident">region_vars</span>.<span class="ident">make_subregion</span>(<span class="ident">origin</span>, <span class="ident">a</span>, <span class="ident">b</span>);
+        <span class="self">self</span>.<span class="ident">fields</span>.<span class="ident">infcx</span>.<span class="ident">borrow_region_constraints</span>()
+                         .<span class="ident">make_subregion</span>(<span class="ident">origin</span>, <span class="ident">a</span>, <span class="ident">b</span>);
 
         <span class="prelude-val">Ok</span>(<span class="ident">a</span>)
     }

@@ -980,6 +980,7 @@
 <span id="935">935</span>
 <span id="936">936</span>
 <span id="937">937</span>
+<span id="938">938</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1275,11 +1276,10 @@
                     <span class="self">self</span>.<span class="ident">visit_visibility_scope_data</span>(<span class="ident">scope</span>);
                 }
 
-                <span class="kw">let</span> <span class="ident">lookup</span> <span class="op">=</span> <span class="ident">TyContext</span>::<span class="ident">SourceInfo</span>(<span class="ident">SourceInfo</span> {
+                <span class="self">self</span>.<span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">mir</span>.<span class="ident">return_ty</span>, <span class="ident">TyContext</span>::<span class="ident">ReturnTy</span>(<span class="ident">SourceInfo</span> {
                     <span class="ident">span</span>: <span class="ident">mir</span>.<span class="ident">span</span>,
                     <span class="ident">scope</span>: <span class="ident">ARGUMENT_VISIBILITY_SCOPE</span>,
-                });
-                <span class="self">self</span>.<span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">mir</span>.<span class="ident">return_ty</span>, <span class="ident">lookup</span>);
+                }));
 
                 <span class="kw">for</span> <span class="ident">local</span> <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">local_decls</span>.<span class="ident">indices</span>() {
                     <span class="self">self</span>.<span class="ident">visit_local_decl</span>(<span class="ident">local</span>, <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">local</span>]);
@@ -1794,7 +1794,7 @@
 
 <span class="doccomment">/// Extra information passed to `visit_ty` and friends to give context</span>
 <span class="doccomment">/// about where the type etc appears.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">TyContext</span> {
     <span class="ident">LocalDecl</span> {
         <span class="doccomment">/// The index of the local variable we are visiting.</span>
@@ -1804,9 +1804,11 @@
         <span class="ident">source_info</span>: <span class="ident">SourceInfo</span>,
     },
 
-    <span class="ident">Location</span>(<span class="ident">Location</span>),
+    <span class="doccomment">/// The return type of the function.</span>
+    <span class="ident">ReturnTy</span>(<span class="ident">SourceInfo</span>),
 
-    <span class="ident">SourceInfo</span>(<span class="ident">SourceInfo</span>),
+    <span class="doccomment">/// A type found at some location.</span>
+    <span class="ident">Location</span>(<span class="ident">Location</span>),
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>

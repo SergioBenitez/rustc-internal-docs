@@ -114,6 +114,10 @@
 <span id="69">69</span>
 <span id="70">70</span>
 <span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
 
@@ -146,7 +150,7 @@
         test   %rcx,(%rcx)
         pop    %rax
         pop    %rcx
-        ret&quot;</span>);
+        ret&quot;</span> ::: <span class="string">&quot;memory&quot;</span> : <span class="string">&quot;volatile&quot;</span>);
     <span class="ident">intrinsics</span>::<span class="ident">unreachable</span>();
 }
 
@@ -155,7 +159,8 @@
 <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">__alloca</span>() {
     <span class="macro">asm</span><span class="macro">!</span>(<span class="string">&quot;mov    %rcx,%rax  // x64 _alloca is a normal function with parameter in rcx
-          jmp    ___chkstk  // Jump to ___chkstk since fallthrough may be unreliable&quot;</span>);
+          jmp    ___chkstk  // Jump to ___chkstk since fallthrough may be unreliable&quot;</span>
+         ::: <span class="string">&quot;memory&quot;</span> : <span class="string">&quot;volatile&quot;</span>);
     <span class="ident">intrinsics</span>::<span class="ident">unreachable</span>();
 }
 
@@ -163,7 +168,8 @@
 <span class="attribute">#[<span class="ident">naked</span>]</span>
 <span class="attribute">#[<span class="ident">no_mangle</span>]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">___chkstk</span>() {
-    <span class="macro">asm</span><span class="macro">!</span>(<span class="string">&quot;
+    <span class="macro">asm</span><span class="macro">!</span>(
+        <span class="string">&quot;
         push   %rcx
         cmp    $$0x1000,%rax
         lea    16(%rsp),%rcx  // rsp before calling this routine -&gt; rcx
@@ -183,7 +189,9 @@
         mov    -8(%rax),%rcx  // restore rcx
         push   (%rax)         // push return address onto the stack
         sub    %rsp,%rax      // restore the original value in rax
-        ret&quot;</span>);
+        ret&quot;</span>
+        ::: <span class="string">&quot;memory&quot;</span> : <span class="string">&quot;volatile&quot;</span>
+    );
     <span class="ident">intrinsics</span>::<span class="ident">unreachable</span>();
 }
 </pre>

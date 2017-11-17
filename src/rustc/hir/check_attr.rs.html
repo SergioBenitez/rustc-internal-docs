@@ -257,27 +257,27 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">CheckAttrVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Check any attribute.</span>
-    <span class="kw">fn</span> <span class="ident">check_attribute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attr</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Attribute</span>, <span class="ident">target</span>: <span class="ident">Target</span>) {
+    <span class="kw">fn</span> <span class="ident">check_attribute</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attr</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Attribute</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Item</span>, <span class="ident">target</span>: <span class="ident">Target</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">attr</span>.<span class="ident">name</span>() {
             <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">name</span>.<span class="ident">as_str</span>() {
-                <span class="string">&quot;inline&quot;</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">check_inline</span>(<span class="ident">attr</span>, <span class="ident">target</span>),
-                <span class="string">&quot;repr&quot;</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">check_repr</span>(<span class="ident">attr</span>, <span class="ident">target</span>),
+                <span class="string">&quot;inline&quot;</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">check_inline</span>(<span class="ident">attr</span>, <span class="ident">item</span>, <span class="ident">target</span>),
+                <span class="string">&quot;repr&quot;</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">check_repr</span>(<span class="ident">attr</span>, <span class="ident">item</span>, <span class="ident">target</span>),
                 _ <span class="op">=&gt;</span> (),
             }
         }
     }
 
     <span class="doccomment">/// Check if an `#[inline]` is applied to a function.</span>
-    <span class="kw">fn</span> <span class="ident">check_inline</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attr</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Attribute</span>, <span class="ident">target</span>: <span class="ident">Target</span>) {
+    <span class="kw">fn</span> <span class="ident">check_inline</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attr</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Attribute</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Item</span>, <span class="ident">target</span>: <span class="ident">Target</span>) {
         <span class="kw">if</span> <span class="ident">target</span> <span class="op">!=</span> <span class="ident">Target</span>::<span class="ident">Fn</span> {
             <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">sess</span>, <span class="ident">attr</span>.<span class="ident">span</span>, <span class="ident">E0518</span>, <span class="string">&quot;attribute should be applied to function&quot;</span>)
-                .<span class="ident">span_label</span>(<span class="ident">attr</span>.<span class="ident">span</span>, <span class="string">&quot;requires a function&quot;</span>)
+                .<span class="ident">span_label</span>(<span class="ident">item</span>.<span class="ident">span</span>, <span class="string">&quot;not a function&quot;</span>)
                 .<span class="ident">emit</span>();
         }
     }
 
     <span class="doccomment">/// Check if an `#[repr]` attr is valid.</span>
-    <span class="kw">fn</span> <span class="ident">check_repr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attr</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Attribute</span>, <span class="ident">target</span>: <span class="ident">Target</span>) {
+    <span class="kw">fn</span> <span class="ident">check_repr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">attr</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Attribute</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Item</span>, <span class="ident">target</span>: <span class="ident">Target</span>) {
         <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">attr</span>.<span class="ident">meta_item_list</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">words</span>) <span class="op">=&gt;</span> <span class="ident">words</span>,
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
@@ -349,7 +349,7 @@
                 _ <span class="op">=&gt;</span> <span class="kw">continue</span>,
             };
             <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">sess</span>, <span class="ident">attr</span>.<span class="ident">span</span>, <span class="ident">E0517</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">message</span>)
-                .<span class="ident">span_label</span>(<span class="ident">attr</span>.<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;requires {}&quot;</span>, <span class="ident">label</span>))
+                .<span class="ident">span_label</span>(<span class="ident">item</span>.<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;not {}&quot;</span>, <span class="ident">label</span>))
                 .<span class="ident">emit</span>();
         }
         <span class="kw">if</span> <span class="ident">conflicting_reprs</span> <span class="op">&gt;</span> <span class="number">1</span> {
@@ -363,7 +363,7 @@
     <span class="kw">fn</span> <span class="ident">visit_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ast</span>::<span class="ident">Item</span>) {
         <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">Target</span>::<span class="ident">from_item</span>(<span class="ident">item</span>);
         <span class="kw">for</span> <span class="ident">attr</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">attrs</span> {
-            <span class="self">self</span>.<span class="ident">check_attribute</span>(<span class="ident">attr</span>, <span class="ident">target</span>);
+            <span class="self">self</span>.<span class="ident">check_attribute</span>(<span class="ident">attr</span>, <span class="ident">item</span>, <span class="ident">target</span>);
         }
         <span class="ident">visit</span>::<span class="ident">walk_item</span>(<span class="self">self</span>, <span class="ident">item</span>);
     }

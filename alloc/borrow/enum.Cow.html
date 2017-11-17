@@ -133,7 +133,7 @@ and becomes a <code>Cow::Owned</code>:</p>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(
   <span class="ident">cow</span>.<span class="ident">into_owned</span>(),
-  <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">s</span>))
+  <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">s</span>)
 );</pre>
 
 <p>Calling <code>into_owned</code> on a <code>Cow::Owned</code> is a no-op:</p>
@@ -146,7 +146,7 @@ and becomes a <code>Cow::Owned</code>:</p>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(
   <span class="ident">cow</span>.<span class="ident">into_owned</span>(),
-  <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">s</span>))
+  <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">s</span>)
 );</pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>

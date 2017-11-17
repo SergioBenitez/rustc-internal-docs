@@ -1657,7 +1657,7 @@
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">Aliasability</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
-<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">DefIndex</span>};
+<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">LocalDefId</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span> <span class="kw">as</span> <span class="ident">hir_map</span>;
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>::{<span class="ident">Def</span>, <span class="ident">CtorKind</span>};
@@ -1778,7 +1778,7 @@
 
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ImmutabilityBlame</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="ident">ImmLocal</span>(<span class="ident">ast</span>::<span class="ident">NodeId</span>),
-    <span class="ident">ClosureEnv</span>(<span class="ident">DefIndex</span>),
+    <span class="ident">ClosureEnv</span>(<span class="ident">LocalDefId</span>),
     <span class="ident">LocalDeref</span>(<span class="ident">ast</span>::<span class="ident">NodeId</span>),
     <span class="ident">AdtFieldDeref</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">AdtDef</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">FieldDef</span>)
 }
@@ -2346,11 +2346,11 @@
             <span class="kw-2">ref</span> <span class="ident">t</span> <span class="op">=&gt;</span> <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">span</span>, <span class="string">&quot;unexpected type for fn in mem_categorization: {:?}&quot;</span>, <span class="ident">t</span>),
         };
 
-        <span class="kw">let</span> <span class="ident">closure_expr_def_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">fn_node_id</span>).<span class="ident">index</span>;
+        <span class="kw">let</span> <span class="ident">closure_expr_def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">fn_node_id</span>);
         <span class="kw">let</span> <span class="ident">var_hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">var_id</span>);
         <span class="kw">let</span> <span class="ident">upvar_id</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">UpvarId</span> {
             <span class="ident">var_id</span>: <span class="ident">var_hir_id</span>,
-            <span class="ident">closure_expr_id</span>: <span class="ident">closure_expr_def_index</span>
+            <span class="ident">closure_expr_id</span>: <span class="ident">closure_expr_def_id</span>.<span class="ident">to_local</span>(),
         };
 
         <span class="kw">let</span> <span class="ident">var_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">node_ty</span>(<span class="ident">var_hir_id</span>)<span class="question-mark">?</span>;
@@ -2425,7 +2425,7 @@
             <span class="comment">// The environment of a closure is guaranteed to</span>
             <span class="comment">// outlive any bindings introduced in the body of the</span>
             <span class="comment">// closure itself.</span>
-            <span class="ident">scope</span>: <span class="ident">DefId</span>::<span class="ident">local</span>(<span class="ident">upvar_id</span>.<span class="ident">closure_expr_id</span>),
+            <span class="ident">scope</span>: <span class="ident">upvar_id</span>.<span class="ident">closure_expr_id</span>.<span class="ident">to_def_id</span>(),
             <span class="ident">bound_region</span>: <span class="ident">ty</span>::<span class="ident">BrEnv</span>
         }));
 

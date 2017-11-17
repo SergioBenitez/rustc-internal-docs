@@ -2157,6 +2157,41 @@
 <span id="2112">2112</span>
 <span id="2113">2113</span>
 <span id="2114">2114</span>
+<span id="2115">2115</span>
+<span id="2116">2116</span>
+<span id="2117">2117</span>
+<span id="2118">2118</span>
+<span id="2119">2119</span>
+<span id="2120">2120</span>
+<span id="2121">2121</span>
+<span id="2122">2122</span>
+<span id="2123">2123</span>
+<span id="2124">2124</span>
+<span id="2125">2125</span>
+<span id="2126">2126</span>
+<span id="2127">2127</span>
+<span id="2128">2128</span>
+<span id="2129">2129</span>
+<span id="2130">2130</span>
+<span id="2131">2131</span>
+<span id="2132">2132</span>
+<span id="2133">2133</span>
+<span id="2134">2134</span>
+<span id="2135">2135</span>
+<span id="2136">2136</span>
+<span id="2137">2137</span>
+<span id="2138">2138</span>
+<span id="2139">2139</span>
+<span id="2140">2140</span>
+<span id="2141">2141</span>
+<span id="2142">2142</span>
+<span id="2143">2143</span>
+<span id="2144">2144</span>
+<span id="2145">2145</span>
+<span id="2146">2146</span>
+<span id="2147">2147</span>
+<span id="2148">2148</span>
+<span id="2149">2149</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2715,6 +2750,15 @@
 
 <span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">BasicBlock</span> { <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;bb{}&quot;</span> });
 
+<span class="kw">impl</span> <span class="ident">BasicBlock</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">start_location</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Location</span> {
+        <span class="ident">Location</span> {
+            <span class="ident">block</span>: <span class="self">self</span>,
+            <span class="ident">statement_index</span>: <span class="number">0</span>,
+        }
+    }
+}
+
 <span class="comment">///////////////////////////////////////////////////////////////////////////</span>
 <span class="comment">// BasicBlockData and Terminator</span>
 
@@ -2798,7 +2842,32 @@
         <span class="ident">unwind</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>
     },
 
-    <span class="doccomment">/// Drop the Lvalue and assign the new value over it</span>
+    <span class="doccomment">/// Drop the Lvalue and assign the new value over it. This ensures</span>
+    <span class="doccomment">/// that the assignment to LV occurs *even if* the destructor for</span>
+    <span class="doccomment">/// lvalue unwinds. Its semantics are best explained by by the</span>
+    <span class="doccomment">/// elaboration:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// BB0 {</span>
+    <span class="doccomment">///   DropAndReplace(LV &lt;- RV, goto BB1, unwind BB2)</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// becomes</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// BB0 {</span>
+    <span class="doccomment">///   Drop(LV, goto BB1, unwind BB2)</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// BB1 {</span>
+    <span class="doccomment">///   // LV is now unitialized</span>
+    <span class="doccomment">///   LV &lt;- RV</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// BB2 {</span>
+    <span class="doccomment">///   // LV is now unitialized -- its dtor panicked</span>
+    <span class="doccomment">///   LV &lt;- RV</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
     <span class="ident">DropAndReplace</span> {
         <span class="ident">location</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">value</span>: <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -2810,9 +2879,10 @@
     <span class="ident">Call</span> {
         <span class="doccomment">/// The function that’s being called</span>
         <span class="ident">func</span>: <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="doccomment">/// Arguments the function is called with. These are owned by the callee, which is free to</span>
-        <span class="doccomment">/// modify them. This is important as &quot;by-value&quot; arguments might be passed by-reference at</span>
-        <span class="doccomment">/// the ABI level.</span>
+        <span class="doccomment">/// Arguments the function is called with.</span>
+        <span class="doccomment">/// These are owned by the callee, which is free to modify them.</span>
+        <span class="doccomment">/// This allows the memory occupied by &quot;by-value&quot; arguments to be</span>
+        <span class="doccomment">/// reused across function calls without duplicating the contents.</span>
         <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
         <span class="doccomment">/// Destination for the return value. If some, the call is converging.</span>
         <span class="ident">destination</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">BasicBlock</span>)<span class="op">&gt;</span>,

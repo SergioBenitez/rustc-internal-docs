@@ -246,6 +246,7 @@
 <span id="201">201</span>
 <span id="202">202</span>
 <span id="203">203</span>
+<span id="204">204</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -260,19 +261,19 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">Mir</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">RegionKind</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">RegionKind</span>, <span class="ident">RegionVid</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">FxHashMap</span>;
-<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeSet</span>;
 <span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">MirSource</span>;
+<span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">type_check</span>;
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">liveness</span>::{<span class="self">self</span>, <span class="ident">LivenessMode</span>, <span class="ident">LivenessResult</span>, <span class="ident">LocalSet</span>};
 
 <span class="kw">use</span> <span class="ident">util</span> <span class="kw">as</span> <span class="ident">mir_util</span>;
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">mir_util</span>::<span class="ident">PassWhere</span>;
 
 <span class="kw">mod</span> <span class="ident">constraint_generation</span>;
+<span class="kw">mod</span> <span class="ident">subtype_constraint_generation</span>;
 <span class="kw">mod</span> <span class="ident">free_regions</span>;
-<span class="kw">mod</span> <span class="ident">subtype</span>;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">region_infer</span>;
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">region_infer</span>::<span class="ident">RegionInferenceContext</span>;
@@ -285,13 +286,24 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">compute_regions</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(
     <span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">def_id</span>: <span class="ident">DefId</span>,
+    <span class="ident">param_env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
     <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 ) <span class="op">-&gt;</span> <span class="ident">RegionInferenceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="comment">// Compute named region information.</span>
     <span class="kw">let</span> <span class="ident">free_regions</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">free_regions</span>::<span class="ident">free_regions</span>(<span class="ident">infcx</span>, <span class="ident">def_id</span>);
 
     <span class="comment">// Replace all regions with fresh inference variables.</span>
-    <span class="kw">let</span> <span class="ident">num_region_variables</span> <span class="op">=</span> <span class="ident">renumber</span>::<span class="ident">renumber_mir</span>(<span class="ident">infcx</span>, <span class="ident">free_regions</span>, <span class="ident">mir</span>);
+    <span class="ident">renumber</span>::<span class="ident">renumber_mir</span>(<span class="ident">infcx</span>, <span class="ident">free_regions</span>, <span class="ident">mir</span>);
+
+    <span class="comment">// Run the MIR type-checker.</span>
+    <span class="kw">let</span> <span class="ident">mir_node_id</span> <span class="op">=</span> <span class="ident">infcx</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">constraint_sets</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">type_check</span>::<span class="ident">type_check</span>(<span class="ident">infcx</span>, <span class="ident">mir_node_id</span>, <span class="ident">param_env</span>, <span class="ident">mir</span>);
+
+    <span class="comment">// Create the region inference context, taking ownership of the region inference</span>
+    <span class="comment">// data that was contained in `infcx`.</span>
+    <span class="kw">let</span> <span class="ident">var_origins</span> <span class="op">=</span> <span class="ident">infcx</span>.<span class="ident">take_region_var_origins</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">regioncx</span> <span class="op">=</span> <span class="ident">RegionInferenceContext</span>::<span class="ident">new</span>(<span class="ident">var_origins</span>, <span class="ident">free_regions</span>, <span class="ident">mir</span>);
+    <span class="ident">subtype_constraint_generation</span>::<span class="ident">generate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">regioncx</span>, <span class="ident">free_regions</span>, <span class="ident">mir</span>, <span class="ident">constraint_sets</span>);
 
     <span class="comment">// Compute what is live where.</span>
     <span class="kw">let</span> <span class="ident">liveness</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">LivenessResults</span> {
@@ -312,11 +324,10 @@
         ),
     };
 
-    <span class="comment">// Create the region inference context, generate the constraints,</span>
-    <span class="comment">// and then solve them.</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">regioncx</span> <span class="op">=</span> <span class="ident">RegionInferenceContext</span>::<span class="ident">new</span>(<span class="ident">free_regions</span>, <span class="ident">num_region_variables</span>, <span class="ident">mir</span>);
-    <span class="kw">let</span> <span class="ident">param_env</span> <span class="op">=</span> <span class="ident">infcx</span>.<span class="ident">tcx</span>.<span class="ident">param_env</span>(<span class="ident">def_id</span>);
+    <span class="comment">// Generate non-subtyping constraints.</span>
     <span class="ident">constraint_generation</span>::<span class="ident">generate_constraints</span>(<span class="ident">infcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">regioncx</span>, <span class="kw-2">&amp;</span><span class="ident">mir</span>, <span class="ident">param_env</span>, <span class="ident">liveness</span>);
+
+    <span class="comment">// Solve the region constraints.</span>
     <span class="ident">regioncx</span>.<span class="ident">solve</span>(<span class="ident">infcx</span>, <span class="kw-2">&amp;</span><span class="ident">mir</span>);
 
     <span class="comment">// Dump MIR results into a file, if that is enabled. This let us</span>
@@ -372,12 +383,7 @@
         <span class="kw">match</span> <span class="ident">pass_where</span> {
             <span class="comment">// Before the CFG, dump out the values for each region variable.</span>
             <span class="ident">PassWhere</span>::<span class="ident">BeforeCFG</span> <span class="op">=&gt;</span> <span class="kw">for</span> <span class="ident">region</span> <span class="kw">in</span> <span class="ident">regioncx</span>.<span class="ident">regions</span>() {
-                <span class="macro">writeln</span><span class="macro">!</span>(
-                    <span class="ident">out</span>,
-                    <span class="string">&quot;| {:?}: {:?}&quot;</span>,
-                    <span class="ident">region</span>,
-                    <span class="ident">regioncx</span>.<span class="ident">region_value</span>(<span class="ident">region</span>)
-                )<span class="question-mark">?</span>;
+                <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">out</span>, <span class="string">&quot;| {:?}: {:?}&quot;</span>, <span class="ident">region</span>, <span class="ident">regioncx</span>.<span class="ident">region_value</span>(<span class="ident">region</span>))<span class="question-mark">?</span>;
             },
 
             <span class="comment">// Before each basic block, dump out the values</span>
@@ -401,23 +407,19 @@
     });
 }
 
-<span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">RegionIndex</span> {
-    <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;&#39;_#{}r&quot;</span>,
-});
-
 <span class="doccomment">/// Right now, we piggy back on the `ReVar` to store our NLL inference</span>
-<span class="doccomment">/// regions. These are indexed with `RegionIndex`. This method will</span>
-<span class="doccomment">/// assert that the region is a `ReVar` and convert the internal index</span>
-<span class="doccomment">/// into a `RegionIndex`. This is reasonable because in our MIR we</span>
-<span class="doccomment">/// replace all free regions with inference variables.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ToRegionIndex</span> {
-    <span class="kw">fn</span> <span class="ident">to_region_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RegionIndex</span>;
+<span class="doccomment">/// regions. These are indexed with `RegionVid`. This method will</span>
+<span class="doccomment">/// assert that the region is a `ReVar` and extract its interal index.</span>
+<span class="doccomment">/// This is reasonable because in our MIR we replace all free regions</span>
+<span class="doccomment">/// with inference variables.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ToRegionVid</span> {
+    <span class="kw">fn</span> <span class="ident">to_region_vid</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RegionVid</span>;
 }
 
-<span class="kw">impl</span> <span class="ident">ToRegionIndex</span> <span class="kw">for</span> <span class="ident">RegionKind</span> {
-    <span class="kw">fn</span> <span class="ident">to_region_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RegionIndex</span> {
+<span class="kw">impl</span> <span class="ident">ToRegionVid</span> <span class="kw">for</span> <span class="ident">RegionKind</span> {
+    <span class="kw">fn</span> <span class="ident">to_region_vid</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RegionVid</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ReVar</span>(<span class="ident">vid</span>) <span class="op">=</span> <span class="self">self</span> {
-            <span class="ident">RegionIndex</span>::<span class="ident">new</span>(<span class="ident">vid</span>.<span class="ident">index</span> <span class="kw">as</span> <span class="ident">usize</span>)
+            <span class="ident">vid</span>
         } <span class="kw">else</span> {
             <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;region is not an ReVar: {:?}&quot;</span>, <span class="self">self</span>)
         }

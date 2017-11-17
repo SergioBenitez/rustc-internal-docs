@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Module type_check</p><div class="block items"><ul><li><a href="#structs">Structs</a></li></ul></div><p class='location'><a href='../../index.html'>rustc_mir</a>::<wbr><a href='../index.html'>transform</a></p><script>window.sidebarCurrent = {name: 'type_check', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module type_check</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../../index.html'>rustc_mir</a>::<wbr><a href='../index.html'>transform</a></p><script>window.sidebarCurrent = {name: 'type_check', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -48,16 +48,42 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rustc_mir/transform/type_check.rs.html#11-821' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/rustc_mir/transform/type_check.rs.html#11-1109' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>This pass type-checks the MIR to ensure it is not broken.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class='unstable module-item'>
+                           <td><a class="struct" href="struct.Locations.html"
+                                  title='struct rustc_mir::transform::type_check::Locations'>Locations</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="struct" href="struct.MirTypeckRegionConstraints.html"
+                                  title='struct rustc_mir::transform::type_check::MirTypeckRegionConstraints'>MirTypeckRegionConstraints</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>A collection of region constraints that must be satisfied for the
+program to be considered well-typed.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="struct" href="struct.OutlivesSet.html"
+                                  title='struct rustc_mir::transform::type_check::OutlivesSet'>OutlivesSet</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>Outlives relationships between regions and types created at a
+particular point within the control-flow graph.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
                            <td><a class="struct" href="struct.TypeChecker.html"
                                   title='struct rustc_mir::transform::type_check::TypeChecker'>TypeChecker</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] 
+                               [<div class='stab unstable'>Experimental</div>] <p>The MIR type checker. Visits the MIR and enforces all the
+constraints needed for it to be valid and well-typed. Along the
+way, it accrues region constraints -- these can later be used by
+NLL region checking.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
@@ -65,6 +91,16 @@
                                   title='struct rustc_mir::transform::type_check::TypeckMir'>TypeckMir</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                       <tr class='unstable module-item'>
+                           <td><a class="fn" href="fn.type_check.html"
+                                  title='fn rustc_mir::transform::type_check::type_check'>type_check</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>Type checks the given <code>mir</code> in the context of the inference
+context <code>infcx</code>. Returns any region constraints that have yet to
+be proven.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

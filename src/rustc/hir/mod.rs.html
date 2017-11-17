@@ -2040,6 +2040,34 @@
 <span id="1995">1995</span>
 <span id="1996">1996</span>
 <span id="1997">1997</span>
+<span id="1998">1998</span>
+<span id="1999">1999</span>
+<span id="2000">2000</span>
+<span id="2001">2001</span>
+<span id="2002">2002</span>
+<span id="2003">2003</span>
+<span id="2004">2004</span>
+<span id="2005">2005</span>
+<span id="2006">2006</span>
+<span id="2007">2007</span>
+<span id="2008">2008</span>
+<span id="2009">2009</span>
+<span id="2010">2010</span>
+<span id="2011">2011</span>
+<span id="2012">2012</span>
+<span id="2013">2013</span>
+<span id="2014">2014</span>
+<span id="2015">2015</span>
+<span id="2016">2016</span>
+<span id="2017">2017</span>
+<span id="2018">2018</span>
+<span id="2019">2019</span>
+<span id="2020">2020</span>
+<span id="2021">2021</span>
+<span id="2022">2022</span>
+<span id="2023">2023</span>
+<span id="2024">2024</span>
+<span id="2025">2025</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2088,6 +2116,7 @@
 
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>;
 
+<span class="kw">use</span> <span class="ident">serialize</span>::{<span class="self">self</span>, <span class="ident">Encoder</span>, <span class="ident">Encodable</span>, <span class="ident">Decoder</span>, <span class="ident">Decodable</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
@@ -2128,12 +2157,36 @@
 <span class="doccomment">/// the local_id part of the HirId changing, which is a very useful property in</span>
 <span class="doccomment">/// incremental compilation where we have to persist things through changes to</span>
 <span class="doccomment">/// the code base.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Debug</span>,
-         <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HirId</span> {
     <span class="kw">pub</span> <span class="ident">owner</span>: <span class="ident">DefIndex</span>,
     <span class="kw">pub</span> <span class="ident">local_id</span>: <span class="ident">ItemLocalId</span>,
 }
+
+<span class="kw">impl</span> <span class="ident">serialize</span>::<span class="ident">UseSpecializedEncodable</span> <span class="kw">for</span> <span class="ident">HirId</span> {
+    <span class="kw">fn</span> <span class="ident">default_encode</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Encoder</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">S</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">HirId</span> {
+            <span class="ident">owner</span>,
+            <span class="ident">local_id</span>,
+        } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
+
+        <span class="ident">owner</span>.<span class="ident">encode</span>(<span class="ident">s</span>)<span class="question-mark">?</span>;
+        <span class="ident">local_id</span>.<span class="ident">encode</span>(<span class="ident">s</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">serialize</span>::<span class="ident">UseSpecializedDecodable</span> <span class="kw">for</span> <span class="ident">HirId</span> {
+    <span class="kw">fn</span> <span class="ident">default_decode</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="ident">Decoder</span><span class="op">&gt;</span>(<span class="ident">d</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">D</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">HirId</span>, <span class="ident">D</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">owner</span> <span class="op">=</span> <span class="ident">DefIndex</span>::<span class="ident">decode</span>(<span class="ident">d</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">local_id</span> <span class="op">=</span> <span class="ident">ItemLocalId</span>::<span class="ident">decode</span>(<span class="ident">d</span>)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(<span class="ident">HirId</span> {
+            <span class="ident">owner</span>,
+            <span class="ident">local_id</span>
+        })
+    }
+}
+
 
 <span class="doccomment">/// An `ItemLocalId` uniquely identifies something within a given &quot;item-like&quot;,</span>
 <span class="doccomment">/// that is within a hir::Item, hir::TraitItem, or hir::ImplItem. There is no</span>
@@ -3504,9 +3557,12 @@
     <span class="doccomment">/// A trait object type `Bound1 + Bound2 + Bound3`</span>
     <span class="doccomment">/// where `Bound` is a trait or a lifetime.</span>
     <span class="ident">TyTraitObject</span>(<span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">PolyTraitRef</span><span class="op">&gt;</span>, <span class="ident">Lifetime</span>),
-    <span class="doccomment">/// An `impl Bound1 + Bound2 + Bound3` type</span>
-    <span class="doccomment">/// where `Bound` is a trait or a lifetime.</span>
-    <span class="ident">TyImplTrait</span>(<span class="ident">TyParamBounds</span>),
+    <span class="doccomment">/// An exsitentially quantified (there exists a type satisfying) `impl</span>
+    <span class="doccomment">/// Bound1 + Bound2 + Bound3` type where `Bound` is a trait or a lifetime.</span>
+    <span class="ident">TyImplTraitExistential</span>(<span class="ident">TyParamBounds</span>),
+    <span class="doccomment">/// An universally quantified (for all types satisfying) `impl</span>
+    <span class="doccomment">/// Bound1 + Bound2 + Bound3` type where `Bound` is a trait or a lifetime.</span>
+    <span class="ident">TyImplTraitUniversal</span>(<span class="ident">DefId</span>, <span class="ident">TyParamBounds</span>),
     <span class="doccomment">/// Unused for now</span>
     <span class="ident">TyTypeof</span>(<span class="ident">BodyId</span>),
     <span class="doccomment">/// TyInfer means the type should be inferred instead of it having been</span>

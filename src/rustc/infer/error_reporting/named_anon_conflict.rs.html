@@ -158,8 +158,8 @@
 <span class="doccomment">//! Error Reporting for Anonymous Region Lifetime Errors</span>
 <span class="doccomment">//! where one region is named and the other is anonymous.</span>
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
-<span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">region_inference</span>::<span class="ident">RegionResolutionError</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">region_inference</span>::<span class="ident">RegionResolutionError</span>;
+<span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">lexical_region_resolve</span>::<span class="ident">RegionResolutionError</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">lexical_region_resolve</span>::<span class="ident">RegionResolutionError</span>;
 <span class="kw">use</span> <span class="ident">ty</span>;
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {

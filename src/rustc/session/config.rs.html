@@ -2754,6 +2754,15 @@
 <span id="2709">2709</span>
 <span id="2710">2710</span>
 <span id="2711">2711</span>
+<span id="2712">2712</span>
+<span id="2713">2713</span>
+<span id="2714">2714</span>
+<span id="2715">2715</span>
+<span id="2716">2716</span>
+<span id="2717">2717</span>
+<span id="2718">2718</span>
+<span id="2719">2719</span>
+<span id="2720">2720</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3799,6 +3808,8 @@
           <span class="string">&quot;enable incremental compilation (experimental)&quot;</span>),
     <span class="ident">incremental_cc</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
           <span class="string">&quot;enable cross-crate incremental compilation (even more experimental)&quot;</span>),
+    <span class="ident">incremental_queries</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">true</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
+          <span class="string">&quot;enable incremental compilation support for queries (experimental)&quot;</span>),
     <span class="ident">incremental_info</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;print high-level information about incremental reuse (or the lack thereof)&quot;</span>),
     <span class="ident">incremental_dump_hash</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
@@ -4228,8 +4239,15 @@
             <span class="prelude-val">Some</span>(<span class="string">&quot;human&quot;</span>) <span class="op">=&gt;</span> <span class="ident">ErrorOutputType</span>::<span class="ident">HumanReadable</span>(<span class="ident">color</span>),
             <span class="prelude-val">Some</span>(<span class="string">&quot;json&quot;</span>)  <span class="op">=&gt;</span> <span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>(<span class="bool-val">false</span>),
             <span class="prelude-val">Some</span>(<span class="string">&quot;pretty-json&quot;</span>) <span class="op">=&gt;</span> <span class="ident">ErrorOutputType</span>::<span class="ident">Json</span>(<span class="bool-val">true</span>),
-            <span class="prelude-val">Some</span>(<span class="string">&quot;short&quot;</span>) <span class="op">=&gt;</span> <span class="ident">ErrorOutputType</span>::<span class="ident">Short</span>(<span class="ident">color</span>),
-
+            <span class="prelude-val">Some</span>(<span class="string">&quot;short&quot;</span>) <span class="op">=&gt;</span> {
+                <span class="kw">if</span> <span class="ident">nightly_options</span>::<span class="ident">is_unstable_enabled</span>(<span class="ident">matches</span>) {
+                    <span class="ident">ErrorOutputType</span>::<span class="ident">Short</span>(<span class="ident">color</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">early_error</span>(<span class="ident">ErrorOutputType</span>::<span class="ident">default</span>(),
+                                <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the `-Z unstable-options` flag must also be passed to \
+                                          enable the short error message option&quot;</span>));
+                }
+            }
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="ident">ErrorOutputType</span>::<span class="ident">HumanReadable</span>(<span class="ident">color</span>),
 
             <span class="prelude-val">Some</span>(<span class="ident">arg</span>) <span class="op">=&gt;</span> {

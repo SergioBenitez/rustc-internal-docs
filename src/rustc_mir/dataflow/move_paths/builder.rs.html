@@ -422,6 +422,8 @@
 <span id="377">377</span>
 <span id="378">378</span>
 <span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -675,8 +677,10 @@
                 }
                 <span class="self">self</span>.<span class="ident">gather_rvalue</span>(<span class="ident">rval</span>);
             }
-            <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(_) <span class="op">|</span>
-            <span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(_) <span class="op">=&gt;</span> {}
+            <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(_) <span class="op">=&gt;</span> {}
+            <span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(<span class="ident">local</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">gather_move</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>), <span class="bool-val">true</span>);
+            }
             <span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span>{ .. } <span class="op">=&gt;</span> {
                 <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">stmt</span>.<span class="ident">source_info</span>.<span class="ident">span</span>,
                           <span class="string">&quot;SetDiscriminant should not exist during borrowck&quot;</span>);
@@ -734,7 +738,7 @@
             <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">=&gt;</span> { }
 
             <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">gather_move</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">RETURN_POINTER</span>));
+                <span class="self">self</span>.<span class="ident">gather_move</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">RETURN_POINTER</span>), <span class="bool-val">false</span>);
             }
 
             <span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> { .. } <span class="op">|</span>
@@ -747,7 +751,7 @@
             }
 
             <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { <span class="kw-2">ref</span> <span class="ident">location</span>, <span class="ident">target</span>: _, <span class="ident">unwind</span>: _ } <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">gather_move</span>(<span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">gather_move</span>(<span class="ident">location</span>, <span class="bool-val">false</span>);
             }
             <span class="ident">TerminatorKind</span>::<span class="ident">DropAndReplace</span> { <span class="kw-2">ref</span> <span class="ident">location</span>, <span class="kw-2">ref</span> <span class="ident">value</span>, .. } <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">create_move_path</span>(<span class="ident">location</span>);
@@ -769,19 +773,19 @@
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
             <span class="ident">Operand</span>::<span class="ident">Constant</span>(..) <span class="op">=&gt;</span> {} <span class="comment">// not-a-move</span>
             <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">lval</span>) <span class="op">=&gt;</span> { <span class="comment">// a move</span>
-                <span class="self">self</span>.<span class="ident">gather_move</span>(<span class="ident">lval</span>);
+                <span class="self">self</span>.<span class="ident">gather_move</span>(<span class="ident">lval</span>, <span class="bool-val">false</span>);
             }
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">gather_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lval</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+    <span class="kw">fn</span> <span class="ident">gather_move</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lval</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">force</span>: <span class="ident">bool</span>) {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;gather_move({:?}, {:?})&quot;</span>, <span class="self">self</span>.<span class="ident">loc</span>, <span class="ident">lval</span>);
 
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">builder</span>.<span class="ident">tcx</span>;
         <span class="kw">let</span> <span class="ident">gcx</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">global_tcx</span>();
         <span class="kw">let</span> <span class="ident">lv_ty</span> <span class="op">=</span> <span class="ident">lval</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">builder</span>.<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
         <span class="kw">let</span> <span class="ident">erased_ty</span> <span class="op">=</span> <span class="ident">gcx</span>.<span class="ident">lift</span>(<span class="kw-2">&amp;</span><span class="ident">tcx</span>.<span class="ident">erase_regions</span>(<span class="kw-2">&amp;</span><span class="ident">lv_ty</span>)).<span class="ident">unwrap</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">erased_ty</span>.<span class="ident">moves_by_default</span>(<span class="ident">gcx</span>, <span class="self">self</span>.<span class="ident">builder</span>.<span class="ident">param_env</span>, <span class="ident">DUMMY_SP</span>) {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">force</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">erased_ty</span>.<span class="ident">moves_by_default</span>(<span class="ident">gcx</span>, <span class="self">self</span>.<span class="ident">builder</span>.<span class="ident">param_env</span>, <span class="ident">DUMMY_SP</span>) {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;gather_move({:?}, {:?}) - {:?} is Copy. skipping&quot;</span>, <span class="self">self</span>.<span class="ident">loc</span>, <span class="ident">lval</span>, <span class="ident">lv_ty</span>);
             <span class="kw">return</span>
         }

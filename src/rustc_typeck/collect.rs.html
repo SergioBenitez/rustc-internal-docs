@@ -1723,6 +1723,109 @@
 <span id="1678">1678</span>
 <span id="1679">1679</span>
 <span id="1680">1680</span>
+<span id="1681">1681</span>
+<span id="1682">1682</span>
+<span id="1683">1683</span>
+<span id="1684">1684</span>
+<span id="1685">1685</span>
+<span id="1686">1686</span>
+<span id="1687">1687</span>
+<span id="1688">1688</span>
+<span id="1689">1689</span>
+<span id="1690">1690</span>
+<span id="1691">1691</span>
+<span id="1692">1692</span>
+<span id="1693">1693</span>
+<span id="1694">1694</span>
+<span id="1695">1695</span>
+<span id="1696">1696</span>
+<span id="1697">1697</span>
+<span id="1698">1698</span>
+<span id="1699">1699</span>
+<span id="1700">1700</span>
+<span id="1701">1701</span>
+<span id="1702">1702</span>
+<span id="1703">1703</span>
+<span id="1704">1704</span>
+<span id="1705">1705</span>
+<span id="1706">1706</span>
+<span id="1707">1707</span>
+<span id="1708">1708</span>
+<span id="1709">1709</span>
+<span id="1710">1710</span>
+<span id="1711">1711</span>
+<span id="1712">1712</span>
+<span id="1713">1713</span>
+<span id="1714">1714</span>
+<span id="1715">1715</span>
+<span id="1716">1716</span>
+<span id="1717">1717</span>
+<span id="1718">1718</span>
+<span id="1719">1719</span>
+<span id="1720">1720</span>
+<span id="1721">1721</span>
+<span id="1722">1722</span>
+<span id="1723">1723</span>
+<span id="1724">1724</span>
+<span id="1725">1725</span>
+<span id="1726">1726</span>
+<span id="1727">1727</span>
+<span id="1728">1728</span>
+<span id="1729">1729</span>
+<span id="1730">1730</span>
+<span id="1731">1731</span>
+<span id="1732">1732</span>
+<span id="1733">1733</span>
+<span id="1734">1734</span>
+<span id="1735">1735</span>
+<span id="1736">1736</span>
+<span id="1737">1737</span>
+<span id="1738">1738</span>
+<span id="1739">1739</span>
+<span id="1740">1740</span>
+<span id="1741">1741</span>
+<span id="1742">1742</span>
+<span id="1743">1743</span>
+<span id="1744">1744</span>
+<span id="1745">1745</span>
+<span id="1746">1746</span>
+<span id="1747">1747</span>
+<span id="1748">1748</span>
+<span id="1749">1749</span>
+<span id="1750">1750</span>
+<span id="1751">1751</span>
+<span id="1752">1752</span>
+<span id="1753">1753</span>
+<span id="1754">1754</span>
+<span id="1755">1755</span>
+<span id="1756">1756</span>
+<span id="1757">1757</span>
+<span id="1758">1758</span>
+<span id="1759">1759</span>
+<span id="1760">1760</span>
+<span id="1761">1761</span>
+<span id="1762">1762</span>
+<span id="1763">1763</span>
+<span id="1764">1764</span>
+<span id="1765">1765</span>
+<span id="1766">1766</span>
+<span id="1767">1767</span>
+<span id="1768">1768</span>
+<span id="1769">1769</span>
+<span id="1770">1770</span>
+<span id="1771">1771</span>
+<span id="1772">1772</span>
+<span id="1773">1773</span>
+<span id="1774">1774</span>
+<span id="1775">1775</span>
+<span id="1776">1776</span>
+<span id="1777">1777</span>
+<span id="1778">1778</span>
+<span id="1779">1779</span>
+<span id="1780">1780</span>
+<span id="1781">1781</span>
+<span id="1782">1782</span>
+<span id="1783">1783</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1769,6 +1872,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeMap</span>;
 
 <span class="kw">use</span> <span class="ident">syntax</span>::{<span class="ident">abi</span>, <span class="ident">ast</span>};
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ptr</span>::<span class="ident">P</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">codemap</span>::<span class="ident">Spanned</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::{<span class="ident">Symbol</span>, <span class="ident">keywords</span>};
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
@@ -1856,7 +1960,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTrait</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
             <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">ty</span>.<span class="ident">id</span>);
             <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">generics_of</span>(<span class="ident">def_id</span>);
             <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">predicates_of</span>(<span class="ident">def_id</span>);
@@ -2580,7 +2684,7 @@
         <span class="ident">NodeExpr</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span> { <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">ExprClosure</span>(..), .. }) <span class="op">=&gt;</span> {
             <span class="prelude-val">Some</span>(<span class="ident">tcx</span>.<span class="ident">closure_base_def_id</span>(<span class="ident">def_id</span>))
         }
-        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">TyImplTrait</span>(..), .. }) <span class="op">=&gt;</span> {
+        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(..), .. }) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parent_id</span> <span class="op">=</span> <span class="ident">node_id</span>;
             <span class="kw">loop</span> {
                 <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get</span>(<span class="ident">parent_id</span>) {
@@ -2599,22 +2703,32 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">allow_defaults</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
     <span class="kw">let</span> <span class="ident">no_generics</span> <span class="op">=</span> <span class="ident">hir</span>::<span class="ident">Generics</span>::<span class="ident">empty</span>();
-    <span class="kw">let</span> <span class="ident">ast_generics</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">node</span> {
-        <span class="ident">NodeTraitItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>,
+    <span class="kw">let</span> (<span class="ident">ast_generics</span>, <span class="ident">opt_inputs</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">node</span> {
+        <span class="ident">NodeTraitItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
+            <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
+                <span class="ident">TraitItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>.<span class="ident">inputs</span>)),
+                _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">None</span>)
+            }
+        }
 
-        <span class="ident">NodeImplItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>,
+        <span class="ident">NodeImplItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
+            <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
+                <span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>.<span class="ident">inputs</span>)),
+                _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">None</span>)
+            }
+        }
 
         <span class="ident">NodeItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
-                <span class="ident">ItemFn</span>(.., <span class="kw-2">ref</span> <span class="ident">generics</span>, _) <span class="op">|</span>
-                <span class="ident">ItemImpl</span>(_, _, _, <span class="kw-2">ref</span> <span class="ident">generics</span>, ..) <span class="op">=&gt;</span> <span class="ident">generics</span>,
+                <span class="ident">ItemFn</span>(<span class="kw-2">ref</span> <span class="ident">decl</span>, .., <span class="kw-2">ref</span> <span class="ident">generics</span>, _) <span class="op">=&gt;</span> (<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">inputs</span>)),
+                <span class="ident">ItemImpl</span>(_, _, _, <span class="kw-2">ref</span> <span class="ident">generics</span>, ..) <span class="op">=&gt;</span> (<span class="ident">generics</span>, <span class="prelude-val">None</span>),
 
                 <span class="ident">ItemTy</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
                 <span class="ident">ItemEnum</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
                 <span class="ident">ItemStruct</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
                 <span class="ident">ItemUnion</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
                     <span class="ident">allow_defaults</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                    <span class="ident">generics</span>
+                    (<span class="ident">generics</span>, <span class="prelude-val">None</span>)
                 }
 
                 <span class="ident">ItemTrait</span>(_, _, <span class="kw-2">ref</span> <span class="ident">generics</span>, ..) <span class="op">=&gt;</span> {
@@ -2635,22 +2749,22 @@
                     });
 
                     <span class="ident">allow_defaults</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                    <span class="ident">generics</span>
+                    (<span class="ident">generics</span>, <span class="prelude-val">None</span>)
                 }
 
-                _ <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>
+                _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>)
             }
         }
 
         <span class="ident">NodeForeignItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
-                <span class="ident">ForeignItemStatic</span>(..) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>,
-                <span class="ident">ForeignItemFn</span>(_, _, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> <span class="ident">generics</span>,
-                <span class="ident">ForeignItemType</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>,
+                <span class="ident">ForeignItemStatic</span>(..) <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>),
+                <span class="ident">ForeignItemFn</span>(<span class="kw-2">ref</span> <span class="ident">decl</span>, _, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> (<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">inputs</span>)),
+                <span class="ident">ForeignItemType</span> <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>)
             }
         }
 
-        _ <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>
+        _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>)
     };
 
     <span class="kw">let</span> <span class="ident">has_self</span> <span class="op">=</span> <span class="ident">opt_self</span>.<span class="ident">is_some</span>();
@@ -2707,7 +2821,24 @@
             <span class="ident">synthetic</span>: <span class="ident">p</span>.<span class="ident">synthetic</span>,
         }
     });
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">types</span>: <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">opt_self</span>.<span class="ident">into_iter</span>().<span class="ident">chain</span>(<span class="ident">types</span>).<span class="ident">collect</span>();
+
+    <span class="kw">let</span> <span class="ident">fn_ins</span> <span class="op">=</span> <span class="ident">opt_inputs</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">tys</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">tys</span>[..]);
+    <span class="kw">let</span> <span class="ident">univ_impl_trait_info</span> <span class="op">=</span> <span class="ident">extract_universal_impl_trait_info</span>(<span class="ident">tcx</span>, <span class="ident">fn_ins</span>);
+    <span class="kw">let</span> <span class="ident">other_type_start</span> <span class="op">=</span> <span class="ident">type_start</span> <span class="op">+</span> <span class="ident">ast_generics</span>.<span class="ident">ty_params</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">types</span>: <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">opt_self</span>.<span class="ident">into_iter</span>()
+        .<span class="ident">chain</span>(<span class="ident">types</span>)
+        .<span class="ident">chain</span>(<span class="ident">univ_impl_trait_info</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">info</span>)<span class="op">|</span> {
+            <span class="ident">ty</span>::<span class="ident">TypeParameterDef</span> {
+                <span class="ident">index</span>: <span class="ident">other_type_start</span> <span class="op">+</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">u32</span>,
+                <span class="ident">name</span>: <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_pretty_string</span>(<span class="ident">info</span>.<span class="ident">id</span>)),
+                <span class="ident">def_id</span>: <span class="ident">info</span>.<span class="ident">def_id</span>,
+                <span class="ident">has_default</span>: <span class="bool-val">false</span>,
+                <span class="ident">object_lifetime_default</span>: <span class="ident">rl</span>::<span class="ident">Set1</span>::<span class="ident">Empty</span>,
+                <span class="ident">pure_wrt_drop</span>: <span class="bool-val">false</span>,
+                <span class="ident">synthetic</span>: <span class="prelude-val">Some</span>(<span class="ident">SyntheticTyParamKind</span>::<span class="ident">ImplTrait</span>),
+            }
+        }))
+        .<span class="ident">collect</span>();
 
     <span class="comment">// provide junk type parameter defs - the only place that</span>
     <span class="comment">// cares about anything but the length is instantiation,</span>
@@ -2881,7 +3012,7 @@
             <span class="ident">icx</span>.<span class="ident">to_ty</span>(<span class="ident">ty</span>)
         }
 
-        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">TyImplTrait</span>(..), .. }) <span class="op">=&gt;</span> {
+        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">TyImplTraitExistential</span>(..), .. }) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="ident">owner</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_parent_did</span>(<span class="ident">node_id</span>);
             <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
             <span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">owner</span>).<span class="ident">node_id_to_type</span>(<span class="ident">hir_id</span>)
@@ -3063,20 +3194,31 @@
 
     <span class="kw">let</span> <span class="ident">icx</span> <span class="op">=</span> <span class="ident">ItemCtxt</span>::<span class="ident">new</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>);
     <span class="kw">let</span> <span class="ident">no_generics</span> <span class="op">=</span> <span class="ident">hir</span>::<span class="ident">Generics</span>::<span class="ident">empty</span>();
-    <span class="kw">let</span> <span class="ident">ast_generics</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">node</span> {
-        <span class="ident">NodeTraitItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>,
+    <span class="kw">let</span> (<span class="ident">ast_generics</span>, <span class="ident">opt_inputs</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">node</span> {
+        <span class="ident">NodeTraitItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
+            <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
+                <span class="ident">TraitItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>.<span class="ident">inputs</span>)),
+                _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">None</span>)
+            }
+        }
 
-        <span class="ident">NodeImplItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>,
+        <span class="ident">NodeImplItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
+            <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
+                <span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>.<span class="ident">inputs</span>)),
+                _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">generics</span>, <span class="prelude-val">None</span>)
+            }
+        }
 
         <span class="ident">NodeItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
-                <span class="ident">ItemFn</span>(.., <span class="kw-2">ref</span> <span class="ident">generics</span>, _) <span class="op">|</span>
+                <span class="ident">ItemFn</span>(<span class="kw-2">ref</span> <span class="ident">decl</span>, .., <span class="kw-2">ref</span> <span class="ident">generics</span>, _) <span class="op">=&gt;</span> (<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">inputs</span>)),
+
                 <span class="ident">ItemImpl</span>(_, _, _, <span class="kw-2">ref</span> <span class="ident">generics</span>, ..) <span class="op">|</span>
                 <span class="ident">ItemTy</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
                 <span class="ident">ItemEnum</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
                 <span class="ident">ItemStruct</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
                 <span class="ident">ItemUnion</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">generics</span>
+                    (<span class="ident">generics</span>, <span class="prelude-val">None</span>)
                 }
 
                 <span class="ident">ItemTrait</span>(_, _, <span class="kw-2">ref</span> <span class="ident">generics</span>, .., <span class="kw-2">ref</span> <span class="ident">items</span>) <span class="op">=&gt;</span> {
@@ -3084,22 +3226,22 @@
                         <span class="ident">def_id</span>,
                         <span class="ident">substs</span>: <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>)
                     }, <span class="ident">items</span>));
-                    <span class="ident">generics</span>
+                    (<span class="ident">generics</span>, <span class="prelude-val">None</span>)
                 }
 
-                _ <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>
+                _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>)
             }
         }
 
         <span class="ident">NodeForeignItem</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> {
             <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
-                <span class="ident">ForeignItemStatic</span>(..) <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>,
-                <span class="ident">ForeignItemFn</span>(_, _, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> <span class="ident">generics</span>,
-                <span class="ident">ForeignItemType</span> <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>,
+                <span class="ident">ForeignItemStatic</span>(..) <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>),
+                <span class="ident">ForeignItemFn</span>(<span class="kw-2">ref</span> <span class="ident">decl</span>, _, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> (<span class="ident">generics</span>, <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">inputs</span>)),
+                <span class="ident">ForeignItemType</span> <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>),
             }
         }
 
-        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">TyImplTrait</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>), <span class="ident">span</span>, .. }) <span class="op">=&gt;</span> {
+        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">TyImplTraitExistential</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>), <span class="ident">span</span>, .. }) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>);
             <span class="kw">let</span> <span class="ident">anon_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_anon</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>);
 
@@ -3113,7 +3255,7 @@
             };
         }
 
-        _ <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">no_generics</span>
+        _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>)
     };
 
     <span class="kw">let</span> <span class="ident">generics</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">generics_of</span>(<span class="ident">def_id</span>);
@@ -3242,6 +3384,19 @@
 
             <span class="ident">bounds</span>.<span class="ident">predicates</span>(<span class="ident">tcx</span>, <span class="ident">assoc_ty</span>).<span class="ident">into_iter</span>()
         }))
+    }
+
+    <span class="comment">// Add predicates from impl Trait arguments</span>
+    <span class="kw">let</span> <span class="ident">fn_ins</span> <span class="op">=</span> <span class="ident">opt_inputs</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">tys</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">tys</span>[..]);
+    <span class="kw">let</span> <span class="ident">univ_impl_trait_info</span> <span class="op">=</span> <span class="ident">extract_universal_impl_trait_info</span>(<span class="ident">tcx</span>, <span class="ident">fn_ins</span>);
+    <span class="kw">for</span> <span class="ident">info</span> <span class="kw">in</span> <span class="ident">univ_impl_trait_info</span>.<span class="ident">iter</span>() {
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">name</span>();
+        <span class="kw">let</span> <span class="ident">param_ty</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">ParamTy</span>::<span class="ident">new</span>(<span class="ident">index</span>, <span class="ident">name</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+        <span class="ident">index</span> <span class="op">+=</span> <span class="number">1</span>;
+        <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">compute_bounds</span>(<span class="kw-2">&amp;</span><span class="ident">icx</span>, <span class="ident">param_ty</span>, <span class="ident">info</span>.<span class="ident">bounds</span>,
+                                    <span class="ident">SizedByDefault</span>::<span class="ident">Yes</span>,
+                                    <span class="ident">info</span>.<span class="ident">span</span>);
+        <span class="ident">predicates</span>.<span class="ident">extend</span>(<span class="ident">bounds</span>.<span class="ident">predicates</span>(<span class="ident">tcx</span>, <span class="ident">param_ty</span>));
     }
 
     <span class="comment">// Subtle: before we store the predicates into the tcx, we</span>
@@ -3403,6 +3558,57 @@
         <span class="prelude-val">Some</span>(_) <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;is_auto_impl applied to non-local def-id {:?}&quot;</span>, <span class="ident">def_id</span>)
     }
+}
+
+<span class="kw">struct</span> <span class="ident">ImplTraitUniversalInfo</span><span class="op">&lt;</span><span class="lifetime">&#39;hir</span><span class="op">&gt;</span> {
+    <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
+    <span class="ident">def_id</span>: <span class="ident">DefId</span>,
+    <span class="ident">span</span>: <span class="ident">Span</span>,
+    <span class="ident">bounds</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;hir</span> [<span class="ident">hir</span>::<span class="ident">TyParamBound</span>],
+}
+
+<span class="doccomment">/// Take some possible list of arguments and return the DefIds of the ImplTraitUniversal</span>
+<span class="doccomment">/// arguments</span>
+<span class="kw">fn</span> <span class="ident">extract_universal_impl_trait_info</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                               <span class="ident">opt_inputs</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> [<span class="ident">P</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">Ty</span><span class="op">&gt;</span>]<span class="op">&gt;</span>)
+                                               <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ImplTraitUniversalInfo</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
+{
+    <span class="comment">// A visitor for simply collecting Universally quantified impl Trait arguments</span>
+    <span class="kw">struct</span> <span class="ident">ImplTraitUniversalVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">items</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span><span class="op">&gt;</span>
+    }
+
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Visitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ImplTraitUniversalVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">nested_visit_map</span><span class="op">&lt;</span><span class="lifetime">&#39;this</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;this</span> <span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">NestedVisitorMap</span><span class="op">&lt;</span><span class="lifetime">&#39;this</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+            <span class="ident">NestedVisitorMap</span>::<span class="prelude-val">None</span>
+        }
+
+        <span class="kw">fn</span> <span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTraitUniversal</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
+                <span class="self">self</span>.<span class="ident">items</span>.<span class="ident">push</span>(<span class="ident">ty</span>);
+            }
+            <span class="ident">intravisit</span>::<span class="ident">walk_ty</span>(<span class="self">self</span>, <span class="ident">ty</span>);
+        }
+    }
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">visitor</span> <span class="op">=</span> <span class="ident">ImplTraitUniversalVisitor</span> { <span class="ident">items</span>: <span class="ident">Vec</span>::<span class="ident">new</span>() };
+
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">inputs</span>) <span class="op">=</span> <span class="ident">opt_inputs</span> {
+        <span class="kw">for</span> <span class="ident">t</span> <span class="kw">in</span> <span class="ident">inputs</span>.<span class="ident">iter</span>() {
+            <span class="ident">visitor</span>.<span class="ident">visit_ty</span>(<span class="ident">t</span>);
+        }
+    }
+
+    <span class="ident">visitor</span>.<span class="ident">items</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">ty</span><span class="op">|</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTraitUniversal</span>(_, <span class="kw-2">ref</span> <span class="ident">bounds</span>) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
+        <span class="ident">ImplTraitUniversalInfo</span> {
+            <span class="ident">id</span>: <span class="ident">ty</span>.<span class="ident">id</span>,
+            <span class="ident">def_id</span>: <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">ty</span>.<span class="ident">id</span>),
+            <span class="ident">span</span>: <span class="ident">ty</span>.<span class="ident">span</span>,
+            <span class="ident">bounds</span>: <span class="ident">bounds</span>
+        }
+    } <span class="kw">else</span> {
+        <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">ty</span>.<span class="ident">span</span>, <span class="string">&quot;this type should be a universally quantified impl trait. this is a bug&quot;</span>)
+    }).<span class="ident">collect</span>()
 }
 </pre>
 </section>

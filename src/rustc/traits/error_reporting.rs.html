@@ -1346,24 +1346,6 @@
 <span id="1301">1301</span>
 <span id="1302">1302</span>
 <span id="1303">1303</span>
-<span id="1304">1304</span>
-<span id="1305">1305</span>
-<span id="1306">1306</span>
-<span id="1307">1307</span>
-<span id="1308">1308</span>
-<span id="1309">1309</span>
-<span id="1310">1310</span>
-<span id="1311">1311</span>
-<span id="1312">1312</span>
-<span id="1313">1313</span>
-<span id="1314">1314</span>
-<span id="1315">1315</span>
-<span id="1316">1316</span>
-<span id="1317">1317</span>
-<span id="1318">1318</span>
-<span id="1319">1319</span>
-<span id="1320">1320</span>
-<span id="1321">1321</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1400,7 +1382,6 @@
 <span class="kw">use</span> <span class="ident">infer</span>::{<span class="self">self</span>, <span class="ident">InferCtxt</span>};
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">type_variable</span>::<span class="ident">TypeVariableOrigin</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">EXTRA_REQUIREMENT_IN_IMPL</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">session</span>::<span class="ident">DiagnosticMessageId</span>;
@@ -1848,30 +1829,14 @@
                                         <span class="ident">item_name</span>: <span class="ident">ast</span>::<span class="ident">Name</span>,
                                         <span class="ident">_impl_item_def_id</span>: <span class="ident">DefId</span>,
                                         <span class="ident">trait_item_def_id</span>: <span class="ident">DefId</span>,
-                                        <span class="ident">requirement</span>: <span class="kw-2">&amp;</span><span class="ident">fmt</span>::<span class="ident">Display</span>,
-                                        <span class="ident">lint_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">NodeId</span><span class="op">&gt;</span>) <span class="comment">// (*)</span>
+                                        <span class="ident">requirement</span>: <span class="kw-2">&amp;</span><span class="ident">fmt</span>::<span class="ident">Display</span>)
                                         <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
-        <span class="comment">// (*) This parameter is temporary and used only for phasing</span>
-        <span class="comment">// in the bug fix to #18937. If it is `Some`, it has a kind of</span>
-        <span class="comment">// weird effect -- the diagnostic is reported as a lint, and</span>
-        <span class="comment">// the builder which is returned is marked as canceled.</span>
-
         <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="string">&quot;impl has stricter requirements than trait&quot;</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lint_id</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">node_id</span>) <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">struct_span_lint_node</span>(<span class="ident">EXTRA_REQUIREMENT_IN_IMPL</span>,
-                                               <span class="ident">node_id</span>,
-                                               <span class="ident">error_span</span>,
-                                               <span class="ident">msg</span>)
-            }
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
-                <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>,
-                                 <span class="ident">error_span</span>,
-                                 <span class="ident">E0276</span>,
-                                 <span class="string">&quot;{}&quot;</span>, <span class="ident">msg</span>)
-            }
-        };
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>,
+                                       <span class="ident">error_span</span>,
+                                       <span class="ident">E0276</span>,
+                                       <span class="string">&quot;{}&quot;</span>, <span class="ident">msg</span>);
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">trait_item_span</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span_if_local</span>(<span class="ident">trait_item_def_id</span>) {
             <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">def_span</span>(<span class="ident">trait_item_span</span>);
@@ -1910,15 +1875,14 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">error</span> {
             <span class="ident">SelectionError</span>::<span class="ident">Unimplemented</span> <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ObligationCauseCode</span>::<span class="ident">CompareImplMethodObligation</span> {
-                    <span class="ident">item_name</span>, <span class="ident">impl_item_def_id</span>, <span class="ident">trait_item_def_id</span>, <span class="ident">lint_id</span>
+                    <span class="ident">item_name</span>, <span class="ident">impl_item_def_id</span>, <span class="ident">trait_item_def_id</span>,
                 } <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">code</span> {
                     <span class="self">self</span>.<span class="ident">report_extra_impl_obligation</span>(
                         <span class="ident">span</span>,
                         <span class="ident">item_name</span>,
                         <span class="ident">impl_item_def_id</span>,
                         <span class="ident">trait_item_def_id</span>,
-                        <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;`{}`&quot;</span>, <span class="ident">obligation</span>.<span class="ident">predicate</span>),
-                        <span class="ident">lint_id</span>)
+                        <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;`{}`&quot;</span>, <span class="ident">obligation</span>.<span class="ident">predicate</span>))
                         .<span class="ident">emit</span>();
                     <span class="kw">return</span>;
                 }

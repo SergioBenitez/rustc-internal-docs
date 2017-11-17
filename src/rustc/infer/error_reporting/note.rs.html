@@ -500,8 +500,6 @@
 <span id="455">455</span>
 <span id="456">456</span>
 <span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -950,14 +948,12 @@
             <span class="ident">infer</span>::<span class="ident">CompareImplMethodObligation</span> { <span class="ident">span</span>,
                                                  <span class="ident">item_name</span>,
                                                  <span class="ident">impl_item_def_id</span>,
-                                                 <span class="ident">trait_item_def_id</span>,
-                                                 <span class="ident">lint_id</span> } <span class="op">=&gt;</span> {
+                                                 <span class="ident">trait_item_def_id</span> } <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">report_extra_impl_obligation</span>(<span class="ident">span</span>,
                                                   <span class="ident">item_name</span>,
                                                   <span class="ident">impl_item_def_id</span>,
                                                   <span class="ident">trait_item_def_id</span>,
-                                                  <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;`{}: {}`&quot;</span>, <span class="ident">sup</span>, <span class="ident">sub</span>),
-                                                  <span class="ident">lint_id</span>)
+                                                  <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;`{}: {}`&quot;</span>, <span class="ident">sup</span>, <span class="ident">sub</span>))
             }
         }
     }

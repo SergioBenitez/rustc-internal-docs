@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["add",""],["conv",""],["pow",""],["sub",""]],"trait":[["Float","Trait for some basic operations on floats"]]});
+initSidebarItems({"mod":[["add",""],["conv",""],["div",""],["mul",""],["pow",""],["sub",""]],"trait":[["Float","Trait for some basic operations on floats"]]});

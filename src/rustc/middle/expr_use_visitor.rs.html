@@ -1035,7 +1035,7 @@
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">OverloadedCallType</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>::<span class="ident">Def</span>;
-<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>};
+<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">mem_categorization</span> <span class="kw">as</span> <span class="ident">mc</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
@@ -1930,7 +1930,7 @@
                 <span class="kw">let</span> <span class="ident">closure_def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">closure_expr</span>.<span class="ident">id</span>);
                 <span class="kw">let</span> <span class="ident">upvar_id</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">UpvarId</span> {
                     <span class="ident">var_id</span>: <span class="ident">var_hir_id</span>,
-                    <span class="ident">closure_expr_id</span>: <span class="ident">closure_def_id</span>.<span class="ident">index</span>
+                    <span class="ident">closure_expr_id</span>: <span class="ident">closure_def_id</span>.<span class="ident">to_local</span>(),
                 };
                 <span class="kw">let</span> <span class="ident">upvar_capture</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mc</span>.<span class="ident">tables</span>.<span class="ident">upvar_capture</span>(<span class="ident">upvar_id</span>);
                 <span class="kw">let</span> <span class="ident">cmt_var</span> <span class="op">=</span> <span class="macro">return_if_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">cat_captured_var</span>(<span class="ident">closure_expr</span>.<span class="ident">id</span>,

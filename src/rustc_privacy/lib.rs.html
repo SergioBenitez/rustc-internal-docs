@@ -2086,7 +2086,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTrait</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">get</span>(<span class="ident">ty</span>.<span class="ident">id</span>).<span class="ident">is_some</span>() {
                 <span class="comment">// Reach the (potentially private) type and the API being exposed.</span>
                 <span class="self">self</span>.<span class="ident">reach</span>(<span class="ident">ty</span>.<span class="ident">id</span>).<span class="ident">ty</span>().<span class="ident">predicates</span>();
@@ -3270,7 +3270,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTrait</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
             <span class="comment">// Check the traits being exposed, as they&#39;re separate,</span>
             <span class="comment">// e.g. `impl Iterator&lt;Item=T&gt;` has two predicates,</span>
             <span class="comment">// `X: Iterator` and `&lt;X as Iterator&gt;::Item == T`,</span>

@@ -294,6 +294,51 @@
 <span id="249">249</span>
 <span id="250">250</span>
 <span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ops</span>;
 
@@ -546,6 +591,51 @@
 <span class="macro">cast_into</span><span class="macro">!</span>(<span class="ident">i64</span>);
 <span class="macro">cast_into</span><span class="macro">!</span>(<span class="ident">u128</span>);
 <span class="macro">cast_into</span><span class="macro">!</span>(<span class="ident">i128</span>);
+
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">WideInt</span>: <span class="ident">Int</span> {
+    <span class="kw">type</span> <span class="ident">Output</span>: <span class="ident">Int</span>;
+
+    <span class="kw">fn</span> <span class="ident">wide_mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="self">Self</span>);
+    <span class="kw">fn</span> <span class="ident">wide_shift_left</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">low</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">count</span>: <span class="ident">i32</span>);
+    <span class="kw">fn</span> <span class="ident">wide_shift_right_with_sticky</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">low</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">count</span>: <span class="ident">i32</span>);
+}
+
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_wide_int</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tywide</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
+        <span class="kw">impl</span> <span class="ident">WideInt</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
+            <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>;
+
+            <span class="kw">fn</span> <span class="ident">wide_mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="self">Self</span>) {
+                <span class="kw">let</span> <span class="ident">product</span> <span class="op">=</span> (<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tywide</span>).<span class="ident">wrapping_mul</span>(<span class="ident">other</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tywide</span>);
+                ((<span class="ident">product</span> <span class="op">&gt;&gt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>)) <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>, <span class="ident">product</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>)
+            }
+
+            <span class="kw">fn</span> <span class="ident">wide_shift_left</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">low</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">count</span>: <span class="ident">i32</span>) {
+                <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> (<span class="kw-2">*</span><span class="self">self</span> <span class="op">&lt;&lt;</span> <span class="ident">count</span>) <span class="op">|</span> (<span class="kw-2">*</span><span class="ident">low</span> <span class="op">&gt;&gt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> <span class="op">-</span> <span class="ident">count</span>));
+                <span class="kw-2">*</span><span class="ident">low</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">low</span> <span class="op">&lt;&lt;</span> <span class="ident">count</span>;
+            }
+
+            <span class="kw">fn</span> <span class="ident">wide_shift_right_with_sticky</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">low</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">count</span>: <span class="ident">i32</span>) {
+                <span class="kw">if</span> <span class="ident">count</span> <span class="op">&lt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> {
+                    <span class="kw">let</span> <span class="ident">sticky</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">low</span> <span class="op">&lt;&lt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> <span class="op">-</span> <span class="ident">count</span>);
+                    <span class="kw-2">*</span><span class="ident">low</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&lt;&lt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> <span class="op">-</span> <span class="ident">count</span>) <span class="op">|</span> <span class="kw-2">*</span><span class="ident">low</span> <span class="op">&gt;&gt;</span> <span class="ident">count</span> <span class="op">|</span> <span class="ident">sticky</span>;
+                    <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="ident">count</span>;
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">count</span> <span class="op">&lt;</span> <span class="number">2</span><span class="kw-2">*</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> {
+                    <span class="kw">let</span> <span class="ident">sticky</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&lt;&lt;</span> (<span class="number">2</span><span class="kw-2">*</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> <span class="op">-</span> <span class="ident">count</span>) <span class="op">|</span> <span class="kw-2">*</span><span class="ident">low</span>;
+                    <span class="kw-2">*</span><span class="ident">low</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> (<span class="ident">count</span> <span class="op">-</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bits</span> ) <span class="op">|</span> <span class="ident">sticky</span>;
+                    <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="number">0</span>;
+                } <span class="kw">else</span> {
+                    <span class="kw">let</span> <span class="ident">sticky</span> <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">|</span> <span class="kw-2">*</span><span class="ident">low</span>;
+                    <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="ident">sticky</span>;
+                    <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="number">0</span>;
+                }
+            }
+        }
+    }
+}
+
+<span class="macro">impl_wide_int</span><span class="macro">!</span>(<span class="ident">u32</span>, <span class="ident">u64</span>, <span class="number">32</span>);
+<span class="macro">impl_wide_int</span><span class="macro">!</span>(<span class="ident">u64</span>, <span class="ident">u128</span>, <span class="number">64</span>);
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

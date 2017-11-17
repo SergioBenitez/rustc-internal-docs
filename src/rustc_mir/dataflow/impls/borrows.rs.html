@@ -318,7 +318,7 @@
 <span class="kw">use</span> <span class="ident">dataflow</span>::{<span class="ident">BitDenotation</span>, <span class="ident">BlockSets</span>, <span class="ident">DataflowOperator</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">dataflow</span>::<span class="ident">indexes</span>::<span class="ident">BorrowIndex</span>;
 <span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">nll</span>::<span class="ident">region_infer</span>::<span class="ident">RegionInferenceContext</span>;
-<span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">nll</span>::<span class="ident">ToRegionIndex</span>;
+<span class="kw">use</span> <span class="ident">transform</span>::<span class="ident">nll</span>::<span class="ident">ToRegionVid</span>;
 
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
 
@@ -441,7 +441,7 @@
                                            <span class="ident">location</span>: <span class="ident">Location</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">regioncx</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">nonlexical_regioncx</span> {
             <span class="kw">for</span> (<span class="ident">borrow_index</span>, <span class="ident">borrow_data</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">borrows</span>.<span class="ident">iter_enumerated</span>() {
-                <span class="kw">let</span> <span class="ident">borrow_region</span> <span class="op">=</span> <span class="ident">borrow_data</span>.<span class="ident">region</span>.<span class="ident">to_region_index</span>();
+                <span class="kw">let</span> <span class="ident">borrow_region</span> <span class="op">=</span> <span class="ident">borrow_data</span>.<span class="ident">region</span>.<span class="ident">to_region_vid</span>();
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">regioncx</span>.<span class="ident">region_contains_point</span>(<span class="ident">borrow_region</span>, <span class="ident">location</span>) {
                     <span class="comment">// The region checker really considers the borrow</span>
                     <span class="comment">// to start at the point **after** the location of</span>

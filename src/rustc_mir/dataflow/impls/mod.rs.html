@@ -668,6 +668,16 @@
 <span id="623">623</span>
 <span id="624">624</span>
 <span id="625">625</span>
+<span id="626">626</span>
+<span id="627">627</span>
+<span id="628">628</span>
+<span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1127,14 +1137,24 @@
         <span class="kw">let</span> <span class="ident">path_map</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">move_data</span>.<span class="ident">path_map</span>;
         <span class="kw">let</span> <span class="ident">rev_lookup</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">move_data</span>.<span class="ident">rev_lookup</span>;
 
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;stmt {:?} at loc {:?} moves out of move_indexes {:?}&quot;</span>,
-               <span class="ident">stmt</span>, <span class="ident">location</span>, <span class="kw-2">&amp;</span><span class="ident">loc_map</span>[<span class="ident">location</span>]);
-        <span class="kw">for</span> <span class="ident">move_index</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">loc_map</span>[<span class="ident">location</span>] {
-            <span class="comment">// Every path deinitialized by a *particular move*</span>
-            <span class="comment">// has corresponding bit, &quot;gen&#39;ed&quot; (i.e. set)</span>
-            <span class="comment">// here, in dataflow vector</span>
-            <span class="ident">zero_to_one</span>(<span class="ident">sets</span>.<span class="ident">gen_set</span>.<span class="ident">words_mut</span>(), <span class="kw-2">*</span><span class="ident">move_index</span>);
+        <span class="kw">match</span> <span class="ident">stmt</span>.<span class="ident">kind</span> {
+            <span class="comment">// this analysis only tries to find moves explicitly</span>
+            <span class="comment">// written by the user, so we ignore the move-outs</span>
+            <span class="comment">// created by `StorageDead` and at the beginning</span>
+            <span class="comment">// of a function.</span>
+            <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(_) <span class="op">=&gt;</span> {}
+            _ <span class="op">=&gt;</span> {
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;stmt {:?} at loc {:?} moves out of move_indexes {:?}&quot;</span>,
+                       <span class="ident">stmt</span>, <span class="ident">location</span>, <span class="kw-2">&amp;</span><span class="ident">loc_map</span>[<span class="ident">location</span>]);
+                <span class="kw">for</span> <span class="ident">move_index</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">loc_map</span>[<span class="ident">location</span>] {
+                    <span class="comment">// Every path deinitialized by a *particular move*</span>
+                    <span class="comment">// has corresponding bit, &quot;gen&#39;ed&quot; (i.e. set)</span>
+                    <span class="comment">// here, in dataflow vector</span>
+                    <span class="ident">zero_to_one</span>(<span class="ident">sets</span>.<span class="ident">gen_set</span>.<span class="ident">words_mut</span>(), <span class="kw-2">*</span><span class="ident">move_index</span>);
+                }
+            }
         }
+
         <span class="kw">let</span> <span class="ident">bits_per_block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bits_per_block</span>();
         <span class="kw">match</span> <span class="ident">stmt</span>.<span class="ident">kind</span> {
             <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span> { .. } <span class="op">=&gt;</span> {

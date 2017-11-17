@@ -4767,30 +4767,6 @@
 <span id="4722">4722</span>
 <span id="4723">4723</span>
 <span id="4724">4724</span>
-<span id="4725">4725</span>
-<span id="4726">4726</span>
-<span id="4727">4727</span>
-<span id="4728">4728</span>
-<span id="4729">4729</span>
-<span id="4730">4730</span>
-<span id="4731">4731</span>
-<span id="4732">4732</span>
-<span id="4733">4733</span>
-<span id="4734">4734</span>
-<span id="4735">4735</span>
-<span id="4736">4736</span>
-<span id="4737">4737</span>
-<span id="4738">4738</span>
-<span id="4739">4739</span>
-<span id="4740">4740</span>
-<span id="4741">4741</span>
-<span id="4742">4742</span>
-<span id="4743">4743</span>
-<span id="4744">4744</span>
-<span id="4745">4745</span>
-<span id="4746">4746</span>
-<span id="4747">4747</span>
-<span id="4748">4748</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -8612,46 +8588,6 @@ let s = Simba { mother: 1, father: 0 }; // ok!
 ```
 &quot;##</span>,
 
-<span class="ident">E0562</span>: <span class="string">r##&quot;
-Abstract return types (written `impl Trait` for some trait `Trait`) are only
-allowed as function return types.
-
-Erroneous code example:
-
-```compile_fail,E0562
-#![feature(conservative_impl_trait)]
-
-fn main() {
-    let count_to_ten: impl Iterator&lt;Item=usize&gt; = 0..10;
-    // error: `impl Trait` not allowed outside of function and inherent method
-    //        return types
-    for i in count_to_ten {
-        println!(&quot;{}&quot;, i);
-    }
-}
-```
-
-Make sure `impl Trait` only appears in return-type position.
-
-```
-#![feature(conservative_impl_trait)]
-
-fn count_to_n(n: usize) -&gt; impl Iterator&lt;Item=usize&gt; {
-    0..n
-}
-
-fn main() {
-    for i in count_to_n(10) {  // ok!
-        println!(&quot;{}&quot;, i);
-    }
-}
-```
-
-See [RFC 1522] for more details.
-
-[RFC 1522]: https://github.com/rust-lang/rfcs/blob/master/text/1522-conservative-impl-trait.md
-&quot;##</span>,
-
 <span class="ident">E0569</span>: <span class="string">r##&quot;
 If an impl has a generic parameter with the `#[may_dangle]` attribute, then
 that impl must be declared as an `unsafe impl.
@@ -9457,6 +9393,22 @@ effects for this code.
 
 It is recommended that you look for a `new` function or equivalent in the
 crate&#39;s documentation.
+&quot;##</span>,
+
+<span class="ident">E0643</span>: <span class="string">r##&quot;
+This error indicates that there is a mismatch between generic parameters and
+impl Trait parameters in a trait declaration versus its impl.
+
+```compile_fail,E0643
+#![feature(universal_impl_trait)]
+trait Foo {
+    fn foo(&amp;self, _: &amp;impl Iterator);
+}
+impl Foo for () {
+    fn foo&lt;U: Iterator&gt;(&amp;self, _: &amp;U) { } // error method `foo` has incompatible
+                                          // signature for trait
+}
+```
 &quot;##</span>,
 
 }

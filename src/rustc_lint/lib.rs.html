@@ -320,8 +320,6 @@
 <span id="275">275</span>
 <span id="276">276</span>
 <span id="277">277</span>
-<span id="278">278</span>
-<span id="279">279</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -533,10 +531,6 @@
             <span class="ident">reference</span>: <span class="string">&quot;issue #36887 &lt;https://github.com/rust-lang/rust/issues/36887&gt;&quot;</span>,
         },
         <span class="ident">FutureIncompatibleInfo</span> {
-            <span class="ident">id</span>: <span class="ident">LintId</span>::<span class="ident">of</span>(<span class="ident">EXTRA_REQUIREMENT_IN_IMPL</span>),
-            <span class="ident">reference</span>: <span class="string">&quot;issue #37166 &lt;https://github.com/rust-lang/rust/issues/37166&gt;&quot;</span>,
-        },
-        <span class="ident">FutureIncompatibleInfo</span> {
             <span class="ident">id</span>: <span class="ident">LintId</span>::<span class="ident">of</span>(<span class="ident">LEGACY_DIRECTORY_OWNERSHIP</span>),
             <span class="ident">reference</span>: <span class="string">&quot;issue #37872 &lt;https://github.com/rust-lang/rust/issues/37872&gt;&quot;</span>,
         },
@@ -601,6 +595,8 @@
         <span class="string">&quot;converted into hard error, see https://github.com/rust-lang/rust/issues/36891&quot;</span>);
     <span class="ident">store</span>.<span class="ident">register_removed</span>(<span class="string">&quot;lifetime_underscore&quot;</span>,
         <span class="string">&quot;converted into hard error, see https://github.com/rust-lang/rust/issues/36892&quot;</span>);
+    <span class="ident">store</span>.<span class="ident">register_removed</span>(<span class="string">&quot;extra_requirement_in_impl&quot;</span>,
+        <span class="string">&quot;converted into hard error, see https://github.com/rust-lang/rust/issues/37166&quot;</span>);
 }
 </pre>
 </section>

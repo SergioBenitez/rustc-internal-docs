@@ -2368,6 +2368,88 @@
 <span id="2323">2323</span>
 <span id="2324">2324</span>
 <span id="2325">2325</span>
+<span id="2326">2326</span>
+<span id="2327">2327</span>
+<span id="2328">2328</span>
+<span id="2329">2329</span>
+<span id="2330">2330</span>
+<span id="2331">2331</span>
+<span id="2332">2332</span>
+<span id="2333">2333</span>
+<span id="2334">2334</span>
+<span id="2335">2335</span>
+<span id="2336">2336</span>
+<span id="2337">2337</span>
+<span id="2338">2338</span>
+<span id="2339">2339</span>
+<span id="2340">2340</span>
+<span id="2341">2341</span>
+<span id="2342">2342</span>
+<span id="2343">2343</span>
+<span id="2344">2344</span>
+<span id="2345">2345</span>
+<span id="2346">2346</span>
+<span id="2347">2347</span>
+<span id="2348">2348</span>
+<span id="2349">2349</span>
+<span id="2350">2350</span>
+<span id="2351">2351</span>
+<span id="2352">2352</span>
+<span id="2353">2353</span>
+<span id="2354">2354</span>
+<span id="2355">2355</span>
+<span id="2356">2356</span>
+<span id="2357">2357</span>
+<span id="2358">2358</span>
+<span id="2359">2359</span>
+<span id="2360">2360</span>
+<span id="2361">2361</span>
+<span id="2362">2362</span>
+<span id="2363">2363</span>
+<span id="2364">2364</span>
+<span id="2365">2365</span>
+<span id="2366">2366</span>
+<span id="2367">2367</span>
+<span id="2368">2368</span>
+<span id="2369">2369</span>
+<span id="2370">2370</span>
+<span id="2371">2371</span>
+<span id="2372">2372</span>
+<span id="2373">2373</span>
+<span id="2374">2374</span>
+<span id="2375">2375</span>
+<span id="2376">2376</span>
+<span id="2377">2377</span>
+<span id="2378">2378</span>
+<span id="2379">2379</span>
+<span id="2380">2380</span>
+<span id="2381">2381</span>
+<span id="2382">2382</span>
+<span id="2383">2383</span>
+<span id="2384">2384</span>
+<span id="2385">2385</span>
+<span id="2386">2386</span>
+<span id="2387">2387</span>
+<span id="2388">2388</span>
+<span id="2389">2389</span>
+<span id="2390">2390</span>
+<span id="2391">2391</span>
+<span id="2392">2392</span>
+<span id="2393">2393</span>
+<span id="2394">2394</span>
+<span id="2395">2395</span>
+<span id="2396">2396</span>
+<span id="2397">2397</span>
+<span id="2398">2398</span>
+<span id="2399">2399</span>
+<span id="2400">2400</span>
+<span id="2401">2401</span>
+<span id="2402">2402</span>
+<span id="2403">2403</span>
+<span id="2404">2404</span>
+<span id="2405">2405</span>
+<span id="2406">2406</span>
+<span id="2407">2407</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2380,7 +2462,9 @@
 <span class="comment">// except according to those terms.</span>
 
 <span class="kw">use</span> <span class="ident">cmp</span>::<span class="ident">Ordering</span>;
+<span class="kw">use</span> <span class="ident">ops</span>::<span class="ident">Try</span>;
 
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">AlwaysOk</span>, <span class="ident">LoopState</span>};
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Chain</span>, <span class="ident">Cycle</span>, <span class="ident">Cloned</span>, <span class="ident">Enumerate</span>, <span class="ident">Filter</span>, <span class="ident">FilterMap</span>, <span class="ident">FlatMap</span>, <span class="ident">Fuse</span>};
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Inspect</span>, <span class="ident">Map</span>, <span class="ident">Peekable</span>, <span class="ident">Scan</span>, <span class="ident">Skip</span>, <span class="ident">SkipWhile</span>, <span class="ident">StepBy</span>, <span class="ident">Take</span>, <span class="ident">TakeWhile</span>, <span class="ident">Rev</span>};
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">Zip</span>, <span class="ident">Sum</span>, <span class="ident">Product</span>};
@@ -2622,12 +2706,8 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="self">self</span> {
-            <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> { <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) }
-            <span class="ident">n</span> <span class="op">-=</span> <span class="number">1</span>;
-        }
-        <span class="prelude-val">None</span>
+    <span class="kw">fn</span> <span class="ident">nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">spec_nth</span>(<span class="ident">n</span>)
     }
 
     <span class="doccomment">/// Creates an iterator starting at the same point, but stepping by</span>
@@ -3708,6 +3788,78 @@
         (<span class="ident">left</span>, <span class="ident">right</span>)
     }
 
+    <span class="doccomment">/// An iterator method that applies a function as long as it returns</span>
+    <span class="doccomment">/// successfully, producing a single, final value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `try_fold()` takes two arguments: an initial value, and a closure with</span>
+    <span class="doccomment">/// two arguments: an &#39;accumulator&#39;, and an element. The closure either</span>
+    <span class="doccomment">/// returns successfully, with the value that the accumulator should have</span>
+    <span class="doccomment">/// for the next iteration, or it returns failure, with an error value that</span>
+    <span class="doccomment">/// is propagated back to the caller immediately (short-circuiting).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The initial value is the value the accumulator will have on the first</span>
+    <span class="doccomment">/// call.  If applying the closure succeeded against every element of the</span>
+    <span class="doccomment">/// iterator, `try_fold()` returns the final accumulator as success.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Folding is useful whenever you have a collection of something, and want</span>
+    <span class="doccomment">/// to produce a single value from it.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Note to Implementors</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Most of the other (forward) methods have default implementations in</span>
+    <span class="doccomment">/// terms of this one, so try to implement this explicitly if it can</span>
+    <span class="doccomment">/// do something better than the default `for` loop implementation.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// In particular, try to have this call `try_fold()` on the internal parts</span>
+    <span class="doccomment">/// from which this iterator is composed.  If multiple calls are needed,</span>
+    <span class="doccomment">/// the `?` operator be convenient for chaining the accumulator value along,</span>
+    <span class="doccomment">/// but beware any invariants that need to be upheld before those early</span>
+    <span class="doccomment">/// returns.  This is a `&amp;mut self` method, so iteration needs to be</span>
+    <span class="doccomment">/// resumable after hitting an error here.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Basic usage:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// #![feature(iterator_try_fold)]</span>
+    <span class="doccomment">/// let a = [1, 2, 3];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // the checked sum of all of the elements of the array</span>
+    <span class="doccomment">/// let sum = a.iter()</span>
+    <span class="doccomment">///            .try_fold(0i8, |acc, &amp;x| acc.checked_add(x));</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(sum, Some(6));</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Short-circuiting:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// #![feature(iterator_try_fold)]</span>
+    <span class="doccomment">/// let a = [10, 20, 30, 100, 40, 50];</span>
+    <span class="doccomment">/// let mut it = a.iter();</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // This sum overflows when adding the 100 element</span>
+    <span class="doccomment">/// let sum = it.try_fold(0i8, |acc, &amp;x| acc.checked_add(x));</span>
+    <span class="doccomment">/// assert_eq!(sum, None);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // Because it short-circuited, the remaining elements are still</span>
+    <span class="doccomment">/// // available through the iterator.</span>
+    <span class="doccomment">/// assert_eq!(it.len(), 2);</span>
+    <span class="doccomment">/// assert_eq!(it.next(), Some(&amp;40));</span>
+    <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;iterator_try_fold&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;45594&quot;</span>)]</span>
+    <span class="kw">fn</span> <span class="ident">try_fold</span><span class="op">&lt;</span><span class="ident">B</span>, <span class="ident">F</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">init</span>: <span class="ident">B</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">R</span> <span class="kw">where</span>
+        <span class="self">Self</span>: <span class="ident">Sized</span>, <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">B</span>, <span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">R</span>, <span class="ident">R</span>: <span class="ident">Try</span><span class="op">&lt;</span><span class="prelude-val">Ok</span><span class="op">=</span><span class="ident">B</span><span class="op">&gt;</span>
+    {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">accum</span> <span class="op">=</span> <span class="ident">init</span>;
+        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">next</span>() {
+            <span class="ident">accum</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">accum</span>, <span class="ident">x</span>)<span class="question-mark">?</span>;
+        }
+        <span class="ident">Try</span>::<span class="ident">from_ok</span>(<span class="ident">accum</span>)
+    }
+
     <span class="doccomment">/// An iterator method that applies a function, producing a single, final value.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// `fold()` takes two arguments: an initial value, and a closure with two</span>
@@ -3732,7 +3884,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// let a = [1, 2, 3];</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// // the sum of all of the elements of a</span>
+    <span class="doccomment">/// // the sum of all of the elements of the array</span>
     <span class="doccomment">/// let sum = a.iter()</span>
     <span class="doccomment">///            .fold(0, |acc, &amp;x| acc + x);</span>
     <span class="doccomment">///</span>
@@ -3774,14 +3926,10 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-    <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">B</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">init</span>: <span class="ident">B</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">B</span> <span class="kw">where</span>
+    <span class="kw">fn</span> <span class="ident">fold</span><span class="op">&lt;</span><span class="ident">B</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">init</span>: <span class="ident">B</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">B</span> <span class="kw">where</span>
         <span class="self">Self</span>: <span class="ident">Sized</span>, <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="ident">B</span>, <span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">B</span>,
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">accum</span> <span class="op">=</span> <span class="ident">init</span>;
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="self">self</span> {
-            <span class="ident">accum</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">accum</span>, <span class="ident">x</span>);
-        }
-        <span class="ident">accum</span>
+        <span class="self">self</span>.<span class="ident">try_fold</span>(<span class="ident">init</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">AlwaysOk</span>(<span class="ident">f</span>(<span class="ident">acc</span>, <span class="ident">x</span>))).<span class="number">0</span>
     }
 
     <span class="doccomment">/// Tests if every element of the iterator matches a predicate.</span>
@@ -3826,12 +3974,10 @@
     <span class="kw">fn</span> <span class="ident">all</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> <span class="kw">where</span>
         <span class="self">Self</span>: <span class="ident">Sized</span>, <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
     {
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="self">self</span> {
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">f</span>(<span class="ident">x</span>) {
-                <span class="kw">return</span> <span class="bool-val">false</span>;
-            }
-        }
-        <span class="bool-val">true</span>
+        <span class="self">self</span>.<span class="ident">try_fold</span>((), <span class="kw">move</span> <span class="op">|</span>(), <span class="ident">x</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">f</span>(<span class="ident">x</span>) { <span class="ident">LoopState</span>::<span class="ident">Continue</span>(()) }
+            <span class="kw">else</span> { <span class="ident">LoopState</span>::<span class="ident">Break</span>(()) }
+        }) <span class="op">==</span> <span class="ident">LoopState</span>::<span class="ident">Continue</span>(())
     }
 
     <span class="doccomment">/// Tests if any element of the iterator matches a predicate.</span>
@@ -3877,12 +4023,10 @@
         <span class="self">Self</span>: <span class="ident">Sized</span>,
         <span class="ident">F</span>: <span class="ident">FnMut</span>(<span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
     {
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="self">self</span> {
-            <span class="kw">if</span> <span class="ident">f</span>(<span class="ident">x</span>) {
-                <span class="kw">return</span> <span class="bool-val">true</span>;
-            }
-        }
-        <span class="bool-val">false</span>
+        <span class="self">self</span>.<span class="ident">try_fold</span>((), <span class="kw">move</span> <span class="op">|</span>(), <span class="ident">x</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">f</span>(<span class="ident">x</span>) { <span class="ident">LoopState</span>::<span class="ident">Break</span>(()) }
+            <span class="kw">else</span> { <span class="ident">LoopState</span>::<span class="ident">Continue</span>(()) }
+        }) <span class="op">==</span> <span class="ident">LoopState</span>::<span class="ident">Break</span>(())
     }
 
     <span class="doccomment">/// Searches for an element of an iterator that satisfies a predicate.</span>
@@ -3933,10 +4077,10 @@
         <span class="self">Self</span>: <span class="ident">Sized</span>,
         <span class="ident">P</span>: <span class="ident">FnMut</span>(<span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
     {
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="self">self</span> {
-            <span class="kw">if</span> <span class="ident">predicate</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) { <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) }
-        }
-        <span class="prelude-val">None</span>
+        <span class="self">self</span>.<span class="ident">try_fold</span>((), <span class="kw">move</span> <span class="op">|</span>(), <span class="ident">x</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">predicate</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>) { <span class="ident">LoopState</span>::<span class="ident">Break</span>(<span class="ident">x</span>) }
+            <span class="kw">else</span> { <span class="ident">LoopState</span>::<span class="ident">Continue</span>(()) }
+        }).<span class="ident">break_value</span>()
     }
 
     <span class="doccomment">/// Searches for an element in an iterator, returning its index.</span>
@@ -3994,18 +4138,17 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">rustc_inherit_overflow_checks</span>]</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="kw">fn</span> <span class="ident">position</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">predicate</span>: <span class="ident">P</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">where</span>
         <span class="self">Self</span>: <span class="ident">Sized</span>,
         <span class="ident">P</span>: <span class="ident">FnMut</span>(<span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
     {
-        <span class="comment">// `enumerate` might overflow.</span>
-        <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">x</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">enumerate</span>() {
-            <span class="kw">if</span> <span class="ident">predicate</span>(<span class="ident">x</span>) {
-                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">i</span>);
-            }
-        }
-        <span class="prelude-val">None</span>
+        <span class="comment">// The addition might panic on overflow</span>
+        <span class="self">self</span>.<span class="ident">try_fold</span>(<span class="number">0</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">i</span>, <span class="ident">x</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">predicate</span>(<span class="ident">x</span>) { <span class="ident">LoopState</span>::<span class="ident">Break</span>(<span class="ident">i</span>) }
+            <span class="kw">else</span> { <span class="ident">LoopState</span>::<span class="ident">Continue</span>(<span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) }
+        }).<span class="ident">break_value</span>()
     }
 
     <span class="doccomment">/// Searches for an element in an iterator from the right, returning its</span>
@@ -4052,17 +4195,14 @@
         <span class="ident">P</span>: <span class="ident">FnMut</span>(<span class="self">Self</span>::<span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>,
         <span class="self">Self</span>: <span class="ident">Sized</span> <span class="op">+</span> <span class="ident">ExactSizeIterator</span> <span class="op">+</span> <span class="ident">DoubleEndedIterator</span>
     {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
-
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_back</span>() {
-            <span class="comment">// No need for an overflow check here, because `ExactSizeIterator`</span>
-            <span class="comment">// implies that the number of elements fits into a `usize`.</span>
-            <span class="ident">i</span> <span class="op">-=</span> <span class="number">1</span>;
-            <span class="kw">if</span> <span class="ident">predicate</span>(<span class="ident">v</span>) {
-                <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">i</span>);
-            }
-        }
-        <span class="prelude-val">None</span>
+        <span class="comment">// No need for an overflow check here, because `ExactSizeIterator`</span>
+        <span class="comment">// implies that the number of elements fits into a `usize`.</span>
+        <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">len</span>();
+        <span class="self">self</span>.<span class="ident">try_rfold</span>(<span class="ident">n</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">i</span>, <span class="ident">x</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>;
+            <span class="kw">if</span> <span class="ident">predicate</span>(<span class="ident">x</span>) { <span class="ident">LoopState</span>::<span class="ident">Break</span>(<span class="ident">i</span>) }
+            <span class="kw">else</span> { <span class="ident">LoopState</span>::<span class="ident">Continue</span>(<span class="ident">i</span>) }
+        }).<span class="ident">break_value</span>()
     }
 
     <span class="doccomment">/// Returns the maximum element of an iterator.</span>
@@ -4293,10 +4433,10 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ts</span>: <span class="ident">FromA</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">us</span>: <span class="ident">FromB</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
 
-        <span class="kw">for</span> (<span class="ident">t</span>, <span class="ident">u</span>) <span class="kw">in</span> <span class="self">self</span> {
+        <span class="self">self</span>.<span class="ident">for_each</span>(<span class="op">|</span>(<span class="ident">t</span>, <span class="ident">u</span>)<span class="op">|</span> {
             <span class="ident">ts</span>.<span class="ident">extend</span>(<span class="prelude-val">Some</span>(<span class="ident">t</span>));
             <span class="ident">us</span>.<span class="ident">extend</span>(<span class="prelude-val">Some</span>(<span class="ident">u</span>));
-        }
+        });
 
         (<span class="ident">ts</span>, <span class="ident">us</span>)
     }
@@ -4671,17 +4811,17 @@
     <span class="comment">// start with the first element as our selection. This avoids</span>
     <span class="comment">// having to use `Option`s inside the loop, translating to a</span>
     <span class="comment">// sizeable performance gain (6x in one case).</span>
-    <span class="ident">it</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">sel</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sel_p</span> <span class="op">=</span> <span class="ident">f_proj</span>(<span class="kw-2">&amp;</span><span class="ident">sel</span>);
+    <span class="ident">it</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">first</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="ident">first_p</span> <span class="op">=</span> <span class="ident">f_proj</span>(<span class="kw-2">&amp;</span><span class="ident">first</span>);
 
-        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="ident">it</span> {
+        <span class="ident">it</span>.<span class="ident">fold</span>((<span class="ident">first_p</span>, <span class="ident">first</span>), <span class="op">|</span>(<span class="ident">sel_p</span>, <span class="ident">sel</span>), <span class="ident">x</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">x_p</span> <span class="op">=</span> <span class="ident">f_proj</span>(<span class="kw-2">&amp;</span><span class="ident">x</span>);
             <span class="kw">if</span> <span class="ident">f_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">sel_p</span>, <span class="kw-2">&amp;</span><span class="ident">sel</span>, <span class="kw-2">&amp;</span><span class="ident">x_p</span>, <span class="kw-2">&amp;</span><span class="ident">x</span>) {
-                <span class="ident">sel</span> <span class="op">=</span> <span class="ident">x</span>;
-                <span class="ident">sel_p</span> <span class="op">=</span> <span class="ident">x_p</span>;
+                (<span class="ident">x_p</span>, <span class="ident">x</span>)
+            } <span class="kw">else</span> {
+                (<span class="ident">sel_p</span>, <span class="ident">sel</span>)
             }
-        }
-        (<span class="ident">sel_p</span>, <span class="ident">sel</span>)
+        })
     })
 }
 
@@ -4693,6 +4833,30 @@
     <span class="kw">fn</span> <span class="ident">nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         (<span class="kw-2">*</span><span class="kw-2">*</span><span class="self">self</span>).<span class="ident">nth</span>(<span class="ident">n</span>)
     }
+}
+
+
+<span class="kw">trait</span> <span class="ident">SpecIterator</span> : <span class="ident">Iterator</span> {
+    <span class="kw">fn</span> <span class="ident">spec_nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span>;
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">SpecIterator</span> <span class="kw">for</span> <span class="ident">I</span> {
+    <span class="ident">default</span> <span class="kw">fn</span> <span class="ident">spec_nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="self">self</span> {
+            <span class="kw">if</span> <span class="ident">n</span> <span class="op">==</span> <span class="number">0</span> { <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">x</span>) }
+            <span class="ident">n</span> <span class="op">-=</span> <span class="number">1</span>;
+        }
+        <span class="prelude-val">None</span>
+   }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Iterator</span> <span class="op">+</span> <span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">SpecIterator</span> <span class="kw">for</span> <span class="ident">I</span> {
+    <span class="kw">fn</span> <span class="ident">spec_nth</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">try_fold</span>(<span class="ident">n</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">i</span>, <span class="ident">x</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> { <span class="ident">LoopState</span>::<span class="ident">Break</span>(<span class="ident">x</span>) }
+            <span class="kw">else</span> { <span class="ident">LoopState</span>::<span class="ident">Continue</span>(<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>) }
+        }).<span class="ident">break_value</span>()
+   }
 }
 </pre>
 </section>

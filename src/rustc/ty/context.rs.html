@@ -3155,7 +3155,7 @@
                 };
                 <span class="kw">let</span> <span class="ident">closure_def_id</span> <span class="op">=</span> <span class="ident">DefId</span> {
                     <span class="ident">krate</span>: <span class="ident">local_id_root</span>.<span class="ident">krate</span>,
-                    <span class="ident">index</span>: <span class="ident">closure_expr_id</span>,
+                    <span class="ident">index</span>: <span class="ident">closure_expr_id</span>.<span class="ident">to_def_id</span>().<span class="ident">index</span>,
                 };
                 (<span class="ident">hcx</span>.<span class="ident">def_path_hash</span>(<span class="ident">var_owner_def_id</span>),
                  <span class="ident">var_id</span>.<span class="ident">local_id</span>,
@@ -3693,9 +3693,9 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">serialize_query_result_cache</span><span class="op">&lt;</span><span class="ident">E</span><span class="op">&gt;</span>(<span class="self">self</span>,
                                            <span class="ident">encoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">E</span>)
                                            <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">E</span>::<span class="ident">Error</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">E</span>: ::<span class="ident">rustc_serialize</span>::<span class="ident">Encoder</span>
+        <span class="kw">where</span> <span class="ident">E</span>: <span class="ident">ty</span>::<span class="ident">codec</span>::<span class="ident">TyEncoder</span>
     {
-        <span class="self">self</span>.<span class="ident">on_disk_query_result_cache</span>.<span class="ident">serialize</span>(<span class="ident">encoder</span>)
+        <span class="self">self</span>.<span class="ident">on_disk_query_result_cache</span>.<span class="ident">serialize</span>(<span class="self">self</span>.<span class="ident">global_tcx</span>(), <span class="self">self</span>.<span class="ident">cstore</span>, <span class="ident">encoder</span>)
     }
 
 }

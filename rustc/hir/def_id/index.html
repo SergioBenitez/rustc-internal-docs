@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rustc/hir/def_id.rs.html#11-201' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/rustc/hir/def_id.rs.html#11-243' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -72,6 +72,18 @@ index and a def index.</p>
                                   title='struct rustc::hir::def_id::DefIndex'>DefIndex</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="struct" href="struct.LocalDefId.html"
+                                  title='struct rustc::hir::def_id::LocalDefId'>LocalDefId</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>A LocalDefId is equivalent to a DefId with <code>krate == LOCAL_CRATE</code>. Since
+we encode this information in the type, we can ensure at compile time that
+no DefIds from upstream crates get thrown into the mix. There are quite a
+few cases where we know that only DefIds from the local crate are expected
+and a DefId from a different crate would signify a bug somewhere. This
+is when LocalDefId comes in handy.</p>
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
@@ -118,6 +130,14 @@ thanks to <code>NodeCollector::new</code>.</p>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] <p>Item definitions in the currently-compiled crate would have the CrateNum
 LOCAL_CRATE in their DefId.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="constant" href="constant.RESERVED_FOR_INCR_COMP_CACHE.html"
+                                  title='constant rustc::hir::def_id::RESERVED_FOR_INCR_COMP_CACHE'>RESERVED_FOR_INCR_COMP_CACHE</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>A special CrateNum that we use for the tcx.rcache when decoding from
+the incr. comp. cache.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>

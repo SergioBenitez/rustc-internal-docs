@@ -501,7 +501,7 @@
 
 <span class="kw">use</span> <span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>;
-<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">DefIndex</span>, <span class="ident">LOCAL_CRATE</span>};
+<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">LOCAL_CRATE</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span> <span class="kw">as</span> <span class="ident">hir_map</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">definitions</span>::{<span class="ident">Definitions</span>, <span class="ident">DefKey</span>, <span class="ident">DefPathTable</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">svh</span>::<span class="ident">Svh</span>;
@@ -657,7 +657,7 @@
 <span class="doccomment">/// upstream crate.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EncodedMetadataHash</span> {
-    <span class="kw">pub</span> <span class="ident">def_index</span>: <span class="ident">DefIndex</span>,
+    <span class="kw">pub</span> <span class="ident">def_index</span>: <span class="ident">u32</span>,
     <span class="kw">pub</span> <span class="ident">hash</span>: <span class="ident">ich</span>::<span class="ident">Fingerprint</span>,
 }
 

@@ -1799,6 +1799,7 @@
 <span id="1754">1754</span>
 <span id="1755">1755</span>
 <span id="1756">1756</span>
+<span id="1757">1757</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3407,7 +3408,8 @@
                                        <span class="ident">UseSoftFP</span>: <span class="ident">bool</span>,
                                        <span class="ident">PositionIndependentExecutable</span>: <span class="ident">bool</span>,
                                        <span class="ident">FunctionSections</span>: <span class="ident">bool</span>,
-                                       <span class="ident">DataSections</span>: <span class="ident">bool</span>)
+                                       <span class="ident">DataSections</span>: <span class="ident">bool</span>,
+                                       <span class="ident">TrapUnreachable</span>: <span class="ident">bool</span>)
                                        <span class="op">-&gt;</span> <span class="ident">TargetMachineRef</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustDisposeTargetMachine</span>(<span class="ident">T</span>: <span class="ident">TargetMachineRef</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddAnalysisPasses</span>(<span class="ident">T</span>: <span class="ident">TargetMachineRef</span>, <span class="ident">PM</span>: <span class="ident">PassManagerRef</span>, <span class="ident">M</span>: <span class="ident">ModuleRef</span>);

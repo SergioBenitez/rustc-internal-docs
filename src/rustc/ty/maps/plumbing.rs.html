@@ -925,6 +925,26 @@
 <span id="880">880</span>
 <span id="881">881</span>
 <span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -948,13 +968,13 @@
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">item_path</span>;
 
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::{<span class="ident">FxHashMap</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::<span class="ident">RefMut</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::{<span class="ident">Ref</span>, <span class="ident">RefMut</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">marker</span>::<span class="ident">PhantomData</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
 
-<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="ident">QueryDescription</span><span class="op">&gt;</span> {
-    <span class="ident">phantom</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>,
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">D</span>: <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+    <span class="ident">phantom</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span>(<span class="ident">D</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> ())<span class="op">&gt;</span>,
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">map</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Key</span>, <span class="ident">QueryValue</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Value</span><span class="op">&gt;&gt;</span>,
 }
 
@@ -974,13 +994,18 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">QueryDescription</span><span class="op">&gt;</span> <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="ident">M</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">M</span>: <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">M</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">M</span><span class="op">&gt;</span> {
         <span class="ident">QueryMap</span> {
             <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
             <span class="ident">map</span>: <span class="ident">FxHashMap</span>(),
         }
     }
+}
+
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">GetCacheInternal</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>: <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Sized</span> {
+    <span class="kw">fn</span> <span class="ident">get_cache_internal</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                              <span class="op">-&gt;</span> <span class="ident">Ref</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="self">Self</span><span class="op">&gt;&gt;</span>;
 }
 
 <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct</span> <span class="ident">CycleError</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
@@ -1170,6 +1195,13 @@
             <span class="kw">type</span> <span class="ident">Value</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">V</span>;
         }
 
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> <span class="ident">GetCacheInternal</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> {
+            <span class="kw">fn</span> <span class="ident">get_cache_internal</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span>)
+                                      <span class="op">-&gt;</span> ::<span class="ident">std</span>::<span class="ident">cell</span>::<span class="ident">Ref</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">QueryMap</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="self">Self</span><span class="op">&gt;&gt;</span> {
+                <span class="ident">tcx</span>.<span class="ident">maps</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>.<span class="ident">borrow</span>()
+            }
+        }
+
         <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="lifetime">&#39;lcx</span><span class="op">&gt;</span> <span class="ident">queries</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> {
 
             <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused</span>)]</span>
@@ -1307,18 +1339,26 @@
             {
                 <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">is_green</span>(<span class="ident">dep_node_index</span>));
 
-                <span class="comment">// We don&#39;t do any caching yet, so recompute.</span>
-                <span class="comment">// The diagnostics for this query have already been promoted to</span>
-                <span class="comment">// the current session during try_mark_green(), so we can ignore</span>
-                <span class="comment">// them here.</span>
-                <span class="kw">let</span> (<span class="ident">result</span>, _) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">cycle_check</span>(<span class="ident">span</span>, <span class="ident">Query</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="ident">key</span>), <span class="op">||</span> {
-                    <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">track_diagnostics</span>(<span class="op">||</span> {
-                        <span class="comment">// The dep-graph for this computation is already in place</span>
-                        <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
-                            <span class="self">Self</span>::<span class="ident">compute_result</span>(<span class="ident">tcx</span>, <span class="ident">key</span>)
+                <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental_queries</span> <span class="op">&amp;&amp;</span>
+                                <span class="self">Self</span>::<span class="ident">cache_on_disk</span>(<span class="ident">key</span>) {
+                    <span class="kw">let</span> <span class="ident">prev_dep_node_index</span> <span class="op">=</span>
+                        <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">prev_dep_node_index_of</span>(<span class="ident">dep_node</span>);
+                    <span class="self">Self</span>::<span class="ident">load_from_disk</span>(<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(), <span class="ident">prev_dep_node_index</span>)
+                } <span class="kw">else</span> {
+                    <span class="kw">let</span> (<span class="ident">result</span>, _ ) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">cycle_check</span>(<span class="ident">span</span>, <span class="ident">Query</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="ident">key</span>), <span class="op">||</span> {
+                        <span class="comment">// The diagnostics for this query have already been</span>
+                        <span class="comment">// promoted to the current session during</span>
+                        <span class="comment">// try_mark_green(), so we can ignore them here.</span>
+                        <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">track_diagnostics</span>(<span class="op">||</span> {
+                            <span class="comment">// The dep-graph for this computation is already in</span>
+                            <span class="comment">// place</span>
+                            <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">with_ignore</span>(<span class="op">||</span> {
+                                <span class="self">Self</span>::<span class="ident">compute_result</span>(<span class="ident">tcx</span>, <span class="ident">key</span>)
+                            })
                         })
-                    })
-                })<span class="question-mark">?</span>;
+                    })<span class="question-mark">?</span>;
+                    <span class="ident">result</span>
+                };
 
                 <span class="comment">// If -Zincremental-verify-ich is specified, re-hash results from</span>
                 <span class="comment">// the cache and make sure that they have the expected fingerprint.</span>
@@ -1475,7 +1515,7 @@
         <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Maps</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> {
             <span class="ident">providers</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">CrateNum</span>, <span class="ident">Providers</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span>,
             <span class="ident">query_stack</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">Query</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span>)<span class="op">&gt;&gt;</span>,
-            $($(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>]</span>)<span class="op">*</span>  <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">QueryMap</span><span class="op">&lt;</span><span class="ident">queries</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,)<span class="op">*</span>
+            $($(<span class="attribute">#[<span class="macro-nonterminal">$</span><span class="macro-nonterminal">attr</span>]</span>)<span class="op">*</span>  <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">QueryMap</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="ident">queries</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,)<span class="op">*</span>
         }
     };
 }

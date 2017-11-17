@@ -656,15 +656,6 @@
 <span id="611">611</span>
 <span id="612">612</span>
 <span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
-<span id="618">618</span>
-<span id="619">619</span>
-<span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -694,13 +685,6 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">traits</span>::<span class="ident">RegionObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;RegionObligation(sub_region={:?}, sup_type={:?})&quot;</span>,
-               <span class="self">self</span>.<span class="ident">sub_region</span>,
-               <span class="self">self</span>.<span class="ident">sup_type</span>)
-    }
-}
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">O</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">traits</span>::<span class="ident">Obligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">O</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;Obligation(predicate={:?},depth={})&quot;</span>,
@@ -889,13 +873,11 @@
             }
             <span class="kw">super</span>::<span class="ident">CompareImplMethodObligation</span> { <span class="ident">item_name</span>,
                                                  <span class="ident">impl_item_def_id</span>,
-                                                 <span class="ident">trait_item_def_id</span>,
-                                                 <span class="ident">lint_id</span> } <span class="op">=&gt;</span> {
+                                                 <span class="ident">trait_item_def_id</span> } <span class="op">=&gt;</span> {
                 <span class="prelude-val">Some</span>(<span class="kw">super</span>::<span class="ident">CompareImplMethodObligation</span> {
                     <span class="ident">item_name</span>,
                     <span class="ident">impl_item_def_id</span>,
                     <span class="ident">trait_item_def_id</span>,
-                    <span class="ident">lint_id</span>,
                 })
             }
             <span class="kw">super</span>::<span class="ident">ExprAssignable</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="kw">super</span>::<span class="ident">ExprAssignable</span>),

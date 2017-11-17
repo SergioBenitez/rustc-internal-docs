@@ -1164,6 +1164,27 @@
 <span id="1119">1119</span>
 <span id="1120">1120</span>
 <span id="1121">1121</span>
+<span id="1122">1122</span>
+<span id="1123">1123</span>
+<span id="1124">1124</span>
+<span id="1125">1125</span>
+<span id="1126">1126</span>
+<span id="1127">1127</span>
+<span id="1128">1128</span>
+<span id="1129">1129</span>
+<span id="1130">1130</span>
+<span id="1131">1131</span>
+<span id="1132">1132</span>
+<span id="1133">1133</span>
+<span id="1134">1134</span>
+<span id="1135">1135</span>
+<span id="1136">1136</span>
+<span id="1137">1137</span>
+<span id="1138">1138</span>
+<span id="1139">1139</span>
+<span id="1140">1140</span>
+<span id="1141">1141</span>
+<span id="1142">1142</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1196,6 +1217,7 @@
 <span class="kw">use</span> <span class="ident">symbol</span>::<span class="ident">Symbol</span>;
 <span class="kw">use</span> <span class="ident">symbol</span>::<span class="ident">keywords</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">hygiene</span>::<span class="ident">ExpnFormat</span>;
 <span class="kw">use</span> <span class="ident">tokenstream</span>::{<span class="ident">TokenStream</span>, <span class="ident">TokenTree</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">small_vector</span>::<span class="ident">SmallVector</span>;
 <span class="kw">use</span> <span class="ident">visit</span>::<span class="ident">Visitor</span>;
@@ -1316,6 +1338,26 @@
             _ <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
         }
     }
+}
+
+<span class="kw">fn</span> <span class="ident">macro_bang_format</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="ident">ExpnFormat</span> {
+    <span class="comment">// We don&#39;t want to format a path using pretty-printing,</span>
+    <span class="comment">// `format!(&quot;{}&quot;, path)`, because that tries to insert</span>
+    <span class="comment">// line-breaks and is slow.</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path_str</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">with_capacity</span>(<span class="number">64</span>);
+    <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">segment</span>) <span class="kw">in</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
+        <span class="kw">if</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">0</span> {
+            <span class="ident">path_str</span>.<span class="ident">push_str</span>(<span class="string">&quot;::&quot;</span>);
+        }
+
+        <span class="kw">if</span> <span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">!=</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span>
+            <span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">!=</span> <span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">name</span>()
+        {
+            <span class="ident">path_str</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span>.<span class="ident">as_str</span>())
+        }
+    }
+
+    <span class="ident">MacroBang</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="ident">path_str</span>))
 }
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Invocation</span> {
@@ -1684,7 +1726,7 @@
             <span class="ident">mark</span>.<span class="ident">set_expn_info</span>(<span class="ident">ExpnInfo</span> {
                 <span class="ident">call_site</span>: <span class="ident">span</span>,
                 <span class="ident">callee</span>: <span class="ident">NameAndSpan</span> {
-                    <span class="ident">format</span>: <span class="ident">MacroBang</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">path</span>))),
+                    <span class="ident">format</span>: <span class="ident">macro_bang_format</span>(<span class="ident">path</span>),
                     <span class="ident">span</span>: <span class="ident">def_site_span</span>,
                     <span class="ident">allow_internal_unstable</span>,
                     <span class="ident">allow_internal_unsafe</span>,
@@ -1731,7 +1773,7 @@
                 <span class="ident">invoc</span>.<span class="ident">expansion_data</span>.<span class="ident">mark</span>.<span class="ident">set_expn_info</span>(<span class="ident">ExpnInfo</span> {
                     <span class="ident">call_site</span>: <span class="ident">span</span>,
                     <span class="ident">callee</span>: <span class="ident">NameAndSpan</span> {
-                        <span class="ident">format</span>: <span class="ident">MacroBang</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">path</span>))),
+                        <span class="ident">format</span>: <span class="ident">macro_bang_format</span>(<span class="ident">path</span>),
                         <span class="ident">span</span>: <span class="ident">tt_span</span>,
                         <span class="ident">allow_internal_unstable</span>,
                         <span class="ident">allow_internal_unsafe</span>: <span class="bool-val">false</span>,
@@ -1767,7 +1809,7 @@
                 <span class="ident">invoc</span>.<span class="ident">expansion_data</span>.<span class="ident">mark</span>.<span class="ident">set_expn_info</span>(<span class="ident">ExpnInfo</span> {
                     <span class="ident">call_site</span>: <span class="ident">span</span>,
                     <span class="ident">callee</span>: <span class="ident">NameAndSpan</span> {
-                        <span class="ident">format</span>: <span class="ident">MacroBang</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">path</span>))),
+                        <span class="ident">format</span>: <span class="ident">macro_bang_format</span>(<span class="ident">path</span>),
                         <span class="comment">// FIXME procedural macros do not have proper span info</span>
                         <span class="comment">// yet, when they do, we should use it here.</span>
                         <span class="ident">span</span>: <span class="prelude-val">None</span>,

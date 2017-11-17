@@ -583,6 +583,33 @@
 <span id="538">538</span>
 <span id="539">539</span>
 <span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -594,6 +621,7 @@
 <span class="comment">// option. This file may not be copied, modified, or distributed</span>
 <span class="comment">// except according to those terms.</span>
 
+<span class="kw">use</span> <span class="ident">dep_graph</span>::<span class="ident">SerializedDepNodeIndex</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">DefIndex</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">queries</span>;
@@ -609,11 +637,21 @@
     <span class="kw">type</span> <span class="ident">Value</span>;
 }
 
-<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">QueryDescription</span>: <span class="ident">QueryConfig</span> {
+<span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">trait</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>: <span class="ident">QueryConfig</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">key</span>: <span class="self">Self</span>::<span class="ident">Key</span>) <span class="op">-&gt;</span> <span class="ident">String</span>;
+
+    <span class="kw">fn</span> <span class="ident">cache_on_disk</span>(_: <span class="self">Self</span>::<span class="ident">Key</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="bool-val">false</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">load_from_disk</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(_: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                          _: <span class="ident">SerializedDepNodeIndex</span>)
+                          <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Value</span> {
+        <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;QueryDescription::load_from_disk() called for unsupport query.&quot;</span>)
+    }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">M</span>: <span class="ident">QueryConfig</span><span class="op">&lt;</span><span class="ident">Key</span><span class="op">=</span><span class="ident">DefId</span><span class="op">&gt;&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">M</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">M</span>: <span class="ident">QueryConfig</span><span class="op">&lt;</span><span class="ident">Key</span><span class="op">=</span><span class="ident">DefId</span><span class="op">&gt;&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">M</span> {
     <span class="ident">default</span> <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">verbose</span>() {
             <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;processing `{}`&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
@@ -624,50 +662,50 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_copy_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_copy_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing whether `{}` is `Copy`&quot;</span>, <span class="ident">env</span>.<span class="ident">value</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_sized_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_sized_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing whether `{}` is `Sized`&quot;</span>, <span class="ident">env</span>.<span class="ident">value</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_freeze_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_freeze_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing whether `{}` is freeze&quot;</span>, <span class="ident">env</span>.<span class="ident">value</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">needs_drop_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">needs_drop_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing whether `{}` needs drop&quot;</span>, <span class="ident">env</span>.<span class="ident">value</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">layout_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">layout_raw</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing layout of `{}`&quot;</span>, <span class="ident">env</span>.<span class="ident">value</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">super_predicates_of</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">super_predicates_of</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing the supertraits of `{}`&quot;</span>,
                 <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">erase_regions_ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">erase_regions_ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;erasing regions from `{:?}`&quot;</span>, <span class="ident">ty</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">type_param_predicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">type_param_predicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, (_, <span class="ident">def_id</span>): (<span class="ident">DefId</span>, <span class="ident">DefId</span>)) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing the bounds for type parameter `{}`&quot;</span>,
@@ -675,455 +713,471 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">coherent_trait</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">coherent_trait</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, (_, <span class="ident">def_id</span>): (<span class="ident">CrateNum</span>, <span class="ident">DefId</span>)) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;coherence checking all impls of trait `{}`&quot;</span>,
                 <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_inherent_impls</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_inherent_impls</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, <span class="ident">k</span>: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;all inherent impls defined in crate `{:?}`&quot;</span>, <span class="ident">k</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_inherent_impls_overlap_check</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_inherent_impls_overlap_check</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;check for overlap between inherent impls defined in this crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_variances</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_variances</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing the variances for items in this crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">mir_shims</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">mir_shims</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def</span>: <span class="ident">ty</span>::<span class="ident">InstanceDef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;generating MIR shim for `{}`&quot;</span>,
                 <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def</span>.<span class="ident">def_id</span>()))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">privacy_access_levels</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">privacy_access_levels</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;privacy access levels&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">typeck_item_bodies</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">typeck_item_bodies</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;type-checking all item bodies&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">reachable_set</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">reachable_set</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;reachability&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">const_eval</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">const_eval</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">key</span>: <span class="ident">ty</span>::<span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, (<span class="ident">DefId</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)<span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;const-evaluating `{}`&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">key</span>.<span class="ident">value</span>.<span class="number">0</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">mir_keys</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">mir_keys</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;getting a list of all mir_keys&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">symbol_name</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">symbol_name</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">instance</span>: <span class="ident">ty</span>::<span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing the symbol for `{}`&quot;</span>, <span class="ident">instance</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">describe_def</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">describe_def</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;describe_def&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">def_span</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">def_span</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;def_span&quot;</span>)
     }
 }
 
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">lookup_stability</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">lookup_stability</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;stability&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">lookup_deprecation_entry</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">lookup_deprecation_entry</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;deprecation&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">item_attrs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">item_attrs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;item_attrs&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_exported_symbol</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_exported_symbol</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;is_exported_symbol&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">fn_arg_names</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">fn_arg_names</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;fn_arg_names&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">impl_parent</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">impl_parent</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;impl_parent&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">trait_of_item</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">trait_of_item</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;trait_of_item&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">item_body_nested_bodies</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">item_body_nested_bodies</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;nested item bodies of `{}`&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">const_is_rvalue_promotable_to_static</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">const_is_rvalue_promotable_to_static</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;const checking if rvalue is promotable to static `{}`&quot;</span>,
             <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">rvalue_promotable_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">rvalue_promotable_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;checking which parts of `{}` are promotable to static&quot;</span>,
                 <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_mir_available</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_mir_available</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;checking if item is mir available: `{}`&quot;</span>,
             <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">trans_fulfill_obligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">trans_fulfill_obligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">key</span>: (<span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;checking if `{}` fulfills its obligations&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">key</span>.<span class="number">1</span>.<span class="ident">def_id</span>()))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">trait_impls_of</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">trait_impls_of</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;trait impls of `{}`&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_object_safe</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_object_safe</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;determine object safety of trait `{}`&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_const_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_const_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;checking if item is const fn: `{}`&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">def_id</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">dylib_dependency_formats</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">dylib_dependency_formats</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="string">&quot;dylib dependency formats of crate&quot;</span>.<span class="ident">to_string</span>()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_panic_runtime</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_panic_runtime</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="string">&quot;checking if the crate is_panic_runtime&quot;</span>.<span class="ident">to_string</span>()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_compiler_builtins</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_compiler_builtins</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="string">&quot;checking if the crate is_compiler_builtins&quot;</span>.<span class="ident">to_string</span>()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">has_global_allocator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">has_global_allocator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="string">&quot;checking if the crate has_global_allocator&quot;</span>.<span class="ident">to_string</span>()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">extern_crate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">extern_crate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(_: <span class="ident">TyCtxt</span>, _: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="string">&quot;getting crate&#39;s ExternCrateData&quot;</span>.<span class="ident">to_string</span>()
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">lint_levels</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">lint_levels</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing the lint levels for items in this crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">specializes</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">specializes</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: (<span class="ident">DefId</span>, <span class="ident">DefId</span>)) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;computing whether impls specialize one another&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">in_scope_traits_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">in_scope_traits_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">DefIndex</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;traits in scope at a block&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_no_builtins</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_no_builtins</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;test whether a crate has #![no_builtins]&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">panic_strategy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">panic_strategy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;query a crate&#39;s configured panic strategy&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_profiler_runtime</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_profiler_runtime</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;query a crate is #![profiler_runtime]&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_sanitizer_runtime</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_sanitizer_runtime</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;query a crate is #![sanitizer_runtime]&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">exported_symbol_ids</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">exported_symbol_ids</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up the exported symbols of a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">native_libraries</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">native_libraries</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up the native libraries of a linked crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">plugin_registrar_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">plugin_registrar_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up the plugin registrar for a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">derive_registrar_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">derive_registrar_fn</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up the derive registrar for a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_disambiguator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_disambiguator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up the disambiguator a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_hash</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_hash</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up the hash a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">original_crate_name</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">original_crate_name</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up the original name a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">implementations_of_trait</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">implementations_of_trait</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: (<span class="ident">CrateNum</span>, <span class="ident">DefId</span>)) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up implementations of a trait in a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">all_trait_implementations</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">all_trait_implementations</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up all (?) trait implementations&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">link_args</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">link_args</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up link arguments for a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">named_region_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">named_region_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">DefIndex</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up a named region&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_late_bound_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">is_late_bound_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">DefIndex</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;testing if a region is late boudn&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">object_lifetime_defaults_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">object_lifetime_defaults_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">DefIndex</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up lifetime defaults for a region&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">dep_kind</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">dep_kind</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;fetching what a dependency looks like&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_name</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">crate_name</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;fetching what a crate is named&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">get_lang_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">get_lang_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;calculating the lang items map&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">defined_lang_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">defined_lang_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;calculating the lang items defined in a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">missing_lang_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">missing_lang_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;calculating the missing lang items in a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">visible_parent_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">visible_parent_map</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;calculating the visible parent map&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">missing_extern_crate_item</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">missing_extern_crate_item</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;seeing if we&#39;re missing an `extern crate` item for this crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">used_crate_source</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">used_crate_source</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking at the source for a crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">postorder_cnums</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">postorder_cnums</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;generating a postorder list of CrateNums&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">maybe_unused_extern_crates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">maybe_unused_extern_crates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;looking up all possibly unused extern crates&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">stability_index</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">stability_index</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;calculating the stability index for the local crate&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">all_crate_nums</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">all_crate_nums</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;fetching all foreign CrateNum instances&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">exported_symbols</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">exported_symbols</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;exported_symbols&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">collect_and_partition_translation_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">collect_and_partition_translation_items</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;collect_and_partition_translation_items&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">codegen_unit</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">codegen_unit</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">InternedString</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;codegen_unit&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">compile_codegen_unit</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">compile_codegen_unit</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">InternedString</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;compile_codegen_unit&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">output_filenames</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">output_filenames</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;output_filenames&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">has_clone_closures</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">has_clone_closures</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;seeing if the crate has enabled `Clone` closures&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">vtable_methods</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">vtable_methods</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">key</span>: <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> ) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;finding all methods for trait {}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">key</span>.<span class="ident">def_id</span>()))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">has_copy_closures</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">has_copy_closures</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;seeing if the crate has enabled `Copy` closures&quot;</span>)
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">fully_normalize_monormophic_ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">fully_normalize_monormophic_ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">describe</span>(<span class="ident">_tcx</span>: <span class="ident">TyCtxt</span>, _: <span class="ident">Ty</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;normalizing types&quot;</span>)
     }
 }
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">QueryDescription</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">queries</span>::<span class="ident">typeck_tables_of</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">cache_on_disk</span>(<span class="ident">def_id</span>: <span class="self">Self</span>::<span class="ident">Key</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="ident">def_id</span>.<span class="ident">is_local</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">load_from_disk</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                          <span class="ident">id</span>: <span class="ident">SerializedDepNodeIndex</span>)
+                          <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Value</span> {
+        <span class="kw">let</span> <span class="ident">typeck_tables</span>: <span class="ident">ty</span>::<span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">on_disk_query_result_cache</span>
+                                                       .<span class="ident">load_query_result</span>(<span class="ident">tcx</span>, <span class="ident">id</span>);
+        <span class="ident">tcx</span>.<span class="ident">alloc_tables</span>(<span class="ident">typeck_tables</span>)
+    }
+}
+
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

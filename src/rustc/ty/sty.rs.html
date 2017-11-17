@@ -1457,6 +1457,48 @@
 <span id="1412">1412</span>
 <span id="1413">1413</span>
 <span id="1414">1414</span>
+<span id="1415">1415</span>
+<span id="1416">1416</span>
+<span id="1417">1417</span>
+<span id="1418">1418</span>
+<span id="1419">1419</span>
+<span id="1420">1420</span>
+<span id="1421">1421</span>
+<span id="1422">1422</span>
+<span id="1423">1423</span>
+<span id="1424">1424</span>
+<span id="1425">1425</span>
+<span id="1426">1426</span>
+<span id="1427">1427</span>
+<span id="1428">1428</span>
+<span id="1429">1429</span>
+<span id="1430">1430</span>
+<span id="1431">1431</span>
+<span id="1432">1432</span>
+<span id="1433">1433</span>
+<span id="1434">1434</span>
+<span id="1435">1435</span>
+<span id="1436">1436</span>
+<span id="1437">1437</span>
+<span id="1438">1438</span>
+<span id="1439">1439</span>
+<span id="1440">1440</span>
+<span id="1441">1441</span>
+<span id="1442">1442</span>
+<span id="1443">1443</span>
+<span id="1444">1444</span>
+<span id="1445">1445</span>
+<span id="1446">1446</span>
+<span id="1447">1447</span>
+<span id="1448">1448</span>
+<span id="1449">1449</span>
+<span id="1450">1450</span>
+<span id="1451">1451</span>
+<span id="1452">1452</span>
+<span id="1453">1453</span>
+<span id="1454">1454</span>
+<span id="1455">1455</span>
+<span id="1456">1456</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1474,6 +1516,7 @@
 
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
+<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Substs</span>, <span class="ident">Subst</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">AdtDef</span>, <span class="ident">TypeFlags</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFoldable</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">Slice</span>, <span class="ident">TyS</span>};
@@ -2358,6 +2401,18 @@
     <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u32</span>,
 }
 
+<span class="comment">// FIXME: We could convert this to use `newtype_index!`</span>
+<span class="kw">impl</span> <span class="ident">Idx</span> <span class="kw">for</span> <span class="ident">RegionVid</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">value</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">value</span> <span class="op">&lt;</span> ::<span class="ident">std</span>::<span class="ident">u32</span>::<span class="ident">MAX</span> <span class="kw">as</span> <span class="ident">usize</span>);
+        <span class="ident">RegionVid</span> { <span class="ident">index</span>: <span class="ident">value</span> <span class="kw">as</span> <span class="ident">u32</span> }
+    }
+
+    <span class="kw">fn</span> <span class="ident">index</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">index</span> <span class="kw">as</span> <span class="ident">usize</span>
+    }
+}
+
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SkolemizedRegionVid</span> {
     <span class="kw">pub</span> <span class="ident">index</span>: <span class="ident">u32</span>,
@@ -2496,6 +2551,35 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;type_flags({:?}) = {:?}&quot;</span>, <span class="self">self</span>, <span class="ident">flags</span>);
 
         <span class="ident">flags</span>
+    }
+
+    <span class="doccomment">/// Given an early-bound or free region, returns the def-id where it was bound.</span>
+    <span class="doccomment">/// For example, consider the regions in this snippet of code:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// impl&lt;&#39;a&gt; Foo {</span>
+    <span class="doccomment">///      ^^ -- early bound, declared on an impl</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///     fn bar&lt;&#39;b, &#39;c&gt;(x: &amp;self, y: &amp;&#39;b u32, z: &amp;&#39;c u64) where &#39;static: &#39;c</span>
+    <span class="doccomment">///            ^^  ^^     ^ anonymous, late-bound</span>
+    <span class="doccomment">///            |   early-bound, appears in where-clauses</span>
+    <span class="doccomment">///            late-bound, appears only in fn args</span>
+    <span class="doccomment">///     {..}</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Here, `free_region_binding_scope(&#39;a)` would return the def-id</span>
+    <span class="doccomment">/// of the impl, and for all the other highlighted regions, it</span>
+    <span class="doccomment">/// would return the def-id of the function. In other cases (not shown), this</span>
+    <span class="doccomment">/// function might return the def-id of a closure.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">free_region_binding_scope</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">DefId</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">ty</span>::<span class="ident">ReEarlyBound</span>(<span class="ident">br</span>) <span class="op">=&gt;</span> {
+                <span class="ident">tcx</span>.<span class="ident">parent_def_id</span>(<span class="ident">br</span>.<span class="ident">def_id</span>).<span class="ident">unwrap</span>()
+            }
+            <span class="ident">ty</span>::<span class="ident">ReFree</span>(<span class="ident">fr</span>) <span class="op">=&gt;</span> <span class="ident">fr</span>.<span class="ident">scope</span>,
+            _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;free_region_binding_scope invoked on inappropriate region: {:?}&quot;</span>, <span class="self">self</span>),
+        }
     }
 }
 
