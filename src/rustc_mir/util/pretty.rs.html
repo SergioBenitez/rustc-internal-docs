@@ -859,13 +859,13 @@
                 <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{:?}: {}&quot;</span>, <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">arg</span>), <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">arg</span>].<span class="ident">ty</span>)<span class="question-mark">?</span>;
             }
 
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;) -&gt; {}&quot;</span>, <span class="ident">mir</span>.<span class="ident">return_ty</span>)
+            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;) -&gt; {}&quot;</span>, <span class="ident">mir</span>.<span class="ident">return_ty</span>())
         }
         (<span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Const</span>, _) <span class="op">|</span>
         (<span class="ident">hir</span>::<span class="ident">BodyOwnerKind</span>::<span class="ident">Static</span>(_), _) <span class="op">|</span>
         (_, <span class="prelude-val">Some</span>(_)) <span class="op">=&gt;</span> {
             <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">mir</span>.<span class="ident">arg_count</span>, <span class="number">0</span>);
-            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;: {} =&quot;</span>, <span class="ident">mir</span>.<span class="ident">return_ty</span>)
+            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;: {} =&quot;</span>, <span class="ident">mir</span>.<span class="ident">return_ty</span>())
         }
     }
 }

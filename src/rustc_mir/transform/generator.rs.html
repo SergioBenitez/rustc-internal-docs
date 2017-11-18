@@ -886,8 +886,6 @@
 <span id="841">841</span>
 <span id="842">842</span>
 <span id="843">843</span>
-<span id="844">844</span>
-<span id="845">845</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1448,7 +1446,6 @@
     }
 
     <span class="comment">// Replace the return variable</span>
-    <span class="ident">mir</span>.<span class="ident">return_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_nil</span>();
     <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">RETURN_POINTER</span>] <span class="op">=</span> <span class="ident">LocalDecl</span> {
         <span class="ident">mutability</span>: <span class="ident">Mutability</span>::<span class="ident">Mut</span>,
         <span class="ident">ty</span>: <span class="ident">tcx</span>.<span class="ident">mk_nil</span>(),
@@ -1668,7 +1665,7 @@
         <span class="kw">let</span> <span class="ident">state_did</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">gen_state</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">state_adt_ref</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">adt_def</span>(<span class="ident">state_did</span>);
         <span class="kw">let</span> <span class="ident">state_substs</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_substs</span>([<span class="ident">Kind</span>::<span class="ident">from</span>(<span class="ident">yield_ty</span>),
-            <span class="ident">Kind</span>::<span class="ident">from</span>(<span class="ident">mir</span>.<span class="ident">return_ty</span>)].<span class="ident">iter</span>());
+            <span class="ident">Kind</span>::<span class="ident">from</span>(<span class="ident">mir</span>.<span class="ident">return_ty</span>())].<span class="ident">iter</span>());
         <span class="kw">let</span> <span class="ident">ret_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_adt</span>(<span class="ident">state_adt_ref</span>, <span class="ident">state_substs</span>);
 
         <span class="comment">// We rename RETURN_POINTER which has type mir.return_ty to new_ret_local</span>
@@ -1699,7 +1696,6 @@
         <span class="ident">transform</span>.<span class="ident">visit_mir</span>(<span class="ident">mir</span>);
 
         <span class="comment">// Update our MIR struct to reflect the changed we&#39;ve made</span>
-        <span class="ident">mir</span>.<span class="ident">return_ty</span> <span class="op">=</span> <span class="ident">ret_ty</span>;
         <span class="ident">mir</span>.<span class="ident">yield_ty</span> <span class="op">=</span> <span class="prelude-val">None</span>;
         <span class="ident">mir</span>.<span class="ident">arg_count</span> <span class="op">=</span> <span class="number">1</span>;
         <span class="ident">mir</span>.<span class="ident">spread_arg</span> <span class="op">=</span> <span class="prelude-val">None</span>;

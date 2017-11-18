@@ -378,7 +378,7 @@
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{:?}: {}&quot;</span>, <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">arg</span>), <span class="ident">escape</span>(<span class="kw-2">&amp;</span><span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">arg</span>].<span class="ident">ty</span>))<span class="question-mark">?</span>;
     }
 
-    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;) -&amp;gt; {}&quot;</span>, <span class="ident">escape</span>(<span class="ident">mir</span>.<span class="ident">return_ty</span>))<span class="question-mark">?</span>;
+    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;) -&amp;gt; {}&quot;</span>, <span class="ident">escape</span>(<span class="ident">mir</span>.<span class="ident">return_ty</span>()))<span class="question-mark">?</span>;
     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">r#&quot;&lt;br align=&quot;left&quot;/&gt;&quot;#</span>)<span class="question-mark">?</span>;
 
     <span class="kw">for</span> <span class="ident">local</span> <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">vars_and_temps_iter</span>() {

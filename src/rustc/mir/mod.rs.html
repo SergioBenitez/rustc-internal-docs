@@ -2188,10 +2188,6 @@
 <span id="2143">2143</span>
 <span id="2144">2144</span>
 <span id="2145">2145</span>
-<span id="2146">2146</span>
-<span id="2147">2147</span>
-<span id="2148">2148</span>
-<span id="2149">2149</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2277,9 +2273,6 @@
     <span class="doccomment">/// in scope, but a separate set of locals.</span>
     <span class="kw">pub</span> <span class="ident">promoted</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">Promoted</span>, <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 
-    <span class="doccomment">/// Return type of the function.</span>
-    <span class="kw">pub</span> <span class="ident">return_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-
     <span class="doccomment">/// Yield type of the function, if it is a generator.</span>
     <span class="kw">pub</span> <span class="ident">yield_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 
@@ -2330,7 +2323,6 @@
                <span class="ident">visibility_scope_info</span>: <span class="ident">ClearOnDecode</span><span class="op">&lt;</span><span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">VisibilityScope</span>,
                                                              <span class="ident">VisibilityScopeInfo</span><span class="op">&gt;&gt;</span>,
                <span class="ident">promoted</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">Promoted</span>, <span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
-               <span class="ident">return_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                <span class="ident">yield_ty</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
                <span class="ident">local_decls</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">Local</span>, <span class="ident">LocalDecl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
                <span class="ident">arg_count</span>: <span class="ident">usize</span>,
@@ -2340,14 +2332,12 @@
         <span class="comment">// We need `arg_count` locals, and one for the return pointer</span>
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">local_decls</span>.<span class="ident">len</span>() <span class="op">&gt;=</span> <span class="ident">arg_count</span> <span class="op">+</span> <span class="number">1</span>,
             <span class="string">&quot;expected at least {} locals, got {}&quot;</span>, <span class="ident">arg_count</span> <span class="op">+</span> <span class="number">1</span>, <span class="ident">local_decls</span>.<span class="ident">len</span>());
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">local_decls</span>[<span class="ident">RETURN_POINTER</span>].<span class="ident">ty</span>, <span class="ident">return_ty</span>);
 
         <span class="ident">Mir</span> {
             <span class="ident">basic_blocks</span>,
             <span class="ident">visibility_scopes</span>,
             <span class="ident">visibility_scope_info</span>,
             <span class="ident">promoted</span>,
-            <span class="ident">return_ty</span>,
             <span class="ident">yield_ty</span>,
             <span class="ident">generator_drop</span>: <span class="prelude-val">None</span>,
             <span class="ident">generator_layout</span>: <span class="prelude-val">None</span>,
@@ -2468,6 +2458,11 @@
             <span class="kw-2">&amp;</span><span class="ident">block</span>.<span class="ident">terminator</span>().<span class="ident">source_info</span>
         }
     }
+
+    <span class="doccomment">/// Return the return type, it always return first element from `local_decls` array</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">return_ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">local_decls</span>[<span class="ident">RETURN_POINTER</span>].<span class="ident">ty</span>
+    }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
@@ -2494,7 +2489,6 @@
     <span class="ident">visibility_scopes</span>,
     <span class="ident">visibility_scope_info</span>,
     <span class="ident">promoted</span>,
-    <span class="ident">return_ty</span>,
     <span class="ident">yield_ty</span>,
     <span class="ident">generator_drop</span>,
     <span class="ident">generator_layout</span>,
@@ -3939,7 +3933,6 @@
             <span class="ident">visibility_scopes</span>: <span class="self">self</span>.<span class="ident">visibility_scopes</span>.<span class="ident">clone</span>(),
             <span class="ident">visibility_scope_info</span>: <span class="self">self</span>.<span class="ident">visibility_scope_info</span>.<span class="ident">clone</span>(),
             <span class="ident">promoted</span>: <span class="self">self</span>.<span class="ident">promoted</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">return_ty</span>: <span class="self">self</span>.<span class="ident">return_ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
             <span class="ident">yield_ty</span>: <span class="self">self</span>.<span class="ident">yield_ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
             <span class="ident">generator_drop</span>: <span class="self">self</span>.<span class="ident">generator_drop</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
             <span class="ident">generator_layout</span>: <span class="self">self</span>.<span class="ident">generator_layout</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
@@ -3958,7 +3951,6 @@
         <span class="self">self</span>.<span class="ident">generator_layout</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span>
         <span class="self">self</span>.<span class="ident">yield_ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span>
         <span class="self">self</span>.<span class="ident">promoted</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)     <span class="op">||</span>
-        <span class="self">self</span>.<span class="ident">return_ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)    <span class="op">||</span>
         <span class="self">self</span>.<span class="ident">local_decls</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
     }
 }

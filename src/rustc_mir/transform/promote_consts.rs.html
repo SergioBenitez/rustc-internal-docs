@@ -470,7 +470,6 @@
 <span id="425">425</span>
 <span id="426">426</span>
 <span id="427">427</span>
-<span id="428">428</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -761,7 +760,7 @@
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">promoted</span>.<span class="ident">span</span>;
         <span class="kw">let</span> <span class="ident">new_operand</span> <span class="op">=</span> <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">Constant</span> {
             <span class="ident">span</span>,
-            <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">promoted</span>.<span class="ident">return_ty</span>,
+            <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">promoted</span>.<span class="ident">return_ty</span>(),
             <span class="ident">literal</span>: <span class="ident">Literal</span>::<span class="ident">Promoted</span> {
                 <span class="ident">index</span>: <span class="ident">Promoted</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">source</span>.<span class="ident">promoted</span>.<span class="ident">len</span>())
             }
@@ -859,7 +858,6 @@
                 <span class="ident">mir</span>.<span class="ident">visibility_scopes</span>.<span class="ident">clone</span>(),
                 <span class="ident">mir</span>.<span class="ident">visibility_scope_info</span>.<span class="ident">clone</span>(),
                 <span class="ident">IndexVec</span>::<span class="ident">new</span>(),
-                <span class="ident">ty</span>,
                 <span class="prelude-val">None</span>,
                 <span class="ident">initial_locals</span>,
                 <span class="number">0</span>,
