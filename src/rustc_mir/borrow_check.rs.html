@@ -2004,6 +2004,8 @@
 <span id="1959">1959</span>
 <span id="1960">1960</span>
 <span id="1961">1961</span>
+<span id="1962">1962</span>
+<span id="1963">1963</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2714,10 +2716,12 @@
                         <span class="ident">Mutability</span>::<span class="ident">Mut</span> <span class="op">=&gt;</span> <span class="kw">return</span>,
                     }
                 }
-                <span class="ident">Lvalue</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span> {
+                <span class="ident">Lvalue</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> <span class="ident">static_</span>) <span class="op">=&gt;</span> {
                     <span class="comment">// mutation of non-mut static is always illegal,</span>
                     <span class="comment">// independent of dataflow.</span>
-                    <span class="self">self</span>.<span class="ident">report_assignment_to_static</span>(<span class="ident">context</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>));
+                    <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">is_static_mut</span>(<span class="ident">static_</span>.<span class="ident">def_id</span>) {
+                        <span class="self">self</span>.<span class="ident">report_assignment_to_static</span>(<span class="ident">context</span>, (<span class="ident">lvalue</span>, <span class="ident">span</span>));
+                    }
                     <span class="kw">return</span>;
                 }
             }
