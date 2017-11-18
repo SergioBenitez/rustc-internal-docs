@@ -479,7 +479,7 @@
 
 <span class="kw">impl</span> <span class="ident">Quote</span> <span class="kw">for</span> <span class="ident">Span</span> {
     <span class="kw">fn</span> <span class="ident">quote</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TokenStream</span> {
-        <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">Span</span>::<span class="ident">default</span>())
+        <span class="macro">quote</span><span class="macro">!</span>(::<span class="ident">Span</span>::<span class="ident">def_site</span>())
     }
 }
 

@@ -1357,6 +1357,9 @@
 <span id="1312">1312</span>
 <span id="1313">1313</span>
 <span id="1314">1314</span>
+<span id="1315">1315</span>
+<span id="1316">1316</span>
+<span id="1317">1317</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1788,7 +1791,8 @@
             <span class="ident">TyParamDefaultMismatch</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> {
                 <span class="kw">return</span> <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="ident">x</span>).<span class="ident">map</span>(<span class="ident">TyParamDefaultMismatch</span>)
             }
-            <span class="ident">ExistentialMismatch</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="ident">x</span>).<span class="ident">map</span>(<span class="ident">ExistentialMismatch</span>)
+            <span class="ident">ExistentialMismatch</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="ident">x</span>).<span class="ident">map</span>(<span class="ident">ExistentialMismatch</span>),
+            <span class="ident">OldStyleLUB</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="ident">x</span>).<span class="ident">map</span>(<span class="ident">OldStyleLUB</span>),
         })
     }
 }
@@ -2534,6 +2538,7 @@
             <span class="ident">Sorts</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">Sorts</span>(<span class="ident">x</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
             <span class="ident">TyParamDefaultMismatch</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">TyParamDefaultMismatch</span>(<span class="ident">x</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
             <span class="ident">ExistentialMismatch</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">ExistentialMismatch</span>(<span class="ident">x</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
+            <span class="ident">OldStyleLUB</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">OldStyleLUB</span>(<span class="ident">x</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
         }
     }
 
@@ -2551,6 +2556,7 @@
                 <span class="ident">b</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
             },
             <span class="ident">Sorts</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
+            <span class="ident">OldStyleLUB</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
             <span class="ident">TyParamDefaultMismatch</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
             <span class="ident">ExistentialMismatch</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
             <span class="ident">Mismatch</span> <span class="op">|</span>

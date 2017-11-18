@@ -695,6 +695,7 @@
 <span id="650">650</span>
 <span id="651">651</span>
 <span id="652">652</span>
+<span id="653">653</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -741,7 +742,8 @@
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Binder</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFlags</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
-<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeMap</span>;
+<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">FxHashSet</span>;
 
 <span class="doccomment">/// The TypeFoldable trait is implemented for every type that can be folded.</span>
 <span class="doccomment">/// Basically, every type that has a corresponding method in TypeFolder.</span>
@@ -1022,14 +1024,14 @@
     <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">current_depth</span>: <span class="ident">u32</span>,
     <span class="ident">fld_r</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> (<span class="ident">FnMut</span>(<span class="ident">ty</span>::<span class="ident">BoundRegion</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span>),
-    <span class="ident">map</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">BoundRegion</span>, <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
+    <span class="ident">map</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">BoundRegion</span>, <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">replace_late_bound_regions</span><span class="op">&lt;</span><span class="ident">T</span>,<span class="ident">F</span><span class="op">&gt;</span>(<span class="self">self</span>,
         <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">Binder</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
         <span class="kw-2">mut</span> <span class="ident">f</span>: <span class="ident">F</span>)
-        <span class="op">-&gt;</span> (<span class="ident">T</span>, <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">BoundRegion</span>, <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)
+        <span class="op">-&gt;</span> (<span class="ident">T</span>, <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">BoundRegion</span>, <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)
         <span class="kw">where</span> <span class="ident">F</span> : <span class="ident">FnMut</span>(<span class="ident">ty</span>::<span class="ident">BoundRegion</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
               <span class="ident">T</span> : <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     {
@@ -1136,7 +1138,7 @@
             <span class="ident">tcx</span>,
             <span class="ident">current_depth</span>: <span class="number">1</span>,
             <span class="ident">fld_r</span>,
-            <span class="ident">map</span>: <span class="ident">FxHashMap</span>()
+            <span class="ident">map</span>: <span class="ident">BTreeMap</span>::<span class="ident">default</span>()
         }
     }
 }
