@@ -2428,7 +2428,7 @@
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">RegionKind</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">TyVar</span>, <span class="ident">TyVid</span>, <span class="ident">IntVar</span>, <span class="ident">IntVid</span>, <span class="ident">FloatVar</span>, <span class="ident">FloatVid</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">TypeVariants</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">Layout</span>, <span class="ident">TargetDataLayout</span>};
+<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">LayoutDetails</span>, <span class="ident">TargetDataLayout</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">maps</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">steal</span>::<span class="ident">Steal</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">BindingMode</span>;
@@ -2465,7 +2465,7 @@
 <span class="doccomment">/// Internal storage</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GlobalArenas</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="comment">// internings</span>
-    <span class="ident">layout</span>: <span class="ident">TypedArena</span><span class="op">&lt;</span><span class="ident">Layout</span><span class="op">&gt;</span>,
+    <span class="ident">layout</span>: <span class="ident">TypedArena</span><span class="op">&lt;</span><span class="ident">LayoutDetails</span><span class="op">&gt;</span>,
 
     <span class="comment">// references</span>
     <span class="ident">generics</span>: <span class="ident">TypedArena</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">Generics</span><span class="op">&gt;</span>,
@@ -3305,7 +3305,7 @@
 
     <span class="ident">stability_interner</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashSet</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">attr</span>::<span class="ident">Stability</span><span class="op">&gt;&gt;</span>,
 
-    <span class="ident">layout_interner</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashSet</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Layout</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">layout_interner</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashSet</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">LayoutDetails</span><span class="op">&gt;&gt;</span>,
 
     <span class="doccomment">/// A vector of every trait accessible in the whole crate</span>
     <span class="doccomment">/// (i.e. including those from subcrates). This is used only for</span>
@@ -3403,7 +3403,7 @@
         <span class="ident">interned</span>
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intern_layout</span>(<span class="self">self</span>, <span class="ident">layout</span>: <span class="ident">Layout</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">Layout</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intern_layout</span>(<span class="self">self</span>, <span class="ident">layout</span>: <span class="ident">LayoutDetails</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">LayoutDetails</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">layout</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">layout_interner</span>.<span class="ident">borrow</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">layout</span>) {
             <span class="kw">return</span> <span class="ident">layout</span>;
         }

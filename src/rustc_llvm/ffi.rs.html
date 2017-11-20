@@ -1776,30 +1776,6 @@
 <span id="1731">1731</span>
 <span id="1732">1732</span>
 <span id="1733">1733</span>
-<span id="1734">1734</span>
-<span id="1735">1735</span>
-<span id="1736">1736</span>
-<span id="1737">1737</span>
-<span id="1738">1738</span>
-<span id="1739">1739</span>
-<span id="1740">1740</span>
-<span id="1741">1741</span>
-<span id="1742">1742</span>
-<span id="1743">1743</span>
-<span id="1744">1744</span>
-<span id="1745">1745</span>
-<span id="1746">1746</span>
-<span id="1747">1747</span>
-<span id="1748">1748</span>
-<span id="1749">1749</span>
-<span id="1750">1750</span>
-<span id="1751">1751</span>
-<span id="1752">1752</span>
-<span id="1753">1753</span>
-<span id="1754">1754</span>
-<span id="1755">1755</span>
-<span id="1756">1756</span>
-<span id="1757">1757</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2378,8 +2354,6 @@
                                    <span class="ident">ElementCount</span>: <span class="ident">c_uint</span>,
                                    <span class="ident">Packed</span>: <span class="ident">Bool</span>)
                                    <span class="op">-&gt;</span> <span class="ident">TypeRef</span>;
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMCountStructElementTypes</span>(<span class="ident">StructTy</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">c_uint</span>;
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMGetStructElementTypes</span>(<span class="ident">StructTy</span>: <span class="ident">TypeRef</span>, <span class="ident">Dest</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">TypeRef</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMIsPackedStruct</span>(<span class="ident">StructTy</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">Bool</span>;
 
     <span class="comment">// Operations on array, pointer, and vector types (sequence types)</span>
@@ -2388,7 +2362,6 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMVectorType</span>(<span class="ident">ElementType</span>: <span class="ident">TypeRef</span>, <span class="ident">ElementCount</span>: <span class="ident">c_uint</span>) <span class="op">-&gt;</span> <span class="ident">TypeRef</span>;
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMGetElementType</span>(<span class="ident">Ty</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">TypeRef</span>;
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMGetArrayLength</span>(<span class="ident">ArrayTy</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">c_uint</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMGetVectorSize</span>(<span class="ident">VectorTy</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">c_uint</span>;
 
     <span class="comment">// Operations on other types</span>
@@ -2414,10 +2387,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMConstNull</span>(<span class="ident">Ty</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMConstICmp</span>(<span class="ident">Pred</span>: <span class="ident">IntPredicate</span>, <span class="ident">V1</span>: <span class="ident">ValueRef</span>, <span class="ident">V2</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMConstFCmp</span>(<span class="ident">Pred</span>: <span class="ident">RealPredicate</span>, <span class="ident">V1</span>: <span class="ident">ValueRef</span>, <span class="ident">V2</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
-    <span class="comment">// only for isize/vector</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMGetUndef</span>(<span class="ident">Ty</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMIsNull</span>(<span class="ident">Val</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">Bool</span>;
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMIsUndef</span>(<span class="ident">Val</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">Bool</span>;
 
     <span class="comment">// Operations on metadata</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMMDStringInContext</span>(<span class="ident">C</span>: <span class="ident">ContextRef</span>, <span class="ident">Str</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_char</span>, <span class="ident">SLen</span>: <span class="ident">c_uint</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
@@ -2539,7 +2509,9 @@
                                        <span class="ident">FunctionTy</span>: <span class="ident">TypeRef</span>)
                                        <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSetFunctionCallConv</span>(<span class="ident">Fn</span>: <span class="ident">ValueRef</span>, <span class="ident">CC</span>: <span class="ident">c_uint</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddAlignmentAttr</span>(<span class="ident">Fn</span>: <span class="ident">ValueRef</span>, <span class="ident">index</span>: <span class="ident">c_uint</span>, <span class="ident">bytes</span>: <span class="ident">u32</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddDereferenceableAttr</span>(<span class="ident">Fn</span>: <span class="ident">ValueRef</span>, <span class="ident">index</span>: <span class="ident">c_uint</span>, <span class="ident">bytes</span>: <span class="ident">u64</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddDereferenceableOrNullAttr</span>(<span class="ident">Fn</span>: <span class="ident">ValueRef</span>, <span class="ident">index</span>: <span class="ident">c_uint</span>, <span class="ident">bytes</span>: <span class="ident">u64</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddFunctionAttribute</span>(<span class="ident">Fn</span>: <span class="ident">ValueRef</span>, <span class="ident">index</span>: <span class="ident">c_uint</span>, <span class="ident">attr</span>: <span class="ident">Attribute</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddFunctionAttrStringValue</span>(<span class="ident">Fn</span>: <span class="ident">ValueRef</span>,
                                               <span class="ident">index</span>: <span class="ident">c_uint</span>,
@@ -2569,7 +2541,11 @@
     <span class="comment">// Operations on call sites</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSetInstructionCallConv</span>(<span class="ident">Instr</span>: <span class="ident">ValueRef</span>, <span class="ident">CC</span>: <span class="ident">c_uint</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddCallSiteAttribute</span>(<span class="ident">Instr</span>: <span class="ident">ValueRef</span>, <span class="ident">index</span>: <span class="ident">c_uint</span>, <span class="ident">attr</span>: <span class="ident">Attribute</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddAlignmentCallSiteAttr</span>(<span class="ident">Instr</span>: <span class="ident">ValueRef</span>, <span class="ident">index</span>: <span class="ident">c_uint</span>, <span class="ident">bytes</span>: <span class="ident">u32</span>);
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddDereferenceableCallSiteAttr</span>(<span class="ident">Instr</span>: <span class="ident">ValueRef</span>, <span class="ident">index</span>: <span class="ident">c_uint</span>, <span class="ident">bytes</span>: <span class="ident">u64</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustAddDereferenceableOrNullCallSiteAttr</span>(<span class="ident">Instr</span>: <span class="ident">ValueRef</span>,
+                                                        <span class="ident">index</span>: <span class="ident">c_uint</span>,
+                                                        <span class="ident">bytes</span>: <span class="ident">u64</span>);
 
     <span class="comment">// Operations on load/store instructions (only)</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSetVolatile</span>(<span class="ident">MemoryAccessInst</span>: <span class="ident">ValueRef</span>, <span class="ident">volatile</span>: <span class="ident">Bool</span>);
@@ -3008,15 +2984,13 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustBuildAtomicLoad</span>(<span class="ident">B</span>: <span class="ident">BuilderRef</span>,
                                    <span class="ident">PointerVal</span>: <span class="ident">ValueRef</span>,
                                    <span class="ident">Name</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_char</span>,
-                                   <span class="ident">Order</span>: <span class="ident">AtomicOrdering</span>,
-                                   <span class="ident">Alignment</span>: <span class="ident">c_uint</span>)
+                                   <span class="ident">Order</span>: <span class="ident">AtomicOrdering</span>)
                                    <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustBuildAtomicStore</span>(<span class="ident">B</span>: <span class="ident">BuilderRef</span>,
                                     <span class="ident">Val</span>: <span class="ident">ValueRef</span>,
                                     <span class="ident">Ptr</span>: <span class="ident">ValueRef</span>,
-                                    <span class="ident">Order</span>: <span class="ident">AtomicOrdering</span>,
-                                    <span class="ident">Alignment</span>: <span class="ident">c_uint</span>)
+                                    <span class="ident">Order</span>: <span class="ident">AtomicOrdering</span>)
                                     <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustBuildAtomicCmpXchg</span>(<span class="ident">B</span>: <span class="ident">BuilderRef</span>,
@@ -3050,23 +3024,6 @@
 
     <span class="doccomment">/// Creates target data from a target layout string.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMCreateTargetData</span>(<span class="ident">StringRep</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">c_char</span>) <span class="op">-&gt;</span> <span class="ident">TargetDataRef</span>;
-    <span class="doccomment">/// Number of bytes clobbered when doing a Store to *T.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMSizeOfTypeInBits</span>(<span class="ident">TD</span>: <span class="ident">TargetDataRef</span>, <span class="ident">Ty</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">c_ulonglong</span>;
-
-    <span class="doccomment">/// Distance between successive elements in an array of T. Includes ABI padding.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMABISizeOfType</span>(<span class="ident">TD</span>: <span class="ident">TargetDataRef</span>, <span class="ident">Ty</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">c_ulonglong</span>;
-
-    <span class="doccomment">/// Returns the preferred alignment of a type.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMPreferredAlignmentOfType</span>(<span class="ident">TD</span>: <span class="ident">TargetDataRef</span>, <span class="ident">Ty</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">c_uint</span>;
-    <span class="doccomment">/// Returns the minimum alignment of a type.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMABIAlignmentOfType</span>(<span class="ident">TD</span>: <span class="ident">TargetDataRef</span>, <span class="ident">Ty</span>: <span class="ident">TypeRef</span>) <span class="op">-&gt;</span> <span class="ident">c_uint</span>;
-
-    <span class="doccomment">/// Computes the byte offset of the indexed struct element for a</span>
-    <span class="doccomment">/// target.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMOffsetOfElement</span>(<span class="ident">TD</span>: <span class="ident">TargetDataRef</span>,
-                               <span class="ident">StructTy</span>: <span class="ident">TypeRef</span>,
-                               <span class="ident">Element</span>: <span class="ident">c_uint</span>)
-                               <span class="op">-&gt;</span> <span class="ident">c_ulonglong</span>;
 
     <span class="doccomment">/// Disposes target data.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMDisposeTargetData</span>(<span class="ident">TD</span>: <span class="ident">TargetDataRef</span>);
@@ -3143,11 +3100,6 @@
                              <span class="ident">ElementTypes</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">TypeRef</span>,
                              <span class="ident">ElementCount</span>: <span class="ident">c_uint</span>,
                              <span class="ident">Packed</span>: <span class="ident">Bool</span>);
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMConstNamedStruct</span>(<span class="ident">S</span>: <span class="ident">TypeRef</span>,
-                                <span class="ident">ConstantVals</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">ValueRef</span>,
-                                <span class="ident">Count</span>: <span class="ident">c_uint</span>)
-                                <span class="op">-&gt;</span> <span class="ident">ValueRef</span>;
 
     <span class="doccomment">/// Enables LLVM debug output.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustSetDebug</span>(<span class="ident">Enabled</span>: <span class="ident">c_int</span>);

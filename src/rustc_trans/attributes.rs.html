@@ -298,7 +298,7 @@
             <span class="ident">naked</span>(<span class="ident">llfn</span>, <span class="bool-val">true</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">attr</span>.<span class="ident">check_name</span>(<span class="string">&quot;allocator&quot;</span>) {
             <span class="ident">Attribute</span>::<span class="ident">NoAlias</span>.<span class="ident">apply_llfn</span>(
-                <span class="ident">llvm</span>::<span class="ident">AttributePlace</span>::<span class="ident">ReturnValue</span>(), <span class="ident">llfn</span>);
+                <span class="ident">llvm</span>::<span class="ident">AttributePlace</span>::<span class="ident">ReturnValue</span>, <span class="ident">llfn</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">attr</span>.<span class="ident">check_name</span>(<span class="string">&quot;unwind&quot;</span>) {
             <span class="ident">unwind</span>(<span class="ident">llfn</span>, <span class="bool-val">true</span>);
         } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">attr</span>.<span class="ident">check_name</span>(<span class="string">&quot;rustc_allocator_nounwind&quot;</span>) {

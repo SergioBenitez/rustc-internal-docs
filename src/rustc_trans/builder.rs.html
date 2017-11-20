@@ -1279,6 +1279,14 @@
 <span id="1234">1234</span>
 <span id="1235">1235</span>
 <span id="1236">1236</span>
+<span id="1237">1237</span>
+<span id="1238">1238</span>
+<span id="1239">1239</span>
+<span id="1240">1240</span>
+<span id="1241">1241</span>
+<span id="1242">1242</span>
+<span id="1243">1243</span>
+<span id="1244">1244</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1297,15 +1305,16 @@
 <span class="kw">use</span> <span class="ident">llvm</span>::{<span class="ident">Opcode</span>, <span class="ident">IntPredicate</span>, <span class="ident">RealPredicate</span>, <span class="ident">False</span>, <span class="ident">OperandBundleDef</span>};
 <span class="kw">use</span> <span class="ident">llvm</span>::{<span class="ident">ValueRef</span>, <span class="ident">BasicBlockRef</span>, <span class="ident">BuilderRef</span>, <span class="ident">ModuleRef</span>};
 <span class="kw">use</span> <span class="ident">common</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">machine</span>::<span class="ident">llalign_of_pref</span>;
 <span class="kw">use</span> <span class="ident">type_</span>::<span class="ident">Type</span>;
 <span class="kw">use</span> <span class="ident">value</span>::<span class="ident">Value</span>;
 <span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">c_uint</span>, <span class="ident">c_char</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">TyCtxt</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">Session</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">Align</span>, <span class="ident">Size</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::{<span class="ident">config</span>, <span class="ident">Session</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">borrow</span>::<span class="ident">Cow</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="ident">Range</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ptr</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
 
@@ -1769,7 +1778,7 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Type</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Type</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">align</span>: <span class="ident">Align</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="kw">let</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">Builder</span>::<span class="ident">with_ccx</span>(<span class="self">self</span>.<span class="ident">ccx</span>);
         <span class="ident">builder</span>.<span class="ident">position_at_start</span>(<span class="kw">unsafe</span> {
             <span class="ident">llvm</span>::<span class="ident">LLVMGetFirstBasicBlock</span>(<span class="self">self</span>.<span class="ident">llfn</span>())
@@ -1777,7 +1786,7 @@
         <span class="ident">builder</span>.<span class="ident">dynamic_alloca</span>(<span class="ident">ty</span>, <span class="ident">name</span>, <span class="ident">align</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dynamic_alloca</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Type</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dynamic_alloca</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Type</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">align</span>: <span class="ident">Align</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;alloca&quot;</span>);
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">alloca</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">name</span>.<span class="ident">is_empty</span>() {
@@ -1787,9 +1796,7 @@
                 <span class="ident">llvm</span>::<span class="ident">LLVMBuildAlloca</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">ty</span>.<span class="ident">to_ref</span>(),
                                       <span class="ident">name</span>.<span class="ident">as_ptr</span>())
             };
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">align</span>) <span class="op">=</span> <span class="ident">align</span> {
-                <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">alloca</span>, <span class="ident">align</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
-            }
+            <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">alloca</span>, <span class="ident">align</span>.<span class="ident">abi</span>() <span class="kw">as</span> <span class="ident">c_uint</span>);
             <span class="ident">alloca</span>
         }
     }
@@ -1801,12 +1808,12 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Align</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;load&quot;</span>);
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">load</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMBuildLoad</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">ptr</span>, <span class="ident">noname</span>());
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">align</span>) <span class="op">=</span> <span class="ident">align</span> {
-                <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">load</span>, <span class="ident">align</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
+                <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">load</span>, <span class="ident">align</span>.<span class="ident">abi</span>() <span class="kw">as</span> <span class="ident">c_uint</span>);
             }
             <span class="ident">load</span>
         }
@@ -1821,49 +1828,42 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">atomic_load</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">order</span>: <span class="ident">AtomicOrdering</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">atomic_load</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">order</span>: <span class="ident">AtomicOrdering</span>, <span class="ident">align</span>: <span class="ident">Align</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;load.atomic&quot;</span>);
         <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">Type</span>::<span class="ident">from_ref</span>(<span class="ident">llvm</span>::<span class="ident">LLVMTypeOf</span>(<span class="ident">ptr</span>));
-            <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="ident">llalign_of_pref</span>(<span class="self">self</span>.<span class="ident">ccx</span>, <span class="ident">ty</span>.<span class="ident">element_type</span>());
-            <span class="ident">llvm</span>::<span class="ident">LLVMRustBuildAtomicLoad</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">ptr</span>, <span class="ident">noname</span>(), <span class="ident">order</span>,
-                                          <span class="ident">align</span> <span class="kw">as</span> <span class="ident">c_uint</span>)
+            <span class="kw">let</span> <span class="ident">load</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMRustBuildAtomicLoad</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">ptr</span>, <span class="ident">noname</span>(), <span class="ident">order</span>);
+            <span class="comment">// FIXME(eddyb) Isn&#39;t it UB to use `pref` instead of `abi` here?</span>
+            <span class="comment">// However, 64-bit atomic loads on `i686-apple-darwin` appear to</span>
+            <span class="comment">// require `___atomic_load` with ABI-alignment, so it&#39;s staying.</span>
+            <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">load</span>, <span class="ident">align</span>.<span class="ident">pref</span>() <span class="kw">as</span> <span class="ident">c_uint</span>);
+            <span class="ident">load</span>
         }
     }
 
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_range_assert</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">lo</span>: <span class="ident">u64</span>,
-                             <span class="ident">hi</span>: <span class="ident">u64</span>, <span class="ident">signed</span>: <span class="ident">llvm</span>::<span class="ident">Bool</span>,
-                             <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">load</span>(<span class="ident">ptr</span>, <span class="ident">align</span>);
-
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">range_metadata</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">load</span>: <span class="ident">ValueRef</span>, <span class="ident">range</span>: <span class="ident">Range</span><span class="op">&lt;</span><span class="ident">u128</span><span class="op">&gt;</span>) {
         <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMGetElementType</span>(<span class="ident">llvm</span>::<span class="ident">LLVMTypeOf</span>(<span class="ident">ptr</span>));
-            <span class="kw">let</span> <span class="ident">min</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMConstInt</span>(<span class="ident">t</span>, <span class="ident">lo</span>, <span class="ident">signed</span>);
-            <span class="kw">let</span> <span class="ident">max</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMConstInt</span>(<span class="ident">t</span>, <span class="ident">hi</span>, <span class="ident">signed</span>);
+            <span class="kw">let</span> <span class="ident">llty</span> <span class="op">=</span> <span class="ident">val_ty</span>(<span class="ident">load</span>);
+            <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> [
+                <span class="ident">C_uint_big</span>(<span class="ident">llty</span>, <span class="ident">range</span>.<span class="ident">start</span>),
+                <span class="ident">C_uint_big</span>(<span class="ident">llty</span>, <span class="ident">range</span>.<span class="ident">end</span>)
+            ];
 
-            <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> [<span class="ident">min</span>, <span class="ident">max</span>];
-
-            <span class="ident">llvm</span>::<span class="ident">LLVMSetMetadata</span>(<span class="ident">value</span>, <span class="ident">llvm</span>::<span class="ident">MD_range</span> <span class="kw">as</span> <span class="ident">c_uint</span>,
+            <span class="ident">llvm</span>::<span class="ident">LLVMSetMetadata</span>(<span class="ident">load</span>, <span class="ident">llvm</span>::<span class="ident">MD_range</span> <span class="kw">as</span> <span class="ident">c_uint</span>,
                                   <span class="ident">llvm</span>::<span class="ident">LLVMMDNodeInContext</span>(<span class="self">self</span>.<span class="ident">ccx</span>.<span class="ident">llcx</span>(),
                                                             <span class="ident">v</span>.<span class="ident">as_ptr</span>(),
                                                             <span class="ident">v</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">c_uint</span>));
         }
-
-        <span class="ident">value</span>
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_nonnull</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
-        <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">load</span>(<span class="ident">ptr</span>, <span class="ident">align</span>);
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nonnull_metadata</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">load</span>: <span class="ident">ValueRef</span>) {
         <span class="kw">unsafe</span> {
-            <span class="ident">llvm</span>::<span class="ident">LLVMSetMetadata</span>(<span class="ident">value</span>, <span class="ident">llvm</span>::<span class="ident">MD_nonnull</span> <span class="kw">as</span> <span class="ident">c_uint</span>,
+            <span class="ident">llvm</span>::<span class="ident">LLVMSetMetadata</span>(<span class="ident">load</span>, <span class="ident">llvm</span>::<span class="ident">MD_nonnull</span> <span class="kw">as</span> <span class="ident">c_uint</span>,
                                   <span class="ident">llvm</span>::<span class="ident">LLVMMDNodeInContext</span>(<span class="self">self</span>.<span class="ident">ccx</span>.<span class="ident">llcx</span>(), <span class="ident">ptr</span>::<span class="ident">null</span>(), <span class="number">0</span>));
         }
-
-        <span class="ident">value</span>
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">val</span>: <span class="ident">ValueRef</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">val</span>: <span class="ident">ValueRef</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">align</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Align</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Store {:?} -&gt; {:?}&quot;</span>, <span class="ident">Value</span>(<span class="ident">val</span>), <span class="ident">Value</span>(<span class="ident">ptr</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="self">self</span>.<span class="ident">llbuilder</span>.<span class="ident">is_null</span>());
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;store&quot;</span>);
@@ -1871,7 +1871,7 @@
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMBuildStore</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">val</span>, <span class="ident">ptr</span>);
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">align</span>) <span class="op">=</span> <span class="ident">align</span> {
-                <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">store</span>, <span class="ident">align</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
+                <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">store</span>, <span class="ident">align</span>.<span class="ident">abi</span>() <span class="kw">as</span> <span class="ident">c_uint</span>);
             }
             <span class="ident">store</span>
         }
@@ -1889,14 +1889,16 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">atomic_store</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">val</span>: <span class="ident">ValueRef</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">order</span>: <span class="ident">AtomicOrdering</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">atomic_store</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">val</span>: <span class="ident">ValueRef</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>,
+                        <span class="ident">order</span>: <span class="ident">AtomicOrdering</span>, <span class="ident">align</span>: <span class="ident">Align</span>) {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Store {:?} -&gt; {:?}&quot;</span>, <span class="ident">Value</span>(<span class="ident">val</span>), <span class="ident">Value</span>(<span class="ident">ptr</span>));
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;store.atomic&quot;</span>);
         <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">check_store</span>(<span class="ident">val</span>, <span class="ident">ptr</span>);
         <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">Type</span>::<span class="ident">from_ref</span>(<span class="ident">llvm</span>::<span class="ident">LLVMTypeOf</span>(<span class="ident">ptr</span>));
-            <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="ident">llalign_of_pref</span>(<span class="self">self</span>.<span class="ident">ccx</span>, <span class="ident">ty</span>.<span class="ident">element_type</span>());
-            <span class="ident">llvm</span>::<span class="ident">LLVMRustBuildAtomicStore</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">val</span>, <span class="ident">ptr</span>, <span class="ident">order</span>, <span class="ident">align</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
+            <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMRustBuildAtomicStore</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">val</span>, <span class="ident">ptr</span>, <span class="ident">order</span>);
+            <span class="comment">// FIXME(eddyb) Isn&#39;t it UB to use `pref` instead of `abi` here?</span>
+            <span class="comment">// Also see `atomic_load` for more context.</span>
+            <span class="ident">llvm</span>::<span class="ident">LLVMSetAlignment</span>(<span class="ident">store</span>, <span class="ident">align</span>.<span class="ident">pref</span>() <span class="kw">as</span> <span class="ident">c_uint</span>);
         }
     }
 
@@ -1908,25 +1910,6 @@
         }
     }
 
-    <span class="comment">// Simple wrapper around GEP that takes an array of ints and wraps them</span>
-    <span class="comment">// in C_i32()</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gepi</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">base</span>: <span class="ident">ValueRef</span>, <span class="ident">ixs</span>: <span class="kw-2">&amp;</span>[<span class="ident">usize</span>]) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
-        <span class="comment">// Small vector optimization. This should catch 100% of the cases that</span>
-        <span class="comment">// we care about.</span>
-        <span class="kw">if</span> <span class="ident">ixs</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="number">16</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">small_vec</span> <span class="op">=</span> [ <span class="ident">C_i32</span>(<span class="self">self</span>.<span class="ident">ccx</span>, <span class="number">0</span>); <span class="number">16</span> ];
-            <span class="kw">for</span> (<span class="ident">small_vec_e</span>, <span class="kw-2">&amp;</span><span class="ident">ix</span>) <span class="kw">in</span> <span class="ident">small_vec</span>.<span class="ident">iter_mut</span>().<span class="ident">zip</span>(<span class="ident">ixs</span>) {
-                <span class="kw-2">*</span><span class="ident">small_vec_e</span> <span class="op">=</span> <span class="ident">C_i32</span>(<span class="self">self</span>.<span class="ident">ccx</span>, <span class="ident">ix</span> <span class="kw">as</span> <span class="ident">i32</span>);
-            }
-            <span class="self">self</span>.<span class="ident">inbounds_gep</span>(<span class="ident">base</span>, <span class="kw-2">&amp;</span><span class="ident">small_vec</span>[..<span class="ident">ixs</span>.<span class="ident">len</span>()])
-        } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">ixs</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">i</span><span class="op">|</span> <span class="ident">C_i32</span>(<span class="self">self</span>.<span class="ident">ccx</span>, <span class="kw-2">*</span><span class="ident">i</span> <span class="kw">as</span> <span class="ident">i32</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ValueRef</span><span class="op">&gt;&gt;</span>();
-            <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;gepi&quot;</span>);
-            <span class="self">self</span>.<span class="ident">inbounds_gep</span>(<span class="ident">base</span>, <span class="kw-2">&amp;</span><span class="ident">v</span>)
-        }
-    }
-
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inbounds_gep</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">indices</span>: <span class="kw-2">&amp;</span>[<span class="ident">ValueRef</span>]) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;inboundsgep&quot;</span>);
         <span class="kw">unsafe</span> {
@@ -1935,8 +1918,9 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">struct_gep</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">struct_gep</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">idx</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;structgep&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">idx</span>);
         <span class="kw">unsafe</span> {
             <span class="ident">llvm</span>::<span class="ident">LLVMBuildStructGEP</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">ptr</span>, <span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>, <span class="ident">noname</span>())
         }
@@ -2242,16 +2226,18 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extract_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">agg_val</span>: <span class="ident">ValueRef</span>, <span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extract_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">agg_val</span>: <span class="ident">ValueRef</span>, <span class="ident">idx</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;extractvalue&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">idx</span>);
         <span class="kw">unsafe</span> {
             <span class="ident">llvm</span>::<span class="ident">LLVMBuildExtractValue</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">agg_val</span>, <span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>, <span class="ident">noname</span>())
         }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">agg_val</span>: <span class="ident">ValueRef</span>, <span class="ident">elt</span>: <span class="ident">ValueRef</span>,
-                       <span class="ident">idx</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+                       <span class="ident">idx</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
         <span class="self">self</span>.<span class="ident">count_insn</span>(<span class="string">&quot;insertvalue&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">idx</span>);
         <span class="kw">unsafe</span> {
             <span class="ident">llvm</span>::<span class="ident">LLVMBuildInsertValue</span>(<span class="self">self</span>.<span class="ident">llbuilder</span>, <span class="ident">agg_val</span>, <span class="ident">elt</span>, <span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>,
                                        <span class="ident">noname</span>())
@@ -2433,14 +2419,12 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_case</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">s</span>: <span class="ident">ValueRef</span>, <span class="ident">on_val</span>: <span class="ident">ValueRef</span>, <span class="ident">dest</span>: <span class="ident">BasicBlockRef</span>) {
         <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">llvm</span>::<span class="ident">LLVMIsUndef</span>(<span class="ident">s</span>) <span class="op">==</span> <span class="ident">llvm</span>::<span class="ident">True</span> { <span class="kw">return</span>; }
             <span class="ident">llvm</span>::<span class="ident">LLVMAddCase</span>(<span class="ident">s</span>, <span class="ident">on_val</span>, <span class="ident">dest</span>)
         }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_incoming_to_phi</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">phi</span>: <span class="ident">ValueRef</span>, <span class="ident">val</span>: <span class="ident">ValueRef</span>, <span class="ident">bb</span>: <span class="ident">BasicBlockRef</span>) {
         <span class="kw">unsafe</span> {
-            <span class="kw">if</span> <span class="ident">llvm</span>::<span class="ident">LLVMIsUndef</span>(<span class="ident">phi</span>) <span class="op">==</span> <span class="ident">llvm</span>::<span class="ident">True</span> { <span class="kw">return</span>; }
             <span class="ident">llvm</span>::<span class="ident">LLVMAddIncoming</span>(<span class="ident">phi</span>, <span class="kw-2">&amp;</span><span class="ident">val</span>, <span class="kw-2">&amp;</span><span class="ident">bb</span>, <span class="number">1</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
         }
     }
@@ -2514,6 +2498,38 @@
             .<span class="ident">collect</span>();
 
         <span class="kw">return</span> <span class="ident">Cow</span>::<span class="ident">Owned</span>(<span class="ident">casted_args</span>);
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lifetime_start</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">size</span>: <span class="ident">Size</span>) {
+        <span class="self">self</span>.<span class="ident">call_lifetime_intrinsic</span>(<span class="string">&quot;llvm.lifetime.start&quot;</span>, <span class="ident">ptr</span>, <span class="ident">size</span>);
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lifetime_end</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">size</span>: <span class="ident">Size</span>) {
+        <span class="self">self</span>.<span class="ident">call_lifetime_intrinsic</span>(<span class="string">&quot;llvm.lifetime.end&quot;</span>, <span class="ident">ptr</span>, <span class="ident">size</span>);
+    }
+
+    <span class="doccomment">/// If LLVM lifetime intrinsic support is enabled (i.e. optimizations</span>
+    <span class="doccomment">/// on), and `ptr` is nonzero-sized, then extracts the size of `ptr`</span>
+    <span class="doccomment">/// and the intrinsic for `lt` and passes them to `emit`, which is in</span>
+    <span class="doccomment">/// charge of generating code to call the passed intrinsic on whatever</span>
+    <span class="doccomment">/// block of generated code is targetted for the intrinsic.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If LLVM lifetime intrinsic support is disabled (i.e.  optimizations</span>
+    <span class="doccomment">/// off) or `ptr` is zero-sized, then no-op (does not call `emit`).</span>
+    <span class="kw">fn</span> <span class="ident">call_lifetime_intrinsic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">intrinsic</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">size</span>: <span class="ident">Size</span>) {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ccx</span>.<span class="ident">sess</span>().<span class="ident">opts</span>.<span class="ident">optimize</span> <span class="op">==</span> <span class="ident">config</span>::<span class="ident">OptLevel</span>::<span class="ident">No</span> {
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">size</span>.<span class="ident">bytes</span>();
+        <span class="kw">if</span> <span class="ident">size</span> <span class="op">==</span> <span class="number">0</span> {
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">let</span> <span class="ident">lifetime_intrinsic</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">ccx</span>.<span class="ident">get_intrinsic</span>(<span class="ident">intrinsic</span>);
+
+        <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pointercast</span>(<span class="ident">ptr</span>, <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="self">self</span>.<span class="ident">ccx</span>));
+        <span class="self">self</span>.<span class="ident">call</span>(<span class="ident">lifetime_intrinsic</span>, <span class="kw-2">&amp;</span>[<span class="ident">C_u64</span>(<span class="self">self</span>.<span class="ident">ccx</span>, <span class="ident">size</span>), <span class="ident">ptr</span>], <span class="prelude-val">None</span>);
     }
 }
 </pre>

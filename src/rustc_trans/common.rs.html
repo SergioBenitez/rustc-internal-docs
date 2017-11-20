@@ -516,121 +516,6 @@
 <span id="471">471</span>
 <span id="472">472</span>
 <span id="473">473</span>
-<span id="474">474</span>
-<span id="475">475</span>
-<span id="476">476</span>
-<span id="477">477</span>
-<span id="478">478</span>
-<span id="479">479</span>
-<span id="480">480</span>
-<span id="481">481</span>
-<span id="482">482</span>
-<span id="483">483</span>
-<span id="484">484</span>
-<span id="485">485</span>
-<span id="486">486</span>
-<span id="487">487</span>
-<span id="488">488</span>
-<span id="489">489</span>
-<span id="490">490</span>
-<span id="491">491</span>
-<span id="492">492</span>
-<span id="493">493</span>
-<span id="494">494</span>
-<span id="495">495</span>
-<span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
-<span id="505">505</span>
-<span id="506">506</span>
-<span id="507">507</span>
-<span id="508">508</span>
-<span id="509">509</span>
-<span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
-<span id="513">513</span>
-<span id="514">514</span>
-<span id="515">515</span>
-<span id="516">516</span>
-<span id="517">517</span>
-<span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
-<span id="586">586</span>
-<span id="587">587</span>
-<span id="588">588</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -652,17 +537,17 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">DefPathData</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">lang_items</span>::<span class="ident">LangItem</span>;
+<span class="kw">use</span> <span class="ident">abi</span>;
 <span class="kw">use</span> <span class="ident">base</span>;
 <span class="kw">use</span> <span class="ident">builder</span>::<span class="ident">Builder</span>;
 <span class="kw">use</span> <span class="ident">consts</span>;
 <span class="kw">use</span> <span class="ident">declare</span>;
-<span class="kw">use</span> <span class="ident">machine</span>;
-<span class="kw">use</span> <span class="ident">monomorphize</span>;
 <span class="kw">use</span> <span class="ident">type_</span>::<span class="ident">Type</span>;
+<span class="kw">use</span> <span class="ident">type_of</span>::<span class="ident">LayoutLlvmExt</span>;
 <span class="kw">use</span> <span class="ident">value</span>::<span class="ident">Value</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">traits</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">Layout</span>, <span class="ident">LayoutTyper</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">HasDataLayout</span>, <span class="ident">LayoutOf</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Kind</span>, <span class="ident">Subst</span>, <span class="ident">Substs</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
 
@@ -674,105 +559,6 @@
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">context</span>::{<span class="ident">CrateContext</span>, <span class="ident">SharedCrateContext</span>};
-
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_is_fat_ptr</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Layout</span>::<span class="ident">FatPointer</span> { .. } <span class="op">=</span> <span class="kw-2">*</span><span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">ty</span>) {
-        <span class="bool-val">true</span>
-    } <span class="kw">else</span> {
-        <span class="bool-val">false</span>
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_is_immediate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">ty</span>);
-    <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">layout</span> {
-        <span class="ident">Layout</span>::<span class="ident">CEnum</span> { .. } <span class="op">|</span>
-        <span class="ident">Layout</span>::<span class="ident">Scalar</span> { .. } <span class="op">|</span>
-        <span class="ident">Layout</span>::<span class="ident">Vector</span> { .. } <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-
-        <span class="ident">Layout</span>::<span class="ident">FatPointer</span> { .. } <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-
-        <span class="ident">Layout</span>::<span class="ident">Array</span> { .. } <span class="op">|</span>
-        <span class="ident">Layout</span>::<span class="ident">Univariant</span> { .. } <span class="op">|</span>
-        <span class="ident">Layout</span>::<span class="ident">General</span> { .. } <span class="op">|</span>
-        <span class="ident">Layout</span>::<span class="ident">UntaggedUnion</span> { .. } <span class="op">|</span>
-        <span class="ident">Layout</span>::<span class="ident">RawNullablePointer</span> { .. } <span class="op">|</span>
-        <span class="ident">Layout</span>::<span class="ident">StructWrappedNullablePointer</span> { .. } <span class="op">=&gt;</span> {
-            <span class="op">!</span><span class="ident">layout</span>.<span class="ident">is_unsized</span>() <span class="op">&amp;&amp;</span> <span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>() <span class="op">==</span> <span class="number">0</span>
-        }
-    }
-}
-
-<span class="doccomment">/// Returns Some([a, b]) if the type has a pair of fields with types a and b.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_pair_fields</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                                  <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>[<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>; <span class="number">2</span>]<span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
-        <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">adt</span>, <span class="ident">substs</span>) <span class="op">=&gt;</span> {
-            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">adt</span>.<span class="ident">variants</span>.<span class="ident">len</span>(), <span class="number">1</span>);
-            <span class="kw">let</span> <span class="ident">fields</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">adt</span>.<span class="ident">variants</span>[<span class="number">0</span>].<span class="ident">fields</span>;
-            <span class="kw">if</span> <span class="ident">fields</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="number">2</span> {
-                <span class="kw">return</span> <span class="prelude-val">None</span>;
-            }
-            <span class="prelude-val">Some</span>([<span class="ident">monomorphize</span>::<span class="ident">field_ty</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="ident">substs</span>, <span class="kw-2">&amp;</span><span class="ident">fields</span>[<span class="number">0</span>]),
-                  <span class="ident">monomorphize</span>::<span class="ident">field_ty</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="ident">substs</span>, <span class="kw-2">&amp;</span><span class="ident">fields</span>[<span class="number">1</span>])])
-        }
-        <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tys</span> <span class="op">=</span> <span class="ident">substs</span>.<span class="ident">upvar_tys</span>(<span class="ident">def_id</span>, <span class="ident">ccx</span>.<span class="ident">tcx</span>());
-            <span class="ident">tys</span>.<span class="ident">next</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">first_ty</span><span class="op">|</span> <span class="ident">tys</span>.<span class="ident">next</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">second_ty</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="ident">tys</span>.<span class="ident">next</span>().<span class="ident">is_some</span>() {
-                    <span class="prelude-val">None</span>
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>([<span class="ident">first_ty</span>, <span class="ident">second_ty</span>])
-                }
-            }))
-        }
-        <span class="ident">ty</span>::<span class="ident">TyGenerator</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>, _) <span class="op">=&gt;</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tys</span> <span class="op">=</span> <span class="ident">substs</span>.<span class="ident">field_tys</span>(<span class="ident">def_id</span>, <span class="ident">ccx</span>.<span class="ident">tcx</span>());
-            <span class="ident">tys</span>.<span class="ident">next</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">first_ty</span><span class="op">|</span> <span class="ident">tys</span>.<span class="ident">next</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">second_ty</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="ident">tys</span>.<span class="ident">next</span>().<span class="ident">is_some</span>() {
-                    <span class="prelude-val">None</span>
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">Some</span>([<span class="ident">first_ty</span>, <span class="ident">second_ty</span>])
-                }
-            }))
-        }
-        <span class="ident">ty</span>::<span class="ident">TyTuple</span>(<span class="ident">tys</span>, _) <span class="op">=&gt;</span> {
-            <span class="kw">if</span> <span class="ident">tys</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="number">2</span> {
-                <span class="kw">return</span> <span class="prelude-val">None</span>;
-            }
-            <span class="prelude-val">Some</span>([<span class="ident">tys</span>[<span class="number">0</span>], <span class="ident">tys</span>[<span class="number">1</span>]])
-        }
-        _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>
-    }
-}
-
-<span class="doccomment">/// Returns true if the type is represented as a pair of immediates.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_is_imm_pair</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                                  <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">ty</span>) {
-        <span class="ident">Layout</span>::<span class="ident">FatPointer</span> { .. } <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-        <span class="ident">Layout</span>::<span class="ident">Univariant</span> { <span class="kw-2">ref</span> <span class="ident">variant</span>, .. } <span class="op">=&gt;</span> {
-            <span class="comment">// There must be only 2 fields.</span>
-            <span class="kw">if</span> <span class="ident">variant</span>.<span class="ident">offsets</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="number">2</span> {
-                <span class="kw">return</span> <span class="bool-val">false</span>;
-            }
-
-            <span class="kw">match</span> <span class="ident">type_pair_fields</span>(<span class="ident">ccx</span>, <span class="ident">ty</span>) {
-                <span class="prelude-val">Some</span>([<span class="ident">a</span>, <span class="ident">b</span>]) <span class="op">=&gt;</span> {
-                    <span class="ident">type_is_immediate</span>(<span class="ident">ccx</span>, <span class="ident">a</span>) <span class="op">&amp;&amp;</span> <span class="ident">type_is_immediate</span>(<span class="ident">ccx</span>, <span class="ident">b</span>)
-                }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>
-            }
-        }
-        _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
-    }
-}
-
-<span class="doccomment">/// Identify types which have size zero at runtime.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_is_zero_size</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">ty</span>);
-    <span class="op">!</span><span class="ident">layout</span>.<span class="ident">is_unsized</span>() <span class="op">&amp;&amp;</span> <span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>() <span class="op">==</span> <span class="number">0</span>
-}
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">type_needs_drop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="ident">ty</span>.<span class="ident">needs_drop</span>(<span class="ident">tcx</span>, <span class="ident">ty</span>::<span class="ident">ParamEnv</span>::<span class="ident">empty</span>(<span class="ident">traits</span>::<span class="ident">Reveal</span>::<span class="ident">All</span>))
@@ -879,15 +665,11 @@
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_big_integral</span>(<span class="ident">t</span>: <span class="ident">Type</span>, <span class="ident">u</span>: <span class="ident">u128</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_uint_big</span>(<span class="ident">t</span>: <span class="ident">Type</span>, <span class="ident">u</span>: <span class="ident">u128</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
     <span class="kw">unsafe</span> {
-        <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> [<span class="ident">u</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">u</span>.<span class="ident">wrapping_shr</span>(<span class="number">64</span>) <span class="kw">as</span> <span class="ident">u64</span>];
+        <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> [<span class="ident">u</span> <span class="kw">as</span> <span class="ident">u64</span>, (<span class="ident">u</span> <span class="op">&gt;&gt;</span> <span class="number">64</span>) <span class="kw">as</span> <span class="ident">u64</span>];
         <span class="ident">llvm</span>::<span class="ident">LLVMConstIntOfArbitraryPrecision</span>(<span class="ident">t</span>.<span class="ident">to_ref</span>(), <span class="number">2</span>, <span class="ident">words</span>.<span class="ident">as_ptr</span>())
     }
-}
-
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_nil</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
-    <span class="ident">C_struct</span>(<span class="ident">ccx</span>, <span class="kw-2">&amp;</span>[], <span class="bool-val">false</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_bool</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">val</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
@@ -907,8 +689,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_usize</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">i</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
-    <span class="kw">let</span> <span class="ident">bit_size</span> <span class="op">=</span> <span class="ident">machine</span>::<span class="ident">llbitsize_of_real</span>(<span class="ident">ccx</span>, <span class="ident">ccx</span>.<span class="ident">isize_ty</span>());
-
+    <span class="kw">let</span> <span class="ident">bit_size</span> <span class="op">=</span> <span class="ident">ccx</span>.<span class="ident">data_layout</span>().<span class="ident">pointer_size</span>.<span class="ident">bits</span>();
     <span class="kw">if</span> <span class="ident">bit_size</span> <span class="op">&lt;</span> <span class="number">64</span> {
         <span class="comment">// make sure it doesn&#39;t overflow</span>
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">i</span> <span class="op">&lt;</span> (<span class="number">1</span><span class="op">&lt;&lt;</span><span class="ident">bit_size</span>));
@@ -951,8 +732,15 @@
 <span class="comment">// you will be kicked off fast isel. See issue #4352 for an example of this.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_str_slice</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">s</span>: <span class="ident">InternedString</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">len</span>();
-    <span class="kw">let</span> <span class="ident">cs</span> <span class="op">=</span> <span class="ident">consts</span>::<span class="ident">ptrcast</span>(<span class="ident">C_cstr</span>(<span class="ident">cx</span>, <span class="ident">s</span>, <span class="bool-val">false</span>), <span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">cx</span>));
-    <span class="ident">C_named_struct</span>(<span class="ident">cx</span>.<span class="ident">str_slice_type</span>(), <span class="kw-2">&amp;</span>[<span class="ident">cs</span>, <span class="ident">C_usize</span>(<span class="ident">cx</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">u64</span>)])
+    <span class="kw">let</span> <span class="ident">cs</span> <span class="op">=</span> <span class="ident">consts</span>::<span class="ident">ptrcast</span>(<span class="ident">C_cstr</span>(<span class="ident">cx</span>, <span class="ident">s</span>, <span class="bool-val">false</span>),
+        <span class="ident">cx</span>.<span class="ident">layout_of</span>(<span class="ident">cx</span>.<span class="ident">tcx</span>().<span class="ident">mk_str</span>()).<span class="ident">llvm_type</span>(<span class="ident">cx</span>).<span class="ident">ptr_to</span>());
+    <span class="ident">C_fat_ptr</span>(<span class="ident">cx</span>, <span class="ident">cs</span>, <span class="ident">C_usize</span>(<span class="ident">cx</span>, <span class="ident">len</span> <span class="kw">as</span> <span class="ident">u64</span>))
+}
+
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_fat_ptr</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">ptr</span>: <span class="ident">ValueRef</span>, <span class="ident">meta</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">abi</span>::<span class="ident">FAT_PTR_ADDR</span>, <span class="number">0</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">abi</span>::<span class="ident">FAT_PTR_EXTRA</span>, <span class="number">1</span>);
+    <span class="ident">C_struct</span>(<span class="ident">cx</span>, <span class="kw-2">&amp;</span>[<span class="ident">ptr</span>, <span class="ident">meta</span>], <span class="bool-val">false</span>)
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_struct</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">elts</span>: <span class="kw-2">&amp;</span>[<span class="ident">ValueRef</span>], <span class="ident">packed</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
@@ -964,12 +752,6 @@
         <span class="ident">llvm</span>::<span class="ident">LLVMConstStructInContext</span>(<span class="ident">llcx</span>,
                                        <span class="ident">elts</span>.<span class="ident">as_ptr</span>(), <span class="ident">elts</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">c_uint</span>,
                                        <span class="ident">packed</span> <span class="kw">as</span> <span class="ident">Bool</span>)
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">C_named_struct</span>(<span class="ident">t</span>: <span class="ident">Type</span>, <span class="ident">elts</span>: <span class="kw-2">&amp;</span>[<span class="ident">ValueRef</span>]) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
-    <span class="kw">unsafe</span> {
-        <span class="ident">llvm</span>::<span class="ident">LLVMConstNamedStruct</span>(<span class="ident">t</span>.<span class="ident">to_ref</span>(), <span class="ident">elts</span>.<span class="ident">as_ptr</span>(), <span class="ident">elts</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">c_uint</span>)
     }
 }
 
@@ -996,13 +778,14 @@
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">const_get_elt</span>(<span class="ident">v</span>: <span class="ident">ValueRef</span>, <span class="ident">us</span>: <span class="kw-2">&amp;</span>[<span class="ident">c_uint</span>])
-              <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">const_get_elt</span>(<span class="ident">v</span>: <span class="ident">ValueRef</span>, <span class="ident">idx</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">ValueRef</span> {
     <span class="kw">unsafe</span> {
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span> <span class="kw">as</span> <span class="ident">u64</span>, <span class="ident">idx</span>);
+        <span class="kw">let</span> <span class="ident">us</span> <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="ident">idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>];
         <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMConstExtractValue</span>(<span class="ident">v</span>, <span class="ident">us</span>.<span class="ident">as_ptr</span>(), <span class="ident">us</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">c_uint</span>);
 
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;const_get_elt(v={:?}, us={:?}, r={:?})&quot;</span>,
-               <span class="ident">Value</span>(<span class="ident">v</span>), <span class="ident">us</span>, <span class="ident">Value</span>(<span class="ident">r</span>));
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;const_get_elt(v={:?}, idx={}, r={:?})&quot;</span>,
+               <span class="ident">Value</span>(<span class="ident">v</span>), <span class="ident">idx</span>, <span class="ident">Value</span>(<span class="ident">r</span>));
 
         <span class="ident">r</span>
     }
@@ -1039,19 +822,6 @@
         } <span class="kw">else</span> {
             <span class="prelude-val">None</span>
         }
-    }
-}
-
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_undef</span>(<span class="ident">val</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">unsafe</span> {
-        <span class="ident">llvm</span>::<span class="ident">LLVMIsUndef</span>(<span class="ident">val</span>) <span class="op">!=</span> <span class="ident">False</span>
-    }
-}
-
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span> <span class="comment">// potentially useful</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="ident">val</span>: <span class="ident">ValueRef</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">unsafe</span> {
-        <span class="ident">llvm</span>::<span class="ident">LLVMIsNull</span>(<span class="ident">val</span>) <span class="op">!=</span> <span class="ident">False</span>
     }
 }
 

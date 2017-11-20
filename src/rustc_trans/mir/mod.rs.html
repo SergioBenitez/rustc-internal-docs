@@ -636,47 +636,6 @@
 <span id="591">591</span>
 <span id="592">592</span>
 <span id="593">593</span>
-<span id="594">594</span>
-<span id="595">595</span>
-<span id="596">596</span>
-<span id="597">597</span>
-<span id="598">598</span>
-<span id="599">599</span>
-<span id="600">600</span>
-<span id="601">601</span>
-<span id="602">602</span>
-<span id="603">603</span>
-<span id="604">604</span>
-<span id="605">605</span>
-<span id="606">606</span>
-<span id="607">607</span>
-<span id="608">608</span>
-<span id="609">609</span>
-<span id="610">610</span>
-<span id="611">611</span>
-<span id="612">612</span>
-<span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
-<span id="618">618</span>
-<span id="619">619</span>
-<span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
-<span id="623">623</span>
-<span id="624">624</span>
-<span id="625">625</span>
-<span id="626">626</span>
-<span id="627">627</span>
-<span id="628">628</span>
-<span id="629">629</span>
-<span id="630">630</span>
-<span id="631">631</span>
-<span id="632">632</span>
-<span id="633">633</span>
-<span id="634">634</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -691,20 +650,18 @@
 <span class="kw">use</span> <span class="ident">libc</span>::<span class="ident">c_uint</span>;
 <span class="kw">use</span> <span class="ident">llvm</span>::{<span class="self">self</span>, <span class="ident">ValueRef</span>, <span class="ident">BasicBlockRef</span>};
 <span class="kw">use</span> <span class="ident">llvm</span>::<span class="ident">debuginfo</span>::<span class="ident">DIScope</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TypeFoldable</span>};
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="self">self</span>, <span class="ident">LayoutTyper</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TypeFoldable</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">LayoutOf</span>, <span class="ident">TyLayout</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="self">self</span>, <span class="ident">Mir</span>};
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">tcx</span>::<span class="ident">LvalueTy</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">infer</span>::<span class="ident">TransNormalize</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">config</span>::<span class="ident">FullDebugInfo</span>;
 <span class="kw">use</span> <span class="ident">base</span>;
 <span class="kw">use</span> <span class="ident">builder</span>::<span class="ident">Builder</span>;
-<span class="kw">use</span> <span class="ident">common</span>::{<span class="self">self</span>, <span class="ident">CrateContext</span>, <span class="ident">Funclet</span>};
+<span class="kw">use</span> <span class="ident">common</span>::{<span class="ident">CrateContext</span>, <span class="ident">Funclet</span>};
 <span class="kw">use</span> <span class="ident">debuginfo</span>::{<span class="self">self</span>, <span class="ident">declare_local</span>, <span class="ident">VariableAccess</span>, <span class="ident">VariableKind</span>, <span class="ident">FunctionDebugContext</span>};
 <span class="kw">use</span> <span class="ident">monomorphize</span>::<span class="ident">Instance</span>;
-<span class="kw">use</span> <span class="ident">abi</span>::{<span class="ident">ArgAttribute</span>, <span class="ident">FnType</span>};
-<span class="kw">use</span> <span class="ident">type_of</span>;
+<span class="kw">use</span> <span class="ident">abi</span>::{<span class="ident">ArgAttribute</span>, <span class="ident">FnType</span>, <span class="ident">PassMode</span>};
 
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">DUMMY_SP</span>, <span class="ident">NO_EXPANSION</span>, <span class="ident">BytePos</span>, <span class="ident">Span</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">keywords</span>;
@@ -741,7 +698,7 @@
     <span class="doccomment">/// don&#39;t really care about it very much. Anyway, this value</span>
     <span class="doccomment">/// contains an alloca into which the personality is stored and</span>
     <span class="doccomment">/// then later loaded when generating the DIVERGE_BLOCK.</span>
-    <span class="ident">llpersonalityslot</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ValueRef</span><span class="op">&gt;</span>,
+    <span class="ident">personality_slot</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LvalueRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 
     <span class="doccomment">/// A `Block` for each MIR `BasicBlock`</span>
     <span class="ident">blocks</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">mir</span>::<span class="ident">BasicBlock</span>, <span class="ident">BasicBlockRef</span><span class="op">&gt;</span>,
@@ -766,7 +723,7 @@
     <span class="doccomment">/// directly using an `OperandRef`, which makes for tighter LLVM</span>
     <span class="doccomment">/// IR. The conditions for using an `OperandRef` are as follows:</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// - the type of the local must be judged &quot;immediate&quot; by `type_is_immediate`</span>
+    <span class="doccomment">/// - the type of the local must be judged &quot;immediate&quot; by `is_llvm_immediate`</span>
     <span class="doccomment">/// - the operand must never be referenced indirectly</span>
     <span class="doccomment">///     - we should not take its address using the `&amp;` operator</span>
     <span class="doccomment">///     - nor should it appear in an lvalue path like `tmp.a`</span>
@@ -857,14 +814,13 @@
     <span class="ident">Operand</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OperandRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">LocalRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">new_operand</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                       <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LocalRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">common</span>::<span class="ident">type_is_zero_size</span>(<span class="ident">ccx</span>, <span class="ident">ty</span>) {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">LocalRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new_operand</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">layout</span>: <span class="ident">TyLayout</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LocalRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">layout</span>.<span class="ident">is_zst</span>() {
             <span class="comment">// Zero-size temporaries aren&#39;t always initialized, which</span>
             <span class="comment">// doesn&#39;t matter because they don&#39;t contain data, but</span>
             <span class="comment">// we need something in the operand.</span>
-            <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">OperandRef</span>::<span class="ident">new_zst</span>(<span class="ident">ccx</span>, <span class="ident">ty</span>)))
+            <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">OperandRef</span>::<span class="ident">new_zst</span>(<span class="ident">ccx</span>, <span class="ident">layout</span>)))
         } <span class="kw">else</span> {
             <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">None</span>)
         }
@@ -912,7 +868,7 @@
         <span class="ident">llfn</span>,
         <span class="ident">fn_ty</span>,
         <span class="ident">ccx</span>,
-        <span class="ident">llpersonalityslot</span>: <span class="prelude-val">None</span>,
+        <span class="ident">personality_slot</span>: <span class="prelude-val">None</span>,
         <span class="ident">blocks</span>: <span class="ident">block_bcxs</span>,
         <span class="ident">unreachable_block</span>: <span class="prelude-val">None</span>,
         <span class="ident">cleanup_kinds</span>,
@@ -935,7 +891,8 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">allocate_local</span> <span class="op">=</span> <span class="op">|</span><span class="ident">local</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">decl</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">local</span>];
-            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">mircx</span>.<span class="ident">monomorphize</span>(<span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">ty</span>);
+            <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">mircx</span>.<span class="ident">monomorphize</span>(<span class="kw-2">&amp;</span><span class="ident">decl</span>.<span class="ident">ty</span>));
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">layout</span>.<span class="ident">ty</span>.<span class="ident">has_erasable_regions</span>());
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">decl</span>.<span class="ident">name</span> {
                 <span class="comment">// User variable</span>
@@ -944,15 +901,14 @@
 
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">lvalue_locals</span>.<span class="ident">contains</span>(<span class="ident">local</span>.<span class="ident">index</span>()) <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">dbg</span> {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;alloc: {:?} ({}) -&gt; operand&quot;</span>, <span class="ident">local</span>, <span class="ident">name</span>);
-                    <span class="kw">return</span> <span class="ident">LocalRef</span>::<span class="ident">new_operand</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">ty</span>);
+                    <span class="kw">return</span> <span class="ident">LocalRef</span>::<span class="ident">new_operand</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">layout</span>);
                 }
 
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;alloc: {:?} ({}) -&gt; lvalue&quot;</span>, <span class="ident">local</span>, <span class="ident">name</span>);
-                <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">ty</span>.<span class="ident">has_erasable_regions</span>());
-                <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">ty</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>.<span class="ident">as_str</span>());
+                <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">layout</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>.<span class="ident">as_str</span>());
                 <span class="kw">if</span> <span class="ident">dbg</span> {
                     <span class="kw">let</span> (<span class="ident">scope</span>, <span class="ident">span</span>) <span class="op">=</span> <span class="ident">mircx</span>.<span class="ident">debug_loc</span>(<span class="ident">decl</span>.<span class="ident">source_info</span>);
-                    <span class="ident">declare_local</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">debug_context</span>, <span class="ident">name</span>, <span class="ident">ty</span>, <span class="ident">scope</span>,
+                    <span class="ident">declare_local</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">debug_context</span>, <span class="ident">name</span>, <span class="ident">layout</span>.<span class="ident">ty</span>, <span class="ident">scope</span>,
                         <span class="ident">VariableAccess</span>::<span class="ident">DirectVariable</span> { <span class="ident">alloca</span>: <span class="ident">lvalue</span>.<span class="ident">llval</span> },
                         <span class="ident">VariableKind</span>::<span class="ident">LocalVariable</span>, <span class="ident">span</span>);
                 }
@@ -962,18 +918,18 @@
                 <span class="kw">if</span> <span class="ident">local</span> <span class="op">==</span> <span class="ident">mir</span>::<span class="ident">RETURN_POINTER</span> <span class="op">&amp;&amp;</span> <span class="ident">mircx</span>.<span class="ident">fn_ty</span>.<span class="ident">ret</span>.<span class="ident">is_indirect</span>() {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;alloc: {:?} (return pointer) -&gt; lvalue&quot;</span>, <span class="ident">local</span>);
                     <span class="kw">let</span> <span class="ident">llretptr</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">get_param</span>(<span class="ident">llfn</span>, <span class="number">0</span>);
-                    <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">LvalueRef</span>::<span class="ident">new_sized</span>(<span class="ident">llretptr</span>, <span class="ident">LvalueTy</span>::<span class="ident">from_ty</span>(<span class="ident">ty</span>),
+                    <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">LvalueRef</span>::<span class="ident">new_sized</span>(<span class="ident">llretptr</span>,
+                                                          <span class="ident">layout</span>,
                                                           <span class="ident">Alignment</span>::<span class="ident">AbiAligned</span>))
                 } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">lvalue_locals</span>.<span class="ident">contains</span>(<span class="ident">local</span>.<span class="ident">index</span>()) {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;alloc: {:?} -&gt; lvalue&quot;</span>, <span class="ident">local</span>);
-                    <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">ty</span>.<span class="ident">has_erasable_regions</span>());
-                    <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">ty</span>,  <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">local</span>)))
+                    <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">layout</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="ident">local</span>)))
                 } <span class="kw">else</span> {
                     <span class="comment">// If this is an immediate local, we do not create an</span>
                     <span class="comment">// alloca in advance. Instead we wait until we see the</span>
                     <span class="comment">// definition and update the operand there.</span>
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;alloc: {:?} -&gt; operand&quot;</span>, <span class="ident">local</span>);
-                    <span class="ident">LocalRef</span>::<span class="ident">new_operand</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">ty</span>)
+                    <span class="ident">LocalRef</span>::<span class="ident">new_operand</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">layout</span>)
                 }
             }
         };
@@ -1064,7 +1020,6 @@
 
     <span class="ident">mir</span>.<span class="ident">args_iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">arg_index</span>, <span class="ident">local</span>)<span class="op">|</span> {
         <span class="kw">let</span> <span class="ident">arg_decl</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">local</span>];
-        <span class="kw">let</span> <span class="ident">arg_ty</span> <span class="op">=</span> <span class="ident">mircx</span>.<span class="ident">monomorphize</span>(<span class="kw-2">&amp;</span><span class="ident">arg_decl</span>.<span class="ident">ty</span>);
 
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">arg_decl</span>.<span class="ident">name</span> {
             <span class="ident">name</span>.<span class="ident">as_str</span>().<span class="ident">to_string</span>()
@@ -1078,26 +1033,17 @@
             <span class="comment">// to reconstruct it into a tuple local variable, from multiple</span>
             <span class="comment">// individual LLVM function arguments.</span>
 
+            <span class="kw">let</span> <span class="ident">arg_ty</span> <span class="op">=</span> <span class="ident">mircx</span>.<span class="ident">monomorphize</span>(<span class="kw-2">&amp;</span><span class="ident">arg_decl</span>.<span class="ident">ty</span>);
             <span class="kw">let</span> <span class="ident">tupled_arg_tys</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">arg_ty</span>.<span class="ident">sty</span> {
                 <span class="ident">ty</span>::<span class="ident">TyTuple</span>(<span class="kw-2">ref</span> <span class="ident">tys</span>, _) <span class="op">=&gt;</span> <span class="ident">tys</span>,
                 _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;spread argument isn&#39;t a tuple?!&quot;</span>)
             };
 
-            <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">arg_ty</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
-            <span class="kw">for</span> (<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">tupled_arg_ty</span>) <span class="kw">in</span> <span class="ident">tupled_arg_tys</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
-                <span class="kw">let</span> (<span class="ident">dst</span>, _) <span class="op">=</span> <span class="ident">lvalue</span>.<span class="ident">trans_field_ptr</span>(<span class="ident">bcx</span>, <span class="ident">i</span>);
+            <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">arg_ty</span>), <span class="kw-2">&amp;</span><span class="ident">name</span>);
+            <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">tupled_arg_tys</span>.<span class="ident">len</span>() {
                 <span class="kw">let</span> <span class="ident">arg</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">fn_ty</span>.<span class="ident">args</span>[<span class="ident">idx</span>];
                 <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
-                <span class="kw">if</span> <span class="ident">common</span>::<span class="ident">type_is_fat_ptr</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">tupled_arg_ty</span>) {
-                    <span class="comment">// We pass fat pointers as two words, but inside the tuple</span>
-                    <span class="comment">// they are the two sub-fields of a single aggregate field.</span>
-                    <span class="kw">let</span> <span class="ident">meta</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">fn_ty</span>.<span class="ident">args</span>[<span class="ident">idx</span>];
-                    <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
-                    <span class="ident">arg</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">base</span>::<span class="ident">get_dataptr</span>(<span class="ident">bcx</span>, <span class="ident">dst</span>));
-                    <span class="ident">meta</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">base</span>::<span class="ident">get_meta</span>(<span class="ident">bcx</span>, <span class="ident">dst</span>));
-                } <span class="kw">else</span> {
-                    <span class="ident">arg</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">dst</span>);
-                }
+                <span class="ident">arg</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">lvalue</span>.<span class="ident">project_field</span>(<span class="ident">bcx</span>, <span class="ident">i</span>));
             }
 
             <span class="comment">// Now that we have one alloca that contains the aggregate value,</span>
@@ -1122,82 +1068,56 @@
 
         <span class="kw">let</span> <span class="ident">arg</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">fn_ty</span>.<span class="ident">args</span>[<span class="ident">idx</span>];
         <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
-        <span class="kw">let</span> <span class="ident">llval</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">is_indirect</span>() {
-            <span class="comment">// Don&#39;t copy an indirect argument to an alloca, the caller</span>
-            <span class="comment">// already put it in a temporary alloca and gave it up</span>
-            <span class="comment">// FIXME: lifetimes</span>
-            <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">pad</span>.<span class="ident">is_some</span>() {
-                <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
-            }
-            <span class="kw">let</span> <span class="ident">llarg</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">get_param</span>(<span class="ident">bcx</span>.<span class="ident">llfn</span>(), <span class="ident">llarg_idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
-            <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">llarg</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
+        <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">pad</span>.<span class="ident">is_some</span>() {
             <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
-            <span class="ident">llarg</span>
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">lvalue_locals</span>.<span class="ident">contains</span>(<span class="ident">local</span>.<span class="ident">index</span>()) <span class="op">&amp;&amp;</span>
-                  <span class="ident">arg</span>.<span class="ident">cast</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="ident">arg_scope</span>.<span class="ident">is_none</span>() {
-            <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">is_ignore</span>() {
-                <span class="kw">return</span> <span class="ident">LocalRef</span>::<span class="ident">new_operand</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">arg_ty</span>);
-            }
+        }
 
+        <span class="kw">if</span> <span class="ident">arg_scope</span>.<span class="ident">is_none</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">lvalue_locals</span>.<span class="ident">contains</span>(<span class="ident">local</span>.<span class="ident">index</span>()) {
             <span class="comment">// We don&#39;t have to cast or keep the argument in the alloca.</span>
             <span class="comment">// FIXME(eddyb): We should figure out how to use llvm.dbg.value instead</span>
             <span class="comment">// of putting everything in allocas just so we can use llvm.dbg.declare.</span>
-            <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">pad</span>.<span class="ident">is_some</span>() {
-                <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
+            <span class="kw">let</span> <span class="ident">local</span> <span class="op">=</span> <span class="op">|</span><span class="ident">op</span><span class="op">|</span> <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">op</span>));
+            <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">mode</span> {
+                <span class="ident">PassMode</span>::<span class="ident">Ignore</span> <span class="op">=&gt;</span> {
+                    <span class="kw">return</span> <span class="ident">local</span>(<span class="ident">OperandRef</span>::<span class="ident">new_zst</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>));
+                }
+                <span class="ident">PassMode</span>::<span class="ident">Direct</span>(_) <span class="op">=&gt;</span> {
+                    <span class="kw">let</span> <span class="ident">llarg</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">get_param</span>(<span class="ident">bcx</span>.<span class="ident">llfn</span>(), <span class="ident">llarg_idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
+                    <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">llarg</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
+                    <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
+                    <span class="kw">return</span> <span class="ident">local</span>(
+                        <span class="ident">OperandRef</span>::<span class="ident">from_immediate_or_packed_pair</span>(<span class="ident">bcx</span>, <span class="ident">llarg</span>, <span class="ident">arg</span>.<span class="ident">layout</span>));
+                }
+                <span class="ident">PassMode</span>::<span class="ident">Pair</span>(..) <span class="op">=&gt;</span> {
+                    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">get_param</span>(<span class="ident">bcx</span>.<span class="ident">llfn</span>(), <span class="ident">llarg_idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
+                    <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">a</span>, <span class="kw-2">&amp;</span>(<span class="ident">name</span>.<span class="ident">clone</span>() <span class="op">+</span> <span class="string">&quot;.0&quot;</span>));
+                    <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
+
+                    <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">get_param</span>(<span class="ident">bcx</span>.<span class="ident">llfn</span>(), <span class="ident">llarg_idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
+                    <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">b</span>, <span class="kw-2">&amp;</span>(<span class="ident">name</span> <span class="op">+</span> <span class="string">&quot;.1&quot;</span>));
+                    <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
+
+                    <span class="kw">return</span> <span class="ident">local</span>(<span class="ident">OperandRef</span> {
+                        <span class="ident">val</span>: <span class="ident">OperandValue</span>::<span class="ident">Pair</span>(<span class="ident">a</span>, <span class="ident">b</span>),
+                        <span class="ident">layout</span>: <span class="ident">arg</span>.<span class="ident">layout</span>
+                    });
+                }
+                _ <span class="op">=&gt;</span> {}
             }
+        }
+
+        <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">is_indirect</span>() {
+            <span class="comment">// Don&#39;t copy an indirect argument to an alloca, the caller</span>
+            <span class="comment">// already put it in a temporary alloca and gave it up.</span>
+            <span class="comment">// FIXME: lifetimes</span>
             <span class="kw">let</span> <span class="ident">llarg</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">get_param</span>(<span class="ident">bcx</span>.<span class="ident">llfn</span>(), <span class="ident">llarg_idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
+            <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">llarg</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
             <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
-            <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">common</span>::<span class="ident">type_is_fat_ptr</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">arg_ty</span>) {
-                <span class="kw">let</span> <span class="ident">meta</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">fn_ty</span>.<span class="ident">args</span>[<span class="ident">idx</span>];
-                <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
-                <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="ident">meta</span>.<span class="ident">cast</span>, <span class="ident">meta</span>.<span class="ident">pad</span>), (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>));
-                <span class="kw">let</span> <span class="ident">llmeta</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">get_param</span>(<span class="ident">bcx</span>.<span class="ident">llfn</span>(), <span class="ident">llarg_idx</span> <span class="kw">as</span> <span class="ident">c_uint</span>);
-                <span class="ident">llarg_idx</span> <span class="op">+=</span> <span class="number">1</span>;
-
-                <span class="comment">// FIXME(eddyb) As we can&#39;t perfectly represent the data and/or</span>
-                <span class="comment">// vtable pointer in a fat pointers in Rust&#39;s typesystem, and</span>
-                <span class="comment">// because we split fat pointers into two ArgType&#39;s, they&#39;re</span>
-                <span class="comment">// not the right type so we have to cast them for now.</span>
-                <span class="kw">let</span> <span class="ident">pointee</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">arg_ty</span>.<span class="ident">sty</span> {
-                    <span class="ident">ty</span>::<span class="ident">TyRef</span>(_, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span>{<span class="ident">ty</span>, ..}) <span class="op">|</span>
-                    <span class="ident">ty</span>::<span class="ident">TyRawPtr</span>(<span class="ident">ty</span>::<span class="ident">TypeAndMut</span>{<span class="ident">ty</span>, ..}) <span class="op">=&gt;</span> <span class="ident">ty</span>,
-                    <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">def</span>, _) <span class="kw">if</span> <span class="ident">def</span>.<span class="ident">is_box</span>() <span class="op">=&gt;</span> <span class="ident">arg_ty</span>.<span class="ident">boxed_ty</span>(),
-                    _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>()
-                };
-                <span class="kw">let</span> <span class="ident">data_llty</span> <span class="op">=</span> <span class="ident">type_of</span>::<span class="ident">in_memory_type_of</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">pointee</span>);
-                <span class="kw">let</span> <span class="ident">meta_llty</span> <span class="op">=</span> <span class="ident">type_of</span>::<span class="ident">unsized_info_ty</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">pointee</span>);
-
-                <span class="kw">let</span> <span class="ident">llarg</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">llarg</span>, <span class="ident">data_llty</span>.<span class="ident">ptr_to</span>());
-                <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">llarg</span>, <span class="kw-2">&amp;</span>(<span class="ident">name</span>.<span class="ident">clone</span>() <span class="op">+</span> <span class="string">&quot;.ptr&quot;</span>));
-                <span class="kw">let</span> <span class="ident">llmeta</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">llmeta</span>, <span class="ident">meta_llty</span>);
-                <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">llmeta</span>, <span class="kw-2">&amp;</span>(<span class="ident">name</span> <span class="op">+</span> <span class="string">&quot;.meta&quot;</span>));
-
-                <span class="ident">OperandValue</span>::<span class="ident">Pair</span>(<span class="ident">llarg</span>, <span class="ident">llmeta</span>)
-            } <span class="kw">else</span> {
-                <span class="ident">bcx</span>.<span class="ident">set_value_name</span>(<span class="ident">llarg</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
-                <span class="ident">OperandValue</span>::<span class="ident">Immediate</span>(<span class="ident">llarg</span>)
-            };
-            <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="ident">OperandRef</span> {
-                <span class="ident">val</span>,
-                <span class="ident">ty</span>: <span class="ident">arg_ty</span>
-            };
-            <span class="kw">return</span> <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">operand</span>.<span class="ident">unpack_if_pair</span>(<span class="ident">bcx</span>)));
+            <span class="ident">LvalueRef</span>::<span class="ident">new_sized</span>(<span class="ident">llarg</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="ident">Alignment</span>::<span class="ident">AbiAligned</span>)
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">lltemp</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">arg_ty</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
-            <span class="kw">if</span> <span class="ident">common</span>::<span class="ident">type_is_fat_ptr</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">arg_ty</span>) {
-                <span class="comment">// we pass fat pointers as two words, but we want to</span>
-                <span class="comment">// represent them internally as a pointer to two words,</span>
-                <span class="comment">// so make an alloca to store them in.</span>
-                <span class="kw">let</span> <span class="ident">meta</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">fn_ty</span>.<span class="ident">args</span>[<span class="ident">idx</span>];
-                <span class="ident">idx</span> <span class="op">+=</span> <span class="number">1</span>;
-                <span class="ident">arg</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">base</span>::<span class="ident">get_dataptr</span>(<span class="ident">bcx</span>, <span class="ident">lltemp</span>.<span class="ident">llval</span>));
-                <span class="ident">meta</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">base</span>::<span class="ident">get_meta</span>(<span class="ident">bcx</span>, <span class="ident">lltemp</span>.<span class="ident">llval</span>));
-            } <span class="kw">else</span>  {
-                <span class="comment">// otherwise, arg is passed by value, so make a</span>
-                <span class="comment">// temporary and store it there</span>
-                <span class="ident">arg</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">lltemp</span>.<span class="ident">llval</span>);
-            }
-            <span class="ident">lltemp</span>.<span class="ident">llval</span>
+            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>);
+            <span class="ident">arg</span>.<span class="ident">store_fn_arg</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llarg_idx</span>, <span class="ident">tmp</span>);
+            <span class="ident">tmp</span>
         };
         <span class="ident">arg_scope</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">scope</span><span class="op">|</span> {
             <span class="comment">// Is this a regular argument?</span>
@@ -1205,21 +1125,24 @@
                 <span class="comment">// The Rust ABI passes indirect variables using a pointer and a manual copy, so we</span>
                 <span class="comment">// need to insert a deref here, but the C ABI uses a pointer and a copy using the</span>
                 <span class="comment">// byval attribute, for which LLVM does the deref itself, so we must not add it.</span>
-                <span class="kw">let</span> <span class="ident">variable_access</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">is_indirect</span>() <span class="op">&amp;&amp;</span>
-                    <span class="op">!</span><span class="ident">arg</span>.<span class="ident">attrs</span>.<span class="ident">contains</span>(<span class="ident">ArgAttribute</span>::<span class="ident">ByVal</span>) {
-                    <span class="ident">VariableAccess</span>::<span class="ident">IndirectVariable</span> {
-                        <span class="ident">alloca</span>: <span class="ident">llval</span>,
-                        <span class="ident">address_operations</span>: <span class="kw-2">&amp;</span><span class="ident">deref_op</span>,
-                    }
-                } <span class="kw">else</span> {
-                    <span class="ident">VariableAccess</span>::<span class="ident">DirectVariable</span> { <span class="ident">alloca</span>: <span class="ident">llval</span> }
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">variable_access</span> <span class="op">=</span> <span class="ident">VariableAccess</span>::<span class="ident">DirectVariable</span> {
+                    <span class="ident">alloca</span>: <span class="ident">lvalue</span>.<span class="ident">llval</span>
                 };
+
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">PassMode</span>::<span class="ident">Indirect</span>(<span class="kw-2">ref</span> <span class="ident">attrs</span>) <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">mode</span> {
+                    <span class="kw">if</span> <span class="op">!</span><span class="ident">attrs</span>.<span class="ident">contains</span>(<span class="ident">ArgAttribute</span>::<span class="ident">ByVal</span>) {
+                        <span class="ident">variable_access</span> <span class="op">=</span> <span class="ident">VariableAccess</span>::<span class="ident">IndirectVariable</span> {
+                            <span class="ident">alloca</span>: <span class="ident">lvalue</span>.<span class="ident">llval</span>,
+                            <span class="ident">address_operations</span>: <span class="kw-2">&amp;</span><span class="ident">deref_op</span>,
+                        };
+                    }
+                }
 
                 <span class="ident">declare_local</span>(
                     <span class="ident">bcx</span>,
                     <span class="kw-2">&amp;</span><span class="ident">mircx</span>.<span class="ident">debug_context</span>,
                     <span class="ident">arg_decl</span>.<span class="ident">name</span>.<span class="ident">unwrap_or</span>(<span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">name</span>()),
-                    <span class="ident">arg_ty</span>,
+                    <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">ty</span>,
                     <span class="ident">scope</span>,
                     <span class="ident">variable_access</span>,
                     <span class="ident">VariableKind</span>::<span class="ident">ArgumentVariable</span>(<span class="ident">arg_index</span> <span class="op">+</span> <span class="number">1</span>),
@@ -1229,15 +1152,15 @@
             }
 
             <span class="comment">// Or is it the closure environment?</span>
-            <span class="kw">let</span> (<span class="ident">closure_ty</span>, <span class="ident">env_ref</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">arg_ty</span>.<span class="ident">sty</span> {
-                <span class="ident">ty</span>::<span class="ident">TyRef</span>(_, <span class="ident">mt</span>) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyRawPtr</span>(<span class="ident">mt</span>) <span class="op">=&gt;</span> (<span class="ident">mt</span>.<span class="ident">ty</span>, <span class="bool-val">true</span>),
-                _ <span class="op">=&gt;</span> (<span class="ident">arg_ty</span>, <span class="bool-val">false</span>)
+            <span class="kw">let</span> (<span class="ident">closure_layout</span>, <span class="ident">env_ref</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">ty</span>.<span class="ident">sty</span> {
+                <span class="ident">ty</span>::<span class="ident">TyRef</span>(_, <span class="ident">mt</span>) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyRawPtr</span>(<span class="ident">mt</span>) <span class="op">=&gt;</span> (<span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">mt</span>.<span class="ident">ty</span>), <span class="bool-val">true</span>),
+                _ <span class="op">=&gt;</span> (<span class="ident">arg</span>.<span class="ident">layout</span>, <span class="bool-val">false</span>)
             };
 
-            <span class="kw">let</span> <span class="ident">upvar_tys</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">closure_ty</span>.<span class="ident">sty</span> {
+            <span class="kw">let</span> <span class="ident">upvar_tys</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">closure_layout</span>.<span class="ident">ty</span>.<span class="ident">sty</span> {
                 <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">|</span>
                 <span class="ident">ty</span>::<span class="ident">TyGenerator</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>, _) <span class="op">=&gt;</span> <span class="ident">substs</span>.<span class="ident">upvar_tys</span>(<span class="ident">def_id</span>, <span class="ident">tcx</span>),
-                _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;upvar_decls with non-closure arg0 type `{}`&quot;</span>, <span class="ident">closure_ty</span>)
+                _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;upvar_decls with non-closure arg0 type `{}`&quot;</span>, <span class="ident">closure_layout</span>.<span class="ident">ty</span>)
             };
 
             <span class="comment">// Store the pointer to closure data in an alloca for debuginfo</span>
@@ -1248,21 +1171,17 @@
             <span class="comment">// doesn&#39;t actually strip the offset when splitting the closure</span>
             <span class="comment">// environment into its components so it ends up out of bounds.</span>
             <span class="kw">let</span> <span class="ident">env_ptr</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">env_ref</span> {
-                <span class="kw">let</span> <span class="ident">alloc</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">alloca</span>(<span class="ident">common</span>::<span class="ident">val_ty</span>(<span class="ident">llval</span>), <span class="string">&quot;__debuginfo_env_ptr&quot;</span>, <span class="prelude-val">None</span>);
-                <span class="ident">bcx</span>.<span class="ident">store</span>(<span class="ident">llval</span>, <span class="ident">alloc</span>, <span class="prelude-val">None</span>);
-                <span class="ident">alloc</span>
+                <span class="kw">let</span> <span class="ident">alloc</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>,
+                    <span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">tcx</span>.<span class="ident">mk_mut_ptr</span>(<span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">ty</span>)),
+                    <span class="string">&quot;__debuginfo_env_ptr&quot;</span>);
+                <span class="ident">bcx</span>.<span class="ident">store</span>(<span class="ident">lvalue</span>.<span class="ident">llval</span>, <span class="ident">alloc</span>.<span class="ident">llval</span>, <span class="prelude-val">None</span>);
+                <span class="ident">alloc</span>.<span class="ident">llval</span>
             } <span class="kw">else</span> {
-                <span class="ident">llval</span>
-            };
-
-            <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">closure_ty</span>);
-            <span class="kw">let</span> <span class="ident">offsets</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">layout</span> {
-                <span class="ident">layout</span>::<span class="ident">Univariant</span> { <span class="kw-2">ref</span> <span class="ident">variant</span>, .. } <span class="op">=&gt;</span> <span class="kw-2">&amp;</span><span class="ident">variant</span>.<span class="ident">offsets</span>[..],
-                _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Closures are only supposed to be Univariant&quot;</span>)
+                <span class="ident">lvalue</span>.<span class="ident">llval</span>
             };
 
             <span class="kw">for</span> (<span class="ident">i</span>, (<span class="ident">decl</span>, <span class="ident">ty</span>)) <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">upvar_decls</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">upvar_tys</span>).<span class="ident">enumerate</span>() {
-                <span class="kw">let</span> <span class="ident">byte_offset_of_var_in_env</span> <span class="op">=</span> <span class="ident">offsets</span>[<span class="ident">i</span>].<span class="ident">bytes</span>();
+                <span class="kw">let</span> <span class="ident">byte_offset_of_var_in_env</span> <span class="op">=</span> <span class="ident">closure_layout</span>.<span class="ident">fields</span>.<span class="ident">offset</span>(<span class="ident">i</span>).<span class="ident">bytes</span>();
 
                 <span class="kw">let</span> <span class="ident">ops</span> <span class="op">=</span> <span class="kw">unsafe</span> {
                     [<span class="ident">llvm</span>::<span class="ident">LLVMRustDIBuilderCreateOpDeref</span>(),
@@ -1300,8 +1219,7 @@
                 );
             }
         });
-        <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">LvalueRef</span>::<span class="ident">new_sized</span>(<span class="ident">llval</span>, <span class="ident">LvalueTy</span>::<span class="ident">from_ty</span>(<span class="ident">arg_ty</span>),
-                                              <span class="ident">Alignment</span>::<span class="ident">AbiAligned</span>))
+        <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">lvalue</span>)
     }).<span class="ident">collect</span>()
 }
 
@@ -1309,7 +1227,7 @@
 <span class="kw">mod</span> <span class="ident">block</span>;
 <span class="kw">mod</span> <span class="ident">constant</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lvalue</span>;
-<span class="kw">mod</span> <span class="ident">operand</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">operand</span>;
 <span class="kw">mod</span> <span class="ident">rvalue</span>;
 <span class="kw">mod</span> <span class="ident">statement</span>;
 </pre>

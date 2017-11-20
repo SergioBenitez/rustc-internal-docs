@@ -332,30 +332,6 @@
 <span id="287">287</span>
 <span id="288">288</span>
 <span id="289">289</span>
-<span id="290">290</span>
-<span id="291">291</span>
-<span id="292">292</span>
-<span id="293">293</span>
-<span id="294">294</span>
-<span id="295">295</span>
-<span id="296">296</span>
-<span id="297">297</span>
-<span id="298">298</span>
-<span id="299">299</span>
-<span id="300">300</span>
-<span id="301">301</span>
-<span id="302">302</span>
-<span id="303">303</span>
-<span id="304">304</span>
-<span id="305">305</span>
-<span id="306">306</span>
-<span id="307">307</span>
-<span id="308">308</span>
-<span id="309">309</span>
-<span id="310">310</span>
-<span id="311">311</span>
-<span id="312">312</span>
-<span id="313">313</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -376,7 +352,7 @@
 <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">CrateContext</span>;
 
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="self">self</span>, <span class="ident">Align</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::<span class="ident">CString</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
@@ -423,10 +399,6 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">void</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
         <span class="macro">ty</span><span class="macro">!</span>(<span class="ident">llvm</span>::<span class="ident">LLVMVoidTypeInContext</span>(<span class="ident">ccx</span>.<span class="ident">llcx</span>()))
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nil</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
-        <span class="ident">Type</span>::<span class="ident">empty_struct</span>(<span class="ident">ccx</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadata</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
@@ -561,9 +533,6 @@
         <span class="macro">ty</span><span class="macro">!</span>(<span class="ident">llvm</span>::<span class="ident">LLVMStructCreateNamed</span>(<span class="ident">ccx</span>.<span class="ident">llcx</span>(), <span class="ident">name</span>.<span class="ident">as_ptr</span>()))
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty_struct</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
-        <span class="ident">Type</span>::<span class="ident">struct_</span>(<span class="ident">ccx</span>, <span class="kw-2">&amp;</span>[], <span class="bool-val">false</span>)
-    }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">array</span>(<span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">Type</span>, <span class="ident">len</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
         <span class="macro">ty</span><span class="macro">!</span>(<span class="ident">llvm</span>::<span class="ident">LLVMRustArrayType</span>(<span class="ident">ty</span>.<span class="ident">to_ref</span>(), <span class="ident">len</span>))
@@ -571,20 +540,6 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">vector</span>(<span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">Type</span>, <span class="ident">len</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
         <span class="macro">ty</span><span class="macro">!</span>(<span class="ident">llvm</span>::<span class="ident">LLVMVectorType</span>(<span class="ident">ty</span>.<span class="ident">to_ref</span>(), <span class="ident">len</span> <span class="kw">as</span> <span class="ident">c_uint</span>))
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">vec</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">Type</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
-        <span class="ident">Type</span>::<span class="ident">struct_</span>(<span class="ident">ccx</span>,
-            <span class="kw-2">&amp;</span>[<span class="ident">Type</span>::<span class="ident">array</span>(<span class="ident">ty</span>, <span class="number">0</span>), <span class="ident">Type</span>::<span class="ident">isize</span>(<span class="ident">ccx</span>)],
-        <span class="bool-val">false</span>)
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">opaque_vec</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
-        <span class="ident">Type</span>::<span class="ident">vec</span>(<span class="ident">ccx</span>, <span class="kw-2">&amp;</span><span class="ident">Type</span>::<span class="ident">i8</span>(<span class="ident">ccx</span>))
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">vtable_ptr</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
-        <span class="ident">Type</span>::<span class="ident">func</span>(<span class="kw-2">&amp;</span>[<span class="ident">Type</span>::<span class="ident">i8p</span>(<span class="ident">ccx</span>)], <span class="kw-2">&amp;</span><span class="ident">Type</span>::<span class="ident">void</span>(<span class="ident">ccx</span>)).<span class="ident">ptr_to</span>().<span class="ident">ptr_to</span>()
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">kind</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TypeKind</span> {
@@ -618,19 +573,6 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">field_types</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span> {
-        <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">n_elts</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMCountStructElementTypes</span>(<span class="self">self</span>.<span class="ident">to_ref</span>()) <span class="kw">as</span> <span class="ident">usize</span>;
-            <span class="kw">if</span> <span class="ident">n_elts</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">return</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
-            }
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">elts</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Type</span> { <span class="ident">rf</span>: <span class="ident">ptr</span>::<span class="ident">null_mut</span>() }; <span class="ident">n_elts</span>];
-            <span class="ident">llvm</span>::<span class="ident">LLVMGetStructElementTypes</span>(<span class="self">self</span>.<span class="ident">to_ref</span>(),
-                                            <span class="ident">elts</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">TypeRef</span>);
-            <span class="ident">elts</span>
-        }
-    }
-
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">func_params</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span> {
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">n_args</span> <span class="op">=</span> <span class="ident">llvm</span>::<span class="ident">LLVMCountParamTypes</span>(<span class="self">self</span>.<span class="ident">to_ref</span>()) <span class="kw">as</span> <span class="ident">usize</span>;
@@ -661,12 +603,22 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_integer</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">i</span>: <span class="ident">layout</span>::<span class="ident">Integer</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
         <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::<span class="ident">Integer</span>::<span class="kw-2">*</span>;
         <span class="kw">match</span> <span class="ident">i</span> {
-            <span class="ident">I1</span> <span class="op">=&gt;</span> <span class="ident">Type</span>::<span class="ident">i1</span>(<span class="ident">cx</span>),
             <span class="ident">I8</span> <span class="op">=&gt;</span> <span class="ident">Type</span>::<span class="ident">i8</span>(<span class="ident">cx</span>),
             <span class="ident">I16</span> <span class="op">=&gt;</span> <span class="ident">Type</span>::<span class="ident">i16</span>(<span class="ident">cx</span>),
             <span class="ident">I32</span> <span class="op">=&gt;</span> <span class="ident">Type</span>::<span class="ident">i32</span>(<span class="ident">cx</span>),
             <span class="ident">I64</span> <span class="op">=&gt;</span> <span class="ident">Type</span>::<span class="ident">i64</span>(<span class="ident">cx</span>),
             <span class="ident">I128</span> <span class="op">=&gt;</span> <span class="ident">Type</span>::<span class="ident">i128</span>(<span class="ident">cx</span>),
+        }
+    }
+
+    <span class="doccomment">/// Return a LLVM type that has at most the required alignment,</span>
+    <span class="doccomment">/// as a conservative approximation for unknown pointee types.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pointee_for_abi_align</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span>, <span class="ident">align</span>: <span class="ident">Align</span>) <span class="op">-&gt;</span> <span class="ident">Type</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ity</span>) <span class="op">=</span> <span class="ident">layout</span>::<span class="ident">Integer</span>::<span class="ident">for_abi_align</span>(<span class="ident">ccx</span>, <span class="ident">align</span>) {
+            <span class="ident">Type</span>::<span class="ident">from_integer</span>(<span class="ident">ccx</span>, <span class="ident">ity</span>)
+        } <span class="kw">else</span> {
+            <span class="comment">// FIXME(eddyb) We could find a better approximation here.</span>
+            <span class="ident">Type</span>::<span class="ident">i8</span>(<span class="ident">ccx</span>)
         }
     }
 }

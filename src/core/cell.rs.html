@@ -1312,6 +1312,31 @@
 <span id="1267">1267</span>
 <span id="1268">1268</span>
 <span id="1269">1269</span>
+<span id="1270">1270</span>
+<span id="1271">1271</span>
+<span id="1272">1272</span>
+<span id="1273">1273</span>
+<span id="1274">1274</span>
+<span id="1275">1275</span>
+<span id="1276">1276</span>
+<span id="1277">1277</span>
+<span id="1278">1278</span>
+<span id="1279">1279</span>
+<span id="1280">1280</span>
+<span id="1281">1281</span>
+<span id="1282">1282</span>
+<span id="1283">1283</span>
+<span id="1284">1284</span>
+<span id="1285">1285</span>
+<span id="1286">1286</span>
+<span id="1287">1287</span>
+<span id="1288">1288</span>
+<span id="1289">1289</span>
+<span id="1290">1290</span>
+<span id="1291">1291</span>
+<span id="1292">1292</span>
+<span id="1293">1293</span>
+<span id="1294">1294</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1894,31 +1919,61 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function corresponds to [`std::mem::replace`](../mem/fn.replace.html).</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if the value is currently borrowed.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// #![feature(refcell_replace_swap)]</span>
     <span class="doccomment">/// use std::cell::RefCell;</span>
-    <span class="doccomment">/// let c = RefCell::new(5);</span>
-    <span class="doccomment">/// let u = c.replace(6);</span>
-    <span class="doccomment">/// assert_eq!(u, 5);</span>
-    <span class="doccomment">/// assert_eq!(c, RefCell::new(6));</span>
+    <span class="doccomment">/// let cell = RefCell::new(5);</span>
+    <span class="doccomment">/// let old_value = cell.replace(6);</span>
+    <span class="doccomment">/// assert_eq!(old_value, 5);</span>
+    <span class="doccomment">/// assert_eq!(cell, RefCell::new(6));</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This function will panic if the `RefCell` has any outstanding borrows,</span>
-    <span class="doccomment">/// whether or not they are full mutable borrows.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;refcell_replace_swap&quot;</span>, <span class="ident">issue</span><span class="op">=</span><span class="string">&quot;43570&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">t</span>: <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">T</span> {
         <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">borrow_mut</span>(), <span class="ident">t</span>)
     }
 
+    <span class="doccomment">/// Replaces the wrapped value with a new one computed from `f`, returning</span>
+    <span class="doccomment">/// the old value, without deinitializing either one.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This function corresponds to [`std::mem::replace`](../mem/fn.replace.html).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if the value is currently borrowed.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// #![feature(refcell_replace_swap)]</span>
+    <span class="doccomment">/// use std::cell::RefCell;</span>
+    <span class="doccomment">/// let cell = RefCell::new(5);</span>
+    <span class="doccomment">/// let old_value = cell.replace_with(|&amp;mut old| old + 1);</span>
+    <span class="doccomment">/// assert_eq!(old_value, 5);</span>
+    <span class="doccomment">/// assert_eq!(cell, RefCell::new(6));</span>
+    <span class="doccomment">/// ```</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;refcell_replace_swap&quot;</span>, <span class="ident">issue</span><span class="op">=</span><span class="string">&quot;43570&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">replace_with</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">T</span> {
+        <span class="kw">let</span> <span class="ident">mut_borrow</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">borrow_mut</span>();
+        <span class="kw">let</span> <span class="ident">replacement</span> <span class="op">=</span> <span class="ident">f</span>(<span class="ident">mut_borrow</span>);
+        <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="ident">mut_borrow</span>, <span class="ident">replacement</span>)
+    }
+
     <span class="doccomment">/// Swaps the wrapped value of `self` with the wrapped value of `other`,</span>
     <span class="doccomment">/// without deinitializing either one.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function corresponds to [`std::mem::swap`](../mem/fn.swap.html).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Panics</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Panics if the value in either `RefCell` is currently borrowed.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
@@ -1931,11 +1986,6 @@
     <span class="doccomment">/// assert_eq!(c, RefCell::new(6));</span>
     <span class="doccomment">/// assert_eq!(d, RefCell::new(5));</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// # Panics</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// This function will panic if either `RefCell` has any outstanding borrows,</span>
-    <span class="doccomment">/// whether or not they are full mutable borrows.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;refcell_replace_swap&quot;</span>, <span class="ident">issue</span><span class="op">=</span><span class="string">&quot;43570&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">swap</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) {

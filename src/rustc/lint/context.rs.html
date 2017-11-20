@@ -1115,6 +1115,15 @@
 <span id="1070">1070</span>
 <span id="1071">1071</span>
 <span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1152,7 +1161,8 @@
 <span class="kw">use</span> <span class="ident">rustc_serialize</span>::{<span class="ident">Decoder</span>, <span class="ident">Decodable</span>, <span class="ident">Encoder</span>, <span class="ident">Encodable</span>};
 <span class="kw">use</span> <span class="ident">session</span>::{<span class="ident">config</span>, <span class="ident">early_error</span>, <span class="ident">Session</span>};
 <span class="kw">use</span> <span class="ident">traits</span>::<span class="ident">Reveal</span>;
-<span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>};
+<span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>, <span class="ident">Ty</span>};
+<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">LayoutError</span>, <span class="ident">LayoutOf</span>, <span class="ident">TyLayout</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">FxHashMap</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">default</span>::<span class="ident">Default</span> <span class="kw">as</span> <span class="ident">StdDefault</span>;
@@ -1741,6 +1751,14 @@
         <span class="self">self</span>.<span class="ident">param_env</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">param_env</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">local_def_id</span>(<span class="ident">id</span>));
         <span class="ident">f</span>(<span class="self">self</span>);
         <span class="self">self</span>.<span class="ident">param_env</span> <span class="op">=</span> <span class="ident">old_param_env</span>;
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">LayoutOf</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">LateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">TyLayout</span> <span class="op">=</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TyLayout</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">LayoutError</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>;
+
+    <span class="kw">fn</span> <span class="ident">layout_of</span>(<span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">TyLayout</span> {
+        (<span class="self">self</span>.<span class="ident">tcx</span>, <span class="self">self</span>.<span class="ident">param_env</span>.<span class="ident">reveal_all</span>()).<span class="ident">layout_of</span>(<span class="ident">ty</span>)
     }
 }
 

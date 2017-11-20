@@ -1370,7 +1370,7 @@
                                   <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                   <span class="op">-&gt;</span> (<span class="ident">BasicBlock</span>, <span class="ident">Unwind</span>) {
         <span class="kw">let</span> (<span class="ident">succ</span>, <span class="ident">unwind</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">drop_ladder_bottom</span>();
-        <span class="kw">if</span> <span class="ident">adt</span>.<span class="ident">variants</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">adt</span>.<span class="ident">is_enum</span>() {
             <span class="kw">let</span> <span class="ident">fields</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">move_paths_for_fields</span>(
                 <span class="self">self</span>.<span class="ident">lvalue</span>,
                 <span class="self">self</span>.<span class="ident">path</span>,

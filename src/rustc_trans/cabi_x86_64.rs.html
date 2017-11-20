@@ -289,21 +289,6 @@
 <span id="244">244</span>
 <span id="245">245</span>
 <span id="246">246</span>
-<span id="247">247</span>
-<span id="248">248</span>
-<span id="249">249</span>
-<span id="250">250</span>
-<span id="251">251</span>
-<span id="252">252</span>
-<span id="253">253</span>
-<span id="254">254</span>
-<span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
-<span id="260">260</span>
-<span id="261">261</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -318,10 +303,10 @@
 <span class="comment">// The classification code for the x86_64 ABI is taken from the clay language</span>
 <span class="comment">// https://github.com/jckarter/clay/blob/master/compiler/src/externals.cpp</span>
 
-<span class="kw">use</span> <span class="ident">abi</span>::{<span class="ident">ArgType</span>, <span class="ident">ArgAttribute</span>, <span class="ident">CastTarget</span>, <span class="ident">FnType</span>, <span class="ident">LayoutExt</span>, <span class="ident">Reg</span>, <span class="ident">RegKind</span>};
+<span class="kw">use</span> <span class="ident">abi</span>::{<span class="ident">ArgType</span>, <span class="ident">CastTarget</span>, <span class="ident">FnType</span>, <span class="ident">LayoutExt</span>, <span class="ident">Reg</span>, <span class="ident">RegKind</span>};
 <span class="kw">use</span> <span class="ident">context</span>::<span class="ident">CrateContext</span>;
 
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="self">self</span>, <span class="ident">Layout</span>, <span class="ident">TyLayout</span>, <span class="ident">Size</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="self">self</span>, <span class="ident">TyLayout</span>, <span class="ident">Size</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">enum</span> <span class="ident">Class</span> {
@@ -341,9 +326,9 @@
 <span class="kw">fn</span> <span class="ident">classify_arg</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="ident">ArgType</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                           <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>[<span class="ident">Class</span>; <span class="ident">MAX_EIGHTBYTES</span>], <span class="ident">Memory</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">unify</span>(<span class="ident">cls</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Class</span>],
-             <span class="ident">off</span>: <span class="ident">u64</span>,
+             <span class="ident">off</span>: <span class="ident">Size</span>,
              <span class="ident">c</span>: <span class="ident">Class</span>) {
-        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> (<span class="ident">off</span> <span class="op">/</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">usize</span>;
+        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> (<span class="ident">off</span>.<span class="ident">bytes</span>() <span class="op">/</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">usize</span>;
         <span class="kw">let</span> <span class="ident">to_write</span> <span class="op">=</span> <span class="kw">match</span> (<span class="ident">cls</span>[<span class="ident">i</span>], <span class="ident">c</span>) {
             (<span class="ident">Class</span>::<span class="prelude-val">None</span>, _) <span class="op">=&gt;</span> <span class="ident">c</span>,
             (_, <span class="ident">Class</span>::<span class="prelude-val">None</span>) <span class="op">=&gt;</span> <span class="kw">return</span>,
@@ -362,20 +347,21 @@
     <span class="kw">fn</span> <span class="ident">classify</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                           <span class="ident">layout</span>: <span class="ident">TyLayout</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                           <span class="ident">cls</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">Class</span>],
-                          <span class="ident">off</span>: <span class="ident">u64</span>)
+                          <span class="ident">off</span>: <span class="ident">Size</span>)
                           <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Memory</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">off</span> <span class="op">%</span> <span class="ident">layout</span>.<span class="ident">align</span>(<span class="ident">ccx</span>).<span class="ident">abi</span>() <span class="op">!=</span> <span class="number">0</span> {
-            <span class="kw">if</span> <span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>() <span class="op">&gt;</span> <span class="number">0</span> {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">off</span>.<span class="ident">is_abi_aligned</span>(<span class="ident">layout</span>.<span class="ident">align</span>) {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">layout</span>.<span class="ident">is_zst</span>() {
                 <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Memory</span>);
             }
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
         }
 
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">layout</span> {
-            <span class="ident">Layout</span>::<span class="ident">Scalar</span> { <span class="ident">value</span>, .. } <span class="op">|</span>
-            <span class="ident">Layout</span>::<span class="ident">RawNullablePointer</span> { <span class="ident">value</span>, .. } <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">reg</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">value</span> {
-                    <span class="ident">layout</span>::<span class="ident">Int</span>(_) <span class="op">|</span>
+        <span class="kw">match</span> <span class="ident">layout</span>.<span class="ident">abi</span> {
+            <span class="ident">layout</span>::<span class="ident">Abi</span>::<span class="ident">Uninhabited</span> <span class="op">=&gt;</span> {}
+
+            <span class="ident">layout</span>::<span class="ident">Abi</span>::<span class="ident">Scalar</span>(<span class="kw-2">ref</span> <span class="ident">scalar</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">reg</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">scalar</span>.<span class="ident">value</span> {
+                    <span class="ident">layout</span>::<span class="ident">Int</span>(..) <span class="op">|</span>
                     <span class="ident">layout</span>::<span class="ident">Pointer</span> <span class="op">=&gt;</span> <span class="ident">Class</span>::<span class="ident">Int</span>,
                     <span class="ident">layout</span>::<span class="ident">F32</span> <span class="op">|</span>
                     <span class="ident">layout</span>::<span class="ident">F64</span> <span class="op">=&gt;</span> <span class="ident">Class</span>::<span class="ident">Sse</span>
@@ -383,59 +369,43 @@
                 <span class="ident">unify</span>(<span class="ident">cls</span>, <span class="ident">off</span>, <span class="ident">reg</span>);
             }
 
-            <span class="ident">Layout</span>::<span class="ident">CEnum</span> { .. } <span class="op">=&gt;</span> {
-                <span class="ident">unify</span>(<span class="ident">cls</span>, <span class="ident">off</span>, <span class="ident">Class</span>::<span class="ident">Int</span>);
-            }
-
-            <span class="ident">Layout</span>::<span class="ident">Vector</span> { <span class="ident">element</span>, <span class="ident">count</span> } <span class="op">=&gt;</span> {
+            <span class="ident">layout</span>::<span class="ident">Abi</span>::<span class="ident">Vector</span> <span class="op">=&gt;</span> {
                 <span class="ident">unify</span>(<span class="ident">cls</span>, <span class="ident">off</span>, <span class="ident">Class</span>::<span class="ident">Sse</span>);
 
                 <span class="comment">// everything after the first one is the upper</span>
                 <span class="comment">// half of a register.</span>
-                <span class="kw">let</span> <span class="ident">eltsz</span> <span class="op">=</span> <span class="ident">element</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>();
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">count</span> {
-                    <span class="ident">unify</span>(<span class="ident">cls</span>, <span class="ident">off</span> <span class="op">+</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">eltsz</span>, <span class="ident">Class</span>::<span class="ident">SseUp</span>);
+                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">layout</span>.<span class="ident">fields</span>.<span class="ident">count</span>() {
+                    <span class="kw">let</span> <span class="ident">field_off</span> <span class="op">=</span> <span class="ident">off</span> <span class="op">+</span> <span class="ident">layout</span>.<span class="ident">fields</span>.<span class="ident">offset</span>(<span class="ident">i</span>);
+                    <span class="ident">unify</span>(<span class="ident">cls</span>, <span class="ident">field_off</span>, <span class="ident">Class</span>::<span class="ident">SseUp</span>);
                 }
             }
 
-            <span class="ident">Layout</span>::<span class="ident">Array</span> { <span class="ident">count</span>, .. } <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="ident">count</span> <span class="op">&gt;</span> <span class="number">0</span> {
-                    <span class="kw">let</span> <span class="ident">elt</span> <span class="op">=</span> <span class="ident">layout</span>.<span class="ident">field</span>(<span class="ident">ccx</span>, <span class="number">0</span>);
-                    <span class="kw">let</span> <span class="ident">eltsz</span> <span class="op">=</span> <span class="ident">elt</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>();
-                    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">count</span> {
-                        <span class="ident">classify</span>(<span class="ident">ccx</span>, <span class="ident">elt</span>, <span class="ident">cls</span>, <span class="ident">off</span> <span class="op">+</span> <span class="ident">i</span> <span class="op">*</span> <span class="ident">eltsz</span>)<span class="question-mark">?</span>;
+            <span class="ident">layout</span>::<span class="ident">Abi</span>::<span class="ident">ScalarPair</span>(..) <span class="op">|</span>
+            <span class="ident">layout</span>::<span class="ident">Abi</span>::<span class="ident">Aggregate</span> { .. } <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="ident">layout</span>.<span class="ident">variants</span> {
+                    <span class="ident">layout</span>::<span class="ident">Variants</span>::<span class="ident">Single</span> { .. } <span class="op">=&gt;</span> {
+                        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">layout</span>.<span class="ident">fields</span>.<span class="ident">count</span>() {
+                            <span class="kw">let</span> <span class="ident">field_off</span> <span class="op">=</span> <span class="ident">off</span> <span class="op">+</span> <span class="ident">layout</span>.<span class="ident">fields</span>.<span class="ident">offset</span>(<span class="ident">i</span>);
+                            <span class="ident">classify</span>(<span class="ident">ccx</span>, <span class="ident">layout</span>.<span class="ident">field</span>(<span class="ident">ccx</span>, <span class="ident">i</span>), <span class="ident">cls</span>, <span class="ident">field_off</span>)<span class="question-mark">?</span>;
+                        }
                     }
+                    <span class="ident">layout</span>::<span class="ident">Variants</span>::<span class="ident">Tagged</span> { .. } <span class="op">|</span>
+                    <span class="ident">layout</span>::<span class="ident">Variants</span>::<span class="ident">NicheFilling</span> { .. } <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Memory</span>),
                 }
             }
 
-            <span class="ident">Layout</span>::<span class="ident">Univariant</span> { <span class="kw-2">ref</span> <span class="ident">variant</span>, .. } <span class="op">=&gt;</span> {
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">layout</span>.<span class="ident">field_count</span>() {
-                    <span class="kw">let</span> <span class="ident">field_off</span> <span class="op">=</span> <span class="ident">off</span> <span class="op">+</span> <span class="ident">variant</span>.<span class="ident">offsets</span>[<span class="ident">i</span>].<span class="ident">bytes</span>();
-                    <span class="ident">classify</span>(<span class="ident">ccx</span>, <span class="ident">layout</span>.<span class="ident">field</span>(<span class="ident">ccx</span>, <span class="ident">i</span>), <span class="ident">cls</span>, <span class="ident">field_off</span>)<span class="question-mark">?</span>;
-                }
-            }
-
-            <span class="ident">Layout</span>::<span class="ident">UntaggedUnion</span> { .. } <span class="op">=&gt;</span> {
-                <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">layout</span>.<span class="ident">field_count</span>() {
-                    <span class="ident">classify</span>(<span class="ident">ccx</span>, <span class="ident">layout</span>.<span class="ident">field</span>(<span class="ident">ccx</span>, <span class="ident">i</span>), <span class="ident">cls</span>, <span class="ident">off</span>)<span class="question-mark">?</span>;
-                }
-            }
-
-            <span class="ident">Layout</span>::<span class="ident">FatPointer</span> { .. } <span class="op">|</span>
-            <span class="ident">Layout</span>::<span class="ident">General</span> { .. } <span class="op">|</span>
-            <span class="ident">Layout</span>::<span class="ident">StructWrappedNullablePointer</span> { .. } <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Memory</span>)
         }
 
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> ((<span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>() <span class="op">+</span> <span class="number">7</span>) <span class="op">/</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">usize</span>;
+    <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> ((<span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">size</span>.<span class="ident">bytes</span>() <span class="op">+</span> <span class="number">7</span>) <span class="op">/</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">usize</span>;
     <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="ident">MAX_EIGHTBYTES</span> {
         <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Memory</span>);
     }
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cls</span> <span class="op">=</span> [<span class="ident">Class</span>::<span class="prelude-val">None</span>; <span class="ident">MAX_EIGHTBYTES</span>];
-    <span class="ident">classify</span>(<span class="ident">ccx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cls</span>, <span class="number">0</span>)<span class="question-mark">?</span>;
+    <span class="ident">classify</span>(<span class="ident">ccx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cls</span>, <span class="ident">Size</span>::<span class="ident">from_bytes</span>(<span class="number">0</span>))<span class="question-mark">?</span>;
     <span class="kw">if</span> <span class="ident">n</span> <span class="op">&gt;</span> <span class="number">2</span> {
         <span class="kw">if</span> <span class="ident">cls</span>[<span class="number">0</span>] <span class="op">!=</span> <span class="ident">Class</span>::<span class="ident">Sse</span> {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Memory</span>);
@@ -460,7 +430,7 @@
     <span class="prelude-val">Ok</span>(<span class="ident">cls</span>)
 }
 
-<span class="kw">fn</span> <span class="ident">reg_component</span>(<span class="ident">cls</span>: <span class="kw-2">&amp;</span>[<span class="ident">Class</span>], <span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">usize</span>, <span class="ident">size</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Reg</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">reg_component</span>(<span class="ident">cls</span>: <span class="kw-2">&amp;</span>[<span class="ident">Class</span>], <span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">usize</span>, <span class="ident">size</span>: <span class="ident">Size</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Reg</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">i</span> <span class="op">&gt;=</span> <span class="ident">cls</span>.<span class="ident">len</span>() {
         <span class="kw">return</span> <span class="prelude-val">None</span>;
     }
@@ -469,7 +439,7 @@
         <span class="ident">Class</span>::<span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
         <span class="ident">Class</span>::<span class="ident">Int</span> <span class="op">=&gt;</span> {
             <span class="kw-2">*</span><span class="ident">i</span> <span class="op">+=</span> <span class="number">1</span>;
-            <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">size</span> {
+            <span class="prelude-val">Some</span>(<span class="kw">match</span> <span class="ident">size</span>.<span class="ident">bytes</span>() {
                 <span class="number">1</span> <span class="op">=&gt;</span> <span class="ident">Reg</span>::<span class="ident">i8</span>(),
                 <span class="number">2</span> <span class="op">=&gt;</span> <span class="ident">Reg</span>::<span class="ident">i16</span>(),
                 <span class="number">3</span> <span class="op">|</span>
@@ -481,14 +451,14 @@
             <span class="kw">let</span> <span class="ident">vec_len</span> <span class="op">=</span> <span class="number">1</span> <span class="op">+</span> <span class="ident">cls</span>[<span class="kw-2">*</span><span class="ident">i</span><span class="op">+</span><span class="number">1</span>..].<span class="ident">iter</span>().<span class="ident">take_while</span>(<span class="op">|</span><span class="op">&amp;&amp;</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span> <span class="op">==</span> <span class="ident">Class</span>::<span class="ident">SseUp</span>).<span class="ident">count</span>();
             <span class="kw-2">*</span><span class="ident">i</span> <span class="op">+=</span> <span class="ident">vec_len</span>;
             <span class="prelude-val">Some</span>(<span class="kw">if</span> <span class="ident">vec_len</span> <span class="op">==</span> <span class="number">1</span> {
-                <span class="kw">match</span> <span class="ident">size</span> {
+                <span class="kw">match</span> <span class="ident">size</span>.<span class="ident">bytes</span>() {
                     <span class="number">4</span> <span class="op">=&gt;</span> <span class="ident">Reg</span>::<span class="ident">f32</span>(),
                     _ <span class="op">=&gt;</span> <span class="ident">Reg</span>::<span class="ident">f64</span>()
                 }
             } <span class="kw">else</span> {
                 <span class="ident">Reg</span> {
                     <span class="ident">kind</span>: <span class="ident">RegKind</span>::<span class="ident">Vector</span>,
-                    <span class="ident">size</span>: <span class="ident">Size</span>::<span class="ident">from_bytes</span>(<span class="ident">vec_len</span> <span class="kw">as</span> <span class="ident">u64</span> <span class="op">*</span> <span class="number">8</span>)
+                    <span class="ident">size</span>: <span class="ident">Size</span>::<span class="ident">from_bytes</span>(<span class="number">8</span>) <span class="op">*</span> (<span class="ident">vec_len</span> <span class="kw">as</span> <span class="ident">u64</span>)
                 }
             })
         }
@@ -496,17 +466,17 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">cast_target</span>(<span class="ident">cls</span>: <span class="kw-2">&amp;</span>[<span class="ident">Class</span>], <span class="ident">size</span>: <span class="ident">u64</span>) <span class="op">-&gt;</span> <span class="ident">CastTarget</span> {
+<span class="kw">fn</span> <span class="ident">cast_target</span>(<span class="ident">cls</span>: <span class="kw-2">&amp;</span>[<span class="ident">Class</span>], <span class="ident">size</span>: <span class="ident">Size</span>) <span class="op">-&gt;</span> <span class="ident">CastTarget</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="number">0</span>;
     <span class="kw">let</span> <span class="ident">lo</span> <span class="op">=</span> <span class="ident">reg_component</span>(<span class="ident">cls</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">i</span>, <span class="ident">size</span>).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">u64</span> <span class="op">*</span> <span class="number">8</span>;
+    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">Size</span>::<span class="ident">from_bytes</span>(<span class="number">8</span>) <span class="op">*</span> (<span class="ident">i</span> <span class="kw">as</span> <span class="ident">u64</span>);
     <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">size</span> <span class="op">&lt;=</span> <span class="ident">offset</span> {
         <span class="ident">CastTarget</span>::<span class="ident">from</span>(<span class="ident">lo</span>)
     } <span class="kw">else</span> {
         <span class="kw">let</span> <span class="ident">hi</span> <span class="op">=</span> <span class="ident">reg_component</span>(<span class="ident">cls</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">i</span>, <span class="ident">size</span> <span class="op">-</span> <span class="ident">offset</span>).<span class="ident">unwrap</span>();
         <span class="ident">CastTarget</span>::<span class="ident">Pair</span>(<span class="ident">lo</span>, <span class="ident">hi</span>)
     };
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">reg_component</span>(<span class="ident">cls</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">i</span>, <span class="number">0</span>), <span class="prelude-val">None</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">reg_component</span>(<span class="ident">cls</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">i</span>, <span class="ident">Size</span>::<span class="ident">from_bytes</span>(<span class="number">0</span>)), <span class="prelude-val">None</span>);
     <span class="ident">target</span>
 }
 
@@ -536,11 +506,11 @@
         };
 
         <span class="kw">if</span> <span class="ident">in_mem</span> {
-            <span class="ident">arg</span>.<span class="ident">make_indirect</span>(<span class="ident">ccx</span>);
             <span class="kw">if</span> <span class="ident">is_arg</span> {
-                <span class="ident">arg</span>.<span class="ident">attrs</span>.<span class="ident">set</span>(<span class="ident">ArgAttribute</span>::<span class="ident">ByVal</span>);
+                <span class="ident">arg</span>.<span class="ident">make_indirect_byval</span>();
             } <span class="kw">else</span> {
                 <span class="comment">// `sret` parameter thus one less integer register available</span>
+                <span class="ident">arg</span>.<span class="ident">make_indirect</span>();
                 <span class="ident">int_regs</span> <span class="op">-=</span> <span class="number">1</span>;
             }
         } <span class="kw">else</span> {
@@ -549,8 +519,8 @@
             <span class="ident">sse_regs</span> <span class="op">-=</span> <span class="ident">needed_sse</span>;
 
             <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">is_aggregate</span>() {
-                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bytes</span>();
-                <span class="ident">arg</span>.<span class="ident">cast_to</span>(<span class="ident">ccx</span>, <span class="ident">cast_target</span>(<span class="ident">cls</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>(), <span class="ident">size</span>))
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">size</span>;
+                <span class="ident">arg</span>.<span class="ident">cast_to</span>(<span class="ident">cast_target</span>(<span class="ident">cls</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>(), <span class="ident">size</span>))
             } <span class="kw">else</span> {
                 <span class="ident">arg</span>.<span class="ident">extend_integer_width_to</span>(<span class="number">32</span>);
             }

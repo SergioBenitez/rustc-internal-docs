@@ -357,6 +357,10 @@
 <span id="312">312</span>
 <span id="313">313</span>
 <span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -549,6 +553,8 @@
 
         <span class="kw">let</span> <span class="ident">total_node_count</span> <span class="op">=</span> <span class="ident">serialized_graph</span>.<span class="ident">nodes</span>.<span class="ident">len</span>();
         <span class="kw">let</span> <span class="ident">total_edge_count</span> <span class="op">=</span> <span class="ident">serialized_graph</span>.<span class="ident">edge_list_data</span>.<span class="ident">len</span>();
+        <span class="kw">let</span> (<span class="ident">total_edge_reads</span>, <span class="ident">total_duplicate_edge_reads</span>) <span class="op">=</span>
+            <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">edge_deduplication_data</span>();
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">counts</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span>_, <span class="ident">Stat</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">FxHashMap</span>();
 
@@ -586,6 +592,8 @@
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[incremental]&quot;</span>);
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[incremental] Total Node Count: {}&quot;</span>, <span class="ident">total_node_count</span>);
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[incremental] Total Edge Count: {}&quot;</span>, <span class="ident">total_edge_count</span>);
+        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[incremental] Total Edge Reads: {}&quot;</span>, <span class="ident">total_edge_reads</span>);
+        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[incremental] Total Duplicate Edge Reads: {}&quot;</span>, <span class="ident">total_duplicate_edge_reads</span>);
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[incremental]&quot;</span>);
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;[incremental]  {:&lt;36}| {:&lt;17}| {:&lt;12}| {:&lt;17}|&quot;</span>,
                  <span class="string">&quot;Node Kind&quot;</span>,

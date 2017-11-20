@@ -92,7 +92,6 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
-<span id="50">50</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -108,7 +107,6 @@
 <span class="comment">// http://www.ti.com/lit/an/slaa534/slaa534.pdf</span>
 
 <span class="kw">use</span> <span class="ident">abi</span>::{<span class="ident">ArgType</span>, <span class="ident">FnType</span>, <span class="ident">LayoutExt</span>};
-<span class="kw">use</span> <span class="ident">context</span>::<span class="ident">CrateContext</span>;
 
 <span class="comment">// 3.5 Structures or Unions Passed and Returned by Reference</span>
 <span class="comment">//</span>
@@ -116,32 +114,32 @@
 <span class="comment">// returned by reference. To pass a structure or union by reference, the caller</span>
 <span class="comment">// places its address in the appropriate location: either in a register or on</span>
 <span class="comment">// the stack, according to its position in the argument list. (..)&quot;</span>
-<span class="kw">fn</span> <span class="ident">classify_ret_ty</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ret</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ArgType</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
-    <span class="kw">if</span> <span class="ident">ret</span>.<span class="ident">layout</span>.<span class="ident">is_aggregate</span>() <span class="op">&amp;&amp;</span> <span class="ident">ret</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bits</span>() <span class="op">&gt;</span> <span class="number">32</span> {
-        <span class="ident">ret</span>.<span class="ident">make_indirect</span>(<span class="ident">ccx</span>);
+<span class="kw">fn</span> <span class="ident">classify_ret_ty</span>(<span class="ident">ret</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ArgType</span>) {
+    <span class="kw">if</span> <span class="ident">ret</span>.<span class="ident">layout</span>.<span class="ident">is_aggregate</span>() <span class="op">&amp;&amp;</span> <span class="ident">ret</span>.<span class="ident">layout</span>.<span class="ident">size</span>.<span class="ident">bits</span>() <span class="op">&gt;</span> <span class="number">32</span> {
+        <span class="ident">ret</span>.<span class="ident">make_indirect</span>();
     } <span class="kw">else</span> {
         <span class="ident">ret</span>.<span class="ident">extend_integer_width_to</span>(<span class="number">16</span>);
     }
 }
 
-<span class="kw">fn</span> <span class="ident">classify_arg_ty</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ArgType</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
-    <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">is_aggregate</span>() <span class="op">&amp;&amp;</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">size</span>(<span class="ident">ccx</span>).<span class="ident">bits</span>() <span class="op">&gt;</span> <span class="number">32</span> {
-        <span class="ident">arg</span>.<span class="ident">make_indirect</span>(<span class="ident">ccx</span>);
+<span class="kw">fn</span> <span class="ident">classify_arg_ty</span>(<span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ArgType</span>) {
+    <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">is_aggregate</span>() <span class="op">&amp;&amp;</span> <span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">size</span>.<span class="ident">bits</span>() <span class="op">&gt;</span> <span class="number">32</span> {
+        <span class="ident">arg</span>.<span class="ident">make_indirect</span>();
     } <span class="kw">else</span> {
         <span class="ident">arg</span>.<span class="ident">extend_integer_width_to</span>(<span class="number">16</span>);
     }
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">compute_abi_info</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">fty</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FnType</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">compute_abi_info</span>(<span class="ident">fty</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FnType</span>) {
     <span class="kw">if</span> <span class="op">!</span><span class="ident">fty</span>.<span class="ident">ret</span>.<span class="ident">is_ignore</span>() {
-        <span class="ident">classify_ret_ty</span>(<span class="ident">ccx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fty</span>.<span class="ident">ret</span>);
+        <span class="ident">classify_ret_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fty</span>.<span class="ident">ret</span>);
     }
 
     <span class="kw">for</span> <span class="ident">arg</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fty</span>.<span class="ident">args</span> {
         <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">is_ignore</span>() {
             <span class="kw">continue</span>;
         }
-        <span class="ident">classify_arg_ty</span>(<span class="ident">ccx</span>, <span class="ident">arg</span>);
+        <span class="ident">classify_arg_ty</span>(<span class="ident">arg</span>);
     }
 }
 </pre>
