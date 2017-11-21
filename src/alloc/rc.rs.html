@@ -2194,7 +2194,7 @@
             <span class="kw">unsafe</span> {
                 <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">read</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">this</span>); <span class="comment">// copy the contained object</span>
 
-                <span class="comment">// Indicate to Weaks that they can&#39;t be promoted by decrememting</span>
+                <span class="comment">// Indicate to Weaks that they can&#39;t be promoted by decrementing</span>
                 <span class="comment">// the strong count, and then remove the implicit &quot;strong weak&quot;</span>
                 <span class="comment">// pointer while also handling drop logic by just crafting a</span>
                 <span class="comment">// fake Weak.</span>

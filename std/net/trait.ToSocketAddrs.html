@@ -134,7 +134,7 @@ socket address <code>&amp;str</code> (missing the port):</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">err</span>.<span class="ident">kind</span>(), <span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">InvalidInput</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Aio%3B%0Ause%20std%3A%3Anet%3A%3AToSocketAddrs%3B%0A%0Alet%20err%20%3D%20%22127.0.0.1%22.to_socket_addrs().unwrap_err()%3B%0Aassert_eq!(err.kind()%2C%20io%3A%3AErrorKind%3A%3AInvalidInput)%3B%0A%7D">Run</a></pre>
 
 <p><a href="../../std/net/struct.TcpStream.html#method.connect"><code>TcpStream::connect</code></a> is an example of an function that utilizes
-<code>ToSocketsAddr</code> as a trait bound on its parameter in order to accept
+<code>ToSocketAddrs</code> as a trait bound on its parameter in order to accept
 different types:</p>
 
 <pre class="rust rust-example-rendered">

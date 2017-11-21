@@ -286,6 +286,8 @@
 <span id="241">241</span>
 <span id="242">242</span>
 <span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -306,8 +308,8 @@
 
 <span class="macro">newtype_index</span><span class="macro">!</span>(<span class="ident">CrateNum</span>
     {
-        <span class="ident">derive</span>[<span class="ident">Debug</span>]
         <span class="ident">ENCODABLE</span> <span class="op">=</span> <span class="ident">custom</span>
+        <span class="ident">DEBUG_FORMAT</span> <span class="op">=</span> <span class="string">&quot;crate{}&quot;</span>,
 
         <span class="doccomment">/// Item definitions in the currently-compiled crate would have the CrateNum</span>
         <span class="doccomment">/// LOCAL_CRATE in their DefId.</span>
@@ -461,17 +463,19 @@
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">DefId</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;DefId {{ krate: {:?}, index: {:?}&quot;</span>,
-               <span class="self">self</span>.<span class="ident">krate</span>, <span class="self">self</span>.<span class="ident">index</span>)<span class="question-mark">?</span>;
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;DefId({:?}/{}:{}&quot;</span>,
+               <span class="self">self</span>.<span class="ident">krate</span>.<span class="ident">index</span>(),
+               <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">address_space</span>().<span class="ident">index</span>(),
+               <span class="self">self</span>.<span class="ident">index</span>.<span class="ident">as_array_index</span>())<span class="question-mark">?</span>;
 
         <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with_opt</span>(<span class="op">|</span><span class="ident">opt_tcx</span><span class="op">|</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tcx</span>) <span class="op">=</span> <span class="ident">opt_tcx</span> {
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot; =&gt; {}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">def_path_debug_str</span>(<span class="kw-2">*</span><span class="self">self</span>))<span class="question-mark">?</span>;
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot; ~ {}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">def_path_debug_str</span>(<span class="kw-2">*</span><span class="self">self</span>))<span class="question-mark">?</span>;
             }
             <span class="prelude-val">Ok</span>(())
         })<span class="question-mark">?</span>;
 
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot; }}&quot;</span>)
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;)&quot;</span>)
     }
 }
 
