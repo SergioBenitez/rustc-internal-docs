@@ -1872,6 +1872,34 @@
 <span id="1827">1827</span>
 <span id="1828">1828</span>
 <span id="1829">1829</span>
+<span id="1830">1830</span>
+<span id="1831">1831</span>
+<span id="1832">1832</span>
+<span id="1833">1833</span>
+<span id="1834">1834</span>
+<span id="1835">1835</span>
+<span id="1836">1836</span>
+<span id="1837">1837</span>
+<span id="1838">1838</span>
+<span id="1839">1839</span>
+<span id="1840">1840</span>
+<span id="1841">1841</span>
+<span id="1842">1842</span>
+<span id="1843">1843</span>
+<span id="1844">1844</span>
+<span id="1845">1845</span>
+<span id="1846">1846</span>
+<span id="1847">1847</span>
+<span id="1848">1848</span>
+<span id="1849">1849</span>
+<span id="1850">1850</span>
+<span id="1851">1851</span>
+<span id="1852">1852</span>
+<span id="1853">1853</span>
+<span id="1854">1854</span>
+<span id="1855">1855</span>
+<span id="1856">1856</span>
+<span id="1857">1857</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1908,7 +1936,7 @@
 <span class="kw">use</span> <span class="ident">errors</span>::{<span class="ident">DiagnosticBuilder</span>, <span class="ident">Handler</span>, <span class="ident">FatalError</span>};
 <span class="kw">use</span> <span class="ident">visit</span>::{<span class="self">self</span>, <span class="ident">FnKind</span>, <span class="ident">Visitor</span>};
 <span class="kw">use</span> <span class="ident">parse</span>::<span class="ident">ParseSess</span>;
-<span class="kw">use</span> <span class="ident">symbol</span>::<span class="ident">Symbol</span>;
+<span class="kw">use</span> <span class="ident">symbol</span>::{<span class="ident">keywords</span>, <span class="ident">Symbol</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
 
@@ -2256,6 +2284,8 @@
     (<span class="ident">active</span>, <span class="ident">doc_cfg</span>, <span class="string">&quot;1.21.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">43781</span>)),
     <span class="comment">// #[doc(masked)]</span>
     (<span class="ident">active</span>, <span class="ident">doc_masked</span>, <span class="string">&quot;1.21.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">44027</span>)),
+    <span class="comment">// #[doc(spotlight)]</span>
+    (<span class="ident">active</span>, <span class="ident">doc_spotlight</span>, <span class="string">&quot;1.22.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">45040</span>)),
 
     <span class="comment">// allow `#[must_use]` on functions and comparison operators (RFC 1940)</span>
     (<span class="ident">active</span>, <span class="ident">fn_must_use</span>, <span class="string">&quot;1.21.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">43302</span>)),
@@ -2290,6 +2320,12 @@
 
     <span class="comment">// Allow trait methods with arbitrary self types</span>
     (<span class="ident">active</span>, <span class="ident">arbitrary_self_types</span>, <span class="string">&quot;1.23.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">44874</span>)),
+
+    <span class="comment">// #![wasm_import_memory] attribute</span>
+    (<span class="ident">active</span>, <span class="ident">wasm_import_memory</span>, <span class="string">&quot;1.22.0&quot;</span>, <span class="prelude-val">None</span>),
+
+    <span class="comment">// `crate` in paths</span>
+    (<span class="ident">active</span>, <span class="ident">crate_in_paths</span>, <span class="string">&quot;1.23.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">45477</span>)),
 );
 
 <span class="macro">declare_features</span><span class="macro">!</span> (
@@ -2803,6 +2839,11 @@
                                       never be stable&quot;</span>,
                                      <span class="macro">cfg_fn</span><span class="macro">!</span>(<span class="ident">rustc_attrs</span>))),
 
+    (<span class="string">&quot;wasm_import_memory&quot;</span>, <span class="ident">Whitelisted</span>, <span class="ident">Gated</span>(<span class="ident">Stability</span>::<span class="ident">Unstable</span>,
+                                 <span class="string">&quot;wasm_import_memory&quot;</span>,
+                                 <span class="string">&quot;wasm_import_memory attribute is currently unstable&quot;</span>,
+                                 <span class="macro">cfg_fn</span><span class="macro">!</span>(<span class="ident">wasm_import_memory</span>))),
+
     <span class="comment">// Crate level attributes</span>
     (<span class="string">&quot;crate_name&quot;</span>, <span class="ident">CrateLevel</span>, <span class="ident">Ungated</span>),
     (<span class="string">&quot;crate_type&quot;</span>, <span class="ident">CrateLevel</span>, <span class="ident">Ungated</span>),
@@ -3167,6 +3208,10 @@
                     <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">doc_masked</span>, <span class="ident">attr</span>.<span class="ident">span</span>,
                         <span class="string">&quot;#[doc(masked)] is experimental&quot;</span>
                     );
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">content</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">check_name</span>(<span class="string">&quot;spotlight&quot;</span>)) {
+                    <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">doc_spotlight</span>, <span class="ident">attr</span>.<span class="ident">span</span>,
+                        <span class="string">&quot;#[doc(spotlight)] is experimental&quot;</span>
+                    );
                 }
             }
         }
@@ -3493,6 +3538,17 @@
             _ <span class="op">=&gt;</span> {}
         }
         <span class="ident">visit</span>::<span class="ident">walk_impl_item</span>(<span class="self">self</span>, <span class="ident">ii</span>);
+    }
+
+    <span class="kw">fn</span> <span class="ident">visit_path</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ast</span>::<span class="ident">Path</span>, <span class="ident">_id</span>: <span class="ident">NodeId</span>) {
+        <span class="kw">for</span> <span class="ident">segment</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">path</span>.<span class="ident">segments</span> {
+            <span class="kw">if</span> <span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Crate</span>.<span class="ident">name</span>() {
+                <span class="macro">gate_feature_post</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">crate_in_paths</span>, <span class="ident">segment</span>.<span class="ident">span</span>,
+                                   <span class="string">&quot;`crate` in paths is experimental&quot;</span>);
+            }
+        }
+
+        <span class="ident">visit</span>::<span class="ident">walk_path</span>(<span class="self">self</span>, <span class="ident">path</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">visit_vis</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">vis</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ast</span>::<span class="ident">Visibility</span>) {

@@ -1260,6 +1260,11 @@
 <span id="1215">1215</span>
 <span id="1216">1216</span>
 <span id="1217">1217</span>
+<span id="1218">1218</span>
+<span id="1219">1219</span>
+<span id="1220">1220</span>
+<span id="1221">1221</span>
+<span id="1222">1222</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1558,6 +1563,11 @@
     <span class="ident">arg_names</span>
 });
 
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">hir</span>::<span class="ident">ExistTy</span> {
+    <span class="ident">generics</span>,
+    <span class="ident">bounds</span>
+});
+
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> <span class="ident">hir</span>::<span class="ident">Ty_</span> {
     <span class="ident">TySlice</span>(<span class="ident">t</span>),
     <span class="ident">TyArray</span>(<span class="ident">t</span>, <span class="ident">body_id</span>),
@@ -1568,7 +1578,7 @@
     <span class="ident">TyTup</span>(<span class="ident">ts</span>),
     <span class="ident">TyPath</span>(<span class="ident">qpath</span>),
     <span class="ident">TyTraitObject</span>(<span class="ident">trait_refs</span>, <span class="ident">lifetime</span>),
-    <span class="ident">TyImplTraitExistential</span>(<span class="ident">bounds</span>),
+    <span class="ident">TyImplTraitExistential</span>(<span class="ident">existty</span>, <span class="ident">lifetimes</span>),
     <span class="ident">TyImplTraitUniversal</span>(<span class="ident">def_id</span>, <span class="ident">bounds</span>),
     <span class="ident">TyTypeof</span>(<span class="ident">body_id</span>),
     <span class="ident">TyErr</span>,

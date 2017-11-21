@@ -6546,6 +6546,17 @@
 <span id="6501">6501</span>
 <span id="6502">6502</span>
 <span id="6503">6503</span>
+<span id="6504">6504</span>
+<span id="6505">6505</span>
+<span id="6506">6506</span>
+<span id="6507">6507</span>
+<span id="6508">6508</span>
+<span id="6509">6509</span>
+<span id="6510">6510</span>
+<span id="6511">6511</span>
+<span id="6512">6512</span>
+<span id="6513">6513</span>
+<span id="6514">6514</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -10465,6 +10476,10 @@
         <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_ident</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">t</span>.<span class="ident">is_reserved_ident</span>())
     }
 
+    <span class="kw">fn</span> <span class="ident">is_crate_vis</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Crate</span>) <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span> <span class="op">!=</span> <span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">ModSep</span>)
+    }
+
     <span class="kw">fn</span> <span class="ident">eat_auto_trait</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Auto</span>)
             <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">look_ahead</span>(<span class="number">1</span>, <span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">is_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Trait</span>))
@@ -10575,10 +10590,15 @@
                 <span class="ident">node</span>: <span class="ident">StmtKind</span>::<span class="ident">Item</span>(<span class="ident">macro_def</span>),
                 <span class="ident">span</span>: <span class="ident">lo</span>.<span class="ident">to</span>(<span class="self">self</span>.<span class="ident">prev_span</span>),
             }
-        <span class="comment">// Starts like a simple path, but not a union item.</span>
+        <span class="comment">// Starts like a simple path, but not a union item or item with `crate` visibility.</span>
+        <span class="comment">// Our goal here is to parse an arbitrary path `a::b::c` but not something that starts</span>
+        <span class="comment">// like a path (1 token), but it fact not a path.</span>
+        <span class="comment">// `union::b::c` - path, `union U { ... }` - not a path.</span>
+        <span class="comment">// `crate::b::c` - path, `crate struct S;` - not a path.</span>
         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_path_start</span>() <span class="op">&amp;&amp;</span>
                   <span class="op">!</span><span class="self">self</span>.<span class="ident">token</span>.<span class="ident">is_qpath_start</span>() <span class="op">&amp;&amp;</span>
-                  <span class="op">!</span><span class="self">self</span>.<span class="ident">is_union_item</span>() {
+                  <span class="op">!</span><span class="self">self</span>.<span class="ident">is_union_item</span>() <span class="op">&amp;&amp;</span>
+                  <span class="op">!</span><span class="self">self</span>.<span class="ident">is_crate_vis</span>() {
             <span class="kw">let</span> <span class="ident">pth</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_path</span>(<span class="ident">PathStyle</span>::<span class="ident">Expr</span>)<span class="question-mark">?</span>;
 
             <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Not</span>) {
@@ -11948,7 +11968,9 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_visibility</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">can_take_tuple</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">Visibility</span><span class="op">&gt;</span> {
         <span class="macro">maybe_whole</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">NtVis</span>, <span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>);
 
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat_keyword</span>(<span class="ident">keywords</span>::<span class="ident">Crate</span>) {
+        <span class="self">self</span>.<span class="ident">expected_tokens</span>.<span class="ident">push</span>(<span class="ident">TokenType</span>::<span class="ident">Keyword</span>(<span class="ident">keywords</span>::<span class="ident">Crate</span>));
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_crate_vis</span>() {
+            <span class="self">self</span>.<span class="ident">bump</span>(); <span class="comment">// `crate`</span>
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">Visibility</span>::<span class="ident">Crate</span>(<span class="self">self</span>.<span class="ident">prev_span</span>, <span class="ident">CrateSugar</span>::<span class="ident">JustCrate</span>));
         }
 

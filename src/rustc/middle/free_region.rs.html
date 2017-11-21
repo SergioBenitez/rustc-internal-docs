@@ -260,6 +260,26 @@
 <span id="215">215</span>
 <span id="216">216</span>
 <span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -347,7 +367,7 @@
                 (<span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ReFree</span>(_), <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ReEarlyBound</span>(_)) <span class="op">|</span>
                 (<span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ReEarlyBound</span>(_), <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ReFree</span>(_)) <span class="op">|</span>
                 (<span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ReFree</span>(_), <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ReFree</span>(_)) <span class="op">=&gt;</span>
-                    <span class="self">self</span>.<span class="ident">free_regions</span>.<span class="ident">relation</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">sub_region</span>, <span class="kw-2">&amp;</span><span class="ident">super_region</span>),
+                    <span class="self">self</span>.<span class="ident">free_regions</span>.<span class="ident">sub_free_regions</span>(<span class="kw-2">&amp;</span><span class="ident">sub_region</span>, <span class="kw-2">&amp;</span><span class="ident">super_region</span>),
 
                 _ <span class="op">=&gt;</span>
                     <span class="bool-val">false</span>,
@@ -421,19 +441,39 @@
         }
     }
 
-    <span class="comment">// Record that `&#39;sup:&#39;sub`. Or, put another way, `&#39;sub &lt;= &#39;sup`.</span>
-    <span class="comment">// (with the exception that `&#39;static: &#39;x` is not notable)</span>
+    <span class="doccomment">/// Record that `&#39;sup:&#39;sub`. Or, put another way, `&#39;sub &lt;= &#39;sup`.</span>
+    <span class="doccomment">/// (with the exception that `&#39;static: &#39;x` is not notable)</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">relate_regions</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">sub</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">sup</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;relate_regions(sub={:?}, sup={:?})&quot;</span>, <span class="ident">sub</span>, <span class="ident">sup</span>);
         <span class="kw">if</span> (<span class="ident">is_free</span>(<span class="ident">sub</span>) <span class="op">||</span> <span class="kw-2">*</span><span class="ident">sub</span> <span class="op">==</span> <span class="ident">ty</span>::<span class="ident">ReStatic</span>) <span class="op">&amp;&amp;</span> <span class="ident">is_free</span>(<span class="ident">sup</span>) {
             <span class="self">self</span>.<span class="ident">relation</span>.<span class="ident">add</span>(<span class="ident">sub</span>, <span class="ident">sup</span>)
         }
     }
 
+    <span class="doccomment">/// True if `r_a &lt;= r_b` is known to hold. Both `r_a` and `r_b`</span>
+    <span class="doccomment">/// must be free regions from the function header.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sub_free_regions</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                      <span class="ident">r_a</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                      <span class="ident">r_b</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                                      <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;sub_free_regions(r_a={:?}, r_b={:?})&quot;</span>, <span class="ident">r_a</span>, <span class="ident">r_b</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">is_free</span>(<span class="ident">r_a</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">is_free</span>(<span class="ident">r_b</span>));
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">r_a</span> <span class="op">==</span> <span class="ident">r_b</span> <span class="op">||</span> <span class="self">self</span>.<span class="ident">relation</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">r_a</span>, <span class="kw-2">&amp;</span><span class="ident">r_b</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;sub_free_regions: result={}&quot;</span>, <span class="ident">result</span>);
+        <span class="ident">result</span>
+    }
+
+    <span class="doccomment">/// Compute the least-upper-bound of two free regions. In some</span>
+    <span class="doccomment">/// cases, this is more conservative than necessary, in order to</span>
+    <span class="doccomment">/// avoid making arbitrary choices. See</span>
+    <span class="doccomment">/// `TransitiveRelation::postdom_upper_bound` for more details.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lub_free_regions</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                       <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                       <span class="ident">r_a</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                       <span class="ident">r_b</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                       <span class="op">-&gt;</span> <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;lub_free_regions(r_a={:?}, r_b={:?})&quot;</span>, <span class="ident">r_a</span>, <span class="ident">r_b</span>);
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">is_free</span>(<span class="ident">r_a</span>));
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">is_free</span>(<span class="ident">r_b</span>));
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">r_a</span> <span class="op">==</span> <span class="ident">r_b</span> { <span class="ident">r_a</span> } <span class="kw">else</span> {

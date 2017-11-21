@@ -2763,6 +2763,8 @@
 <span id="2718">2718</span>
 <span id="2719">2719</span>
 <span id="2720">2720</span>
+<span id="2721">2721</span>
+<span id="2722">2722</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3802,6 +3804,8 @@
           <span class="string">&quot;run all passes except translation; no output&quot;</span>),
     <span class="ident">treat_err_as_bug</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
           <span class="string">&quot;treat all errors that occur as bugs&quot;</span>),
+    <span class="ident">external_macro_backtrace</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
+          <span class="string">&quot;show macro backtraces even for non-local macros&quot;</span>),
     <span class="ident">continue_parse_after_error</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
           <span class="string">&quot;attempt to recover from parse errors (experimental)&quot;</span>),
     <span class="ident">incremental</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
@@ -4866,7 +4870,7 @@
             <span class="kw">let</span> <span class="ident">registry</span> <span class="op">=</span> <span class="ident">errors</span>::<span class="ident">registry</span>::<span class="ident">Registry</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span>[]);
             <span class="kw">let</span> (<span class="ident">sessopts</span>, _) <span class="op">=</span> <span class="ident">build_session_options_and_crate_config</span>(<span class="kw-2">&amp;</span><span class="ident">matches</span>);
             <span class="kw">let</span> <span class="ident">sess</span> <span class="op">=</span> <span class="ident">build_session</span>(<span class="ident">sessopts</span>, <span class="prelude-val">None</span>, <span class="ident">registry</span>);
-            <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">can_emit_warnings</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">flags</span>.<span class="ident">can_emit_warnings</span>);
         }
 
         {
@@ -4877,7 +4881,7 @@
             <span class="kw">let</span> <span class="ident">registry</span> <span class="op">=</span> <span class="ident">errors</span>::<span class="ident">registry</span>::<span class="ident">Registry</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span>[]);
             <span class="kw">let</span> (<span class="ident">sessopts</span>, _) <span class="op">=</span> <span class="ident">build_session_options_and_crate_config</span>(<span class="kw-2">&amp;</span><span class="ident">matches</span>);
             <span class="kw">let</span> <span class="ident">sess</span> <span class="op">=</span> <span class="ident">build_session</span>(<span class="ident">sessopts</span>, <span class="prelude-val">None</span>, <span class="ident">registry</span>);
-            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">can_emit_warnings</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">flags</span>.<span class="ident">can_emit_warnings</span>);
         }
 
         {
@@ -4887,7 +4891,7 @@
             <span class="kw">let</span> <span class="ident">registry</span> <span class="op">=</span> <span class="ident">errors</span>::<span class="ident">registry</span>::<span class="ident">Registry</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span>[]);
             <span class="kw">let</span> (<span class="ident">sessopts</span>, _) <span class="op">=</span> <span class="ident">build_session_options_and_crate_config</span>(<span class="kw-2">&amp;</span><span class="ident">matches</span>);
             <span class="kw">let</span> <span class="ident">sess</span> <span class="op">=</span> <span class="ident">build_session</span>(<span class="ident">sessopts</span>, <span class="prelude-val">None</span>, <span class="ident">registry</span>);
-            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">can_emit_warnings</span>);
+            <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">flags</span>.<span class="ident">can_emit_warnings</span>);
         }
     }
 

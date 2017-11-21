@@ -2068,6 +2068,21 @@
 <span id="2023">2023</span>
 <span id="2024">2024</span>
 <span id="2025">2025</span>
+<span id="2026">2026</span>
+<span id="2027">2027</span>
+<span id="2028">2028</span>
+<span id="2029">2029</span>
+<span id="2030">2030</span>
+<span id="2031">2031</span>
+<span id="2032">2032</span>
+<span id="2033">2033</span>
+<span id="2034">2034</span>
+<span id="2035">2035</span>
+<span id="2036">2036</span>
+<span id="2037">2037</span>
+<span id="2038">2038</span>
+<span id="2039">2039</span>
+<span id="2040">2040</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3533,6 +3548,12 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ExistTy</span> {
+    <span class="kw">pub</span> <span class="ident">generics</span>: <span class="ident">Generics</span>,
+    <span class="kw">pub</span> <span class="ident">bounds</span>: <span class="ident">TyParamBounds</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
 <span class="doccomment">/// The different kinds of types recognized by the compiler</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Ty_</span> {
     <span class="doccomment">/// A variable length slice (`[T]`)</span>
@@ -3559,7 +3580,16 @@
     <span class="ident">TyTraitObject</span>(<span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">PolyTraitRef</span><span class="op">&gt;</span>, <span class="ident">Lifetime</span>),
     <span class="doccomment">/// An exsitentially quantified (there exists a type satisfying) `impl</span>
     <span class="doccomment">/// Bound1 + Bound2 + Bound3` type where `Bound` is a trait or a lifetime.</span>
-    <span class="ident">TyImplTraitExistential</span>(<span class="ident">TyParamBounds</span>),
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The `ExistTy` structure emulates an</span>
+    <span class="doccomment">/// `abstract type Foo&lt;&#39;a, &#39;b&gt;: MyTrait&lt;&#39;a, &#39;b&gt;;`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The `HirVec&lt;Lifetime&gt;` is the list of lifetimes applied as parameters</span>
+    <span class="doccomment">/// to the `abstract type`, e.g. the `&#39;c` and `&#39;d` in `-&gt; Foo&lt;&#39;c, &#39;d&gt;`.</span>
+    <span class="doccomment">/// This list is only a list of lifetimes and not type parameters</span>
+    <span class="doccomment">/// because all in-scope type parameters are captured by `impl Trait`,</span>
+    <span class="doccomment">/// so they are resolved directly through the parent `Generics`.</span>
+    <span class="ident">TyImplTraitExistential</span>(<span class="ident">ExistTy</span>, <span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">Lifetime</span><span class="op">&gt;</span>),
     <span class="doccomment">/// An universally quantified (for all types satisfying) `impl</span>
     <span class="doccomment">/// Bound1 + Bound2 + Bound3` type where `Bound` is a trait or a lifetime.</span>
     <span class="ident">TyImplTraitUniversal</span>(<span class="ident">DefId</span>, <span class="ident">TyParamBounds</span>),

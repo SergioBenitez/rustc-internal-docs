@@ -817,6 +817,9 @@
 <span id="772">772</span>
 <span id="773">773</span>
 <span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -896,6 +899,9 @@
                     <span class="ident">hinted_static</span>: <span class="bool-val">false</span>,
                     <span class="ident">is_ld</span>: <span class="bool-val">true</span>,
                 }) <span class="kw">as</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Linker</span><span class="op">&gt;</span>
+            }
+            <span class="ident">LinkerFlavor</span>::<span class="ident">Binaryen</span> <span class="op">=&gt;</span> {
+                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;can&#39;t instantiate binaryen linker&quot;</span>)
             }
         }
     }

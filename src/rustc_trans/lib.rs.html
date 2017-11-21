@@ -377,6 +377,7 @@
 <span id="332">332</span>
 <span id="333">333</span>
 <span id="334">334</span>
+<span id="335">335</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -425,18 +426,19 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libc</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">owning_ref</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">jobserver</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">num_cpus</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_allocator</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_apfloat</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_back</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_binaryen</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_const_math</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_data_structures</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_demangle</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_incremental</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_llvm</span> <span class="kw">as</span> <span class="ident">llvm</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_platform_intrinsics</span> <span class="kw">as</span> <span class="ident">intrinsics</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_const_math</span>;
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_trans_utils</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_demangle</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">jobserver</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">num_cpus</span>;
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
 <span class="attribute">#[<span class="ident">macro_use</span>]</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">syntax</span>;

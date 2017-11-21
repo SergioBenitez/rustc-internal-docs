@@ -1725,8 +1725,9 @@
 <span class="comment">// except according to those terms.</span>
 
 <span class="doccomment">//! This module provides constants which are specific to the implementation</span>
-<span class="doccomment">//! of the `f32` floating point data type. Mathematically significant</span>
-<span class="doccomment">//! numbers are provided in the `consts` sub-module.</span>
+<span class="doccomment">//! of the `f32` floating point data type.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Mathematically significant numbers are provided in the `consts` sub-module.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! *[See also the `f32` primitive type](../primitive.f32.html).*</span>
 
@@ -1741,7 +1742,6 @@
 <span class="kw">use</span> <span class="ident">num</span>::<span class="ident">FpCategory</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">test</span>))]</span>
 <span class="kw">use</span> <span class="ident">sys</span>::<span class="ident">cmath</span>;
-
 
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">f32</span>::{<span class="ident">RADIX</span>, <span class="ident">MANTISSA_DIGITS</span>, <span class="ident">DIGITS</span>, <span class="ident">EPSILON</span>};

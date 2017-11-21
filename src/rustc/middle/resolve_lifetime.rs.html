@@ -1761,6 +1761,100 @@
 <span id="1716">1716</span>
 <span id="1717">1717</span>
 <span id="1718">1718</span>
+<span id="1719">1719</span>
+<span id="1720">1720</span>
+<span id="1721">1721</span>
+<span id="1722">1722</span>
+<span id="1723">1723</span>
+<span id="1724">1724</span>
+<span id="1725">1725</span>
+<span id="1726">1726</span>
+<span id="1727">1727</span>
+<span id="1728">1728</span>
+<span id="1729">1729</span>
+<span id="1730">1730</span>
+<span id="1731">1731</span>
+<span id="1732">1732</span>
+<span id="1733">1733</span>
+<span id="1734">1734</span>
+<span id="1735">1735</span>
+<span id="1736">1736</span>
+<span id="1737">1737</span>
+<span id="1738">1738</span>
+<span id="1739">1739</span>
+<span id="1740">1740</span>
+<span id="1741">1741</span>
+<span id="1742">1742</span>
+<span id="1743">1743</span>
+<span id="1744">1744</span>
+<span id="1745">1745</span>
+<span id="1746">1746</span>
+<span id="1747">1747</span>
+<span id="1748">1748</span>
+<span id="1749">1749</span>
+<span id="1750">1750</span>
+<span id="1751">1751</span>
+<span id="1752">1752</span>
+<span id="1753">1753</span>
+<span id="1754">1754</span>
+<span id="1755">1755</span>
+<span id="1756">1756</span>
+<span id="1757">1757</span>
+<span id="1758">1758</span>
+<span id="1759">1759</span>
+<span id="1760">1760</span>
+<span id="1761">1761</span>
+<span id="1762">1762</span>
+<span id="1763">1763</span>
+<span id="1764">1764</span>
+<span id="1765">1765</span>
+<span id="1766">1766</span>
+<span id="1767">1767</span>
+<span id="1768">1768</span>
+<span id="1769">1769</span>
+<span id="1770">1770</span>
+<span id="1771">1771</span>
+<span id="1772">1772</span>
+<span id="1773">1773</span>
+<span id="1774">1774</span>
+<span id="1775">1775</span>
+<span id="1776">1776</span>
+<span id="1777">1777</span>
+<span id="1778">1778</span>
+<span id="1779">1779</span>
+<span id="1780">1780</span>
+<span id="1781">1781</span>
+<span id="1782">1782</span>
+<span id="1783">1783</span>
+<span id="1784">1784</span>
+<span id="1785">1785</span>
+<span id="1786">1786</span>
+<span id="1787">1787</span>
+<span id="1788">1788</span>
+<span id="1789">1789</span>
+<span id="1790">1790</span>
+<span id="1791">1791</span>
+<span id="1792">1792</span>
+<span id="1793">1793</span>
+<span id="1794">1794</span>
+<span id="1795">1795</span>
+<span id="1796">1796</span>
+<span id="1797">1797</span>
+<span id="1798">1798</span>
+<span id="1799">1799</span>
+<span id="1800">1800</span>
+<span id="1801">1801</span>
+<span id="1802">1802</span>
+<span id="1803">1803</span>
+<span id="1804">1804</span>
+<span id="1805">1805</span>
+<span id="1806">1806</span>
+<span id="1807">1807</span>
+<span id="1808">1808</span>
+<span id="1809">1809</span>
+<span id="1810">1810</span>
+<span id="1811">1811</span>
+<span id="1812">1812</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1816,6 +1910,7 @@
         <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">index</span>;
         <span class="kw-2">*</span><span class="ident">index</span> <span class="op">+=</span> <span class="number">1</span>;
         <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">hir_map</span>.<span class="ident">local_def_id</span>(<span class="ident">def</span>.<span class="ident">lifetime</span>.<span class="ident">id</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Region::early: index={} def_id={:?}&quot;</span>, <span class="ident">i</span>, <span class="ident">def_id</span>);
         (<span class="ident">def</span>.<span class="ident">lifetime</span>.<span class="ident">name</span>, <span class="ident">Region</span>::<span class="ident">EarlyBound</span>(<span class="ident">i</span>, <span class="ident">def_id</span>))
     }
 
@@ -1965,6 +2060,11 @@
     <span class="doccomment">/// declaration `Binder` and the location it&#39;s referenced from.</span>
     <span class="ident">Binder</span> {
         <span class="ident">lifetimes</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">LifetimeName</span>, <span class="ident">Region</span><span class="op">&gt;</span>,
+
+        <span class="doccomment">/// if we extend this scope with another scope, what is the next index</span>
+        <span class="doccomment">/// we should use for an early-bound region?</span>
+        <span class="ident">next_early_index</span>: <span class="ident">u32</span>,
+
         <span class="ident">s</span>: <span class="ident">ScopeRef</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>
     },
 
@@ -2107,8 +2207,10 @@
                 <span class="kw">let</span> <span class="ident">lifetimes</span> <span class="op">=</span> <span class="ident">generics</span>.<span class="ident">lifetimes</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">def</span><span class="op">|</span> {
                     <span class="ident">Region</span>::<span class="ident">early</span>(<span class="self">self</span>.<span class="ident">hir_map</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">index</span>, <span class="ident">def</span>)
                 }).<span class="ident">collect</span>();
+                <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">+</span> <span class="ident">generics</span>.<span class="ident">ty_params</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
                 <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> {
                     <span class="ident">lifetimes</span>,
+                    <span class="ident">next_early_index</span>,
                     <span class="ident">s</span>: <span class="ident">ROOT_SCOPE</span>
                 };
                 <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span><span class="ident">old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
@@ -2136,12 +2238,15 @@
     }
 
     <span class="kw">fn</span> <span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Ty</span>) {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;visit_ty: ty={:?}&quot;</span>, <span class="ident">ty</span>);
         <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">node</span> {
             <span class="ident">hir</span>::<span class="ident">TyBareFn</span>(<span class="kw-2">ref</span> <span class="ident">c</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_early_index</span>();
                 <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> {
                     <span class="ident">lifetimes</span>: <span class="ident">c</span>.<span class="ident">lifetimes</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">def</span><span class="op">|</span> {
-                            <span class="ident">Region</span>::<span class="ident">late</span>(<span class="self">self</span>.<span class="ident">hir_map</span>, <span class="ident">def</span>)
-                        }).<span class="ident">collect</span>(),
+                        <span class="ident">Region</span>::<span class="ident">late</span>(<span class="self">self</span>.<span class="ident">hir_map</span>, <span class="ident">def</span>)
+                    }).<span class="ident">collect</span>(),
+                    <span class="ident">next_early_index</span>,
                     <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span>
                 };
                 <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span><span class="ident">old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
@@ -2168,6 +2273,60 @@
                     <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span>
                 };
                 <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span>_, <span class="ident">this</span><span class="op">|</span> <span class="ident">this</span>.<span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="ident">mt</span>.<span class="ident">ty</span>));
+            }
+            <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(<span class="kw-2">ref</span> <span class="ident">exist_ty</span>, <span class="kw-2">ref</span> <span class="ident">lifetimes</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// Resolve the lifetimes that are applied to the existential type.</span>
+                <span class="comment">// These are resolved in the current scope.</span>
+                <span class="comment">// `fn foo&lt;&#39;a&gt;() -&gt; impl MyTrait&lt;&#39;a&gt; { ... }` desugars to</span>
+                <span class="comment">// `fn foo&lt;&#39;a&gt;() -&gt; MyAnonTy&lt;&#39;a&gt; { ... }`</span>
+                <span class="comment">//          ^                 ^this gets resolved in the current scope</span>
+                <span class="kw">for</span> <span class="ident">lifetime</span> <span class="kw">in</span> <span class="ident">lifetimes</span> {
+                    <span class="self">self</span>.<span class="ident">visit_lifetime</span>(<span class="ident">lifetime</span>);
+
+                    <span class="comment">// Check for predicates like `impl for&lt;&#39;a&gt; SomeTrait&lt;impl OtherTrait&lt;&#39;a&gt;&gt;`</span>
+                    <span class="comment">// and ban them. Type variables instantiated inside binders aren&#39;t</span>
+                    <span class="comment">// well-supported at the moment, so this doesn&#39;t work.</span>
+                    <span class="comment">// In the future, this should be fixed and this error should be removed.</span>
+                    <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">defs</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">lifetime</span>.<span class="ident">id</span>);
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">Region</span>::<span class="ident">LateBound</span>(_, <span class="ident">def_id</span>)) <span class="op">=</span> <span class="ident">def</span> {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">node_id</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir_map</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>) {
+                            <span class="comment">// Ensure that the parent of the def is an item, not HRTB</span>
+                            <span class="kw">let</span> <span class="ident">parent_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir_map</span>.<span class="ident">get_parent_node</span>(<span class="ident">node_id</span>);
+                            <span class="kw">let</span> <span class="ident">parent_impl_id</span> <span class="op">=</span> <span class="ident">hir</span>::<span class="ident">ImplItemId</span> { <span class="ident">node_id</span>: <span class="ident">parent_id</span> };
+                            <span class="kw">let</span> <span class="ident">parent_trait_id</span> <span class="op">=</span> <span class="ident">hir</span>::<span class="ident">TraitItemId</span> { <span class="ident">node_id</span>: <span class="ident">parent_id</span> };
+                            <span class="kw">let</span> <span class="ident">krate</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir_map</span>.<span class="ident">forest</span>.<span class="ident">krate</span>();
+                            <span class="kw">if</span> <span class="op">!</span>(<span class="ident">krate</span>.<span class="ident">items</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">parent_id</span>) <span class="op">||</span>
+                                 <span class="ident">krate</span>.<span class="ident">impl_items</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">parent_impl_id</span>) <span class="op">||</span>
+                                 <span class="ident">krate</span>.<span class="ident">trait_items</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">parent_trait_id</span>))
+                            {
+                                <span class="macro">span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">sess</span>, <span class="ident">lifetime</span>.<span class="ident">span</span>, <span class="ident">E0657</span>,
+                                  <span class="string">&quot;`impl Trait` can only capture lifetimes \
+                                  bound at the fn or impl level&quot;</span>);
+                            }
+                        }
+                    }
+                }
+
+                <span class="comment">// Resolve the lifetimes in the bounds to the lifetime defs in the generics.</span>
+                <span class="comment">// `fn foo&lt;&#39;a&gt;() -&gt; impl MyTrait&lt;&#39;a&gt; { ... }` desugars to</span>
+                <span class="comment">// `abstract type MyAnonTy&lt;&#39;b&gt;: MyTrait&lt;&#39;b&gt;;`</span>
+                <span class="comment">//                          ^            ^ this gets resolved in the scope of</span>
+                <span class="comment">//                                         the exist_ty generics</span>
+                <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">ExistTy</span> { <span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span> } <span class="op">=</span> <span class="kw-2">*</span><span class="ident">exist_ty</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_early_index</span>();
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;visit_ty: index = {}&quot;</span>, <span class="ident">index</span>);
+                <span class="kw">let</span> <span class="ident">lifetimes</span> <span class="op">=</span> <span class="ident">generics</span>.<span class="ident">lifetimes</span>.<span class="ident">iter</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">lt_def</span><span class="op">|</span> <span class="ident">Region</span>::<span class="ident">early</span>(<span class="self">self</span>.<span class="ident">hir_map</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">index</span>, <span class="ident">lt_def</span>))
+                    .<span class="ident">collect</span>();
+
+                <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">+</span> <span class="ident">generics</span>.<span class="ident">ty_params</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+                <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="ident">lifetimes</span>, <span class="ident">next_early_index</span>, <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span> };
+                <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span><span class="ident">_old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
+                    <span class="ident">this</span>.<span class="ident">visit_generics</span>(<span class="ident">generics</span>);
+                    <span class="kw">for</span> <span class="ident">bound</span> <span class="kw">in</span> <span class="ident">bounds</span> {
+                        <span class="ident">this</span>.<span class="ident">visit_ty_param_bound</span>(<span class="ident">bound</span>);
+                    }
+                });
             }
             _ <span class="op">=&gt;</span> {
                 <span class="ident">intravisit</span>::<span class="ident">walk_ty</span>(<span class="self">self</span>, <span class="ident">ty</span>)
@@ -2241,10 +2400,12 @@
                                                                                .. }) <span class="op">=&gt;</span> {
                     <span class="kw">if</span> <span class="op">!</span><span class="ident">bound_lifetimes</span>.<span class="ident">is_empty</span>() {
                         <span class="self">self</span>.<span class="ident">trait_ref_hack</span> <span class="op">=</span> <span class="bool-val">true</span>;
+                        <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_early_index</span>();
                         <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> {
                             <span class="ident">lifetimes</span>: <span class="ident">bound_lifetimes</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">def</span><span class="op">|</span> {
                                     <span class="ident">Region</span>::<span class="ident">late</span>(<span class="self">self</span>.<span class="ident">hir_map</span>, <span class="ident">def</span>)
-                                }).<span class="ident">collect</span>(),
+                            }).<span class="ident">collect</span>(),
+                            <span class="ident">next_early_index</span>,
                             <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span>
                         };
                         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span><span class="ident">old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
@@ -2288,10 +2449,12 @@
                 <span class="macro">span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">sess</span>, <span class="ident">trait_ref</span>.<span class="ident">span</span>, <span class="ident">E0316</span>,
                           <span class="string">&quot;nested quantification of lifetimes&quot;</span>);
             }
+            <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_early_index</span>();
             <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> {
                 <span class="ident">lifetimes</span>: <span class="ident">trait_ref</span>.<span class="ident">bound_lifetimes</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">def</span><span class="op">|</span> {
                         <span class="ident">Region</span>::<span class="ident">late</span>(<span class="self">self</span>.<span class="ident">hir_map</span>, <span class="ident">def</span>)
-                    }).<span class="ident">collect</span>(),
+                }).<span class="ident">collect</span>(),
+                <span class="ident">next_early_index</span>,
                 <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span>
             };
             <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span><span class="ident">old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
@@ -2423,7 +2586,7 @@
 
                 <span class="ident">Scope</span>::<span class="ident">Root</span> <span class="op">=&gt;</span> { <span class="kw">return</span>; }
 
-                <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="kw-2">ref</span> <span class="ident">lifetimes</span>, <span class="ident">s</span> } <span class="op">=&gt;</span> {
+                <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="kw-2">ref</span> <span class="ident">lifetimes</span>, <span class="ident">s</span>, <span class="ident">next_early_index</span>: _ } <span class="op">=&gt;</span> {
                     <span class="comment">// FIXME (#24278): non-hygienic comparison</span>
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">def</span>) <span class="op">=</span> <span class="ident">lifetimes</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">LifetimeName</span>::<span class="ident">Name</span>(<span class="ident">label</span>)) {
                         <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">hir_map</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def</span>.<span class="ident">id</span>().<span class="ident">unwrap</span>())
@@ -2624,8 +2787,11 @@
             }
         }).<span class="ident">collect</span>();
 
+        <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">+</span> <span class="ident">generics</span>.<span class="ident">ty_params</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+
         <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> {
             <span class="ident">lifetimes</span>,
+            <span class="ident">next_early_index</span>,
             <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span>
         };
         <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="kw">move</span> <span class="op">|</span><span class="ident">old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
@@ -2634,7 +2800,29 @@
         });
     }
 
+    <span class="doccomment">/// Returns the next index one would use for an early-bound-region</span>
+    <span class="doccomment">/// if extending the current scope.</span>
+    <span class="kw">fn</span> <span class="ident">next_early_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">scope</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">scope</span>;
+        <span class="kw">loop</span> {
+            <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">scope</span> {
+                <span class="ident">Scope</span>::<span class="ident">Root</span> <span class="op">=&gt;</span>
+                    <span class="kw">return</span> <span class="number">0</span>,
+
+                <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="ident">next_early_index</span>, .. } <span class="op">=&gt;</span>
+                    <span class="kw">return</span> <span class="ident">next_early_index</span>,
+
+                <span class="ident">Scope</span>::<span class="ident">Body</span> { <span class="ident">s</span>, .. } <span class="op">|</span>
+                <span class="ident">Scope</span>::<span class="ident">Elision</span> { <span class="ident">s</span>, .. } <span class="op">|</span>
+                <span class="ident">Scope</span>::<span class="ident">ObjectLifetimeDefault</span> { <span class="ident">s</span>, .. } <span class="op">=&gt;</span>
+                    <span class="ident">scope</span> <span class="op">=</span> <span class="ident">s</span>,
+            }
+        }
+    }
+
     <span class="kw">fn</span> <span class="ident">resolve_lifetime_ref</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_ref</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Lifetime</span>) {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;resolve_lifetime_ref(lifetime_ref={:?})&quot;</span>, <span class="ident">lifetime_ref</span>);
+
         <span class="comment">// Walk up the scope chain, tracking the number of fn scopes</span>
         <span class="comment">// that we pass through, until we find a lifetime with the</span>
         <span class="comment">// given name or we run out of scopes.</span>
@@ -2653,7 +2841,7 @@
                     <span class="kw">break</span> <span class="prelude-val">None</span>;
                 }
 
-                <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="kw-2">ref</span> <span class="ident">lifetimes</span>, <span class="ident">s</span> } <span class="op">=&gt;</span> {
+                <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="kw-2">ref</span> <span class="ident">lifetimes</span>, <span class="ident">s</span>, <span class="ident">next_early_index</span>: _ } <span class="op">=&gt;</span> {
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">def</span>) <span class="op">=</span> <span class="ident">lifetimes</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">lifetime_ref</span>.<span class="ident">name</span>) {
                         <span class="kw">break</span> <span class="prelude-val">Some</span>(<span class="ident">def</span>.<span class="ident">shifted</span>(<span class="ident">late_depth</span>));
                     } <span class="kw">else</span> {
@@ -3284,7 +3472,7 @@
                     <span class="kw">return</span>;
                 }
 
-                <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="kw-2">ref</span> <span class="ident">lifetimes</span>, <span class="ident">s</span> } <span class="op">=&gt;</span> {
+                <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="kw-2">ref</span> <span class="ident">lifetimes</span>, <span class="ident">s</span>, <span class="ident">next_early_index</span>: _ } <span class="op">=&gt;</span> {
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">def</span>) <span class="op">=</span> <span class="ident">lifetimes</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">lifetime</span>.<span class="ident">name</span>) {
                         <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir_map</span>
                                           .<span class="ident">as_local_node_id</span>(<span class="ident">def</span>.<span class="ident">id</span>().<span class="ident">unwrap</span>())
@@ -3313,7 +3501,7 @@
                        probably a bug in syntax::fold&quot;</span>);
         }
 
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;{} resolved to {:?} span={:?}&quot;</span>,
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;insert_lifetime: {} resolved to {:?} span={:?}&quot;</span>,
                <span class="self">self</span>.<span class="ident">hir_map</span>.<span class="ident">node_to_string</span>(<span class="ident">lifetime_ref</span>.<span class="ident">id</span>),
                <span class="ident">def</span>,
                <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_string</span>(<span class="ident">lifetime_ref</span>.<span class="ident">span</span>));
@@ -3473,7 +3661,7 @@
         }
 
         <span class="kw">fn</span> <span class="ident">visit_ty</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Ty</span>) {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(_) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(..) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">node</span> {
                 <span class="self">self</span>.<span class="ident">impl_trait</span> <span class="op">=</span> <span class="bool-val">true</span>;
             }
             <span class="ident">intravisit</span>::<span class="ident">walk_ty</span>(<span class="self">self</span>, <span class="ident">ty</span>);

@@ -2100,7 +2100,7 @@
                     <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">Static</span> <span class="op">=&gt;</span>
                         <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of</span>(<span class="ident">span</span>, <span class="string">&quot;static item&quot;</span>, <span class="ident">origin</span>),
                     <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">BorrowedContent</span> <span class="op">=&gt;</span>
-                        <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of</span>(<span class="ident">span</span>, <span class="string">&quot;borrowed_content&quot;</span>, <span class="ident">origin</span>),
+                        <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of</span>(<span class="ident">span</span>, <span class="string">&quot;borrowed content&quot;</span>, <span class="ident">origin</span>),
                     <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">InteriorOfTypeWithDestructor</span> { <span class="ident">container_ty</span>: <span class="ident">ty</span> } <span class="op">=&gt;</span>
                         <span class="ident">tcx</span>.<span class="ident">cannot_move_out_of_interior_of_drop</span>(<span class="ident">span</span>, <span class="ident">ty</span>, <span class="ident">origin</span>),
                     <span class="ident">IllegalMoveOriginKind</span>::<span class="ident">InteriorOfSliceOrArray</span> { <span class="ident">ty</span>, <span class="ident">is_index</span> } <span class="op">=&gt;</span>

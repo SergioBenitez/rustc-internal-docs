@@ -3935,6 +3935,36 @@
 <span id="3890">3890</span>
 <span id="3891">3891</span>
 <span id="3892">3892</span>
+<span id="3893">3893</span>
+<span id="3894">3894</span>
+<span id="3895">3895</span>
+<span id="3896">3896</span>
+<span id="3897">3897</span>
+<span id="3898">3898</span>
+<span id="3899">3899</span>
+<span id="3900">3900</span>
+<span id="3901">3901</span>
+<span id="3902">3902</span>
+<span id="3903">3903</span>
+<span id="3904">3904</span>
+<span id="3905">3905</span>
+<span id="3906">3906</span>
+<span id="3907">3907</span>
+<span id="3908">3908</span>
+<span id="3909">3909</span>
+<span id="3910">3910</span>
+<span id="3911">3911</span>
+<span id="3912">3912</span>
+<span id="3913">3913</span>
+<span id="3914">3914</span>
+<span id="3915">3915</span>
+<span id="3916">3916</span>
+<span id="3917">3917</span>
+<span id="3918">3918</span>
+<span id="3919">3919</span>
+<span id="3920">3920</span>
+<span id="3921">3921</span>
+<span id="3922">3922</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -6803,12 +6833,13 @@
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;resolve_path ident {} {:?}&quot;</span>, <span class="ident">i</span>, <span class="ident">ident</span>);
             <span class="kw">let</span> <span class="ident">is_last</span> <span class="op">=</span> <span class="ident">i</span> <span class="op">==</span> <span class="ident">path</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="number">1</span>;
             <span class="kw">let</span> <span class="ident">ns</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">is_last</span> { <span class="ident">opt_ns</span>.<span class="ident">unwrap_or</span>(<span class="ident">TypeNS</span>) } <span class="kw">else</span> { <span class="ident">TypeNS</span> };
+            <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">name</span>;
 
-            <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">ns</span> <span class="op">==</span> <span class="ident">TypeNS</span> <span class="op">&amp;&amp;</span> <span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">SelfValue</span>.<span class="ident">name</span>() {
+            <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">ns</span> <span class="op">==</span> <span class="ident">TypeNS</span> <span class="op">&amp;&amp;</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">SelfValue</span>.<span class="ident">name</span>() {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ctxt</span> <span class="op">=</span> <span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">ctxt</span>.<span class="ident">modern</span>();
                 <span class="ident">module</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">resolve_self</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ctxt</span>, <span class="self">self</span>.<span class="ident">current_module</span>));
                 <span class="kw">continue</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">allow_super</span> <span class="op">&amp;&amp;</span> <span class="ident">ns</span> <span class="op">==</span> <span class="ident">TypeNS</span> <span class="op">&amp;&amp;</span> <span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Super</span>.<span class="ident">name</span>() {
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">allow_super</span> <span class="op">&amp;&amp;</span> <span class="ident">ns</span> <span class="op">==</span> <span class="ident">TypeNS</span> <span class="op">&amp;&amp;</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Super</span>.<span class="ident">name</span>() {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ctxt</span> <span class="op">=</span> <span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">ctxt</span>.<span class="ident">modern</span>();
                 <span class="kw">let</span> <span class="ident">self_module</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">i</span> {
                     <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">resolve_self</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ctxt</span>, <span class="self">self</span>.<span class="ident">current_module</span>),
@@ -6824,12 +6855,41 @@
             }
             <span class="ident">allow_super</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
-            <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">ns</span> <span class="op">==</span> <span class="ident">TypeNS</span> <span class="op">&amp;&amp;</span> <span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>() {
-                <span class="ident">module</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">resolve_crate_root</span>(<span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">ctxt</span>.<span class="ident">modern</span>()));
-                <span class="kw">continue</span>
-            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">ns</span> <span class="op">==</span> <span class="ident">TypeNS</span> <span class="op">&amp;&amp;</span> <span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">name</span>() {
-                <span class="ident">module</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">resolve_crate_root</span>(<span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">ctxt</span>));
-                <span class="kw">continue</span>
+            <span class="kw">if</span> <span class="ident">ns</span> <span class="op">==</span> <span class="ident">TypeNS</span> {
+                <span class="kw">if</span> (<span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>()) <span class="op">||</span>
+                   (<span class="ident">i</span> <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Crate</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span>
+                              <span class="ident">path</span>[<span class="number">0</span>].<span class="ident">node</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>()) {
+                    <span class="comment">// `::a::b` or `::crate::a::b`</span>
+                    <span class="ident">module</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">resolve_crate_root</span>(<span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">ctxt</span>.<span class="ident">modern</span>()));
+                    <span class="kw">continue</span>
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">name</span>() {
+                    <span class="comment">// `$crate::a::b`</span>
+                    <span class="ident">module</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">resolve_crate_root</span>(<span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">ctxt</span>));
+                    <span class="kw">continue</span>
+                }
+            }
+
+            <span class="comment">// Report special messages for path segment keywords in wrong positions.</span>
+            <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">0</span> <span class="op">||</span>
+               <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">0</span> <span class="op">||</span>
+               <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">SelfValue</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">0</span> <span class="op">||</span>
+               <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">SelfType</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">0</span> <span class="op">||</span>
+               <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Super</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">0</span> <span class="op">||</span>
+               <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Crate</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">1</span> <span class="op">&amp;&amp;</span>
+                    <span class="ident">path</span>[<span class="number">0</span>].<span class="ident">node</span>.<span class="ident">name</span> <span class="op">!=</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>() {
+                <span class="kw">let</span> <span class="ident">name_str</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>() {
+                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;crate root&quot;</span>)
+                } <span class="kw">else</span> {
+                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;`{}`&quot;</span>, <span class="ident">name</span>)
+                };
+                <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="ident">path</span>[<span class="number">0</span>].<span class="ident">node</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>() {
+                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;global paths cannot start with {}&quot;</span>, <span class="ident">name_str</span>)
+                } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Crate</span>.<span class="ident">name</span>() {
+                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{} can only be used in absolute paths&quot;</span>, <span class="ident">name_str</span>)
+                } <span class="kw">else</span> {
+                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{} in paths can only be used in start position&quot;</span>, <span class="ident">name_str</span>)
+                };
+                <span class="kw">return</span> <span class="ident">PathResult</span>::<span class="ident">Failed</span>(<span class="ident">ident</span>.<span class="ident">span</span>, <span class="ident">msg</span>, <span class="bool-val">false</span>);
             }
 
             <span class="kw">let</span> <span class="ident">binding</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">module</span>) <span class="op">=</span> <span class="ident">module</span> {
@@ -6880,7 +6940,7 @@
                     <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">module</span>.<span class="ident">and_then</span>(<span class="ident">ModuleData</span>::<span class="ident">def</span>) <span class="op">==</span> <span class="self">self</span>.<span class="ident">graph_root</span>.<span class="ident">def</span>() {
                         <span class="kw">let</span> <span class="ident">is_mod</span> <span class="op">=</span> <span class="op">|</span><span class="ident">def</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">def</span> { <span class="ident">Def</span>::<span class="ident">Mod</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>, _ <span class="op">=&gt;</span> <span class="bool-val">false</span> };
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">candidates</span> <span class="op">=</span>
-                            <span class="self">self</span>.<span class="ident">lookup_import_candidates</span>(<span class="ident">ident</span>.<span class="ident">node</span>.<span class="ident">name</span>, <span class="ident">TypeNS</span>, <span class="ident">is_mod</span>);
+                            <span class="self">self</span>.<span class="ident">lookup_import_candidates</span>(<span class="ident">name</span>, <span class="ident">TypeNS</span>, <span class="ident">is_mod</span>);
                         <span class="ident">candidates</span>.<span class="ident">sort_by_key</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> (<span class="ident">c</span>.<span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">len</span>(), <span class="ident">c</span>.<span class="ident">path</span>.<span class="ident">to_string</span>()));
                         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">candidate</span>) <span class="op">=</span> <span class="ident">candidates</span>.<span class="ident">get</span>(<span class="number">0</span>) {
                             <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Did you mean `{}`?&quot;</span>, <span class="ident">candidate</span>.<span class="ident">path</span>)

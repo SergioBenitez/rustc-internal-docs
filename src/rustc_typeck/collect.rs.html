@@ -1826,6 +1826,23 @@
 <span id="1781">1781</span>
 <span id="1782">1782</span>
 <span id="1783">1783</span>
+<span id="1784">1784</span>
+<span id="1785">1785</span>
+<span id="1786">1786</span>
+<span id="1787">1787</span>
+<span id="1788">1788</span>
+<span id="1789">1789</span>
+<span id="1790">1790</span>
+<span id="1791">1791</span>
+<span id="1792">1792</span>
+<span id="1793">1793</span>
+<span id="1794">1794</span>
+<span id="1795">1795</span>
+<span id="1796">1796</span>
+<span id="1797">1797</span>
+<span id="1798">1798</span>
+<span id="1799">1799</span>
+<span id="1800">1800</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2764,6 +2781,10 @@
             }
         }
 
+        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">TyImplTraitExistential</span>(<span class="kw-2">ref</span> <span class="ident">exist_ty</span>, _), .. }) <span class="op">=&gt;</span> {
+            (<span class="kw-2">&amp;</span><span class="ident">exist_ty</span>.<span class="ident">generics</span>, <span class="prelude-val">None</span>)
+        }
+
         _ <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">no_generics</span>, <span class="prelude-val">None</span>)
     };
 
@@ -3187,6 +3208,8 @@
     <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">map</span>::<span class="kw-2">*</span>;
     <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="kw-2">*</span>;
 
+    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;explicit_predicates_of(def_id={:?})&quot;</span>, <span class="ident">def_id</span>);
+
     <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">node</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get</span>(<span class="ident">node_id</span>);
 
@@ -3241,17 +3264,28 @@
             }
         }
 
-        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">TyImplTraitExistential</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>), <span class="ident">span</span>, .. }) <span class="op">=&gt;</span> {
+        <span class="ident">NodeTy</span>(<span class="kw-2">&amp;</span><span class="ident">Ty</span> { <span class="ident">node</span>: <span class="ident">TyImplTraitExistential</span>(<span class="kw-2">ref</span> <span class="ident">exist_ty</span>, _), <span class="ident">span</span>, .. }) <span class="op">=&gt;</span> {
             <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">Substs</span>::<span class="ident">identity_for_item</span>(<span class="ident">tcx</span>, <span class="ident">def_id</span>);
             <span class="kw">let</span> <span class="ident">anon_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_anon</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>);
 
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;explicit_predicates_of: anon_ty={:?}&quot;</span>, <span class="ident">anon_ty</span>);
+
             <span class="comment">// Collect the bounds, i.e. the `A+B+&#39;c` in `impl A+B+&#39;c`.</span>
-            <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">compute_bounds</span>(<span class="kw-2">&amp;</span><span class="ident">icx</span>, <span class="ident">anon_ty</span>, <span class="ident">bounds</span>,
+            <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">compute_bounds</span>(<span class="kw-2">&amp;</span><span class="ident">icx</span>,
+                                        <span class="ident">anon_ty</span>,
+                                        <span class="kw-2">&amp;</span><span class="ident">exist_ty</span>.<span class="ident">bounds</span>,
                                         <span class="ident">SizedByDefault</span>::<span class="ident">Yes</span>,
                                         <span class="ident">span</span>);
+
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;explicit_predicates_of: bounds={:?}&quot;</span>, <span class="ident">bounds</span>);
+
+            <span class="kw">let</span> <span class="ident">predicates</span> <span class="op">=</span> <span class="ident">bounds</span>.<span class="ident">predicates</span>(<span class="ident">tcx</span>, <span class="ident">anon_ty</span>);
+
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;explicit_predicates_of: predicates={:?}&quot;</span>, <span class="ident">predicates</span>);
+
             <span class="kw">return</span> <span class="ident">ty</span>::<span class="ident">GenericPredicates</span> {
                 <span class="ident">parent</span>: <span class="prelude-val">None</span>,
-                <span class="ident">predicates</span>: <span class="ident">bounds</span>.<span class="ident">predicates</span>(<span class="ident">tcx</span>, <span class="ident">anon_ty</span>)
+                <span class="ident">predicates</span>: <span class="ident">predicates</span>
             };
         }
 

@@ -2275,6 +2275,85 @@
 <span id="2230">2230</span>
 <span id="2231">2231</span>
 <span id="2232">2232</span>
+<span id="2233">2233</span>
+<span id="2234">2234</span>
+<span id="2235">2235</span>
+<span id="2236">2236</span>
+<span id="2237">2237</span>
+<span id="2238">2238</span>
+<span id="2239">2239</span>
+<span id="2240">2240</span>
+<span id="2241">2241</span>
+<span id="2242">2242</span>
+<span id="2243">2243</span>
+<span id="2244">2244</span>
+<span id="2245">2245</span>
+<span id="2246">2246</span>
+<span id="2247">2247</span>
+<span id="2248">2248</span>
+<span id="2249">2249</span>
+<span id="2250">2250</span>
+<span id="2251">2251</span>
+<span id="2252">2252</span>
+<span id="2253">2253</span>
+<span id="2254">2254</span>
+<span id="2255">2255</span>
+<span id="2256">2256</span>
+<span id="2257">2257</span>
+<span id="2258">2258</span>
+<span id="2259">2259</span>
+<span id="2260">2260</span>
+<span id="2261">2261</span>
+<span id="2262">2262</span>
+<span id="2263">2263</span>
+<span id="2264">2264</span>
+<span id="2265">2265</span>
+<span id="2266">2266</span>
+<span id="2267">2267</span>
+<span id="2268">2268</span>
+<span id="2269">2269</span>
+<span id="2270">2270</span>
+<span id="2271">2271</span>
+<span id="2272">2272</span>
+<span id="2273">2273</span>
+<span id="2274">2274</span>
+<span id="2275">2275</span>
+<span id="2276">2276</span>
+<span id="2277">2277</span>
+<span id="2278">2278</span>
+<span id="2279">2279</span>
+<span id="2280">2280</span>
+<span id="2281">2281</span>
+<span id="2282">2282</span>
+<span id="2283">2283</span>
+<span id="2284">2284</span>
+<span id="2285">2285</span>
+<span id="2286">2286</span>
+<span id="2287">2287</span>
+<span id="2288">2288</span>
+<span id="2289">2289</span>
+<span id="2290">2290</span>
+<span id="2291">2291</span>
+<span id="2292">2292</span>
+<span id="2293">2293</span>
+<span id="2294">2294</span>
+<span id="2295">2295</span>
+<span id="2296">2296</span>
+<span id="2297">2297</span>
+<span id="2298">2298</span>
+<span id="2299">2299</span>
+<span id="2300">2300</span>
+<span id="2301">2301</span>
+<span id="2302">2302</span>
+<span id="2303">2303</span>
+<span id="2304">2304</span>
+<span id="2305">2305</span>
+<span id="2306">2306</span>
+<span id="2307">2307</span>
+<span id="2308">2308</span>
+<span id="2309">2309</span>
+<span id="2310">2310</span>
+<span id="2311">2311</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2300,6 +2379,7 @@
                              <span class="ident">AllPasses</span>, <span class="ident">Sanitizer</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">Session</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">util</span>::<span class="ident">nodemap</span>::<span class="ident">FxHashMap</span>;
+<span class="kw">use</span> <span class="ident">rustc_back</span>::<span class="ident">LinkerFlavor</span>;
 <span class="kw">use</span> <span class="ident">time_graph</span>::{<span class="self">self</span>, <span class="ident">TimeGraph</span>, <span class="ident">Timeline</span>};
 <span class="kw">use</span> <span class="ident">llvm</span>;
 <span class="kw">use</span> <span class="ident">llvm</span>::{<span class="ident">ModuleRef</span>, <span class="ident">TargetMachineRef</span>, <span class="ident">PassManagerRef</span>, <span class="ident">DiagnosticInfoRef</span>};
@@ -2325,7 +2405,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ffi</span>::{<span class="ident">CString</span>, <span class="ident">CStr</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::{<span class="self">self</span>, <span class="ident">File</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Write</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::{<span class="ident">Read</span>, <span class="ident">Write</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">str</span>;
@@ -2464,6 +2544,8 @@
         }
     };
 
+    <span class="kw">let</span> <span class="ident">singlethread</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">singlethread</span>;
+
     <span class="kw">let</span> <span class="ident">triple</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">llvm_target</span>;
 
     <span class="kw">let</span> <span class="ident">triple</span> <span class="op">=</span> <span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">triple</span>.<span class="ident">as_bytes</span>()).<span class="ident">unwrap</span>();
@@ -2488,6 +2570,7 @@
                 <span class="ident">ffunction_sections</span>,
                 <span class="ident">fdata_sections</span>,
                 <span class="ident">trap_unreachable</span>,
+                <span class="ident">singlethread</span>,
             )
         };
 
@@ -2565,7 +2648,7 @@
     <span class="kw">fn</span> <span class="ident">set_flags</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">sess</span>: <span class="kw-2">&amp;</span><span class="ident">Session</span>, <span class="ident">no_builtins</span>: <span class="ident">bool</span>) {
         <span class="self">self</span>.<span class="ident">no_verify</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">no_verify</span>();
         <span class="self">self</span>.<span class="ident">no_prepopulate_passes</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">no_prepopulate_passes</span>;
-        <span class="self">self</span>.<span class="ident">no_builtins</span> <span class="op">=</span> <span class="ident">no_builtins</span>;
+        <span class="self">self</span>.<span class="ident">no_builtins</span> <span class="op">=</span> <span class="ident">no_builtins</span> <span class="op">||</span> <span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">no_builtins</span>;
         <span class="self">self</span>.<span class="ident">time_passes</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">time_passes</span>();
         <span class="self">self</span>.<span class="ident">inline_threshold</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">inline_threshold</span>;
         <span class="self">self</span>.<span class="ident">obj_is_bitcode</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">obj_is_bitcode</span>;
@@ -2608,6 +2691,9 @@
     <span class="kw">pub</span> <span class="ident">tm_factory</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>() <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">TargetMachineRef</span>, <span class="ident">String</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">msvc_imps_needed</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span> <span class="ident">target_pointer_width</span>: <span class="ident">String</span>,
+    <span class="ident">binaryen_linker</span>: <span class="ident">bool</span>,
+    <span class="ident">debuginfo</span>: <span class="ident">config</span>::<span class="ident">DebugInfoLevel</span>,
+    <span class="ident">wasm_import_memory</span>: <span class="ident">bool</span>,
 
     <span class="comment">// Number of cgus excluding the allocator/metadata modules</span>
     <span class="kw">pub</span> <span class="ident">total_cgus</span>: <span class="ident">usize</span>,
@@ -2903,14 +2989,21 @@
         <span class="ident">f</span>(<span class="ident">cpm</span>)
     }
 
+    <span class="comment">// If we&#39;re going to generate wasm code from the assembly that llvm</span>
+    <span class="comment">// generates then we&#39;ll be transitively affecting a ton of options below.</span>
+    <span class="comment">// This only happens on the wasm target now.</span>
+    <span class="kw">let</span> <span class="ident">asm2wasm</span> <span class="op">=</span> <span class="ident">cgcx</span>.<span class="ident">binaryen_linker</span> <span class="op">&amp;&amp;</span>
+        <span class="op">!</span><span class="ident">cgcx</span>.<span class="ident">crate_types</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>::<span class="ident">CrateTypeRlib</span>) <span class="op">&amp;&amp;</span>
+        <span class="ident">mtrans</span>.<span class="ident">kind</span> <span class="op">==</span> <span class="ident">ModuleKind</span>::<span class="ident">Regular</span>;
+
     <span class="comment">// Change what we write and cleanup based on whether obj files are</span>
     <span class="comment">// just llvm bitcode. In that case write bitcode, and possibly</span>
     <span class="comment">// delete the bitcode if it wasn&#39;t requested. Don&#39;t generate the</span>
     <span class="comment">// machine code, instead copy the .o file from the .bc</span>
-    <span class="kw">let</span> <span class="ident">write_bc</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">emit_bc</span> <span class="op">||</span> <span class="ident">config</span>.<span class="ident">obj_is_bitcode</span>;
-    <span class="kw">let</span> <span class="ident">rm_bc</span> <span class="op">=</span> <span class="op">!</span><span class="ident">config</span>.<span class="ident">emit_bc</span> <span class="op">&amp;&amp;</span> <span class="ident">config</span>.<span class="ident">obj_is_bitcode</span>;
-    <span class="kw">let</span> <span class="ident">write_obj</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">emit_obj</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">config</span>.<span class="ident">obj_is_bitcode</span>;
-    <span class="kw">let</span> <span class="ident">copy_bc_to_obj</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">emit_obj</span> <span class="op">&amp;&amp;</span> <span class="ident">config</span>.<span class="ident">obj_is_bitcode</span>;
+    <span class="kw">let</span> <span class="ident">write_bc</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">emit_bc</span> <span class="op">||</span> (<span class="ident">config</span>.<span class="ident">obj_is_bitcode</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">asm2wasm</span>);
+    <span class="kw">let</span> <span class="ident">rm_bc</span> <span class="op">=</span> <span class="op">!</span><span class="ident">config</span>.<span class="ident">emit_bc</span> <span class="op">&amp;&amp;</span> <span class="ident">config</span>.<span class="ident">obj_is_bitcode</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">asm2wasm</span>;
+    <span class="kw">let</span> <span class="ident">write_obj</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">emit_obj</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">config</span>.<span class="ident">obj_is_bitcode</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">asm2wasm</span>;
+    <span class="kw">let</span> <span class="ident">copy_bc_to_obj</span> <span class="op">=</span> <span class="ident">config</span>.<span class="ident">emit_obj</span> <span class="op">&amp;&amp;</span> <span class="ident">config</span>.<span class="ident">obj_is_bitcode</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">asm2wasm</span>;
 
     <span class="kw">let</span> <span class="ident">bc_out</span> <span class="op">=</span> <span class="ident">cgcx</span>.<span class="ident">output_filenames</span>.<span class="ident">temp_path</span>(<span class="ident">OutputType</span>::<span class="ident">Bitcode</span>, <span class="ident">module_name</span>);
     <span class="kw">let</span> <span class="ident">obj_out</span> <span class="op">=</span> <span class="ident">cgcx</span>.<span class="ident">output_filenames</span>.<span class="ident">temp_path</span>(<span class="ident">OutputType</span>::<span class="ident">Object</span>, <span class="ident">module_name</span>);
@@ -2989,7 +3082,7 @@
             <span class="ident">timeline</span>.<span class="ident">record</span>(<span class="string">&quot;ir&quot;</span>);
         }
 
-        <span class="kw">if</span> <span class="ident">config</span>.<span class="ident">emit_asm</span> {
+        <span class="kw">if</span> <span class="ident">config</span>.<span class="ident">emit_asm</span> <span class="op">||</span> (<span class="ident">asm2wasm</span> <span class="op">&amp;&amp;</span> <span class="ident">config</span>.<span class="ident">emit_obj</span>) {
             <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">cgcx</span>.<span class="ident">output_filenames</span>.<span class="ident">temp_path</span>(<span class="ident">OutputType</span>::<span class="ident">Assembly</span>, <span class="ident">module_name</span>);
 
             <span class="comment">// We can&#39;t use the same module for asm and binary output, because that triggers</span>
@@ -3010,7 +3103,15 @@
             <span class="ident">timeline</span>.<span class="ident">record</span>(<span class="string">&quot;asm&quot;</span>);
         }
 
-        <span class="kw">if</span> <span class="ident">write_obj</span> {
+        <span class="kw">if</span> <span class="ident">asm2wasm</span> <span class="op">&amp;&amp;</span> <span class="ident">config</span>.<span class="ident">emit_obj</span> {
+            <span class="kw">let</span> <span class="ident">assembly</span> <span class="op">=</span> <span class="ident">cgcx</span>.<span class="ident">output_filenames</span>.<span class="ident">temp_path</span>(<span class="ident">OutputType</span>::<span class="ident">Assembly</span>, <span class="ident">module_name</span>);
+            <span class="ident">binaryen_assemble</span>(<span class="ident">cgcx</span>, <span class="ident">diag_handler</span>, <span class="kw-2">&amp;</span><span class="ident">assembly</span>, <span class="kw-2">&amp;</span><span class="ident">obj_out</span>);
+            <span class="ident">timeline</span>.<span class="ident">record</span>(<span class="string">&quot;binaryen&quot;</span>);
+
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">config</span>.<span class="ident">emit_asm</span> {
+                <span class="ident">drop</span>(<span class="ident">fs</span>::<span class="ident">remove_file</span>(<span class="kw-2">&amp;</span><span class="ident">assembly</span>));
+            }
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">write_obj</span> {
             <span class="ident">with_codegen</span>(<span class="ident">tm</span>, <span class="ident">llmod</span>, <span class="ident">config</span>.<span class="ident">no_builtins</span>, <span class="op">|</span><span class="ident">cpm</span><span class="op">|</span> {
                 <span class="ident">write_output_file</span>(<span class="ident">diag_handler</span>, <span class="ident">tm</span>, <span class="ident">cpm</span>, <span class="ident">llmod</span>, <span class="kw-2">&amp;</span><span class="ident">obj_out</span>,
                                   <span class="ident">llvm</span>::<span class="ident">FileType</span>::<span class="ident">ObjectFile</span>)
@@ -3040,6 +3141,44 @@
                                    <span class="ident">config</span>.<span class="ident">emit_bc</span>,
                                    <span class="ident">config</span>.<span class="ident">emit_bc_compressed</span>,
                                    <span class="kw-2">&amp;</span><span class="ident">cgcx</span>.<span class="ident">output_filenames</span>))
+}
+
+<span class="doccomment">/// Translates the LLVM-generated `assembly` on the filesystem into a wasm</span>
+<span class="doccomment">/// module using binaryen, placing the output at `object`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// In this case the &quot;object&quot; is actually a full and complete wasm module. We</span>
+<span class="doccomment">/// won&#39;t actually be doing anything else to the output for now. This is all</span>
+<span class="doccomment">/// pretty janky and will get removed as soon as a linker for wasm exists.</span>
+<span class="kw">fn</span> <span class="ident">binaryen_assemble</span>(<span class="ident">cgcx</span>: <span class="kw-2">&amp;</span><span class="ident">CodegenContext</span>,
+                     <span class="ident">handler</span>: <span class="kw-2">&amp;</span><span class="ident">Handler</span>,
+                     <span class="ident">assembly</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
+                     <span class="ident">object</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) {
+    <span class="kw">use</span> <span class="ident">rustc_binaryen</span>::{<span class="ident">Module</span>, <span class="ident">ModuleOptions</span>};
+
+    <span class="kw">let</span> <span class="ident">input</span> <span class="op">=</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">assembly</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">f</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">contents</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+        <span class="ident">f</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">contents</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(<span class="ident">CString</span>::<span class="ident">new</span>(<span class="ident">contents</span>)<span class="question-mark">?</span>)
+    });
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span> <span class="op">=</span> <span class="ident">ModuleOptions</span>::<span class="ident">new</span>();
+    <span class="kw">if</span> <span class="ident">cgcx</span>.<span class="ident">debuginfo</span> <span class="op">!=</span> <span class="ident">config</span>::<span class="ident">NoDebugInfo</span> {
+        <span class="ident">options</span>.<span class="ident">debuginfo</span>(<span class="bool-val">true</span>);
+    }
+    <span class="kw">if</span> <span class="ident">cgcx</span>.<span class="ident">crate_types</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>::<span class="ident">CrateTypeExecutable</span>) {
+        <span class="ident">options</span>.<span class="ident">start</span>(<span class="string">&quot;main&quot;</span>);
+    }
+    <span class="ident">options</span>.<span class="ident">stack</span>(<span class="number">1024</span> <span class="op">*</span> <span class="number">1024</span>);
+    <span class="ident">options</span>.<span class="ident">import_memory</span>(<span class="ident">cgcx</span>.<span class="ident">wasm_import_memory</span>);
+    <span class="kw">let</span> <span class="ident">assembled</span> <span class="op">=</span> <span class="ident">input</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">input</span><span class="op">|</span> {
+        <span class="ident">Module</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>, <span class="kw-2">&amp;</span><span class="ident">options</span>)
+            .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">io</span>::<span class="ident">Error</span>::<span class="ident">new</span>(<span class="ident">io</span>::<span class="ident">ErrorKind</span>::<span class="ident">Other</span>, <span class="ident">e</span>))
+    });
+    <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="ident">assembled</span>.<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">binary</span><span class="op">|</span> {
+        <span class="ident">File</span>::<span class="ident">create</span>(<span class="kw-2">&amp;</span><span class="ident">object</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">f</span><span class="op">|</span> <span class="ident">f</span>.<span class="ident">write_all</span>(<span class="ident">binary</span>.<span class="ident">data</span>()))
+    });
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">err</span> {
+        <span class="ident">handler</span>.<span class="ident">err</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;failed to run binaryen assembler: {}&quot;</span>, <span class="ident">e</span>));
+    }
 }
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CompiledModules</span> {
@@ -3596,17 +3735,33 @@
 
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">each_linked_rlib_for_lto</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
     <span class="ident">drop</span>(<span class="ident">link</span>::<span class="ident">each_linked_rlib</span>(<span class="ident">sess</span>, <span class="ident">crate_info</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="op">|</span><span class="ident">cnum</span>, <span class="ident">path</span><span class="op">|</span> {
-        <span class="kw">if</span> <span class="ident">link</span>::<span class="ident">ignored_for_lto</span>(<span class="ident">crate_info</span>, <span class="ident">cnum</span>) {
+        <span class="kw">if</span> <span class="ident">link</span>::<span class="ident">ignored_for_lto</span>(<span class="ident">sess</span>, <span class="ident">crate_info</span>, <span class="ident">cnum</span>) {
             <span class="kw">return</span>
         }
         <span class="ident">each_linked_rlib_for_lto</span>.<span class="ident">push</span>((<span class="ident">cnum</span>, <span class="ident">path</span>.<span class="ident">to_path_buf</span>()));
     }));
 
+    <span class="kw">let</span> <span class="ident">crate_types</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">crate_types</span>.<span class="ident">borrow</span>();
+    <span class="kw">let</span> <span class="ident">only_rlib</span> <span class="op">=</span> <span class="ident">crate_types</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span>
+        <span class="ident">crate_types</span>[<span class="number">0</span>] <span class="op">==</span> <span class="ident">config</span>::<span class="ident">CrateTypeRlib</span>;
+
+    <span class="kw">let</span> <span class="ident">wasm_import_memory</span> <span class="op">=</span>
+        <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="kw-2">&amp;</span><span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">krate</span>().<span class="ident">attrs</span>, <span class="string">&quot;wasm_import_memory&quot;</span>);
+
     <span class="kw">let</span> <span class="ident">cgcx</span> <span class="op">=</span> <span class="ident">CodegenContext</span> {
         <span class="ident">crate_types</span>: <span class="ident">sess</span>.<span class="ident">crate_types</span>.<span class="ident">borrow</span>().<span class="ident">clone</span>(),
         <span class="ident">each_linked_rlib_for_lto</span>,
-        <span class="ident">lto</span>: <span class="ident">sess</span>.<span class="ident">lto</span>(),
-        <span class="ident">thinlto</span>: <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">thinlto</span>,
+        <span class="comment">// If we&#39;re only building an rlibc then allow the LTO flag to be passed</span>
+        <span class="comment">// but don&#39;t actually do anything, the full LTO will happen later</span>
+        <span class="ident">lto</span>: <span class="ident">sess</span>.<span class="ident">lto</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">only_rlib</span>,
+
+        <span class="comment">// Enable ThinLTO if requested, but only if the target we&#39;re compiling</span>
+        <span class="comment">// for doesn&#39;t require full LTO. Some targets require one LLVM module</span>
+        <span class="comment">// (they effectively don&#39;t have a linker) so it&#39;s up to us to use LTO to</span>
+        <span class="comment">// link everything together.</span>
+        <span class="ident">thinlto</span>: <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">thinlto</span> <span class="op">&amp;&amp;</span>
+            <span class="op">!</span><span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">requires_lto</span>,
+
         <span class="ident">no_landing_pads</span>: <span class="ident">sess</span>.<span class="ident">no_landing_pads</span>(),
         <span class="ident">save_temps</span>: <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">save_temps</span>,
         <span class="ident">opts</span>: <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">clone</span>()),
@@ -3627,6 +3782,9 @@
         <span class="ident">total_cgus</span>,
         <span class="ident">msvc_imps_needed</span>: <span class="ident">msvc_imps_needed</span>(<span class="ident">tcx</span>),
         <span class="ident">target_pointer_width</span>: <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">target_pointer_width</span>.<span class="ident">clone</span>(),
+        <span class="ident">binaryen_linker</span>: <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">linker_flavor</span>() <span class="op">==</span> <span class="ident">LinkerFlavor</span>::<span class="ident">Binaryen</span>,
+        <span class="ident">debuginfo</span>: <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debuginfo</span>,
+        <span class="ident">wasm_import_memory</span>: <span class="ident">wasm_import_memory</span>,
     };
 
     <span class="comment">// This is the &quot;main loop&quot; of parallel work happening for parallel codegen.</span>

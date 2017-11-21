@@ -5087,6 +5087,63 @@
 <span id="5042">5042</span>
 <span id="5043">5043</span>
 <span id="5044">5044</span>
+<span id="5045">5045</span>
+<span id="5046">5046</span>
+<span id="5047">5047</span>
+<span id="5048">5048</span>
+<span id="5049">5049</span>
+<span id="5050">5050</span>
+<span id="5051">5051</span>
+<span id="5052">5052</span>
+<span id="5053">5053</span>
+<span id="5054">5054</span>
+<span id="5055">5055</span>
+<span id="5056">5056</span>
+<span id="5057">5057</span>
+<span id="5058">5058</span>
+<span id="5059">5059</span>
+<span id="5060">5060</span>
+<span id="5061">5061</span>
+<span id="5062">5062</span>
+<span id="5063">5063</span>
+<span id="5064">5064</span>
+<span id="5065">5065</span>
+<span id="5066">5066</span>
+<span id="5067">5067</span>
+<span id="5068">5068</span>
+<span id="5069">5069</span>
+<span id="5070">5070</span>
+<span id="5071">5071</span>
+<span id="5072">5072</span>
+<span id="5073">5073</span>
+<span id="5074">5074</span>
+<span id="5075">5075</span>
+<span id="5076">5076</span>
+<span id="5077">5077</span>
+<span id="5078">5078</span>
+<span id="5079">5079</span>
+<span id="5080">5080</span>
+<span id="5081">5081</span>
+<span id="5082">5082</span>
+<span id="5083">5083</span>
+<span id="5084">5084</span>
+<span id="5085">5085</span>
+<span id="5086">5086</span>
+<span id="5087">5087</span>
+<span id="5088">5088</span>
+<span id="5089">5089</span>
+<span id="5090">5090</span>
+<span id="5091">5091</span>
+<span id="5092">5092</span>
+<span id="5093">5093</span>
+<span id="5094">5094</span>
+<span id="5095">5095</span>
+<span id="5096">5096</span>
+<span id="5097">5097</span>
+<span id="5098">5098</span>
+<span id="5099">5099</span>
+<span id="5100">5100</span>
+<span id="5101">5101</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -5303,7 +5360,7 @@ type parameter).
     <span class="comment">// associated fresh inference variable. Writeback resolves these</span>
     <span class="comment">// variables to get the concrete type, which can be used to</span>
     <span class="comment">// deanonymize TyAnon, after typeck is done with all functions.</span>
-    <span class="ident">anon_types</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">NodeMap</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">anon_types</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">DefIdMap</span><span class="op">&lt;</span><span class="ident">AnonTypeDecl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Each type parameter has an implicit region bound that</span>
     <span class="doccomment">/// indicates it must outlive at least the function body (the user</span>
@@ -5314,6 +5371,43 @@ type parameter).
     <span class="ident">implicit_region_bound</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 
     <span class="ident">body_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">BodyId</span><span class="op">&gt;</span>,
+}
+
+<span class="doccomment">/// Information about the anonymous, abstract types whose values we</span>
+<span class="doccomment">/// are inferring in this function (these are the `impl Trait` that</span>
+<span class="doccomment">/// appear in the return type).</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">struct</span> <span class="ident">AnonTypeDecl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// The substitutions that we apply to the abstract that that this</span>
+    <span class="doccomment">/// `impl Trait` desugars to. e.g., if:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///     fn foo&lt;&#39;a, &#39;b, T&gt;() -&gt; impl Trait&lt;&#39;a&gt;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// winds up desugared to:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///     abstract type Foo&lt;&#39;x, T&gt;: Trait&lt;&#39;x&gt;</span>
+    <span class="doccomment">///     fn foo&lt;&#39;a, &#39;b, T&gt;() -&gt; Foo&lt;&#39;a, T&gt;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// then `substs` would be `[&#39;a, T]`.</span>
+    <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// The type variable that represents the value of the abstract type</span>
+    <span class="doccomment">/// that we require. In other words, after we compile this function,</span>
+    <span class="doccomment">/// we will be created a constraint like:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">///     Foo&lt;&#39;a, T&gt; = ?C</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// where `?C` is the value of this type variable. =) It may</span>
+    <span class="doccomment">/// naturally refer to the type and lifetime parameters in scope</span>
+    <span class="doccomment">/// in this function, though ultimately it should only reference</span>
+    <span class="doccomment">/// those that are arguments to `Foo` in the constraint above. (In</span>
+    <span class="doccomment">/// other words, `?C` should not include `&#39;b`, even though it&#39;s a</span>
+    <span class="doccomment">/// lifetime parameter on `foo`.)</span>
+    <span class="ident">concrete_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// A list of all required region bounds on the impl Trait type,</span>
+    <span class="doccomment">/// e.g. `&#39;a` and `&#39;b` in `fn foo&lt;&#39;a, &#39;b, &#39;c&gt;() -&gt; impl Trait&lt;&#39;c&gt; + &#39;a + &#39;b`.</span>
+    <span class="ident">required_region_bounds</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">Inherited</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -5712,7 +5806,7 @@ type parameter).
             <span class="ident">deferred_call_resolutions</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">DefIdMap</span>()),
             <span class="ident">deferred_cast_checks</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
             <span class="ident">deferred_generator_interiors</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Vec</span>::<span class="ident">new</span>()),
-            <span class="ident">anon_types</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">NodeMap</span>()),
+            <span class="ident">anon_types</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">DefIdMap</span>()),
             <span class="ident">implicit_region_bound</span>,
             <span class="ident">body_id</span>,
         }
@@ -5960,7 +6054,10 @@ type parameter).
                                                   <span class="ident">param_env</span>,
                                                   <span class="kw-2">&amp;</span><span class="ident">fn_sig</span>);
 
-            <span class="ident">check_fn</span>(<span class="kw-2">&amp;</span><span class="ident">inh</span>, <span class="ident">param_env</span>, <span class="ident">fn_sig</span>, <span class="ident">decl</span>, <span class="ident">id</span>, <span class="ident">body</span>, <span class="bool-val">false</span>).<span class="number">0</span>
+            <span class="kw">let</span> <span class="ident">fcx</span> <span class="op">=</span> <span class="ident">check_fn</span>(<span class="kw-2">&amp;</span><span class="ident">inh</span>, <span class="ident">param_env</span>, <span class="ident">fn_sig</span>, <span class="ident">decl</span>, <span class="ident">id</span>, <span class="ident">body</span>, <span class="bool-val">false</span>).<span class="number">0</span>;
+            <span class="comment">// Ensure anon_types have been instantiated prior to entering regionck</span>
+            <span class="ident">fcx</span>.<span class="ident">instantiate_anon_types</span>(<span class="kw-2">&amp;</span><span class="ident">fn_sig</span>.<span class="ident">output</span>());
+            <span class="ident">fcx</span>
         } <span class="kw">else</span> {
             <span class="kw">let</span> <span class="ident">fcx</span> <span class="op">=</span> <span class="ident">FnCtxt</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">inh</span>, <span class="ident">param_env</span>, <span class="ident">body</span>.<span class="ident">value</span>.<span class="ident">id</span>);
             <span class="kw">let</span> <span class="ident">expected_type</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">type_of</span>(<span class="ident">def_id</span>);
@@ -6999,20 +7096,34 @@ type parameter).
     <span class="doccomment">/// Replace all anonymized types with fresh inference variables</span>
     <span class="doccomment">/// and record them for writeback.</span>
     <span class="kw">fn</span> <span class="ident">instantiate_anon_types</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">value</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">T</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;instantiate_anon_types(value={:?})&quot;</span>, <span class="ident">value</span>);
         <span class="ident">value</span>.<span class="ident">fold_with</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">BottomUpFolder</span> { <span class="ident">tcx</span>: <span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">fldop</span>: <span class="op">|</span><span class="ident">ty</span><span class="op">|</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyAnon</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;instantiate_anon_types: TyAnon(def_id={:?}, substs={:?})&quot;</span>, <span class="ident">def_id</span>, <span class="ident">substs</span>);
+
                 <span class="comment">// Use the same type variable if the exact same TyAnon appears more</span>
                 <span class="comment">// than once in the return type (e.g. if it&#39;s passed to a type alias).</span>
-                <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ty_var</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">anon_types</span>.<span class="ident">borrow</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">id</span>) {
-                    <span class="kw">return</span> <span class="ident">ty_var</span>;
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">anon_defn</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">anon_types</span>.<span class="ident">borrow</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">def_id</span>) {
+                    <span class="kw">return</span> <span class="ident">anon_defn</span>.<span class="ident">concrete_ty</span>;
                 }
                 <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">def_span</span>(<span class="ident">def_id</span>);
                 <span class="kw">let</span> <span class="ident">ty_var</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_ty_var</span>(<span class="ident">TypeVariableOrigin</span>::<span class="ident">TypeInference</span>(<span class="ident">span</span>));
-                <span class="self">self</span>.<span class="ident">anon_types</span>.<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">id</span>, <span class="ident">ty_var</span>);
 
                 <span class="kw">let</span> <span class="ident">predicates_of</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">predicates_of</span>(<span class="ident">def_id</span>);
                 <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="ident">predicates_of</span>.<span class="ident">instantiate</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">substs</span>);
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;instantiate_anon_types: bounds={:?}&quot;</span>, <span class="ident">bounds</span>);
+
+                <span class="kw">let</span> <span class="ident">required_region_bounds</span> <span class="op">=</span>
+                    <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">required_region_bounds</span>(<span class="ident">ty</span>, <span class="ident">bounds</span>.<span class="ident">predicates</span>.<span class="ident">clone</span>());
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;instantiate_anon_types: required_region_bounds={:?}&quot;</span>,
+                       <span class="ident">required_region_bounds</span>);
+
+                <span class="self">self</span>.<span class="ident">anon_types</span>.<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">def_id</span>, <span class="ident">AnonTypeDecl</span> {
+                    <span class="ident">substs</span>,
+                    <span class="ident">concrete_ty</span>: <span class="ident">ty_var</span>,
+                    <span class="ident">required_region_bounds</span>,
+                });
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;instantiate_anon_types: ty_var={:?}&quot;</span>, <span class="ident">ty_var</span>);
 
                 <span class="kw">for</span> <span class="ident">predicate</span> <span class="kw">in</span> <span class="ident">bounds</span>.<span class="ident">predicates</span> {
                     <span class="comment">// Change the predicate to refer to the type variable,</span>
@@ -7021,8 +7132,11 @@ type parameter).
                     <span class="kw">let</span> <span class="ident">predicate</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">instantiate_anon_types</span>(<span class="kw-2">&amp;</span><span class="ident">predicate</span>);
 
                     <span class="comment">// Require that the predicate holds for the concrete type.</span>
-                    <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="ident">traits</span>::<span class="ident">ObligationCause</span>::<span class="ident">new</span>(<span class="ident">span</span>, <span class="self">self</span>.<span class="ident">body_id</span>,
+                    <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="ident">traits</span>::<span class="ident">ObligationCause</span>::<span class="ident">new</span>(<span class="ident">span</span>,
+                                                             <span class="self">self</span>.<span class="ident">body_id</span>,
                                                              <span class="ident">traits</span>::<span class="ident">SizedReturnType</span>);
+
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;instantiate_anon_types: predicate={:?}&quot;</span>, <span class="ident">predicate</span>);
                     <span class="self">self</span>.<span class="ident">register_predicate</span>(<span class="ident">traits</span>::<span class="ident">Obligation</span>::<span class="ident">new</span>(<span class="ident">cause</span>,
                                                                     <span class="self">self</span>.<span class="ident">param_env</span>,
                                                                     <span class="ident">predicate</span>));

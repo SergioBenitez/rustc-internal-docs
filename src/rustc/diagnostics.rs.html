@@ -2065,6 +2065,7 @@
 <span id="2020">2020</span>
 <span id="2021">2021</span>
 <span id="2022">2022</span>
+<span id="2023">2023</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4087,6 +4088,7 @@ fn foo&lt;&#39;a&gt;(x: &amp;&#39;a i32, y: &amp;i32) -&gt; &amp;&#39;a i32 {
     <span class="ident">E0628</span>, <span class="comment">// generators cannot have explicit arguments</span>
     <span class="ident">E0631</span>, <span class="comment">// type mismatch in closure arguments</span>
     <span class="ident">E0637</span>, <span class="comment">// &quot;&#39;_&quot; is not a valid lifetime bound</span>
+    <span class="ident">E0657</span>, <span class="comment">// `impl Trait` can only capture lifetimes bound at the fn level</span>
 }
 </pre>
 </section>
