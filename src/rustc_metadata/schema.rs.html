@@ -566,8 +566,6 @@
 <span id="521">521</span>
 <span id="522">522</span>
 <span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1083,17 +1081,15 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ClosureData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="ident">kind</span>: <span class="ident">ty</span>::<span class="ident">ClosureKind</span>,
     <span class="kw">pub</span> <span class="ident">sig</span>: <span class="ident">Lazy</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyFnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 }
-<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">ClosureData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> { <span class="ident">kind</span>, <span class="ident">sig</span> });
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">ClosureData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> { <span class="ident">sig</span> });
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GeneratorData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="ident">sig</span>: <span class="ident">ty</span>::<span class="ident">PolyGenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">layout</span>: <span class="ident">mir</span>::<span class="ident">GeneratorLayout</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 }
-<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">GeneratorData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> { <span class="ident">sig</span>, <span class="ident">layout</span> });
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">GeneratorData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> { <span class="ident">layout</span> });
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

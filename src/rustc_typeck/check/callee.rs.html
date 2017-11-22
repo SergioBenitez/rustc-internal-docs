@@ -428,6 +428,8 @@
 <span id="383">383</span>
 <span id="384">384</span>
 <span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -539,7 +541,7 @@
                 <span class="comment">// Check whether this is a call to a closure where we</span>
                 <span class="comment">// haven&#39;t yet decided on whether the closure is fn vs</span>
                 <span class="comment">// fnmut vs fnonce. If so, we have to defer further processing.</span>
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">closure_kind</span>(<span class="ident">def_id</span>).<span class="ident">is_none</span>() {
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">closure_kind</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>).<span class="ident">is_none</span>() {
                     <span class="kw">let</span> <span class="ident">closure_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">fn_sig</span>(<span class="ident">def_id</span>).<span class="ident">subst</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="ident">substs</span>.<span class="ident">substs</span>);
                     <span class="kw">let</span> <span class="ident">fn_sig</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">replace_late_bound_regions_with_fresh_var</span>(<span class="ident">call_expr</span>.<span class="ident">span</span>,
                                                                    <span class="ident">infer</span>::<span class="ident">FnCall</span>,
@@ -553,6 +555,7 @@
                         <span class="ident">adjustments</span>,
                         <span class="ident">fn_sig</span>,
                         <span class="ident">closure_def_id</span>: <span class="ident">def_id</span>,
+                        <span class="ident">closure_substs</span>: <span class="ident">substs</span>,
                     });
                     <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">CallStep</span>::<span class="ident">DeferredClosure</span>(<span class="ident">fn_sig</span>));
                 }
@@ -767,6 +770,7 @@
     <span class="ident">adjustments</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Adjustment</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
     <span class="ident">fn_sig</span>: <span class="ident">ty</span>::<span class="ident">FnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">closure_def_id</span>: <span class="ident">DefId</span>,
+    <span class="ident">closure_substs</span>: <span class="ident">ty</span>::<span class="ident">ClosureSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">DeferredCallResolution</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -775,7 +779,7 @@
 
         <span class="comment">// we should not be invoked until the closure kind has been</span>
         <span class="comment">// determined by upvar inference</span>
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">fcx</span>.<span class="ident">closure_kind</span>(<span class="self">self</span>.<span class="ident">closure_def_id</span>).<span class="ident">is_some</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">fcx</span>.<span class="ident">closure_kind</span>(<span class="self">self</span>.<span class="ident">closure_def_id</span>, <span class="self">self</span>.<span class="ident">closure_substs</span>).<span class="ident">is_some</span>());
 
         <span class="comment">// We may now know enough to figure out fn vs fnmut etc.</span>
         <span class="kw">match</span> <span class="ident">fcx</span>.<span class="ident">try_overloaded_call_traits</span>(<span class="self">self</span>.<span class="ident">call_expr</span>,

@@ -418,6 +418,9 @@
 <span id="373">373</span>
 <span id="374">374</span>
 <span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -477,7 +480,10 @@
     <span class="ident">NormalizeProjectionType</span>(<span class="ident">Span</span>),
     <span class="ident">TypeInference</span>(<span class="ident">Span</span>),
     <span class="ident">TypeParameterDefinition</span>(<span class="ident">Span</span>, <span class="ident">ast</span>::<span class="ident">Name</span>),
-    <span class="ident">TransformedUpvar</span>(<span class="ident">Span</span>),
+
+    <span class="doccomment">/// one of the upvars or closure kind parameters in a `ClosureSubsts`</span>
+    <span class="doccomment">/// (before it has been determined)</span>
+    <span class="ident">ClosureSynthetic</span>(<span class="ident">Span</span>),
     <span class="ident">SubstitutionPlaceholder</span>(<span class="ident">Span</span>),
     <span class="ident">AutoDeref</span>(<span class="ident">Span</span>),
     <span class="ident">AdjustmentType</span>(<span class="ident">Span</span>),

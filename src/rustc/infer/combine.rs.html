@@ -547,6 +547,20 @@
 <span id="502">502</span>
 <span id="503">503</span>
 <span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -820,6 +834,7 @@
             <span class="ident">for_vid_sub_root</span>: <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">type_variables</span>.<span class="ident">borrow_mut</span>().<span class="ident">sub_root_var</span>(<span class="ident">for_vid</span>),
             <span class="ident">ambient_variance</span>,
             <span class="ident">needs_wf</span>: <span class="bool-val">false</span>,
+            <span class="ident">root_ty</span>: <span class="ident">ty</span>,
         };
 
         <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">generalize</span>.<span class="ident">relate</span>(<span class="kw-2">&amp;</span><span class="ident">ty</span>, <span class="kw-2">&amp;</span><span class="ident">ty</span>)<span class="question-mark">?</span>;
@@ -830,10 +845,23 @@
 
 <span class="kw">struct</span> <span class="ident">Generalizer</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;cx</span><span class="op">+</span><span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;cx</span><span class="op">&gt;</span> {
     <span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;cx</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Span, used when creating new type variables and things.</span>
     <span class="ident">span</span>: <span class="ident">Span</span>,
+
+    <span class="doccomment">/// The vid of the type variable that is in the process of being</span>
+    <span class="doccomment">/// instantiated; if we find this within the type we are folding,</span>
+    <span class="doccomment">/// that means we would have created a cyclic type.</span>
     <span class="ident">for_vid_sub_root</span>: <span class="ident">ty</span>::<span class="ident">TyVid</span>,
+
+    <span class="doccomment">/// Track the variance as we descend into the type.</span>
     <span class="ident">ambient_variance</span>: <span class="ident">ty</span>::<span class="ident">Variance</span>,
-    <span class="ident">needs_wf</span>: <span class="ident">bool</span>, <span class="comment">// see the field `needs_wf` in `Generalization`</span>
+
+    <span class="doccomment">/// See the field `needs_wf` in `Generalization`.</span>
+    <span class="ident">needs_wf</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// The root type that we are generalizing. Used when reporting cycles.</span>
+    <span class="ident">root_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Result from a generalization operation. This includes</span>
@@ -936,7 +964,7 @@
                 <span class="kw">if</span> <span class="ident">sub_vid</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">for_vid_sub_root</span> {
                     <span class="comment">// If sub-roots are equal, then `for_vid` and</span>
                     <span class="comment">// `vid` are related via subtyping.</span>
-                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">TypeError</span>::<span class="ident">CyclicTy</span>);
+                    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">TypeError</span>::<span class="ident">CyclicTy</span>(<span class="self">self</span>.<span class="ident">root_ty</span>));
                 } <span class="kw">else</span> {
                     <span class="kw">match</span> <span class="ident">variables</span>.<span class="ident">probe_root</span>(<span class="ident">vid</span>) {
                         <span class="prelude-val">Some</span>(<span class="ident">u</span>) <span class="op">=&gt;</span> {

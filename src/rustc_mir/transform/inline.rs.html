@@ -871,6 +871,37 @@
 <span id="826">826</span>
 <span id="827">827</span>
 <span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -897,6 +928,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Subst</span>,<span class="ident">Substs</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">VecDeque</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>;
 <span class="kw">use</span> <span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">simplify</span>::{<span class="ident">remove_dead_blocks</span>, <span class="ident">CfgSimplifier</span>};
 
@@ -1433,8 +1465,29 @@
     ) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
 
-        <span class="comment">// A closure is passed its self-type and a tuple like `(arg1, arg2, ...)`,</span>
-        <span class="comment">// hence mappings to tuple fields are needed.</span>
+        <span class="comment">// There is a bit of a mismatch between the *caller* of a closure and the *callee*.</span>
+        <span class="comment">// The caller provides the arguments wrapped up in a tuple:</span>
+        <span class="comment">//</span>
+        <span class="comment">//     tuple_tmp = (a, b, c)</span>
+        <span class="comment">//     Fn::call(closure_ref, tuple_tmp)</span>
+        <span class="comment">//</span>
+        <span class="comment">// meanwhile the closure body expects the arguments (here, `a`, `b`, and `c`)</span>
+        <span class="comment">// as distinct arguments. (This is the &quot;rust-call&quot; ABI hack.) Normally, trans has</span>
+        <span class="comment">// the job of unpacking this tuple. But here, we are trans. =) So we want to create</span>
+        <span class="comment">// a vector like</span>
+        <span class="comment">//</span>
+        <span class="comment">//     [closure_ref, tuple_tmp.0, tuple_tmp.1, tuple_tmp.2]</span>
+        <span class="comment">//</span>
+        <span class="comment">// Except for one tiny wrinkle: we don&#39;t actually want `tuple_tmp.0`. It&#39;s more convenient</span>
+        <span class="comment">// if we &quot;spill&quot; that into *another* temporary, so that we can map the argument</span>
+        <span class="comment">// variable in the callee MIR directly to an argument variable on our side.</span>
+        <span class="comment">// So we introduce temporaries like:</span>
+        <span class="comment">//</span>
+        <span class="comment">//     tmp0 = tuple_tmp.0</span>
+        <span class="comment">//     tmp1 = tuple_tmp.1</span>
+        <span class="comment">//     tmp2 = tuple_tmp.2</span>
+        <span class="comment">//</span>
+        <span class="comment">// and the vector is `[closure_ref, tmp0, tmp1, tmp2]`.</span>
         <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">is_closure</span>(<span class="ident">callsite</span>.<span class="ident">callee</span>) {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">args</span> <span class="op">=</span> <span class="ident">args</span>.<span class="ident">into_iter</span>();
             <span class="kw">let</span> <span class="ident">self_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_temp_if_necessary</span>(<span class="ident">args</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>(), <span class="ident">callsite</span>, <span class="ident">caller_mir</span>);
@@ -1447,12 +1500,21 @@
                 <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Closure arguments are not passed as a tuple&quot;</span>);
             };
 
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">1</span> <span class="op">+</span> <span class="ident">tuple_tys</span>.<span class="ident">len</span>());
-            <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">self_</span>));
-            <span class="ident">res</span>.<span class="ident">extend</span>(<span class="ident">tuple_tys</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">ty</span>)<span class="op">|</span> {
-                <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">tuple</span>.<span class="ident">clone</span>().<span class="ident">field</span>(<span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">i</span>), <span class="ident">ty</span>))
-            }));
-            <span class="ident">res</span>
+            <span class="comment">// The `closure_ref` in our example above.</span>
+            <span class="kw">let</span> <span class="ident">closure_ref_arg</span> <span class="op">=</span> <span class="ident">iter</span>::<span class="ident">once</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">self_</span>));
+
+            <span class="comment">// The `tmp0`, `tmp1`, and `tmp2` in our example abonve.</span>
+            <span class="kw">let</span> <span class="ident">tuple_tmp_args</span> <span class="op">=</span>
+                <span class="ident">tuple_tys</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">ty</span>)<span class="op">|</span> {
+                    <span class="comment">// This is e.g. `tuple_tmp.0` in our example above.</span>
+                    <span class="kw">let</span> <span class="ident">tuple_field</span> <span class="op">=</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">tuple</span>.<span class="ident">clone</span>().<span class="ident">field</span>(<span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">i</span>), <span class="ident">ty</span>));
+
+                    <span class="comment">// Spill to a local to make e.g. `tmp0`.</span>
+                    <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_temp_if_necessary</span>(<span class="ident">tuple_field</span>, <span class="ident">callsite</span>, <span class="ident">caller_mir</span>);
+                    <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">tmp</span>)
+                });
+
+            <span class="ident">closure_ref_arg</span>.<span class="ident">chain</span>(<span class="ident">tuple_tmp_args</span>).<span class="ident">collect</span>()
         } <span class="kw">else</span> {
             <span class="ident">args</span>.<span class="ident">into_iter</span>()
                 .<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="self">self</span>.<span class="ident">create_temp_if_necessary</span>(<span class="ident">a</span>, <span class="ident">callsite</span>, <span class="ident">caller_mir</span>)))

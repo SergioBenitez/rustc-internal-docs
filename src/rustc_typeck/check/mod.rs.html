@@ -5127,23 +5127,6 @@
 <span id="5082">5082</span>
 <span id="5083">5083</span>
 <span id="5084">5084</span>
-<span id="5085">5085</span>
-<span id="5086">5086</span>
-<span id="5087">5087</span>
-<span id="5088">5088</span>
-<span id="5089">5089</span>
-<span id="5090">5090</span>
-<span id="5091">5091</span>
-<span id="5092">5092</span>
-<span id="5093">5093</span>
-<span id="5094">5094</span>
-<span id="5095">5095</span>
-<span id="5096">5096</span>
-<span id="5097">5097</span>
-<span id="5098">5098</span>
-<span id="5099">5099</span>
-<span id="5100">5100</span>
-<span id="5101">5101</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -5906,28 +5889,10 @@ type parameter).
         <span class="ident">typeck_item_bodies</span>,
         <span class="ident">typeck_tables_of</span>,
         <span class="ident">has_typeck_tables</span>,
-        <span class="ident">closure_kind</span>,
-        <span class="ident">generator_sig</span>,
         <span class="ident">adt_destructor</span>,
         <span class="ident">used_trait_imports</span>,
         ..<span class="kw-2">*</span><span class="ident">providers</span>
     };
-}
-
-<span class="kw">fn</span> <span class="ident">generator_sig</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                          <span class="ident">def_id</span>: <span class="ident">DefId</span>)
-                          <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyGenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
-    <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
-    <span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">def_id</span>).<span class="ident">generator_sigs</span>()[<span class="ident">hir_id</span>].<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">ty</span>::<span class="ident">Binder</span>(<span class="ident">s</span>))
-}
-
-<span class="kw">fn</span> <span class="ident">closure_kind</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                          <span class="ident">def_id</span>: <span class="ident">DefId</span>)
-                          <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">ClosureKind</span> {
-    <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">def_id</span>).<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
-    <span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">def_id</span>).<span class="ident">closure_kinds</span>()[<span class="ident">hir_id</span>].<span class="number">0</span>
 }
 
 <span class="kw">fn</span> <span class="ident">adt_destructor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -6168,6 +6133,17 @@ type parameter).
                 _: <span class="ident">hir</span>::<span class="ident">BodyId</span>, _: <span class="ident">Span</span>, _: <span class="ident">ast</span>::<span class="ident">NodeId</span>) { }
 }
 
+<span class="doccomment">/// When `check_fn` is invoked on a generator (i.e., a body that</span>
+<span class="doccomment">/// includes yield), it returns back some information about the yield</span>
+<span class="doccomment">/// points.</span>
+<span class="kw">struct</span> <span class="ident">GeneratorTypes</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Type of value that is yielded.</span>
+    <span class="ident">yield_ty</span>: <span class="ident">ty</span>::<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+
+    <span class="doccomment">/// Types that are captured (see `GeneratorInterior` for more).</span>
+    <span class="ident">interior</span>: <span class="ident">ty</span>::<span class="ident">GeneratorInterior</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
+}
+
 <span class="doccomment">/// Helper used for fns and closures. Does the grungy work of checking a function</span>
 <span class="doccomment">/// body and returns the function context used for that purpose, since in the case of a fn item</span>
 <span class="doccomment">/// there is still a bit more to do.</span>
@@ -6181,7 +6157,7 @@ type parameter).
                             <span class="ident">fn_id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
                             <span class="ident">body</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">hir</span>::<span class="ident">Body</span>,
                             <span class="ident">can_be_generator</span>: <span class="ident">bool</span>)
-                            <span class="op">-&gt;</span> (<span class="ident">FnCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GeneratorInterior</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)
+                            <span class="op">-&gt;</span> (<span class="ident">FnCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GeneratorTypes</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)
 {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fn_sig</span> <span class="op">=</span> <span class="ident">fn_sig</span>.<span class="ident">clone</span>();
 
@@ -6231,21 +6207,11 @@ type parameter).
 
     <span class="kw">let</span> <span class="ident">fn_hir_id</span> <span class="op">=</span> <span class="ident">fcx</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">fn_id</span>);
     <span class="kw">let</span> <span class="ident">gen_ty</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">can_be_generator</span> <span class="op">&amp;&amp;</span> <span class="ident">body</span>.<span class="ident">is_generator</span> {
-        <span class="kw">let</span> <span class="ident">gen_sig</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">GenSig</span> {
-            <span class="ident">yield_ty</span>: <span class="ident">fcx</span>.<span class="ident">yield_ty</span>.<span class="ident">unwrap</span>(),
-            <span class="ident">return_ty</span>: <span class="ident">ret_ty</span>,
-        };
-        <span class="ident">inherited</span>.<span class="ident">tables</span>.<span class="ident">borrow_mut</span>().<span class="ident">generator_sigs_mut</span>().<span class="ident">insert</span>(<span class="ident">fn_hir_id</span>, <span class="prelude-val">Some</span>(<span class="ident">gen_sig</span>));
-
         <span class="kw">let</span> <span class="ident">witness</span> <span class="op">=</span> <span class="ident">fcx</span>.<span class="ident">next_ty_var</span>(<span class="ident">TypeVariableOrigin</span>::<span class="ident">MiscVariable</span>(<span class="ident">span</span>));
         <span class="ident">fcx</span>.<span class="ident">deferred_generator_interiors</span>.<span class="ident">borrow_mut</span>().<span class="ident">push</span>((<span class="ident">body</span>.<span class="ident">id</span>(), <span class="ident">witness</span>));
         <span class="kw">let</span> <span class="ident">interior</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">GeneratorInterior</span>::<span class="ident">new</span>(<span class="ident">witness</span>);
-
-        <span class="ident">inherited</span>.<span class="ident">tables</span>.<span class="ident">borrow_mut</span>().<span class="ident">generator_interiors_mut</span>().<span class="ident">insert</span>(<span class="ident">fn_hir_id</span>, <span class="ident">interior</span>);
-
-        <span class="prelude-val">Some</span>(<span class="ident">interior</span>)
+        <span class="prelude-val">Some</span>(<span class="ident">GeneratorTypes</span> { <span class="ident">yield_ty</span>: <span class="ident">fcx</span>.<span class="ident">yield_ty</span>.<span class="ident">unwrap</span>(), <span class="ident">interior</span>: <span class="ident">interior</span> })
     } <span class="kw">else</span> {
-        <span class="ident">inherited</span>.<span class="ident">tables</span>.<span class="ident">borrow_mut</span>().<span class="ident">generator_sigs_mut</span>().<span class="ident">insert</span>(<span class="ident">fn_hir_id</span>, <span class="prelude-val">None</span>);
         <span class="prelude-val">None</span>
     };
     <span class="ident">inherited</span>.<span class="ident">tables</span>.<span class="ident">borrow_mut</span>().<span class="ident">liberated_fn_sigs_mut</span>().<span class="ident">insert</span>(<span class="ident">fn_hir_id</span>, <span class="ident">fn_sig</span>);

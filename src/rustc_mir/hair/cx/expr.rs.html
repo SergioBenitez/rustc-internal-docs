@@ -1705,8 +1705,8 @@
             });
             <span class="kw">let</span> <span class="ident">region</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">tcx</span>.<span class="ident">mk_region</span>(<span class="ident">region</span>);
 
-            <span class="kw">let</span> <span class="ident">self_expr</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyClosure</span>(..) <span class="op">=</span> <span class="ident">closure_ty</span>.<span class="ident">sty</span> {
-                <span class="kw">match</span> <span class="ident">cx</span>.<span class="ident">tcx</span>.<span class="ident">closure_kind</span>(<span class="ident">closure_def_id</span>) {
+            <span class="kw">let</span> <span class="ident">self_expr</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyClosure</span>(_, <span class="ident">closure_substs</span>) <span class="op">=</span> <span class="ident">closure_ty</span>.<span class="ident">sty</span> {
+                <span class="kw">match</span> <span class="ident">cx</span>.<span class="ident">infcx</span>.<span class="ident">closure_kind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>).<span class="ident">unwrap</span>() {
                     <span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">Fn</span> <span class="op">=&gt;</span> {
                         <span class="kw">let</span> <span class="ident">ref_closure_ty</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">tcx</span>.<span class="ident">mk_ref</span>(<span class="ident">region</span>,
                                                            <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> {

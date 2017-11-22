@@ -886,6 +886,10 @@
 <span id="841">841</span>
 <span id="842">842</span>
 <span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1656,7 +1660,11 @@
         <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
 
         <span class="comment">// Get the interior types which typeck computed</span>
-        <span class="kw">let</span> <span class="ident">interior</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">def_id</span>).<span class="ident">generator_interiors</span>().<span class="ident">get</span>(<span class="ident">hir_id</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">tables</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">def_id</span>);
+        <span class="kw">let</span> <span class="ident">interior</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">tables</span>.<span class="ident">node_id_to_type</span>(<span class="ident">hir_id</span>).<span class="ident">sty</span> {
+            <span class="ident">ty</span>::<span class="ident">TyGenerator</span>(_, _, <span class="ident">interior</span>) <span class="op">=&gt;</span> <span class="ident">interior</span>,
+            <span class="kw-2">ref</span> <span class="ident">t</span> <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;type of generator not a generator: {:?}&quot;</span>, <span class="ident">t</span>),
+        };
 
         <span class="comment">// The first argument is the generator type passed by value</span>
         <span class="kw">let</span> <span class="ident">gen_ty</span> <span class="op">=</span> <span class="ident">mir</span>.<span class="ident">local_decls</span>.<span class="ident">raw</span>[<span class="number">1</span>].<span class="ident">ty</span>;

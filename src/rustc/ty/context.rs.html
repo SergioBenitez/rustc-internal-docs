@@ -2313,77 +2313,6 @@
 <span id="2268">2268</span>
 <span id="2269">2269</span>
 <span id="2270">2270</span>
-<span id="2271">2271</span>
-<span id="2272">2272</span>
-<span id="2273">2273</span>
-<span id="2274">2274</span>
-<span id="2275">2275</span>
-<span id="2276">2276</span>
-<span id="2277">2277</span>
-<span id="2278">2278</span>
-<span id="2279">2279</span>
-<span id="2280">2280</span>
-<span id="2281">2281</span>
-<span id="2282">2282</span>
-<span id="2283">2283</span>
-<span id="2284">2284</span>
-<span id="2285">2285</span>
-<span id="2286">2286</span>
-<span id="2287">2287</span>
-<span id="2288">2288</span>
-<span id="2289">2289</span>
-<span id="2290">2290</span>
-<span id="2291">2291</span>
-<span id="2292">2292</span>
-<span id="2293">2293</span>
-<span id="2294">2294</span>
-<span id="2295">2295</span>
-<span id="2296">2296</span>
-<span id="2297">2297</span>
-<span id="2298">2298</span>
-<span id="2299">2299</span>
-<span id="2300">2300</span>
-<span id="2301">2301</span>
-<span id="2302">2302</span>
-<span id="2303">2303</span>
-<span id="2304">2304</span>
-<span id="2305">2305</span>
-<span id="2306">2306</span>
-<span id="2307">2307</span>
-<span id="2308">2308</span>
-<span id="2309">2309</span>
-<span id="2310">2310</span>
-<span id="2311">2311</span>
-<span id="2312">2312</span>
-<span id="2313">2313</span>
-<span id="2314">2314</span>
-<span id="2315">2315</span>
-<span id="2316">2316</span>
-<span id="2317">2317</span>
-<span id="2318">2318</span>
-<span id="2319">2319</span>
-<span id="2320">2320</span>
-<span id="2321">2321</span>
-<span id="2322">2322</span>
-<span id="2323">2323</span>
-<span id="2324">2324</span>
-<span id="2325">2325</span>
-<span id="2326">2326</span>
-<span id="2327">2327</span>
-<span id="2328">2328</span>
-<span id="2329">2329</span>
-<span id="2330">2330</span>
-<span id="2331">2331</span>
-<span id="2332">2332</span>
-<span id="2333">2333</span>
-<span id="2334">2334</span>
-<span id="2335">2335</span>
-<span id="2336">2336</span>
-<span id="2337">2337</span>
-<span id="2338">2338</span>
-<span id="2339">2339</span>
-<span id="2340">2340</span>
-<span id="2341">2341</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2743,16 +2672,9 @@
     <span class="doccomment">/// Borrows</span>
     <span class="kw">pub</span> <span class="ident">upvar_capture_map</span>: <span class="ident">ty</span>::<span class="ident">UpvarCaptureMap</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// Records the type of each closure.</span>
-    <span class="ident">closure_tys</span>: <span class="ident">ItemLocalMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyFnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
-
-    <span class="doccomment">/// Records the kind of each closure and the span and name of the variable</span>
-    <span class="doccomment">/// that caused the closure to be this kind.</span>
-    <span class="ident">closure_kinds</span>: <span class="ident">ItemLocalMap</span><span class="op">&lt;</span>(<span class="ident">ty</span>::<span class="ident">ClosureKind</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">ast</span>::<span class="ident">Name</span>)<span class="op">&gt;</span>)<span class="op">&gt;</span>,
-
-    <span class="ident">generator_sigs</span>: <span class="ident">ItemLocalMap</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
-
-    <span class="ident">generator_interiors</span>: <span class="ident">ItemLocalMap</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GeneratorInterior</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
+    <span class="doccomment">/// Records the reasons that we picked the kind of each closure;</span>
+    <span class="doccomment">/// not all closures are present in the map.</span>
+    <span class="ident">closure_kind_origins</span>: <span class="ident">ItemLocalMap</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">ast</span>::<span class="ident">Name</span>)<span class="op">&gt;</span>,
 
     <span class="doccomment">/// For each fn, records the &quot;liberated&quot; types of its arguments</span>
     <span class="doccomment">/// and return type. Liberated means that all bound regions</span>
@@ -2798,10 +2720,7 @@
             <span class="ident">pat_binding_modes</span>: <span class="ident">ItemLocalMap</span>(),
             <span class="ident">pat_adjustments</span>: <span class="ident">ItemLocalMap</span>(),
             <span class="ident">upvar_capture_map</span>: <span class="ident">FxHashMap</span>(),
-            <span class="ident">generator_sigs</span>: <span class="ident">ItemLocalMap</span>(),
-            <span class="ident">generator_interiors</span>: <span class="ident">ItemLocalMap</span>(),
-            <span class="ident">closure_tys</span>: <span class="ident">ItemLocalMap</span>(),
-            <span class="ident">closure_kinds</span>: <span class="ident">ItemLocalMap</span>(),
+            <span class="ident">closure_kind_origins</span>: <span class="ident">ItemLocalMap</span>(),
             <span class="ident">liberated_fn_sigs</span>: <span class="ident">ItemLocalMap</span>(),
             <span class="ident">fru_field_types</span>: <span class="ident">ItemLocalMap</span>(),
             <span class="ident">cast_kinds</span>: <span class="ident">ItemLocalMap</span>(),
@@ -2996,34 +2915,17 @@
         <span class="self">self</span>.<span class="ident">upvar_capture_map</span>[<span class="kw-2">&amp;</span><span class="ident">upvar_id</span>]
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_tys</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LocalTableInContext</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyFnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_kind_origins</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LocalTableInContext</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">ast</span>::<span class="ident">Name</span>)<span class="op">&gt;</span> {
         <span class="ident">LocalTableInContext</span> {
             <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">closure_tys</span>
+            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">closure_kind_origins</span>
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_tys_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)
-                           <span class="op">-&gt;</span> <span class="ident">LocalTableInContextMut</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyFnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_kind_origins_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LocalTableInContextMut</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">ast</span>::<span class="ident">Name</span>)<span class="op">&gt;</span> {
         <span class="ident">LocalTableInContextMut</span> {
             <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">closure_tys</span>
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_kinds</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LocalTableInContext</span><span class="op">&lt;</span>(<span class="ident">ty</span>::<span class="ident">ClosureKind</span>,
-                                                        <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">ast</span>::<span class="ident">Name</span>)<span class="op">&gt;</span>)<span class="op">&gt;</span> {
-        <span class="ident">LocalTableInContext</span> {
-            <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">closure_kinds</span>
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_kinds_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)
-            <span class="op">-&gt;</span> <span class="ident">LocalTableInContextMut</span><span class="op">&lt;</span>(<span class="ident">ty</span>::<span class="ident">ClosureKind</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">ast</span>::<span class="ident">Name</span>)<span class="op">&gt;</span>)<span class="op">&gt;</span> {
-        <span class="ident">LocalTableInContextMut</span> {
-            <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">closure_kinds</span>
+            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">closure_kind_origins</span>
         }
     }
 
@@ -3068,42 +2970,6 @@
             <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">cast_kinds</span>
         }
     }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">generator_sigs</span>(<span class="kw-2">&amp;</span><span class="self">self</span>)
-        <span class="op">-&gt;</span> <span class="ident">LocalTableInContext</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>
-    {
-        <span class="ident">LocalTableInContext</span> {
-            <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">generator_sigs</span>,
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">generator_sigs_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)
-        <span class="op">-&gt;</span> <span class="ident">LocalTableInContextMut</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>
-    {
-        <span class="ident">LocalTableInContextMut</span> {
-            <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">generator_sigs</span>,
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">generator_interiors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>)
-        <span class="op">-&gt;</span> <span class="ident">LocalTableInContext</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GeneratorInterior</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
-    {
-        <span class="ident">LocalTableInContext</span> {
-            <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">generator_interiors</span>,
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">generator_interiors_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>)
-        <span class="op">-&gt;</span> <span class="ident">LocalTableInContextMut</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">GeneratorInterior</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
-    {
-        <span class="ident">LocalTableInContextMut</span> {
-            <span class="ident">local_id_root</span>: <span class="self">self</span>.<span class="ident">local_id_root</span>,
-            <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">generator_interiors</span>,
-        }
-    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {
@@ -3119,8 +2985,7 @@
             <span class="kw-2">ref</span> <span class="ident">pat_binding_modes</span>,
             <span class="kw-2">ref</span> <span class="ident">pat_adjustments</span>,
             <span class="kw-2">ref</span> <span class="ident">upvar_capture_map</span>,
-            <span class="kw-2">ref</span> <span class="ident">closure_tys</span>,
-            <span class="kw-2">ref</span> <span class="ident">closure_kinds</span>,
+            <span class="kw-2">ref</span> <span class="ident">closure_kind_origins</span>,
             <span class="kw-2">ref</span> <span class="ident">liberated_fn_sigs</span>,
             <span class="kw-2">ref</span> <span class="ident">fru_field_types</span>,
 
@@ -3129,8 +2994,6 @@
             <span class="kw-2">ref</span> <span class="ident">used_trait_imports</span>,
             <span class="ident">tainted_by_errors</span>,
             <span class="kw-2">ref</span> <span class="ident">free_region_map</span>,
-            <span class="kw-2">ref</span> <span class="ident">generator_sigs</span>,
-            <span class="kw-2">ref</span> <span class="ident">generator_interiors</span>,
         } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
 
         <span class="ident">hcx</span>.<span class="ident">with_node_id_hashing_mode</span>(<span class="ident">NodeIdHashingMode</span>::<span class="ident">HashDefPath</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
@@ -3162,13 +3025,10 @@
                  <span class="ident">hcx</span>.<span class="ident">def_path_hash</span>(<span class="ident">closure_def_id</span>))
             });
 
-            <span class="ident">closure_tys</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-            <span class="ident">closure_kinds</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
+            <span class="ident">closure_kind_origins</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">liberated_fn_sigs</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">fru_field_types</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">cast_kinds</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-            <span class="ident">generator_sigs</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-            <span class="ident">generator_interiors</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">used_trait_imports</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">tainted_by_errors</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
             <span class="ident">free_region_map</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
@@ -4368,11 +4228,9 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mk_closure</span>(<span class="self">self</span>,
                       <span class="ident">closure_id</span>: <span class="ident">DefId</span>,
-                      <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-        <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">mk_closure_from_closure_substs</span>(<span class="ident">closure_id</span>, <span class="ident">ClosureSubsts</span> {
-            <span class="ident">substs</span>,
-        })
+                      <span class="ident">substs</span>: <span class="ident">ClosureSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                      <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">mk_closure_from_closure_substs</span>(<span class="ident">closure_id</span>, <span class="ident">substs</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">mk_closure_from_closure_substs</span>(<span class="self">self</span>,

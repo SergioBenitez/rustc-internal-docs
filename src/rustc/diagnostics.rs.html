@@ -2066,6 +2066,37 @@
 <span id="2021">2021</span>
 <span id="2022">2022</span>
 <span id="2023">2023</span>
+<span id="2024">2024</span>
+<span id="2025">2025</span>
+<span id="2026">2026</span>
+<span id="2027">2027</span>
+<span id="2028">2028</span>
+<span id="2029">2029</span>
+<span id="2030">2030</span>
+<span id="2031">2031</span>
+<span id="2032">2032</span>
+<span id="2033">2033</span>
+<span id="2034">2034</span>
+<span id="2035">2035</span>
+<span id="2036">2036</span>
+<span id="2037">2037</span>
+<span id="2038">2038</span>
+<span id="2039">2039</span>
+<span id="2040">2040</span>
+<span id="2041">2041</span>
+<span id="2042">2042</span>
+<span id="2043">2043</span>
+<span id="2044">2044</span>
+<span id="2045">2045</span>
+<span id="2046">2046</span>
+<span id="2047">2047</span>
+<span id="2048">2048</span>
+<span id="2049">2049</span>
+<span id="2050">2050</span>
+<span id="2051">2051</span>
+<span id="2052">2052</span>
+<span id="2053">2053</span>
+<span id="2054">2054</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4038,7 +4069,38 @@ fn foo&lt;&#39;a&gt;(x: &amp;&#39;a i32, y: &amp;i32) -&gt; &amp;&#39;a i32 {
 ```
 &quot;##</span>,
 
+<span class="ident">E0644</span>: <span class="string">r##&quot;
+A closure or generator was constructed that references its own type.
+
+Erroneous example:
+
+```compile-fail,E0644
+fn fix&lt;F&gt;(f: &amp;F)
+  where F: Fn(&amp;F)
+{
+  f(&amp;f);
 }
+
+fn main() {
+  fix(&amp;|y| {
+    // Here, when `x` is called, the parameter `y` is equal to `x`.
+  });
+}
+```
+
+Rust does not permit a closure to directly reference its own type,
+either through an argument (as in the example above) or by capturing
+itself through its environment. This restriction helps keep closure
+inference tractable.
+
+The easiest fix is to rewrite your closure into a top-level function,
+or into a method. In some cases, you may also be able to have your
+closure call itself by capturing a `&amp;Fn()` object or `fn()` pointer
+that refers to itself. That is permitting, since the closure would be
+invoking itself via a virtual call, and hence does not directly
+reference its own *type*.
+
+&quot;##</span>, }
 
 
 <span class="macro">register_diagnostics</span><span class="macro">!</span> {

@@ -190,8 +190,6 @@
 <span id="145">145</span>
 <span id="146">146</span>
 <span id="147">147</span>
-<span id="148">148</span>
-<span id="149">149</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -320,9 +318,7 @@
             <span class="comment">// ```</span>
             <span class="ident">labels</span>.<span class="ident">clear</span>();
             <span class="ident">labels</span>.<span class="ident">push</span>((<span class="ident">pattern</span>.<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;consider giving this closure parameter a type&quot;</span>)));
-        }
-
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">pattern</span>) <span class="op">=</span> <span class="ident">local_visitor</span>.<span class="ident">found_local_pattern</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">pattern</span>) <span class="op">=</span> <span class="ident">local_visitor</span>.<span class="ident">found_local_pattern</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">simple_name</span>) <span class="op">=</span> <span class="ident">pattern</span>.<span class="ident">simple_name</span>() {
                 <span class="ident">labels</span>.<span class="ident">push</span>((<span class="ident">pattern</span>.<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;consider giving `{}` a type&quot;</span>, <span class="ident">simple_name</span>)));
             } <span class="kw">else</span> {

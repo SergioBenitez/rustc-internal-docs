@@ -614,6 +614,12 @@
 <span id="569">569</span>
 <span id="570">570</span>
 <span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -627,7 +633,7 @@
 
 <span class="doccomment">//! Code for type-checking closure expressions.</span>
 
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">check_fn</span>, <span class="ident">Expectation</span>, <span class="ident">FnCtxt</span>};
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">check_fn</span>, <span class="ident">Expectation</span>, <span class="ident">FnCtxt</span>, <span class="ident">GeneratorTypes</span>};
 
 <span class="kw">use</span> <span class="ident">astconv</span>::<span class="ident">AstConv</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
@@ -696,7 +702,7 @@
 
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;check_closure: ty_of_closure returns {:?}&quot;</span>, <span class="ident">liberated_sig</span>);
 
-        <span class="kw">let</span> <span class="ident">interior</span> <span class="op">=</span> <span class="ident">check_fn</span>(
+        <span class="kw">let</span> <span class="ident">generator_types</span> <span class="op">=</span> <span class="ident">check_fn</span>(
             <span class="self">self</span>,
             <span class="self">self</span>.<span class="ident">param_env</span>,
             <span class="ident">liberated_sig</span>,
@@ -717,14 +723,20 @@
             <span class="op">|</span>_, _<span class="op">|</span> <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">expr</span>.<span class="ident">span</span>, <span class="string">&quot;closure has region param&quot;</span>),
             <span class="op">|</span>_, _<span class="op">|</span> {
                 <span class="self">self</span>.<span class="ident">infcx</span>
-                    .<span class="ident">next_ty_var</span>(<span class="ident">TypeVariableOrigin</span>::<span class="ident">TransformedUpvar</span>(<span class="ident">expr</span>.<span class="ident">span</span>))
+                    .<span class="ident">next_ty_var</span>(<span class="ident">TypeVariableOrigin</span>::<span class="ident">ClosureSynthetic</span>(<span class="ident">expr</span>.<span class="ident">span</span>))
             },
         );
+        <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">ClosureSubsts</span> { <span class="ident">substs</span> };
         <span class="kw">let</span> <span class="ident">closure_type</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">mk_closure</span>(<span class="ident">expr_def_id</span>, <span class="ident">substs</span>);
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">interior</span>) <span class="op">=</span> <span class="ident">interior</span> {
-            <span class="kw">let</span> <span class="ident">closure_substs</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">ClosureSubsts</span> { <span class="ident">substs</span>: <span class="ident">substs</span> };
-            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">mk_generator</span>(<span class="ident">expr_def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">interior</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">GeneratorTypes</span> { <span class="ident">yield_ty</span>, <span class="ident">interior</span> }) <span class="op">=</span> <span class="ident">generator_types</span> {
+            <span class="self">self</span>.<span class="ident">demand_eqtype</span>(<span class="ident">expr</span>.<span class="ident">span</span>,
+                               <span class="ident">yield_ty</span>,
+                               <span class="ident">substs</span>.<span class="ident">generator_yield_ty</span>(<span class="ident">expr_def_id</span>, <span class="self">self</span>.<span class="ident">tcx</span>));
+            <span class="self">self</span>.<span class="ident">demand_eqtype</span>(<span class="ident">expr</span>.<span class="ident">span</span>,
+                               <span class="ident">liberated_sig</span>.<span class="ident">output</span>(),
+                               <span class="ident">substs</span>.<span class="ident">generator_return_ty</span>(<span class="ident">expr_def_id</span>, <span class="self">self</span>.<span class="ident">tcx</span>));
+            <span class="kw">return</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">mk_generator</span>(<span class="ident">expr_def_id</span>, <span class="ident">substs</span>, <span class="ident">interior</span>);
         }
 
         <span class="macro">debug</span><span class="macro">!</span>(
@@ -752,15 +764,15 @@
             <span class="ident">opt_kind</span>
         );
 
-        {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tables</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tables</span>.<span class="ident">borrow_mut</span>();
-            <span class="ident">tables</span>.<span class="ident">closure_tys_mut</span>().<span class="ident">insert</span>(<span class="ident">expr</span>.<span class="ident">hir_id</span>, <span class="ident">sig</span>);
-            <span class="kw">match</span> <span class="ident">opt_kind</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">kind</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">tables</span>.<span class="ident">closure_kinds_mut</span>().<span class="ident">insert</span>(<span class="ident">expr</span>.<span class="ident">hir_id</span>, (<span class="ident">kind</span>, <span class="prelude-val">None</span>));
-                }
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> {}
-            }
+        <span class="kw">let</span> <span class="ident">sig_fn_ptr_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">mk_fn_ptr</span>(<span class="ident">sig</span>);
+        <span class="self">self</span>.<span class="ident">demand_eqtype</span>(<span class="ident">expr</span>.<span class="ident">span</span>,
+                           <span class="ident">sig_fn_ptr_ty</span>,
+                           <span class="ident">substs</span>.<span class="ident">closure_sig_ty</span>(<span class="ident">expr_def_id</span>, <span class="self">self</span>.<span class="ident">tcx</span>));
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">kind</span>) <span class="op">=</span> <span class="ident">opt_kind</span> {
+            <span class="self">self</span>.<span class="ident">demand_eqtype</span>(<span class="ident">expr</span>.<span class="ident">span</span>,
+                               <span class="ident">kind</span>.<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>),
+                               <span class="ident">substs</span>.<span class="ident">closure_kind_ty</span>(<span class="ident">expr_def_id</span>, <span class="self">self</span>.<span class="ident">tcx</span>));
         }
 
         <span class="ident">closure_type</span>

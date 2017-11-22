@@ -1125,6 +1125,33 @@
 <span id="1080">1080</span>
 <span id="1081">1081</span>
 <span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
+<span id="1105">1105</span>
+<span id="1106">1106</span>
+<span id="1107">1107</span>
+<span id="1108">1108</span>
+<span id="1109">1109</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1817,9 +1844,16 @@
                          <span class="ident">diag</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                          <span class="ident">cause</span>: <span class="kw-2">&amp;</span><span class="ident">ObligationCause</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                          <span class="ident">secondary_span</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="ident">String</span>)<span class="op">&gt;</span>,
-                         <span class="ident">values</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ValuePairs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
+                         <span class="kw-2">mut</span> <span class="ident">values</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ValuePairs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
                          <span class="ident">terr</span>: <span class="kw-2">&amp;</span><span class="ident">TypeError</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
     {
+        <span class="comment">// For some types of errors, expected-found does not make</span>
+        <span class="comment">// sense, so just ignore the values we were given.</span>
+        <span class="kw">match</span> <span class="ident">terr</span> {
+            <span class="ident">TypeError</span>::<span class="ident">CyclicTy</span>(_) <span class="op">=&gt;</span> { <span class="ident">values</span> <span class="op">=</span> <span class="prelude-val">None</span>; }
+            _ <span class="op">=&gt;</span> { }
+        }
+
         <span class="kw">let</span> (<span class="ident">expected_found</span>, <span class="ident">exp_found</span>, <span class="ident">is_simple_error</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">values</span> {
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">false</span>),
             <span class="prelude-val">Some</span>(<span class="ident">values</span>) <span class="op">=&gt;</span> {
@@ -1908,16 +1942,19 @@
                <span class="ident">terr</span>);
 
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">trace</span>.<span class="ident">cause</span>.<span class="ident">span</span>;
-        <span class="kw">let</span> <span class="ident">failure_str</span> <span class="op">=</span> <span class="ident">trace</span>.<span class="ident">cause</span>.<span class="ident">as_failure_str</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">diag</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">trace</span>.<span class="ident">cause</span>.<span class="ident">code</span> {
-            <span class="ident">ObligationCauseCode</span>::<span class="ident">IfExpressionWithNoElse</span> <span class="op">=&gt;</span> {
+        <span class="kw">let</span> <span class="ident">failure_code</span> <span class="op">=</span> <span class="ident">trace</span>.<span class="ident">cause</span>.<span class="ident">as_failure_code</span>(<span class="ident">terr</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">diag</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">failure_code</span> {
+            <span class="ident">FailureCode</span>::<span class="ident">Error0317</span>(<span class="ident">failure_str</span>) <span class="op">=&gt;</span> {
                 <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0317</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">failure_str</span>)
             }
-            <span class="ident">ObligationCauseCode</span>::<span class="ident">MainFunctionType</span> <span class="op">=&gt;</span> {
+            <span class="ident">FailureCode</span>::<span class="ident">Error0580</span>(<span class="ident">failure_str</span>) <span class="op">=&gt;</span> {
                 <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0580</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">failure_str</span>)
             }
-            _ <span class="op">=&gt;</span> {
+            <span class="ident">FailureCode</span>::<span class="ident">Error0308</span>(<span class="ident">failure_str</span>) <span class="op">=&gt;</span> {
                 <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0308</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">failure_str</span>)
+            }
+            <span class="ident">FailureCode</span>::<span class="ident">Error0644</span>(<span class="ident">failure_str</span>) <span class="op">=&gt;</span> {
+                <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0644</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">failure_str</span>)
             }
         };
         <span class="self">self</span>.<span class="ident">note_type_err</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">diag</span>, <span class="kw-2">&amp;</span><span class="ident">trace</span>.<span class="ident">cause</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">trace</span>.<span class="ident">values</span>), <span class="ident">terr</span>);
@@ -2168,23 +2205,40 @@
     }
 }
 
+<span class="kw">enum</span> <span class="ident">FailureCode</span> {
+    <span class="ident">Error0317</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>),
+    <span class="ident">Error0580</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>),
+    <span class="ident">Error0308</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>),
+    <span class="ident">Error0644</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>),
+}
+
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">ObligationCause</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">as_failure_str</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+    <span class="kw">fn</span> <span class="ident">as_failure_code</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">terr</span>: <span class="kw-2">&amp;</span><span class="ident">TypeError</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">FailureCode</span> {
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">FailureCode</span>::<span class="kw-2">*</span>;
         <span class="kw">use</span> <span class="ident">traits</span>::<span class="ident">ObligationCauseCode</span>::<span class="kw-2">*</span>;
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">code</span> {
-            <span class="ident">CompareImplMethodObligation</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;method not compatible with trait&quot;</span>,
-            <span class="ident">MatchExpressionArm</span> { <span class="ident">source</span>, .. } <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">source</span> {
+            <span class="ident">CompareImplMethodObligation</span> { .. } <span class="op">=&gt;</span> <span class="ident">Error0308</span>(<span class="string">&quot;method not compatible with trait&quot;</span>),
+            <span class="ident">MatchExpressionArm</span> { <span class="ident">source</span>, .. } <span class="op">=&gt;</span> <span class="ident">Error0308</span>(<span class="kw">match</span> <span class="ident">source</span> {
                 <span class="ident">hir</span>::<span class="ident">MatchSource</span>::<span class="ident">IfLetDesugar</span>{..} <span class="op">=&gt;</span> <span class="string">&quot;`if let` arms have incompatible types&quot;</span>,
                 _ <span class="op">=&gt;</span> <span class="string">&quot;match arms have incompatible types&quot;</span>,
-            },
-            <span class="ident">IfExpression</span> <span class="op">=&gt;</span> <span class="string">&quot;if and else have incompatible types&quot;</span>,
-            <span class="ident">IfExpressionWithNoElse</span> <span class="op">=&gt;</span> <span class="string">&quot;if may be missing an else clause&quot;</span>,
-            <span class="ident">EquatePredicate</span> <span class="op">=&gt;</span> <span class="string">&quot;equality predicate not satisfied&quot;</span>,
-            <span class="ident">MainFunctionType</span> <span class="op">=&gt;</span> <span class="string">&quot;main function has wrong type&quot;</span>,
-            <span class="ident">StartFunctionType</span> <span class="op">=&gt;</span> <span class="string">&quot;start function has wrong type&quot;</span>,
-            <span class="ident">IntrinsicType</span> <span class="op">=&gt;</span> <span class="string">&quot;intrinsic has wrong type&quot;</span>,
-            <span class="ident">MethodReceiver</span> <span class="op">=&gt;</span> <span class="string">&quot;mismatched method receiver&quot;</span>,
-            _ <span class="op">=&gt;</span> <span class="string">&quot;mismatched types&quot;</span>,
+            }),
+            <span class="ident">IfExpression</span> <span class="op">=&gt;</span> <span class="ident">Error0308</span>(<span class="string">&quot;if and else have incompatible types&quot;</span>),
+            <span class="ident">IfExpressionWithNoElse</span> <span class="op">=&gt;</span> <span class="ident">Error0317</span>(<span class="string">&quot;if may be missing an else clause&quot;</span>),
+            <span class="ident">EquatePredicate</span> <span class="op">=&gt;</span> <span class="ident">Error0308</span>(<span class="string">&quot;equality predicate not satisfied&quot;</span>),
+            <span class="ident">MainFunctionType</span> <span class="op">=&gt;</span> <span class="ident">Error0580</span>(<span class="string">&quot;main function has wrong type&quot;</span>),
+            <span class="ident">StartFunctionType</span> <span class="op">=&gt;</span> <span class="ident">Error0308</span>(<span class="string">&quot;start function has wrong type&quot;</span>),
+            <span class="ident">IntrinsicType</span> <span class="op">=&gt;</span> <span class="ident">Error0308</span>(<span class="string">&quot;intrinsic has wrong type&quot;</span>),
+            <span class="ident">MethodReceiver</span> <span class="op">=&gt;</span> <span class="ident">Error0308</span>(<span class="string">&quot;mismatched method receiver&quot;</span>),
+
+            <span class="comment">// In the case where we have no more specific thing to</span>
+            <span class="comment">// say, also take a look at the error code, maybe we can</span>
+            <span class="comment">// tailor to that.</span>
+            _ <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">terr</span> {
+                <span class="ident">TypeError</span>::<span class="ident">CyclicTy</span>(<span class="ident">ty</span>) <span class="kw">if</span> <span class="ident">ty</span>.<span class="ident">is_closure</span>() <span class="op">||</span> <span class="ident">ty</span>.<span class="ident">is_generator</span>() <span class="op">=&gt;</span>
+                    <span class="ident">Error0644</span>(<span class="string">&quot;closure/generator type that references itself&quot;</span>),
+                _ <span class="op">=&gt;</span>
+                    <span class="ident">Error0308</span>(<span class="string">&quot;mismatched types&quot;</span>),
+            }
         }
     }
 

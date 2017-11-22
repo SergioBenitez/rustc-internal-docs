@@ -539,14 +539,6 @@
 <span id="494">494</span>
 <span id="495">495</span>
 <span id="496">496</span>
-<span id="497">497</span>
-<span id="498">498</span>
-<span id="499">499</span>
-<span id="500">500</span>
-<span id="501">501</span>
-<span id="502">502</span>
-<span id="503">503</span>
-<span id="504">504</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -716,19 +708,11 @@
     <span class="doccomment">/// for trans. This is also the only query that can fetch non-local MIR, at present.</span>
     [] <span class="kw">fn</span> <span class="ident">optimized_mir</span>: <span class="ident">MirOptimized</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">mir</span>::<span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// Type of each closure. The def ID is the ID of the</span>
-    <span class="doccomment">/// expression defining the closure.</span>
-    [] <span class="kw">fn</span> <span class="ident">closure_kind</span>: <span class="ident">ClosureKind</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">ClosureKind</span>,
-
     <span class="doccomment">/// The result of unsafety-checking this def-id.</span>
     [] <span class="kw">fn</span> <span class="ident">unsafety_check_result</span>: <span class="ident">UnsafetyCheckResult</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">mir</span>::<span class="ident">UnsafetyCheckResult</span>,
 
     <span class="doccomment">/// The signature of functions and closures.</span>
     [] <span class="kw">fn</span> <span class="ident">fn_sig</span>: <span class="ident">FnSignature</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">PolyFnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-
-    <span class="doccomment">/// Records the signature of each generator. The def ID is the ID of the</span>
-    <span class="doccomment">/// expression defining the closure.</span>
-    [] <span class="kw">fn</span> <span class="ident">generator_sig</span>: <span class="ident">GenSignature</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">PolyGenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 
     <span class="doccomment">/// Caches CoerceUnsized kinds for impls on custom types.</span>
     [] <span class="kw">fn</span> <span class="ident">coerce_unsized_info</span>: <span class="ident">CoerceUnsizedInfo</span>(<span class="ident">DefId</span>)

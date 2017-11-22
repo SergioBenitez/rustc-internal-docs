@@ -553,8 +553,6 @@
 <span id="508">508</span>
 <span id="509">509</span>
 <span id="510">510</span>
-<span id="511">511</span>
-<span id="512">512</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -694,12 +692,10 @@
 
         <span class="ident">mir</span>
     }
-    <span class="ident">generator_sig</span> <span class="op">=&gt;</span> { <span class="ident">cdata</span>.<span class="ident">generator_sig</span>(<span class="ident">def_id</span>.<span class="ident">index</span>, <span class="ident">tcx</span>) }
     <span class="ident">mir_const_qualif</span> <span class="op">=&gt;</span> {
         (<span class="ident">cdata</span>.<span class="ident">mir_const_qualif</span>(<span class="ident">def_id</span>.<span class="ident">index</span>), <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">IdxSetBuf</span>::<span class="ident">new_empty</span>(<span class="number">0</span>)))
     }
     <span class="ident">typeck_tables_of</span> <span class="op">=&gt;</span> { <span class="ident">cdata</span>.<span class="ident">item_body_tables</span>(<span class="ident">def_id</span>.<span class="ident">index</span>, <span class="ident">tcx</span>) }
-    <span class="ident">closure_kind</span> <span class="op">=&gt;</span> { <span class="ident">cdata</span>.<span class="ident">closure_kind</span>(<span class="ident">def_id</span>.<span class="ident">index</span>) }
     <span class="ident">fn_sig</span> <span class="op">=&gt;</span> { <span class="ident">cdata</span>.<span class="ident">fn_sig</span>(<span class="ident">def_id</span>.<span class="ident">index</span>, <span class="ident">tcx</span>) }
     <span class="ident">inherent_impls</span> <span class="op">=&gt;</span> { <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">cdata</span>.<span class="ident">get_inherent_implementations_for_type</span>(<span class="ident">def_id</span>.<span class="ident">index</span>)) }
     <span class="ident">is_const_fn</span> <span class="op">=&gt;</span> { <span class="ident">cdata</span>.<span class="ident">is_const_fn</span>(<span class="ident">def_id</span>.<span class="ident">index</span>) }

@@ -648,8 +648,8 @@
         <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ObjectSafe</span>(<span class="ident">data</span>) <span class="op">=&gt;</span>
             <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ObjectSafe</span>(<span class="ident">data</span>),
 
-        <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span>
-            <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>),
+        <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span>
+            <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">kind</span>),
 
         <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">Subtype</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span>
             <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">Subtype</span>(<span class="ident">tcx</span>.<span class="ident">anonymize_late_bound_regions</span>(<span class="ident">data</span>)),

@@ -3402,7 +3402,6 @@
 <span id="3357">3357</span>
 <span id="3358">3358</span>
 <span id="3359">3359</span>
-<span id="3360">3360</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4124,8 +4123,8 @@
                 }
             }
 
-            <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">closure_kind</span>(<span class="ident">closure_def_id</span>) {
+            <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">closure_kind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>) {
                     <span class="prelude-val">Some</span>(<span class="ident">closure_kind</span>) <span class="op">=&gt;</span> {
                         <span class="kw">if</span> <span class="ident">closure_kind</span>.<span class="ident">extends</span>(<span class="ident">kind</span>) {
                             <span class="ident">EvaluatedToOk</span>
@@ -4999,10 +4998,10 @@
         <span class="comment">// touch bound regions, they just capture the in-scope</span>
         <span class="comment">// type/region parameters</span>
         <span class="kw">match</span> <span class="ident">obligation</span>.<span class="ident">self_ty</span>().<span class="ident">skip_binder</span>().<span class="ident">sty</span> {
-            <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">closure_def_id</span>, _) <span class="op">=&gt;</span> {
+            <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>) <span class="op">=&gt;</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;assemble_unboxed_candidates: kind={:?} obligation={:?}&quot;</span>,
                        <span class="ident">kind</span>, <span class="ident">obligation</span>);
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">closure_kind</span>(<span class="ident">closure_def_id</span>) {
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">closure_kind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>) {
                     <span class="prelude-val">Some</span>(<span class="ident">closure_kind</span>) <span class="op">=&gt;</span> {
                         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;assemble_unboxed_candidates: closure_kind = {:?}&quot;</span>, <span class="ident">closure_kind</span>);
                         <span class="kw">if</span> <span class="ident">closure_kind</span>.<span class="ident">extends</span>(<span class="ident">kind</span>) {
@@ -6132,7 +6131,7 @@
         <span class="ident">obligations</span>.<span class="ident">push</span>(<span class="ident">Obligation</span>::<span class="ident">new</span>(
             <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">clone</span>(),
             <span class="ident">obligation</span>.<span class="ident">param_env</span>,
-            <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>)));
+            <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">substs</span>, <span class="ident">kind</span>)));
 
         <span class="prelude-val">Ok</span>(<span class="ident">VtableClosureData</span> {
             <span class="ident">closure_def_id</span>,
@@ -6590,8 +6589,7 @@
                                       <span class="ident">substs</span>: <span class="ident">ty</span>::<span class="ident">ClosureSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                       <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
-        <span class="kw">let</span> <span class="ident">gen_sig</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">generator_sig</span>(<span class="ident">closure_def_id</span>).<span class="ident">unwrap</span>()
-            .<span class="ident">subst</span>(<span class="self">self</span>.<span class="ident">tcx</span>(), <span class="ident">substs</span>.<span class="ident">substs</span>);
+        <span class="kw">let</span> <span class="ident">gen_sig</span> <span class="op">=</span> <span class="ident">substs</span>.<span class="ident">generator_poly_sig</span>(<span class="ident">closure_def_id</span>, <span class="self">self</span>.<span class="ident">tcx</span>());
         <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">Binder</span>((<span class="ident">trait_ref</span>, ..)) <span class="op">=</span>
             <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">generator_trait_ref_and_outputs</span>(<span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">def_id</span>(),
                                                        <span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="number">0</span>.<span class="ident">self_ty</span>(), <span class="comment">// (1)</span>

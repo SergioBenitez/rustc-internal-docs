@@ -2604,7 +2604,7 @@
                     <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">tcx</span><span class="op">|</span> {
                         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;the trait `{}` is object-safe&quot;</span>, <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">trait_def_id</span>))
                     }),
-                <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span>
+                <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">_closure_substs</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span>
                     <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">tcx</span><span class="op">|</span> {
                         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;the closure `{}` implements the trait `{}`&quot;</span>,
                                <span class="ident">tcx</span>.<span class="ident">item_path_str</span>(<span class="ident">closure_def_id</span>), <span class="ident">kind</span>)
@@ -2628,8 +2628,8 @@
                 <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ObjectSafe</span>(<span class="ident">trait_def_id</span>) <span class="op">=&gt;</span> {
                     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;ObjectSafe({:?})&quot;</span>, <span class="ident">trait_def_id</span>)
                 }
-                <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;ClosureKind({:?}, {:?})&quot;</span>, <span class="ident">closure_def_id</span>, <span class="ident">kind</span>)
+                <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span> {
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;ClosureKind({:?}, {:?}, {:?})&quot;</span>, <span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">kind</span>)
                 }
                 <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ConstEvaluatable</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">=&gt;</span> {
                     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;ConstEvaluatable({:?}, {:?})&quot;</span>, <span class="ident">def_id</span>, <span class="ident">substs</span>)

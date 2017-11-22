@@ -1843,6 +1843,40 @@
 <span id="1798">1798</span>
 <span id="1799">1799</span>
 <span id="1800">1800</span>
+<span id="1801">1801</span>
+<span id="1802">1802</span>
+<span id="1803">1803</span>
+<span id="1804">1804</span>
+<span id="1805">1805</span>
+<span id="1806">1806</span>
+<span id="1807">1807</span>
+<span id="1808">1808</span>
+<span id="1809">1809</span>
+<span id="1810">1810</span>
+<span id="1811">1811</span>
+<span id="1812">1812</span>
+<span id="1813">1813</span>
+<span id="1814">1814</span>
+<span id="1815">1815</span>
+<span id="1816">1816</span>
+<span id="1817">1817</span>
+<span id="1818">1818</span>
+<span id="1819">1819</span>
+<span id="1820">1820</span>
+<span id="1821">1821</span>
+<span id="1822">1822</span>
+<span id="1823">1823</span>
+<span id="1824">1824</span>
+<span id="1825">1825</span>
+<span id="1826">1826</span>
+<span id="1827">1827</span>
+<span id="1828">1828</span>
+<span id="1829">1829</span>
+<span id="1830">1830</span>
+<span id="1831">1831</span>
+<span id="1832">1832</span>
+<span id="1833">1833</span>
+<span id="1834">1834</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2865,9 +2899,31 @@
     <span class="comment">// cares about anything but the length is instantiation,</span>
     <span class="comment">// and we don&#39;t do that for closures.</span>
     <span class="kw">if</span> <span class="kw">let</span> <span class="ident">NodeExpr</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span> { <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">ExprClosure</span>(..), .. }) <span class="op">=</span> <span class="ident">node</span> {
+        <span class="comment">// add a dummy parameter for the closure kind</span>
+        <span class="ident">types</span>.<span class="ident">push</span>(<span class="ident">ty</span>::<span class="ident">TypeParameterDef</span> {
+            <span class="ident">index</span>: <span class="ident">type_start</span>,
+            <span class="ident">name</span>: <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="string">&quot;&lt;closure_kind&gt;&quot;</span>),
+            <span class="ident">def_id</span>,
+            <span class="ident">has_default</span>: <span class="bool-val">false</span>,
+            <span class="ident">object_lifetime_default</span>: <span class="ident">rl</span>::<span class="ident">Set1</span>::<span class="ident">Empty</span>,
+            <span class="ident">pure_wrt_drop</span>: <span class="bool-val">false</span>,
+            <span class="ident">synthetic</span>: <span class="prelude-val">None</span>,
+        });
+
+        <span class="comment">// add a dummy parameter for the closure signature</span>
+        <span class="ident">types</span>.<span class="ident">push</span>(<span class="ident">ty</span>::<span class="ident">TypeParameterDef</span> {
+            <span class="ident">index</span>: <span class="ident">type_start</span> <span class="op">+</span> <span class="number">1</span>,
+            <span class="ident">name</span>: <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="string">&quot;&lt;closure_signature&gt;&quot;</span>),
+            <span class="ident">def_id</span>,
+            <span class="ident">has_default</span>: <span class="bool-val">false</span>,
+            <span class="ident">object_lifetime_default</span>: <span class="ident">rl</span>::<span class="ident">Set1</span>::<span class="ident">Empty</span>,
+            <span class="ident">pure_wrt_drop</span>: <span class="bool-val">false</span>,
+            <span class="ident">synthetic</span>: <span class="prelude-val">None</span>,
+        });
+
         <span class="ident">tcx</span>.<span class="ident">with_freevars</span>(<span class="ident">node_id</span>, <span class="op">|</span><span class="ident">fv</span><span class="op">|</span> {
-            <span class="ident">types</span>.<span class="ident">extend</span>(<span class="ident">fv</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, _)<span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TypeParameterDef</span> {
-                <span class="ident">index</span>: <span class="ident">type_start</span> <span class="op">+</span> <span class="ident">i</span> <span class="kw">as</span> <span class="ident">u32</span>,
+            <span class="ident">types</span>.<span class="ident">extend</span>(<span class="ident">fv</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="number">2</span>..).<span class="ident">map</span>(<span class="op">|</span>(_, <span class="ident">i</span>)<span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TypeParameterDef</span> {
+                <span class="ident">index</span>: <span class="ident">type_start</span> <span class="op">+</span> <span class="ident">i</span>,
                 <span class="ident">name</span>: <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="string">&quot;&lt;upvar&gt;&quot;</span>),
                 <span class="ident">def_id</span>,
                 <span class="ident">has_default</span>: <span class="bool-val">false</span>,
@@ -3002,14 +3058,19 @@
                 <span class="kw">return</span> <span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">def_id</span>).<span class="ident">node_id_to_type</span>(<span class="ident">hir_id</span>);
             }
 
-            <span class="ident">tcx</span>.<span class="ident">mk_closure</span>(<span class="ident">def_id</span>, <span class="ident">Substs</span>::<span class="ident">for_item</span>(
-                <span class="ident">tcx</span>, <span class="ident">def_id</span>,
-                <span class="op">|</span><span class="ident">def</span>, _<span class="op">|</span> {
-                    <span class="kw">let</span> <span class="ident">region</span> <span class="op">=</span> <span class="ident">def</span>.<span class="ident">to_early_bound_region_data</span>();
-                    <span class="ident">tcx</span>.<span class="ident">mk_region</span>(<span class="ident">ty</span>::<span class="ident">ReEarlyBound</span>(<span class="ident">region</span>))
-                },
-                <span class="op">|</span><span class="ident">def</span>, _<span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">mk_param_from_def</span>(<span class="ident">def</span>)
-            ))
+            <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">ClosureSubsts</span> {
+                <span class="ident">substs</span>: <span class="ident">Substs</span>::<span class="ident">for_item</span>(
+                    <span class="ident">tcx</span>,
+                    <span class="ident">def_id</span>,
+                    <span class="op">|</span><span class="ident">def</span>, _<span class="op">|</span> {
+                        <span class="kw">let</span> <span class="ident">region</span> <span class="op">=</span> <span class="ident">def</span>.<span class="ident">to_early_bound_region_data</span>();
+                        <span class="ident">tcx</span>.<span class="ident">mk_region</span>(<span class="ident">ty</span>::<span class="ident">ReEarlyBound</span>(<span class="ident">region</span>))
+                    },
+                    <span class="op">|</span><span class="ident">def</span>, _<span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">mk_param_from_def</span>(<span class="ident">def</span>)
+                )
+            };
+
+            <span class="ident">tcx</span>.<span class="ident">mk_closure</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>)
         }
 
         <span class="ident">NodeExpr</span>(_) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_parent_node</span>(<span class="ident">node_id</span>)) {
@@ -3088,7 +3149,14 @@
         }
 
         <span class="ident">NodeExpr</span>(<span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Expr</span> { <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">ExprClosure</span>(..), <span class="ident">hir_id</span>, .. }) <span class="op">=&gt;</span> {
-            <span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">def_id</span>).<span class="ident">closure_tys</span>()[<span class="ident">hir_id</span>]
+            <span class="kw">let</span> <span class="ident">tables</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">typeck_tables_of</span>(<span class="ident">def_id</span>);
+            <span class="kw">match</span> <span class="ident">tables</span>.<span class="ident">node_id_to_type</span>(<span class="ident">hir_id</span>).<span class="ident">sty</span> {
+                <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>) <span class="op">=&gt;</span> {
+                    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">def_id</span>, <span class="ident">closure_def_id</span>);
+                    <span class="kw">return</span> <span class="ident">closure_substs</span>.<span class="ident">closure_sig</span>(<span class="ident">closure_def_id</span>, <span class="ident">tcx</span>);
+                }
+                <span class="kw-2">ref</span> <span class="ident">t</span> <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;closure with non-closure type: {:?}&quot;</span>, <span class="ident">t</span>),
+            }
         }
 
         <span class="ident">x</span> <span class="op">=&gt;</span> {

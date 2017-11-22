@@ -560,6 +560,42 @@
 <span id="515">515</span>
 <span id="516">516</span>
 <span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -899,14 +935,50 @@
                     }
                 }
 
-                <span class="ident">ty</span>::<span class="ident">TyGenerator</span>(..) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyClosure</span>(..) <span class="op">=&gt;</span> {
-                    <span class="comment">// the types in a closure or generator are always the types of</span>
-                    <span class="comment">// local variables (or possibly references to local</span>
-                    <span class="comment">// variables), we&#39;ll walk those.</span>
+                <span class="ident">ty</span>::<span class="ident">TyGenerator</span>(..) <span class="op">=&gt;</span> {
+                    <span class="comment">// Walk ALL the types in the generator: this will</span>
+                    <span class="comment">// include the upvar types as well as the yield</span>
+                    <span class="comment">// type. Note that this is mildly distinct from</span>
+                    <span class="comment">// the closure case, where we have to be careful</span>
+                    <span class="comment">// about the signature of the closure. We don&#39;t</span>
+                    <span class="comment">// have the problem of implied bounds here since</span>
+                    <span class="comment">// generators don&#39;t take arguments.</span>
+                }
+
+                <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">=&gt;</span> {
+                    <span class="comment">// Only check the upvar types for WF, not the rest</span>
+                    <span class="comment">// of the types within. This is needed because we</span>
+                    <span class="comment">// capture the signature and it may not be WF</span>
+                    <span class="comment">// without the implied bounds. Consider a closure</span>
+                    <span class="comment">// like `|x: &amp;&#39;a T|` -- it may be that `T: &#39;a` is</span>
+                    <span class="comment">// not known to hold in the creator&#39;s context (and</span>
+                    <span class="comment">// indeed the closure may not be invoked by its</span>
+                    <span class="comment">// creator, but rather turned to someone who *can*</span>
+                    <span class="comment">// verify that).</span>
                     <span class="comment">//</span>
-                    <span class="comment">// (Though, local variables are probably not</span>
-                    <span class="comment">// needed, as they are separately checked w/r/t</span>
-                    <span class="comment">// WFedness.)</span>
+                    <span class="comment">// The special treatment of closures here really</span>
+                    <span class="comment">// ought not to be necessary either; the problem</span>
+                    <span class="comment">// is related to #25860 -- there is no way for us</span>
+                    <span class="comment">// to express a fn type complete with the implied</span>
+                    <span class="comment">// bounds that it is assuming. I think in reality</span>
+                    <span class="comment">// the WF rules around fn are a bit messed up, and</span>
+                    <span class="comment">// that is the rot problem: `fn(&amp;&#39;a T)` should</span>
+                    <span class="comment">// probably always be WF, because it should be</span>
+                    <span class="comment">// shorthand for something like `where(T: &#39;a) {</span>
+                    <span class="comment">// fn(&amp;&#39;a T) }`, as discussed in #25860.</span>
+                    <span class="comment">//</span>
+                    <span class="comment">// Note that we are also skipping the generic</span>
+                    <span class="comment">// types. This is consistent with the `outlives`</span>
+                    <span class="comment">// code, but anyway doesn&#39;t matter: within the fn</span>
+                    <span class="comment">// body where they are created, the generics will</span>
+                    <span class="comment">// always be WF, and outside of that fn body we</span>
+                    <span class="comment">// are not directly inspecting closure types</span>
+                    <span class="comment">// anyway, except via auto trait matching (which</span>
+                    <span class="comment">// only inspects the upvar types).</span>
+                    <span class="ident">subtys</span>.<span class="ident">skip_current_subtree</span>(); <span class="comment">// subtree handled by compute_projection</span>
+                    <span class="kw">for</span> <span class="ident">upvar_ty</span> <span class="kw">in</span> <span class="ident">substs</span>.<span class="ident">upvar_tys</span>(<span class="ident">def_id</span>, <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">tcx</span>) {
+                        <span class="self">self</span>.<span class="ident">compute</span>(<span class="ident">upvar_ty</span>);
+                    }
                 }
 
                 <span class="ident">ty</span>::<span class="ident">TyFnDef</span>(..) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyFnPtr</span>(_) <span class="op">=&gt;</span> {
