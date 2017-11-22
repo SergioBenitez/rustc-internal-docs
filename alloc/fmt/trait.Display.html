@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/fmt/mod.rs.html#589-613' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/fmt/mod.rs.html#597-621' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Display {
     fn <a href='#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="../../alloc/fmt/struct.Formatter.html" title="struct alloc::fmt::Formatter">Formatter</a>) -&gt; <a class="enum" href="../../core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;(), <a class="struct" href="../../alloc/fmt/struct.Error.html" title="struct alloc::fmt::Error">Error</a>&gt;;
 }</pre><div class='docblock'><p>Format trait for an empty format, <code>{}</code>.</p>
@@ -160,7 +160,7 @@ output, and so cannot be derived.</p>
 <li><code>impl&lt;'a, T&gt; Display for &amp;'a T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="../../alloc/fmt/trait.Display.html" title="trait alloc::fmt::Display">Display</a> + ?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code></li>
 <li><code>impl Display for u16</code></li>
 <li><code>impl Display for i64</code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/core/fmt/mod.rs.html#423-427' title='goto source code'>[src]</a></div><code>impl&lt;'a&gt; Display for <a class="struct" href="../../alloc/fmt/struct.Arguments.html" title="struct alloc::fmt::Arguments">Arguments</a>&lt;'a&gt;</code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/core/fmt/mod.rs.html#431-435' title='goto source code'>[src]</a></div><code>impl&lt;'a&gt; Display for <a class="struct" href="../../alloc/fmt/struct.Arguments.html" title="struct alloc::fmt::Arguments">Arguments</a>&lt;'a&gt;</code></li>
 <li><code>impl Display for u64</code></li>
 <li><code>impl Display for bool</code></li>
 <li><code>impl Display for f32</code></li>
@@ -172,7 +172,7 @@ output, and so cannot be derived.</p>
 <li><code>impl Display for str</code></li>
 <li><code>impl Display for i32</code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/core/str/mod.rs.html#148-152' title='goto source code'>[src]</a></div><code>impl Display for <a class="struct" href="../../alloc/str/struct.ParseBoolError.html" title="struct alloc::str::ParseBoolError">ParseBoolError</a></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/core/fmt/mod.rs.html#1493-1497' title='goto source code'>[src]</a></div><code>impl Display for <a class="struct" href="../../alloc/fmt/struct.Error.html" title="struct alloc::fmt::Error">Error</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/core/fmt/mod.rs.html#1501-1505' title='goto source code'>[src]</a></div><code>impl Display for <a class="struct" href="../../alloc/fmt/struct.Error.html" title="struct alloc::fmt::Error">Error</a></code></li>
 <li><code>impl Display for i16</code></li>
 <li><code>impl Display for isize</code></li>
 <li><code>impl&lt;'a, T&gt; Display for &amp;'a mut T <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="../../alloc/fmt/trait.Display.html" title="trait alloc::fmt::Display">Display</a> + ?<a class="trait" href="../../core/marker/trait.Sized.html" title="trait core::marker::Sized">Sized</a>,&nbsp;</span></code></li>
