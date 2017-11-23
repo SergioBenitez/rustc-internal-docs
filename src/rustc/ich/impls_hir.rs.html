@@ -1265,6 +1265,7 @@
 <span id="1220">1220</span>
 <span id="1221">1221</span>
 <span id="1222">1222</span>
+<span id="1223">1223</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1425,7 +1426,8 @@
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">hir</span>::<span class="ident">LifetimeDef</span> {
     <span class="ident">lifetime</span>,
     <span class="ident">bounds</span>,
-    <span class="ident">pure_wrt_drop</span>
+    <span class="ident">pure_wrt_drop</span>,
+    <span class="ident">in_band</span>
 });
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">hir</span>::<span class="ident">Path</span> {

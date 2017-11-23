@@ -2097,6 +2097,8 @@
 <span id="2052">2052</span>
 <span id="2053">2053</span>
 <span id="2054">2054</span>
+<span id="2055">2055</span>
+<span id="2056">2056</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4151,6 +4153,8 @@ reference its own *type*.
     <span class="ident">E0631</span>, <span class="comment">// type mismatch in closure arguments</span>
     <span class="ident">E0637</span>, <span class="comment">// &quot;&#39;_&quot; is not a valid lifetime bound</span>
     <span class="ident">E0657</span>, <span class="comment">// `impl Trait` can only capture lifetimes bound at the fn level</span>
+    <span class="ident">E0687</span>, <span class="comment">// in-band lifetimes cannot be used in `fn`/`Fn` syntax</span>
+    <span class="ident">E0688</span>, <span class="comment">// in-band lifetimes cannot be mixed with explicit lifetime binders</span>
 }
 </pre>
 </section>

@@ -1016,6 +1016,11 @@
 <span id="971">971</span>
 <span id="972">972</span>
 <span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
+<span id="978">978</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1512,10 +1517,15 @@
     }
 }
 
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> ::<span class="ident">middle</span>::<span class="ident">resolve_lifetime</span>::<span class="ident">LifetimeDefOrigin</span> {
+    <span class="ident">Explicit</span>,
+    <span class="ident">InBand</span>
+});
+
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> ::<span class="ident">middle</span>::<span class="ident">resolve_lifetime</span>::<span class="ident">Region</span> {
     <span class="ident">Static</span>,
-    <span class="ident">EarlyBound</span>(<span class="ident">index</span>, <span class="ident">decl</span>),
-    <span class="ident">LateBound</span>(<span class="ident">db_index</span>, <span class="ident">decl</span>),
+    <span class="ident">EarlyBound</span>(<span class="ident">index</span>, <span class="ident">decl</span>, <span class="ident">is_in_band</span>),
+    <span class="ident">LateBound</span>(<span class="ident">db_index</span>, <span class="ident">decl</span>, <span class="ident">is_in_band</span>),
     <span class="ident">LateBoundAnon</span>(<span class="ident">db_index</span>, <span class="ident">anon_index</span>),
     <span class="ident">Free</span>(<span class="ident">call_site_scope_data</span>, <span class="ident">decl</span>)
 });

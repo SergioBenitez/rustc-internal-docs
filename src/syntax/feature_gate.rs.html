@@ -1910,6 +1910,9 @@
 <span id="1865">1865</span>
 <span id="1866">1866</span>
 <span id="1867">1867</span>
+<span id="1868">1868</span>
+<span id="1869">1869</span>
+<span id="1870">1870</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2338,6 +2341,9 @@
 
     <span class="comment">// `crate` in paths</span>
     (<span class="ident">active</span>, <span class="ident">crate_in_paths</span>, <span class="string">&quot;1.23.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">45477</span>)),
+
+    <span class="comment">// In-band lifetime bindings (e.g. `fn foo(x: &amp;&#39;a u8) -&gt; &amp;&#39;a u8`)</span>
+    (<span class="ident">active</span>, <span class="ident">in_band_lifetimes</span>, <span class="string">&quot;1.23.0&quot;</span>, <span class="prelude-val">Some</span>(<span class="number">44524</span>)),
 );
 
 <span class="macro">declare_features</span><span class="macro">!</span> (

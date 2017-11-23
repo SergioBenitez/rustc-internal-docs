@@ -2069,7 +2069,7 @@
                     }
                 }
                 <span class="ident">ty</span>::<span class="ident">ReVar</span>(<span class="ident">region_vid</span>) <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">identify_regions</span> <span class="op">=&gt;</span> {
-                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}rv&quot;</span>, <span class="ident">region_vid</span>.<span class="ident">index</span>)
+                    <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;{}rv&quot;</span>, <span class="ident">region_vid</span>.<span class="ident">index</span>())
                 }
                 <span class="ident">ty</span>::<span class="ident">ReScope</span>(_) <span class="op">|</span>
                 <span class="ident">ty</span>::<span class="ident">ReVar</span>(_) <span class="op">|</span>
@@ -2193,7 +2193,7 @@
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">RegionVid</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;_#{}r&quot;</span>, <span class="self">self</span>.<span class="ident">index</span>)
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&#39;_#{}r&quot;</span>, <span class="self">self</span>.<span class="ident">index</span>())
     }
 }
 

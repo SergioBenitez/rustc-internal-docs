@@ -2188,6 +2188,10 @@
 <span id="2143">2143</span>
 <span id="2144">2144</span>
 <span id="2145">2145</span>
+<span id="2146">2146</span>
+<span id="2147">2147</span>
+<span id="2148">2148</span>
+<span id="2149">2149</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3566,10 +3570,14 @@
     <span class="doccomment">/// The type is of the element</span>
     <span class="ident">Array</span>(<span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
     <span class="ident">Tuple</span>,
-    <span class="doccomment">/// The second field is variant number (discriminant), it&#39;s equal to 0</span>
-    <span class="doccomment">/// for struct and union expressions. The fourth field is active field</span>
-    <span class="doccomment">/// number and is present only for union expressions.</span>
+
+    <span class="doccomment">/// The second field is variant number (discriminant), it&#39;s equal</span>
+    <span class="doccomment">/// to 0 for struct and union expressions. The fourth field is</span>
+    <span class="doccomment">/// active field number and is present only for union expressions</span>
+    <span class="doccomment">/// -- e.g. for a union expression `SomeUnion { c: .. }`, the</span>
+    <span class="doccomment">/// active field index would identity the field `c`</span>
     <span class="ident">Adt</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">AdtDef</span>, <span class="ident">usize</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>),
+
     <span class="ident">Closure</span>(<span class="ident">DefId</span>, <span class="ident">ClosureSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
     <span class="ident">Generator</span>(<span class="ident">DefId</span>, <span class="ident">ClosureSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">GeneratorInterior</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
 }

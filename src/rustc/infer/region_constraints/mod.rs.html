@@ -1018,7 +1018,7 @@
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">MiscVariable</span>, <span class="ident">RegionVariableOrigin</span>, <span class="ident">SubregionOrigin</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">unify_key</span>;
 
-<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">IndexVec</span>;
+<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::{<span class="ident">IndexVec</span>, <span class="ident">Idx</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::{<span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">unify</span>::{<span class="self">self</span>, <span class="ident">UnificationTable</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
@@ -1406,7 +1406,7 @@
             }
             <span class="ident">AddVar</span>(<span class="ident">vid</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">var_origins</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
-                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">var_origins</span>.<span class="ident">len</span>(), <span class="ident">vid</span>.<span class="ident">index</span> <span class="kw">as</span> <span class="ident">usize</span>);
+                <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">var_origins</span>.<span class="ident">len</span>(), <span class="ident">vid</span>.<span class="ident">index</span>() <span class="kw">as</span> <span class="ident">usize</span>);
             }
             <span class="ident">AddConstraint</span>(<span class="kw-2">ref</span> <span class="ident">constraint</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">constraints</span>.<span class="ident">remove</span>(<span class="ident">constraint</span>);
