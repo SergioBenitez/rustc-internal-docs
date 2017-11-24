@@ -56,7 +56,7 @@
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
-                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="primitive" href="primitive.f32.html">f32</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/std/f32.rs.html#43-1061' title='goto source code'>[src]</a></span></h3>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="primitive" href="primitive.f32.html">f32</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/std/f32.rs.html#43-1066' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.is_nan' class="method"><span id='is_nan.v' class='invisible'><code>pub fn <a href='#method.is_nan' class='fnname'>is_nan</a>(self) -&gt; <a class="primitive" href="primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/std/f32.rs.html#57' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns <code>true</code> if this value is <code>NaN</code> and false otherwise.</p>
 
@@ -695,43 +695,61 @@ the operations were performed separately.</p>
 <span class="kw">let</span> <span class="ident">abs_difference</span> <span class="op">=</span> (<span class="ident">f</span> <span class="op">-</span> <span class="ident">e</span>).<span class="ident">abs</span>();
 
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">abs_difference</span> <span class="op">&lt;=</span> <span class="number">1e-5</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Af32%3B%0A%0Alet%20e%20%3D%20f32%3A%3Aconsts%3A%3AE%3B%0Alet%20f%20%3D%20e.tanh().atanh()%3B%0A%0Alet%20abs_difference%20%3D%20(f%20-%20e).abs()%3B%0A%0Aassert!(abs_difference%20%3C%3D%201e-5)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.to_bits' class="method"><span id='to_bits.v' class='invisible'><code>pub fn <a href='#method.to_bits' class='fnname'>to_bits</a>(self) -&gt; <a class="primitive" href="primitive.u32.html">u32</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.20.0'>1.20.0</div><a class='srclink' href='../src/std/f32.rs.html#1015-1017' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.to_bits' class="method"><span id='to_bits.v' class='invisible'><code>pub fn <a href='#method.to_bits' class='fnname'>to_bits</a>(self) -&gt; <a class="primitive" href="primitive.u32.html">u32</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.20.0'>1.20.0</div><a class='srclink' href='../src/std/f32.rs.html#1018-1020' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Raw transmutation to <code>u32</code>.</p>
 
-<p>Converts the <code>f32</code> into its raw memory representation,
-similar to the <code>transmute</code> function.</p>
+<p>This is currently identical to <code>transmute::&lt;f32, u32&gt;(self)</code> on all platforms.</p>
 
-<p>Note that this function is distinct from casting.</p>
+<p>See <code>from_bits</code> for some discussion of the portability of this operation
+(there are almost no issues).</p>
+
+<p>Note that this function is distinct from <code>as</code> casting, which attempts to
+preserve the <em>numeric</em> value, and not the bitwise value.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_ne</span><span class="macro">!</span>((<span class="number">1f32</span>).<span class="ident">to_bits</span>(), <span class="number">1f32</span> <span class="kw">as</span> <span class="ident">u32</span>); <span class="comment">// to_bits() is not casting!</span>
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="number">12.5f32</span>).<span class="ident">to_bits</span>(), <span class="number">0x41480000</span>);
 <a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_ne!((1f32).to_bits()%2C%201f32%20as%20u32)%3B%20%2F%2F%20to_bits()%20is%20not%20casting!%0Aassert_eq!((12.5f32).to_bits()%2C%200x41480000)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.from_bits' class="method"><span id='from_bits.v' class='invisible'><code>pub fn <a href='#method.from_bits' class='fnname'>from_bits</a>(v: <a class="primitive" href="primitive.u32.html">u32</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.20.0'>1.20.0</div><a class='srclink' href='../src/std/f32.rs.html#1046-1060' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.from_bits' class="method"><span id='from_bits.v' class='invisible'><code>pub fn <a href='#method.from_bits' class='fnname'>from_bits</a>(v: <a class="primitive" href="primitive.u32.html">u32</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.20.0'>1.20.0</div><a class='srclink' href='../src/std/f32.rs.html#1062-1065' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Raw transmutation from <code>u32</code>.</p>
 
-<p>Converts the given <code>u32</code> containing the float&#39;s raw memory
-representation into the <code>f32</code> type, similar to the
-<code>transmute</code> function.</p>
+<p>This is currently identical to <code>transmute::&lt;u32, f32&gt;(v)</code> on all platforms.
+It turns out this is incredibly portable, for two reasons:</p>
 
-<p>There is only one difference to a bare <code>transmute</code>:
-Due to the implications onto Rust&#39;s safety promises being
-uncertain, if the representation of a signaling NaN &quot;sNaN&quot; float
-is passed to the function, the implementation is allowed to
-return a quiet NaN instead.</p>
+<ul>
+<li>Floats and Ints have the same endianess on all supported platforms.</li>
+<li>IEEE-754 very precisely specifies the bit layout of floats.</li>
+</ul>
 
-<p>Note that this function is distinct from casting.</p>
+<p>However there is one caveat: prior to the 2008 version of IEEE-754, how
+to interpret the NaN signaling bit wasn&#39;t actually specified. Most platforms
+(notably x86 and ARM) picked the interpretation that was ultimately
+standardized in 2008, but some didn&#39;t (notably MIPS). As a result, all
+signaling NaNs on MIPS are quiet NaNs on x86, and vice-versa.</p>
+
+<p>Rather than trying to preserve signaling-ness cross-platform, this
+implementation favours preserving the exact bits. This means that
+any payloads encoded in NaNs will be preserved even if the result of
+this method is sent over the network from an x86 machine to a MIPS one.</p>
+
+<p>If the results of this method are only manipulated by the same
+architecture that produced them, then there is no portability concern.</p>
+
+<p>If the input isn&#39;t NaN, then there is no portability concern.</p>
+
+<p>If you don&#39;t care about signalingness (very likely), then there is no
+portability concern.</p>
+
+<p>Note that this function is distinct from <code>as</code> casting, which attempts to
+preserve the <em>numeric</em> value, and not the bitwise value.</p>
 
 <h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">f32</span>;
 <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">f32</span>::<span class="ident">from_bits</span>(<span class="number">0x41480000</span>);
 <span class="kw">let</span> <span class="ident">difference</span> <span class="op">=</span> (<span class="ident">v</span> <span class="op">-</span> <span class="number">12.5</span>).<span class="ident">abs</span>();
-<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">difference</span> <span class="op">&lt;=</span> <span class="number">1e-5</span>);
-<span class="comment">// Example for a signaling NaN value:</span>
-<span class="kw">let</span> <span class="ident">snan</span> <span class="op">=</span> <span class="number">0x7F800001</span>;
-<span class="macro">assert_ne</span><span class="macro">!</span>(<span class="ident">f32</span>::<span class="ident">from_bits</span>(<span class="ident">snan</span>).<span class="ident">to_bits</span>(), <span class="ident">snan</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Af32%3B%0Alet%20v%20%3D%20f32%3A%3Afrom_bits(0x41480000)%3B%0Alet%20difference%20%3D%20(v%20-%2012.5).abs()%3B%0Aassert!(difference%20%3C%3D%201e-5)%3B%0A%2F%2F%20Example%20for%20a%20signaling%20NaN%20value%3A%0Alet%20snan%20%3D%200x7F800001%3B%0Aassert_ne!(f32%3A%3Afrom_bits(snan).to_bits()%2C%20snan)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">difference</span> <span class="op">&lt;=</span> <span class="number">1e-5</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Af32%3B%0Alet%20v%20%3D%20f32%3A%3Afrom_bits(0x41480000)%3B%0Alet%20difference%20%3D%20(v%20-%2012.5).abs()%3B%0Aassert!(difference%20%3C%3D%201e-5)%3B%0A%7D">Run</a></pre>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>

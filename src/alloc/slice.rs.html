@@ -3704,9 +3704,9 @@
         <span class="ident">core_slice</span>::<span class="ident">SliceExt</span>::<span class="ident">copy_from_slice</span>(<span class="self">self</span>, <span class="ident">src</span>)
     }
 
-    <span class="doccomment">/// Swaps all elements in `self` with those in `src`.</span>
+    <span class="doccomment">/// Swaps all elements in `self` with those in `other`.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// The length of `src` must be the same as `self`.</span>
+    <span class="doccomment">/// The length of `other` must be the same as `self`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Panics</span>
     <span class="doccomment">///</span>
@@ -3717,16 +3717,16 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// #![feature(swap_with_slice)]</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut src = [1, 2, 3];</span>
-    <span class="doccomment">/// let mut dst = [7, 8, 9];</span>
+    <span class="doccomment">/// let mut slice1 = [1, 2, 3];</span>
+    <span class="doccomment">/// let mut slice2 = [7, 8, 9];</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// src.swap_with_slice(&amp;mut dst);</span>
-    <span class="doccomment">/// assert_eq!(src, [7, 8, 9]);</span>
-    <span class="doccomment">/// assert_eq!(dst, [1, 2, 3]);</span>
+    <span class="doccomment">/// slice1.swap_with_slice(&amp;mut slice2);</span>
+    <span class="doccomment">/// assert_eq!(slice1, [7, 8, 9]);</span>
+    <span class="doccomment">/// assert_eq!(slice2, [1, 2, 3]);</span>
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;swap_with_slice&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;44030&quot;</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">swap_with_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">src</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>]) {
-        <span class="ident">core_slice</span>::<span class="ident">SliceExt</span>::<span class="ident">swap_with_slice</span>(<span class="self">self</span>, <span class="ident">src</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">swap_with_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>]) {
+        <span class="ident">core_slice</span>::<span class="ident">SliceExt</span>::<span class="ident">swap_with_slice</span>(<span class="self">self</span>, <span class="ident">other</span>)
     }
 
     <span class="doccomment">/// Copies `self` into a new `Vec`.</span>

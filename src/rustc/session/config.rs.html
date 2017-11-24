@@ -2765,6 +2765,9 @@
 <span id="2720">2720</span>
 <span id="2721">2721</span>
 <span id="2722">2722</span>
+<span id="2723">2723</span>
+<span id="2724">2724</span>
+<span id="2725">2725</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3912,6 +3915,9 @@
     <span class="ident">saturating_float_casts</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
         <span class="string">&quot;make float-&gt;int casts UB-free: numbers outside the integer type&#39;s range are clipped to \
          the max/min integer respectively, and NaN is mapped to 0&quot;</span>),
+    <span class="ident">lower_128bit_ops</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
+        <span class="string">&quot;rewrite operators on i128 and u128 into lang item calls (typically provided \
+         by compiler-builtins) so translation doesn&#39;t need to support them&quot;</span>),
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">default_lib_output</span>() <span class="op">-&gt;</span> <span class="ident">CrateType</span> {

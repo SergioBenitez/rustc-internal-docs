@@ -1866,6 +1866,8 @@
 <span id="1821">1821</span>
 <span id="1822">1822</span>
 <span id="1823">1823</span>
+<span id="1824">1824</span>
+<span id="1825">1825</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2581,8 +2583,10 @@
     <span class="doccomment">/// Executes the command as a child process, waiting for it to finish and</span>
     <span class="doccomment">/// collecting all of its output.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// By default, stdin, stdout and stderr are captured (and used to</span>
-    <span class="doccomment">/// provide the resulting output).</span>
+    <span class="doccomment">/// By default, stdout and stderr are captured (and used to provide the</span>
+    <span class="doccomment">/// resulting output). Stdin is not inherited from the parent and any</span>
+    <span class="doccomment">/// attempt by the child process to read from the stdin stream will result</span>
+    <span class="doccomment">/// in the stream immediately closing.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>

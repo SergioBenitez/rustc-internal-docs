@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rustc_mir/transform/mod.rs.html#142-151' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rustc_mir/transform/mod.rs.html#143-152' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait MirPass {
     fn <a href='#tymethod.run_pass' class='fnname'>run_pass</a>&lt;'a, 'tcx&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;self, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tcx: <a class="struct" href="../../rustc/ty/context/struct.TyCtxt.html" title="struct rustc::ty::context::TyCtxt">TyCtxt</a>&lt;'a, 'tcx, 'tcx&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source: <a class="struct" href="../../rustc_mir/transform/struct.MirSource.html" title="struct rustc_mir::transform::MirSource">MirSource</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mir: &amp;mut <a class="struct" href="../../rustc/mir/struct.Mir.html" title="struct rustc::mir::Mir">Mir</a>&lt;'tcx&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;);
 
@@ -92,6 +92,7 @@ loop that goes over each available MIR and applies <code>run_pass</code>.</p>
 <li><div class='out-of-band'><a class='srclink' href='../../src/rustc_mir/transform/copy_prop.rs.html#41-159' title='goto source code'>[src]</a></div><code>impl MirPass for <a class="struct" href="../../rustc_mir/transform/copy_prop/struct.CopyPropagation.html" title="struct rustc_mir::transform::copy_prop::CopyPropagation">CopyPropagation</a></code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/rustc_mir/transform/generator.rs.html#751-847' title='goto source code'>[src]</a></div><code>impl MirPass for <a class="struct" href="../../rustc_mir/transform/generator/struct.StateTransform.html" title="struct rustc_mir::transform::generator::StateTransform">StateTransform</a></code></li>
 <li><div class='out-of-band'><a class='srclink' href='../../src/rustc_mir/transform/inline.rs.html#51-60' title='goto source code'>[src]</a></div><code>impl MirPass for <a class="struct" href="../../rustc_mir/transform/inline/struct.Inline.html" title="struct rustc_mir::transform::inline::Inline">Inline</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/rustc_mir/transform/lower_128bit.rs.html#23-34' title='goto source code'>[src]</a></div><code>impl MirPass for <a class="struct" href="../../rustc_mir/transform/lower_128bit/struct.Lower128Bit.html" title="struct rustc_mir::transform::lower_128bit::Lower128Bit">Lower128Bit</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/rustc_mir/transform/trait.MirPass.js">
                  </script></section>

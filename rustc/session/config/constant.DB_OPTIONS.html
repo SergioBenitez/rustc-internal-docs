@@ -239,7 +239,9 @@
    &quot;choose the TLS model to use (rustc --print tls-models for details)&quot;),
   (&quot;saturating_float_casts&quot;, dbsetters::saturating_float_casts,
    db_type_desc::parse_bool,
-   &quot;make float-&gt;int casts UB-free: numbers outside the integer type\&#39;s range are clipped to the max/min integer respectively, and NaN is mapped to 0&quot;)]</code></pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
+   &quot;make float-&gt;int casts UB-free: numbers outside the integer type\&#39;s range are clipped to the max/min integer respectively, and NaN is mapped to 0&quot;),
+  (&quot;lower_128bit_ops&quot;, dbsetters::lower_128bit_ops, db_type_desc::parse_bool,
+   &quot;rewrite operators on i128 and u128 into lang item calls (typically provided by compiler-builtins) so translation doesn\&#39;t need to support them&quot;)]</code></pre><div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div></section>
     <section id='search' class="content hidden"></section>
 

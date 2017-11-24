@@ -364,6 +364,34 @@
 <span id="319">319</span>
 <span id="320">320</span>
 <span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -677,6 +705,34 @@
     <span class="ident">NonZeroItem</span>,                     <span class="string">&quot;non_zero&quot;</span>,                <span class="ident">non_zero</span>;
 
     <span class="ident">DebugTraitLangItem</span>,              <span class="string">&quot;debug_trait&quot;</span>,             <span class="ident">debug_trait</span>;
+
+    <span class="comment">// A lang item for each of the 128-bit operators we can optionally lower.</span>
+    <span class="ident">I128AddFnLangItem</span>,               <span class="string">&quot;i128_add&quot;</span>,                <span class="ident">i128_add_fn</span>;
+    <span class="ident">U128AddFnLangItem</span>,               <span class="string">&quot;u128_add&quot;</span>,                <span class="ident">u128_add_fn</span>;
+    <span class="ident">I128SubFnLangItem</span>,               <span class="string">&quot;i128_sub&quot;</span>,                <span class="ident">i128_sub_fn</span>;
+    <span class="ident">U128SubFnLangItem</span>,               <span class="string">&quot;u128_sub&quot;</span>,                <span class="ident">u128_sub_fn</span>;
+    <span class="ident">I128MulFnLangItem</span>,               <span class="string">&quot;i128_mul&quot;</span>,                <span class="ident">i128_mul_fn</span>;
+    <span class="ident">U128MulFnLangItem</span>,               <span class="string">&quot;u128_mul&quot;</span>,                <span class="ident">u128_mul_fn</span>;
+    <span class="ident">I128DivFnLangItem</span>,               <span class="string">&quot;i128_div&quot;</span>,                <span class="ident">i128_div_fn</span>;
+    <span class="ident">U128DivFnLangItem</span>,               <span class="string">&quot;u128_div&quot;</span>,                <span class="ident">u128_div_fn</span>;
+    <span class="ident">I128RemFnLangItem</span>,               <span class="string">&quot;i128_rem&quot;</span>,                <span class="ident">i128_rem_fn</span>;
+    <span class="ident">U128RemFnLangItem</span>,               <span class="string">&quot;u128_rem&quot;</span>,                <span class="ident">u128_rem_fn</span>;
+    <span class="ident">I128ShlFnLangItem</span>,               <span class="string">&quot;i128_shl&quot;</span>,                <span class="ident">i128_shl_fn</span>;
+    <span class="ident">U128ShlFnLangItem</span>,               <span class="string">&quot;u128_shl&quot;</span>,                <span class="ident">u128_shl_fn</span>;
+    <span class="ident">I128ShrFnLangItem</span>,               <span class="string">&quot;i128_shr&quot;</span>,                <span class="ident">i128_shr_fn</span>;
+    <span class="ident">U128ShrFnLangItem</span>,               <span class="string">&quot;u128_shr&quot;</span>,                <span class="ident">u128_shr_fn</span>;
+    <span class="comment">// And overflow versions for the operators that are checkable.</span>
+    <span class="comment">// While MIR calls these Checked*, they return (T,bool), not Option&lt;T&gt;.</span>
+    <span class="ident">I128AddoFnLangItem</span>,              <span class="string">&quot;i128_addo&quot;</span>,               <span class="ident">i128_addo_fn</span>;
+    <span class="ident">U128AddoFnLangItem</span>,              <span class="string">&quot;u128_addo&quot;</span>,               <span class="ident">u128_addo_fn</span>;
+    <span class="ident">I128SuboFnLangItem</span>,              <span class="string">&quot;i128_subo&quot;</span>,               <span class="ident">i128_subo_fn</span>;
+    <span class="ident">U128SuboFnLangItem</span>,              <span class="string">&quot;u128_subo&quot;</span>,               <span class="ident">u128_subo_fn</span>;
+    <span class="ident">I128MuloFnLangItem</span>,              <span class="string">&quot;i128_mulo&quot;</span>,               <span class="ident">i128_mulo_fn</span>;
+    <span class="ident">U128MuloFnLangItem</span>,              <span class="string">&quot;u128_mulo&quot;</span>,               <span class="ident">u128_mulo_fn</span>;
+    <span class="ident">I128ShloFnLangItem</span>,              <span class="string">&quot;i128_shlo&quot;</span>,               <span class="ident">i128_shlo_fn</span>;
+    <span class="ident">U128ShloFnLangItem</span>,              <span class="string">&quot;u128_shlo&quot;</span>,               <span class="ident">u128_shlo_fn</span>;
+    <span class="ident">I128ShroFnLangItem</span>,              <span class="string">&quot;i128_shro&quot;</span>,               <span class="ident">i128_shro_fn</span>;
+    <span class="ident">U128ShroFnLangItem</span>,              <span class="string">&quot;u128_shro&quot;</span>,               <span class="ident">u128_shro_fn</span>;
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {

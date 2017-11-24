@@ -2192,6 +2192,15 @@
 <span id="2147">2147</span>
 <span id="2148">2148</span>
 <span id="2149">2149</span>
+<span id="2150">2150</span>
+<span id="2151">2151</span>
+<span id="2152">2152</span>
+<span id="2153">2153</span>
+<span id="2154">2154</span>
+<span id="2155">2155</span>
+<span id="2156">2156</span>
+<span id="2157">2157</span>
+<span id="2158">2158</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2363,6 +2372,15 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">basic_blocks_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">BasicBlock</span>, <span class="ident">BasicBlockData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
         <span class="self">self</span>.<span class="ident">cache</span>.<span class="ident">invalidate</span>();
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">basic_blocks</span>
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">basic_blocks_and_local_decls_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> (
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">BasicBlock</span>, <span class="ident">BasicBlockData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">LocalDecls</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    ) {
+        <span class="self">self</span>.<span class="ident">cache</span>.<span class="ident">invalidate</span>();
+        (<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">basic_blocks</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">local_decls</span>)
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
