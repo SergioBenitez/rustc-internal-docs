@@ -943,6 +943,61 @@
 <span id="898">898</span>
 <span id="899">899</span>
 <span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1844,6 +1899,61 @@
 
     <span class="bool-val">true</span>
 }
+
+
+<span class="comment">// FIXME(#45015): Another piece of boilerplate code that could be generated in</span>
+<span class="comment">//                a combined define_dep_nodes!()/define_maps!() macro.</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">impl_load_from_cache</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dep_kind</span>:<span class="ident">ident</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">query_name</span>:<span class="ident">ident</span>,)<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        <span class="kw">impl</span> <span class="ident">DepNode</span> {
+            <span class="comment">// Check whether the query invocation corresponding to the given</span>
+            <span class="comment">// DepNode is eligible for on-disk-caching.</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cache_on_disk</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+                <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">queries</span>;
+                <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">QueryDescription</span>;
+
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">kind</span> {
+                    $(<span class="ident">DepKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dep_kind</span> <span class="op">=&gt;</span> {
+                        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">extract_def_id</span>(<span class="ident">tcx</span>).<span class="ident">unwrap</span>();
+                        <span class="ident">queries</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">query_name</span>::<span class="ident">cache_on_disk</span>(<span class="ident">def_id</span>)
+                    })<span class="op">*</span>
+                    _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
+                }
+            }
+
+            <span class="comment">// This is method will execute the query corresponding to the given</span>
+            <span class="comment">// DepNode. It is only expected to work for DepNodes where the</span>
+            <span class="comment">// above `cache_on_disk` methods returns true.</span>
+            <span class="comment">// Also, as a sanity check, it expects that the corresponding query</span>
+            <span class="comment">// invocation has been marked as green already.</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_from_on_disk_cache</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span>) {
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">kind</span> {
+                    $(<span class="ident">DepKind</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dep_kind</span> <span class="op">=&gt;</span> {
+                        <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">tcx</span>.<span class="ident">dep_graph</span>
+                                         .<span class="ident">node_color</span>(<span class="self">self</span>)
+                                         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">is_green</span>())
+                                         .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>));
+
+                        <span class="kw">let</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">extract_def_id</span>(<span class="ident">tcx</span>).<span class="ident">unwrap</span>();
+                        <span class="kw">let</span> _ <span class="op">=</span> <span class="ident">tcx</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">query_name</span>(<span class="ident">def_id</span>);
+                    })<span class="op">*</span>
+                    _ <span class="op">=&gt;</span> {
+                        <span class="macro">bug</span><span class="macro">!</span>()
+                    }
+                }
+            }
+        }
+    }
+}
+
+<span class="macro">impl_load_from_cache</span><span class="macro">!</span>(
+    <span class="ident">TypeckTables</span> <span class="op">=&gt;</span> <span class="ident">typeck_tables_of</span>,
+    <span class="ident">MirOptimized</span> <span class="op">=&gt;</span> <span class="ident">optimized_mir</span>,
+    <span class="ident">UnsafetyCheckResult</span> <span class="op">=&gt;</span> <span class="ident">unsafety_check_result</span>,
+    <span class="ident">BorrowCheck</span> <span class="op">=&gt;</span> <span class="ident">borrowck</span>,
+    <span class="ident">MirBorrowCheck</span> <span class="op">=&gt;</span> <span class="ident">mir_borrowck</span>,
+    <span class="ident">MirConstQualif</span> <span class="op">=&gt;</span> <span class="ident">mir_const_qualif</span>,
+);
 </pre>
 </section>
     <section id='search' class="content hidden"></section>
