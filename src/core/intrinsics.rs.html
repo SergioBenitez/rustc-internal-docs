@@ -1433,6 +1433,11 @@
 <span id="1388">1388</span>
 <span id="1389">1389</span>
 <span id="1390">1390</span>
+<span id="1391">1391</span>
+<span id="1392">1392</span>
+<span id="1393">1393</span>
+<span id="1394">1394</span>
+<span id="1395">1395</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2823,6 +2828,11 @@
     <span class="doccomment">/// # } }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">align_offset</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> (), <span class="ident">align</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="ident">usize</span>;
+
+    <span class="doccomment">/// Emits a `!nontemporal` store according to LLVM (see their docs).</span>
+    <span class="doccomment">/// Probably will never become stable.</span>
+    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nontemporal_store</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">val</span>: <span class="ident">T</span>);
 }
 </pre>
 </section>
