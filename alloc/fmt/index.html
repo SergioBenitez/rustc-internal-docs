@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/alloc/fmt.rs.html#11-557' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/alloc/fmt.rs.html#11-567' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>Utilities for formatting and printing <code>String</code>s.</p>
 
 <p>This module contains the runtime support for the <a href="../../std/macro.format.html"><code>format!</code></a> syntax extension.
@@ -260,6 +260,8 @@ are currently implemented are:</p>
 <span class="macro">writeln</span><span class="macro">!</span>     <span class="comment">// same as write but appends a newline</span>
 <span class="macro">print</span><span class="macro">!</span>       <span class="comment">// the format string is printed to the standard output</span>
 <span class="macro">println</span><span class="macro">!</span>     <span class="comment">// same as print but appends a newline</span>
+<span class="macro">eprint</span><span class="macro">!</span>      <span class="comment">// the format string is printed to the standard error</span>
+<span class="macro">eprintln</span><span class="macro">!</span>    <span class="comment">// same as eprint but appends a newline</span>
 <span class="macro">format_args</span><span class="macro">!</span> <span class="comment">// described below.</span></pre>
 
 <h3 id='write' class='section-header'><a href='#write'><code>write!</code></a></h3>
@@ -282,6 +284,11 @@ printing output. Example usage is:</p>
 <pre class="rust rust-example-rendered">
 <span class="macro">print</span><span class="macro">!</span>(<span class="string">&quot;Hello {}!&quot;</span>, <span class="string">&quot;world&quot;</span>);
 <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;I have a newline {}&quot;</span>, <span class="string">&quot;character at the end&quot;</span>);</pre>
+
+<h3 id='eprint' class='section-header'><a href='#eprint'><code>eprint!</code></a></h3>
+<p>The <a href="../../std/macro.eprint.html"><code>eprint!</code></a> and <a href="../../std/macro.eprintln.html"><code>eprintln!</code></a> macros are identical to
+<a href="../../std/macro.print.html"><code>print!</code></a> and <a href="../../std/macro.println.html"><code>println!</code></a>, respectively, except they emit their
+output to stderr.</p>
 
 <h3 id='format_args' class='section-header'><a href='#format_args'><code>format_args!</code></a></h3>
 <p>This is a curious macro which is used to safely pass around

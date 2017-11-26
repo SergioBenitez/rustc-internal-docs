@@ -89,7 +89,7 @@ a new <a href="../../std/rc/struct.Rc.html"><code>Rc&lt;T&gt;</code></a>, modify
 
 <p>For cases when one does need thread-safe interior mutability,
 Rust provides <a href="../sync/atomic/index.html">atomic data types</a>, as well as explicit locking via
-<a href="../../std/sync/struct.Mutex.html"><code>sync::Mutex</code></a> and <a href="../../std/sync/struct.RwLock.html"><code>sync::RWLock</code></a>. These types
+<a href="../../std/sync/struct.Mutex.html"><code>sync::Mutex</code></a> and <a href="../../std/sync/struct.RwLock.html"><code>sync::RwLock</code></a>. These types
 ensure that any mutation cannot cause data races, hence the types
 are <code>Sync</code>. Likewise, <a href="../../std/sync/struct.Arc.html"><code>sync::Arc</code></a> provides a thread-safe
 analogue of <a href="../../std/rc/struct.Rc.html"><code>Rc</code></a>.</p>
