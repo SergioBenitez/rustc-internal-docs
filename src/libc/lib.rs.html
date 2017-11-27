@@ -630,7 +630,7 @@
     } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;redox&quot;</span>)]</span> {
         <span class="kw">mod</span> <span class="ident">redox</span>;
         <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">redox</span>::<span class="kw-2">*</span>;
-    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchisa&quot;</span>)]</span> {
+    } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;fuchsia&quot;</span>)]</span> {
         <span class="kw">mod</span> <span class="ident">fuchsia</span>;
         <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">fuchsia</span>::<span class="kw-2">*</span>;
     } <span class="kw">else</span> <span class="kw">if</span> <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">unix</span>)]</span> {
