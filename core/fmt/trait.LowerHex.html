@@ -48,13 +48,16 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/fmt/mod.rs.html#759-763' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/fmt/mod.rs.html#774-778' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait LowerHex {
     fn <a href='#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="../../core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="../../core/fmt/type.Result.html" title="type core::fmt::Result">Result</a>;
 }</pre><div class='docblock'><p><code>x</code> formatting.</p>
 
 <p>The <code>LowerHex</code> trait should format its output as a number in hexadecimal, with <code>a</code> through <code>f</code>
 in lower case.</p>
+
+<p>For primitive signed integers (<code>i8</code> to <code>i128</code>, and <code>isize</code>),
+negative values are formatted as the two’s complement representation.</p>
 
 <p>The alternate flag, <code>#</code>, adds a <code>0x</code> in front of the output.</p>
 
@@ -67,7 +70,9 @@ in lower case.</p>
 <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">42</span>; <span class="comment">// 42 is &#39;2a&#39; in hex</span>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:x}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;2a&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:#x}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;0x2a&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20x%20%3D%2042%3B%20%2F%2F%2042%20is%20'2a'%20in%20hex%0A%0Aassert_eq!(format!(%22%7B%3Ax%7D%22%2C%20x)%2C%20%222a%22)%3B%0Aassert_eq!(format!(%22%7B%3A%23x%7D%22%2C%20x)%2C%20%220x2a%22)%3B%0A%7D">Run</a></pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:#x}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;0x2a&quot;</span>);
+
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:x}&quot;</span>, <span class="op">-</span><span class="number">16</span>), <span class="string">&quot;fffffff0&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20x%20%3D%2042%3B%20%2F%2F%2042%20is%20'2a'%20in%20hex%0A%0Aassert_eq!(format!(%22%7B%3Ax%7D%22%2C%20x)%2C%20%222a%22)%3B%0Aassert_eq!(format!(%22%7B%3A%23x%7D%22%2C%20x)%2C%20%220x2a%22)%3B%0A%0Aassert_eq!(format!(%22%7B%3Ax%7D%22%2C%20-16)%2C%20%22fffffff0%22)%3B%0A%7D">Run</a></pre>
 
 <p>Implementing <code>LowerHex</code> on a type:</p>
 

@@ -48,12 +48,15 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/core/fmt/mod.rs.html#664-668' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/core/fmt/mod.rs.html#669-673' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Octal {
     fn <a href='#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="../../alloc/fmt/struct.Formatter.html" title="struct alloc::fmt::Formatter">Formatter</a>) -&gt; <a class="enum" href="../../core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;(), <a class="struct" href="../../alloc/fmt/struct.Error.html" title="struct alloc::fmt::Error">Error</a>&gt;;
 }</pre><div class='docblock'><p><code>o</code> formatting.</p>
 
 <p>The <code>Octal</code> trait should format its output as a number in base-8.</p>
+
+<p>For primitive signed integers (<code>i8</code> to <code>i128</code>, and <code>isize</code>),
+negative values are formatted as the two’s complement representation.</p>
 
 <p>The alternate flag, <code>#</code>, adds a <code>0o</code> in front of the output.</p>
 
@@ -66,7 +69,9 @@
 <span class="kw">let</span> <span class="ident">x</span> <span class="op">=</span> <span class="number">42</span>; <span class="comment">// 42 is &#39;52&#39; in octal</span>
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:o}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;52&quot;</span>);
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:#o}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;0o52&quot;</span>);</pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:#o}&quot;</span>, <span class="ident">x</span>), <span class="string">&quot;0o52&quot;</span>);
+
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{:o}&quot;</span>, <span class="op">-</span><span class="number">16</span>), <span class="string">&quot;37777777760&quot;</span>);</pre>
 
 <p>Implementing <code>Octal</code> on a type:</p>
 

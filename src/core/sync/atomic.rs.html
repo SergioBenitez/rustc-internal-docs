@@ -1870,7 +1870,6 @@
 <span id="1825">1825</span>
 <span id="1826">1826</span>
 <span id="1827">1827</span>
-<span id="1828">1828</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1977,9 +1976,8 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// On some platforms this function may not do anything at all.</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
-<span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;hint_core_should_pause&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;41196&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hint_core_should_pause</span>()
-{
+<span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;spin_loop_hint&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">spin_loop_hint</span>() {
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86&quot;</span>, <span class="ident">target_arch</span> <span class="op">=</span> <span class="string">&quot;x86_64&quot;</span>))]</span>
     <span class="kw">unsafe</span> {
         <span class="macro">asm</span><span class="macro">!</span>(<span class="string">&quot;pause&quot;</span> ::: <span class="string">&quot;memory&quot;</span> : <span class="string">&quot;volatile&quot;</span>);
