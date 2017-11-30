@@ -2212,27 +2212,6 @@
 <span id="2167">2167</span>
 <span id="2168">2168</span>
 <span id="2169">2169</span>
-<span id="2170">2170</span>
-<span id="2171">2171</span>
-<span id="2172">2172</span>
-<span id="2173">2173</span>
-<span id="2174">2174</span>
-<span id="2175">2175</span>
-<span id="2176">2176</span>
-<span id="2177">2177</span>
-<span id="2178">2178</span>
-<span id="2179">2179</span>
-<span id="2180">2180</span>
-<span id="2181">2181</span>
-<span id="2182">2182</span>
-<span id="2183">2183</span>
-<span id="2184">2184</span>
-<span id="2185">2185</span>
-<span id="2186">2186</span>
-<span id="2187">2187</span>
-<span id="2188">2188</span>
-<span id="2189">2189</span>
-<span id="2190">2190</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3664,15 +3643,45 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// let mut dst = [0, 0, 0];</span>
-    <span class="doccomment">/// let src = [1, 2, 3];</span>
+    <span class="doccomment">/// Cloning two elements from a slice into another:</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// dst.clone_from_slice(&amp;src);</span>
-    <span class="doccomment">/// assert!(dst == [1, 2, 3]);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// let src = [1, 2, 3, 4];</span>
+    <span class="doccomment">/// let mut dst = [0, 0];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// dst.clone_from_slice(&amp;src[2..]);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(src, [1, 2, 3, 4]);</span>
+    <span class="doccomment">/// assert_eq!(dst, [3, 4]);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Rust enforces that there can only be one mutable reference with no</span>
+    <span class="doccomment">/// immutable references to a particular piece of data in a particular</span>
+    <span class="doccomment">/// scope. Because of this, attempting to use `clone_from_slice` on a</span>
+    <span class="doccomment">/// single slice will result in a compile failure:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```compile_fail</span>
+    <span class="doccomment">/// let mut slice = [1, 2, 3, 4, 5];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// slice[..2].clone_from_slice(&amp;slice[3..]); // compile fail!</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// To work around this, we can use [`split_at_mut`] to create two distinct</span>
+    <span class="doccomment">/// sub-slices from a slice:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// let mut slice = [1, 2, 3, 4, 5];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// {</span>
+    <span class="doccomment">///     let (left, right) = slice.split_at_mut(2);</span>
+    <span class="doccomment">///     left.clone_from_slice(&amp;right[1..]);</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(slice, [4, 5, 3, 4, 5]);</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`copy_from_slice`]: #method.copy_from_slice</span>
+    <span class="doccomment">/// [`split_at_mut`]: #method.split_at_mut</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;clone_from_slice&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">clone_from_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">src</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Clone</span> {
         <span class="ident">core_slice</span>::<span class="ident">SliceExt</span>::<span class="ident">clone_from_slice</span>(<span class="self">self</span>, <span class="ident">src</span>)
@@ -3690,15 +3699,45 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// let mut dst = [0, 0, 0];</span>
-    <span class="doccomment">/// let src = [1, 2, 3];</span>
+    <span class="doccomment">/// Copying two elements from a slice into another:</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// dst.copy_from_slice(&amp;src);</span>
-    <span class="doccomment">/// assert_eq!(src, dst);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// let src = [1, 2, 3, 4];</span>
+    <span class="doccomment">/// let mut dst = [0, 0];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// dst.copy_from_slice(&amp;src[2..]);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(src, [1, 2, 3, 4]);</span>
+    <span class="doccomment">/// assert_eq!(dst, [3, 4]);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Rust enforces that there can only be one mutable reference with no</span>
+    <span class="doccomment">/// immutable references to a particular piece of data in a particular</span>
+    <span class="doccomment">/// scope. Because of this, attempting to use `copy_from_slice` on a</span>
+    <span class="doccomment">/// single slice will result in a compile failure:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```compile_fail</span>
+    <span class="doccomment">/// let mut slice = [1, 2, 3, 4, 5];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// slice[..2].copy_from_slice(&amp;slice[3..]); // compile fail!</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// To work around this, we can use [`split_at_mut`] to create two distinct</span>
+    <span class="doccomment">/// sub-slices from a slice:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// let mut slice = [1, 2, 3, 4, 5];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// {</span>
+    <span class="doccomment">///     let (left, right) = slice.split_at_mut(2);</span>
+    <span class="doccomment">///     left.copy_from_slice(&amp;right[1..]);</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(slice, [4, 5, 3, 4, 5]);</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`clone_from_slice`]: #method.clone_from_slice</span>
+    <span class="doccomment">/// [`split_at_mut`]: #method.split_at_mut</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;copy_from_slice&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.9.0&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">copy_from_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">src</span>: <span class="kw-2">&amp;</span>[<span class="ident">T</span>]) <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Copy</span> {
         <span class="ident">core_slice</span>::<span class="ident">SliceExt</span>::<span class="ident">copy_from_slice</span>(<span class="self">self</span>, <span class="ident">src</span>)
@@ -3714,16 +3753,49 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Example</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Swapping two elements across slices:</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// #![feature(swap_with_slice)]</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut slice1 = [1, 2, 3];</span>
-    <span class="doccomment">/// let mut slice2 = [7, 8, 9];</span>
+    <span class="doccomment">/// let mut slice1 = [0, 0];</span>
+    <span class="doccomment">/// let mut slice2 = [1, 2, 3, 4];</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// slice1.swap_with_slice(&amp;mut slice2);</span>
-    <span class="doccomment">/// assert_eq!(slice1, [7, 8, 9]);</span>
-    <span class="doccomment">/// assert_eq!(slice2, [1, 2, 3]);</span>
+    <span class="doccomment">/// slice1.swap_with_slice(&amp;mut slice2[2..]);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(slice1, [3, 4]);</span>
+    <span class="doccomment">/// assert_eq!(slice2, [1, 2, 0, 0]);</span>
     <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Rust enforces that there can only be one mutable reference to a</span>
+    <span class="doccomment">/// particular piece of data in a particular scope. Because of this,</span>
+    <span class="doccomment">/// attempting to use `swap_with_slice` on a single slice will result in</span>
+    <span class="doccomment">/// a compile failure:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```compile_fail</span>
+    <span class="doccomment">/// #![feature(swap_with_slice)]</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let mut slice = [1, 2, 3, 4, 5];</span>
+    <span class="doccomment">/// slice[..2].swap_with_slice(&amp;mut slice[3..]); // compile fail!</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// To work around this, we can use [`split_at_mut`] to create two distinct</span>
+    <span class="doccomment">/// mutable sub-slices from a slice:</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// #![feature(swap_with_slice)]</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let mut slice = [1, 2, 3, 4, 5];</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// {</span>
+    <span class="doccomment">///     let (left, right) = slice.split_at_mut(2);</span>
+    <span class="doccomment">///     left.swap_with_slice(&amp;mut right[1..]);</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(slice, [4, 5, 3, 1, 2]);</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`split_at_mut`]: #method.split_at_mut</span>
     <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;swap_with_slice&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;44030&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">swap_with_slice</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>]) {
         <span class="ident">core_slice</span>::<span class="ident">SliceExt</span>::<span class="ident">swap_with_slice</span>(<span class="self">self</span>, <span class="ident">other</span>)
@@ -3861,120 +3933,6 @@
         <span class="kw">for</span> <span class="ident">byte</span> <span class="kw">in</span> <span class="self">self</span> {
             <span class="ident">byte</span>.<span class="ident">make_ascii_lowercase</span>();
         }
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII alphabetic characters:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - U+0041 &#39;A&#39; ... U+005A &#39;Z&#39;, or</span>
-    <span class="doccomment">/// - U+0061 &#39;a&#39; ... U+007A &#39;z&#39;.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_alphabetic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_alphabetic</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII uppercase characters:</span>
-    <span class="doccomment">/// U+0041 &#39;A&#39; ... U+005A &#39;Z&#39;.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_uppercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_uppercase</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII lowercase characters:</span>
-    <span class="doccomment">/// U+0061 &#39;a&#39; ... U+007A &#39;z&#39;.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_lowercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_lowercase</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII alphanumeric characters:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - U+0041 &#39;A&#39; ... U+005A &#39;Z&#39;, or</span>
-    <span class="doccomment">/// - U+0061 &#39;a&#39; ... U+007A &#39;z&#39;, or</span>
-    <span class="doccomment">/// - U+0030 &#39;0&#39; ... U+0039 &#39;9&#39;.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_alphanumeric</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_alphanumeric</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII decimal digit:</span>
-    <span class="doccomment">/// U+0030 &#39;0&#39; ... U+0039 &#39;9&#39;.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_digit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_digit</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII hexadecimal digits:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - U+0030 &#39;0&#39; ... U+0039 &#39;9&#39;, or</span>
-    <span class="doccomment">/// - U+0041 &#39;A&#39; ... U+0046 &#39;F&#39;, or</span>
-    <span class="doccomment">/// - U+0061 &#39;a&#39; ... U+0066 &#39;f&#39;.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_hexdigit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_hexdigit</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII punctuation characters:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - U+0021 ... U+002F `! &quot; # $ % &amp; &#39; ( ) * + , - . /`, or</span>
-    <span class="doccomment">/// - U+003A ... U+0040 `: ; &lt; = &gt; ? @`, or</span>
-    <span class="doccomment">/// - U+005B ... U+0060 `[ \\ ] ^ _ \``, or</span>
-    <span class="doccomment">/// - U+007B ... U+007E `{ | } ~`</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_punctuation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_punctuation</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII graphic characters:</span>
-    <span class="doccomment">/// U+0021 &#39;@&#39; ... U+007E &#39;~&#39;.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_graphic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_graphic</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII whitespace characters:</span>
-    <span class="doccomment">/// U+0020 SPACE, U+0009 HORIZONTAL TAB, U+000A LINE FEED,</span>
-    <span class="doccomment">/// U+000C FORM FEED, or U+000D CARRIAGE RETURN.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Rust uses the WhatWG Infra Standard&#39;s [definition of ASCII</span>
-    <span class="doccomment">/// whitespace][infra-aw]. There are several other definitions in</span>
-    <span class="doccomment">/// wide use. For instance, [the POSIX locale][pct] includes</span>
-    <span class="doccomment">/// U+000B VERTICAL TAB as well as all the above characters,</span>
-    <span class="doccomment">/// but—from the very same specification—[the default rule for</span>
-    <span class="doccomment">/// &quot;field splitting&quot; in the Bourne shell][bfs] considers *only*</span>
-    <span class="doccomment">/// SPACE, HORIZONTAL TAB, and LINE FEED as whitespace.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If you are writing a program that will process an existing</span>
-    <span class="doccomment">/// file format, check what that format&#39;s definition of whitespace is</span>
-    <span class="doccomment">/// before using this function.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// [infra-aw]: https://infra.spec.whatwg.org/#ascii-whitespace</span>
-    <span class="doccomment">/// [pct]: http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap07.html#tag_07_03_01</span>
-    <span class="doccomment">/// [bfs]: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_05</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_whitespace</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_whitespace</span>())
-    }
-
-    <span class="doccomment">/// Checks if all bytes of this slice are ASCII control characters:</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// - U+0000 NUL ... U+001F UNIT SEPARATOR, or</span>
-    <span class="doccomment">/// - U+007F DELETE.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// Note that most ASCII whitespace characters are control</span>
-    <span class="doccomment">/// characters, but SPACE is not.</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_control</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">is_ascii_control</span>())
     }
 }
 

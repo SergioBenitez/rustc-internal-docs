@@ -2600,6 +2600,10 @@
 <span id="2555">2555</span>
 <span id="2556">2556</span>
 <span id="2557">2557</span>
+<span id="2558">2558</span>
+<span id="2559">2559</span>
+<span id="2560">2560</span>
+<span id="2561">2561</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2677,7 +2681,6 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_ptr_null&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">null</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span> { <span class="number">0</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span> }
 
 <span class="doccomment">/// Creates a null mutable raw pointer.</span>
@@ -2692,7 +2695,6 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_ptr_null_mut&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">null_mut</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> { <span class="number">0</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> }
 
 <span class="doccomment">/// Swaps the values at two mutable locations of the same type, without</span>
@@ -3077,6 +3079,11 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span> {
     <span class="doccomment">/// Returns `true` if the pointer is null.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that unsized types have many possible null pointers, as only the</span>
+    <span class="doccomment">/// raw data pointer is considered, not their length, vtable, etc.</span>
+    <span class="doccomment">/// Therefore, two pointers that are null may still not compare equal to</span>
+    <span class="doccomment">/// each other.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Basic usage:</span>
@@ -3088,8 +3095,10 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Sized</span> {
-        <span class="self">self</span> <span class="op">==</span> <span class="ident">null</span>()
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="comment">// Compare via a cast to a thin pointer, so fat pointers are only</span>
+        <span class="comment">// considering their &quot;data&quot; part for null-ness.</span>
+        (<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>) <span class="op">==</span> <span class="ident">null</span>()
     }
 
     <span class="doccomment">/// Returns `None` if the pointer is null, or else returns a reference to</span>
@@ -3121,9 +3130,7 @@
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ptr_as_ref&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.9.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_ref</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="comment">// Check for null via a cast to a thin pointer, so fat pointers are only</span>
-        <span class="comment">// considering their &quot;data&quot; part for null-ness.</span>
-        <span class="kw">if</span> (<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>).<span class="ident">is_null</span>() {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_null</span>() {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>)
@@ -3710,6 +3717,11 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> {
     <span class="doccomment">/// Returns `true` if the pointer is null.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that unsized types have many possible null pointers, as only the</span>
+    <span class="doccomment">/// raw data pointer is considered, not their length, vtable, etc.</span>
+    <span class="doccomment">/// Therefore, two pointers that are null may still not compare equal to</span>
+    <span class="doccomment">/// each other.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Basic usage:</span>
@@ -3721,8 +3733,10 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">Sized</span> {
-        <span class="self">self</span> <span class="op">==</span> <span class="ident">null_mut</span>()
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="comment">// Compare via a cast to a thin pointer, so fat pointers are only</span>
+        <span class="comment">// considering their &quot;data&quot; part for null-ness.</span>
+        (<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>) <span class="op">==</span> <span class="ident">null_mut</span>()
     }
 
     <span class="doccomment">/// Returns `None` if the pointer is null, or else returns a reference to</span>
@@ -3754,9 +3768,7 @@
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ptr_as_ref&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.9.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_ref</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="comment">// Check for null via a cast to a thin pointer, so fat pointers are only</span>
-        <span class="comment">// considering their &quot;data&quot; part for null-ness.</span>
-        <span class="kw">if</span> (<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>).<span class="ident">is_null</span>() {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_null</span>() {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="self">self</span>)
@@ -3880,9 +3892,7 @@
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ptr_as_ref&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.9.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">as_mut</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="comment">// Check for null via a cast to a thin pointer, so fat pointers are only</span>
-        <span class="comment">// considering their &quot;data&quot; part for null-ness.</span>
-        <span class="kw">if</span> (<span class="self">self</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>).<span class="ident">is_null</span>() {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_null</span>() {
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="kw-2">*</span><span class="self">self</span>)
@@ -4942,7 +4952,6 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// `ptr` must be non-null.</span>
     <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unique&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_unique_new&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_unchecked</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">Unique</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>), <span class="ident">_marker</span>: <span class="ident">PhantomData</span> }
     }
@@ -5077,7 +5086,6 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// `ptr` must be non-null.</span>
     <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;shared&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_shared_new&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_unchecked</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>), <span class="ident">_marker</span>: <span class="ident">PhantomData</span> }
     }

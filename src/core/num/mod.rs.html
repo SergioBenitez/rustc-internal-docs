@@ -3631,10 +3631,6 @@
 <span id="3586">3586</span>
 <span id="3587">3587</span>
 <span id="3588">3588</span>
-<span id="3589">3589</span>
-<span id="3590">3590</span>
-<span id="3591">3591</span>
-<span id="3592">3592</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3748,7 +3744,6 @@
         <span class="doccomment">/// assert_eq!(i8::min_value(), -128);</span>
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-        <span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_min_value&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">min_value</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
             <span class="op">!</span><span class="number">0</span> <span class="op">^</span> ((<span class="op">!</span><span class="number">0</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">UnsignedT</span>) <span class="op">&gt;&gt;</span> <span class="number">1</span>) <span class="kw">as</span> <span class="self">Self</span>
@@ -3762,7 +3757,6 @@
         <span class="doccomment">/// assert_eq!(i8::max_value(), 127);</span>
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-        <span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_max_value&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">max_value</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
             <span class="op">!</span><span class="self">Self</span>::<span class="ident">min_value</span>()
@@ -4928,7 +4922,6 @@
         <span class="doccomment">/// assert_eq!(u8::min_value(), 0);</span>
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-        <span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_min_value&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">min_value</span>() <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="number">0</span> }
 
@@ -4940,7 +4933,6 @@
         <span class="doccomment">/// assert_eq!(u8::max_value(), 255);</span>
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
-        <span class="attribute">#[<span class="ident">rustc_const_unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_max_value&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">max_value</span>() <span class="op">-&gt;</span> <span class="self">Self</span> { <span class="op">!</span><span class="number">0</span> }
 
@@ -6076,7 +6068,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_alphabetic());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_alphabetic());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_alphabetic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span>; }
@@ -6114,7 +6106,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_uppercase());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_uppercase());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_uppercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span> }
@@ -6152,7 +6144,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_lowercase());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_lowercase());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_lowercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span> }
@@ -6193,7 +6185,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_alphanumeric());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_alphanumeric());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_alphanumeric</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span> }
@@ -6231,7 +6223,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_digit());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_digit());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_digit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span> }
@@ -6272,7 +6264,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_hexdigit());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_hexdigit());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_hexdigit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span> }
@@ -6314,7 +6306,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_punctuation());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_punctuation());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_punctuation</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span> }
@@ -6352,7 +6344,7 @@
     <span class="doccomment">/// assert!(!lf.is_ascii_graphic());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_graphic());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_graphic</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span>; }
@@ -6407,7 +6399,7 @@
     <span class="doccomment">/// assert!(lf.is_ascii_whitespace());</span>
     <span class="doccomment">/// assert!(!esc.is_ascii_whitespace());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_whitespace</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span>; }
@@ -6447,7 +6439,7 @@
     <span class="doccomment">/// assert!(lf.is_ascii_control());</span>
     <span class="doccomment">/// assert!(esc.is_ascii_control());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;39658&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_ctype_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.24.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii_control</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;=</span> <span class="number">0x80</span> { <span class="kw">return</span> <span class="bool-val">false</span>; }
