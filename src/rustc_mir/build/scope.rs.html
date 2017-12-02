@@ -1061,10 +1061,10 @@ mapping is from one scope to a vector of SEME regions.
 ### Drops
 
 The primary purpose for scopes is to insert drops: while translating
-the contents, we also accumulate lvalues that need to be dropped upon
+the contents, we also accumulate places that need to be dropped upon
 exit from each scope. This is done by calling `schedule_drop`. Once a
 drop is scheduled, whenever we branch out we will insert drops of all
-those lvalues onto the outgoing edge. Note that we don&#39;t know the full
+those places onto the outgoing edge. Note that we don&#39;t know the full
 set of scheduled drops up front, and so whenever we exit from the
 scope we only drop the values scheduled thus far. For example, consider
 the scope S corresponding to this loop:
@@ -1142,7 +1142,7 @@ should go to.
     <span class="doccomment">///  * freeing up stack space has no effect during unwinding</span>
     <span class="ident">needs_cleanup</span>: <span class="ident">bool</span>,
 
-    <span class="doccomment">/// set of lvalues to drop when exiting this scope. This starts</span>
+    <span class="doccomment">/// set of places to drop when exiting this scope. This starts</span>
     <span class="doccomment">/// out empty but grows as variables are declared during the</span>
     <span class="doccomment">/// building process. This is a stack, so we always drop from the</span>
     <span class="doccomment">/// end of the vector (top of the stack) first.</span>
@@ -1160,11 +1160,11 @@ should go to.
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">struct</span> <span class="ident">DropData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// span where drop obligation was incurred (typically where lvalue was declared)</span>
+    <span class="doccomment">/// span where drop obligation was incurred (typically where place was declared)</span>
     <span class="ident">span</span>: <span class="ident">Span</span>,
 
-    <span class="doccomment">/// lvalue to drop</span>
-    <span class="ident">location</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// place to drop</span>
+    <span class="ident">location</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Whether this is a full value Drop, or just a StorageDead.</span>
     <span class="ident">kind</span>: <span class="ident">DropKind</span>
@@ -1206,7 +1206,7 @@ should go to.
     <span class="kw">pub</span> <span class="ident">break_block</span>: <span class="ident">BasicBlock</span>,
     <span class="doccomment">/// The destination of the loop/block expression itself (i.e. where to put the result of a</span>
     <span class="doccomment">/// `break` expression)</span>
-    <span class="kw">pub</span> <span class="ident">break_destination</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">break_destination</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CachedBlock</span> {
@@ -1292,7 +1292,7 @@ should go to.
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">in_breakable_scope</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                     <span class="ident">loop_block</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>,
                                     <span class="ident">break_block</span>: <span class="ident">BasicBlock</span>,
-                                    <span class="ident">break_destination</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                    <span class="ident">break_destination</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                     <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">R</span>
         <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">R</span>
     {
@@ -1630,20 +1630,20 @@ should go to.
 
     <span class="comment">// Scheduling drops</span>
     <span class="comment">// ================</span>
-    <span class="doccomment">/// Indicates that `lvalue` should be dropped on exit from</span>
+    <span class="doccomment">/// Indicates that `place` should be dropped on exit from</span>
     <span class="doccomment">/// `region_scope`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">schedule_drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                          <span class="ident">span</span>: <span class="ident">Span</span>,
                          <span class="ident">region_scope</span>: <span class="ident">region</span>::<span class="ident">Scope</span>,
-                         <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                         <span class="ident">lvalue_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">needs_drop</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">needs_drop</span>(<span class="ident">lvalue_ty</span>);
+                         <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                         <span class="ident">place_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+        <span class="kw">let</span> <span class="ident">needs_drop</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">needs_drop</span>(<span class="ident">place_ty</span>);
         <span class="kw">let</span> <span class="ident">drop_kind</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">needs_drop</span> {
             <span class="ident">DropKind</span>::<span class="ident">Value</span> { <span class="ident">cached_block</span>: <span class="ident">CachedBlock</span>::<span class="ident">default</span>() }
         } <span class="kw">else</span> {
             <span class="comment">// Only temps and vars need their storage dead.</span>
-            <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-                <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="ident">index</span>.<span class="ident">index</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">arg_count</span> <span class="op">=&gt;</span> <span class="ident">DropKind</span>::<span class="ident">Storage</span>,
+            <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+                <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="ident">index</span>.<span class="ident">index</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">arg_count</span> <span class="op">=&gt;</span> <span class="ident">DropKind</span>::<span class="ident">Storage</span>,
                 _ <span class="op">=&gt;</span> <span class="kw">return</span>
             }
         };
@@ -1707,13 +1707,13 @@ should go to.
                 <span class="kw">let</span> <span class="ident">scope_end</span> <span class="op">=</span> <span class="ident">region_scope_span</span>.<span class="ident">with_lo</span>(<span class="ident">region_scope_span</span>.<span class="ident">hi</span>());
                 <span class="ident">scope</span>.<span class="ident">drops</span>.<span class="ident">push</span>(<span class="ident">DropData</span> {
                     <span class="ident">span</span>: <span class="ident">scope_end</span>,
-                    <span class="ident">location</span>: <span class="ident">lvalue</span>.<span class="ident">clone</span>(),
+                    <span class="ident">location</span>: <span class="ident">place</span>.<span class="ident">clone</span>(),
                     <span class="ident">kind</span>: <span class="ident">drop_kind</span>
                 });
                 <span class="kw">return</span>;
             }
         }
-        <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">span</span>, <span class="string">&quot;region scope {:?} not in scope to drop {:?}&quot;</span>, <span class="ident">region_scope</span>, <span class="ident">lvalue</span>);
+        <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">span</span>, <span class="string">&quot;region scope {:?} not in scope to drop {:?}&quot;</span>, <span class="ident">region_scope</span>, <span class="ident">place</span>);
     }
 
     <span class="comment">// Other</span>
@@ -1770,7 +1770,7 @@ should go to.
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                       <span class="ident">block</span>: <span class="ident">BasicBlock</span>,
                       <span class="ident">span</span>: <span class="ident">Span</span>,
-                      <span class="ident">location</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                      <span class="ident">location</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                       <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BlockAnd</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">needs_drop</span>(<span class="ident">ty</span>) {
             <span class="kw">return</span> <span class="ident">block</span>.<span class="ident">unit</span>();
@@ -1791,7 +1791,7 @@ should go to.
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build_drop_and_replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                   <span class="ident">block</span>: <span class="ident">BasicBlock</span>,
                                   <span class="ident">span</span>: <span class="ident">Span</span>,
-                                  <span class="ident">location</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                  <span class="ident">location</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                   <span class="ident">value</span>: <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">BlockAnd</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">source_info</span>(<span class="ident">span</span>);
         <span class="kw">let</span> <span class="ident">next_target</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">start_new_block</span>();
@@ -1905,7 +1905,7 @@ should go to.
         <span class="comment">// Drop the storage for both value and storage drops.</span>
         <span class="comment">// Only temps and vars need their storage dead.</span>
         <span class="kw">match</span> <span class="ident">drop_data</span>.<span class="ident">location</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="ident">index</span>.<span class="ident">index</span>() <span class="op">&gt;</span> <span class="ident">arg_count</span> <span class="op">=&gt;</span> {
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="ident">index</span>.<span class="ident">index</span>() <span class="op">&gt;</span> <span class="ident">arg_count</span> <span class="op">=&gt;</span> {
                 <span class="ident">cfg</span>.<span class="ident">push</span>(<span class="ident">block</span>, <span class="ident">Statement</span> {
                     <span class="ident">source_info</span>,
                     <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(<span class="ident">index</span>)

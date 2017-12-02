@@ -147,6 +147,10 @@
 <span id="102">102</span>
 <span id="103">103</span>
 <span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -249,6 +253,10 @@
         <span class="ident">executables</span>: <span class="bool-val">true</span>,
         <span class="ident">pre_link_args</span>,
         <span class="ident">has_elf_tls</span>: <span class="bool-val">false</span>,
+        <span class="comment">// The following line is a workaround for jemalloc 4.5 being broken on</span>
+        <span class="comment">// ios. jemalloc 5.0 is supposed to fix this.</span>
+        <span class="comment">// see https://github.com/rust-lang/rust/issues/45262</span>
+        <span class="ident">exe_allocation_crate</span>: <span class="prelude-val">None</span>,
         .. <span class="kw">super</span>::<span class="ident">apple_base</span>::<span class="ident">opts</span>()
     })
 }

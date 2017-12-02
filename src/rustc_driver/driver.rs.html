@@ -1424,6 +1424,14 @@
 <span id="1379">1379</span>
 <span id="1380">1380</span>
 <span id="1381">1381</span>
+<span id="1382">1382</span>
+<span id="1383">1383</span>
+<span id="1384">1384</span>
+<span id="1385">1385</span>
+<span id="1386">1386</span>
+<span id="1387">1387</span>
+<span id="1388">1388</span>
+<span id="1389">1389</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1483,6 +1491,7 @@
 <span class="kw">use</span> <span class="ident">syntax</span>::{<span class="ident">ast</span>, <span class="ident">diagnostics</span>, <span class="ident">visit</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">attr</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ext</span>::<span class="ident">base</span>::<span class="ident">ExtCtxt</span>;
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">fold</span>::<span class="ident">Folder</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>::{<span class="self">self</span>, <span class="ident">PResult</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">util</span>::<span class="ident">node_count</span>::<span class="ident">NodeCounter</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>;
@@ -1490,6 +1499,7 @@
 <span class="kw">use</span> <span class="ident">arena</span>::<span class="ident">DroplessArena</span>;
 
 <span class="kw">use</span> <span class="ident">derive_registrar</span>;
+<span class="kw">use</span> <span class="ident">pretty</span>::<span class="ident">ReplaceBodyWithLoop</span>;
 
 <span class="kw">use</span> <span class="ident">profile</span>;
 
@@ -2235,6 +2245,12 @@
                                          <span class="ident">krate</span>,
                                          <span class="ident">sess</span>.<span class="ident">diagnostic</span>())
     });
+
+    <span class="comment">// If we&#39;re actually rustdoc then there&#39;s no need to actually compile</span>
+    <span class="comment">// anything, so switch everything to just looping</span>
+    <span class="kw">if</span> <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">actually_rustdoc</span> {
+        <span class="ident">krate</span> <span class="op">=</span> <span class="ident">ReplaceBodyWithLoop</span>::<span class="ident">new</span>(<span class="ident">sess</span>).<span class="ident">fold_crate</span>(<span class="ident">krate</span>);
+    }
 
     <span class="comment">// If we&#39;re in rustdoc we&#39;re always compiling as an rlib, but that&#39;ll trip a</span>
     <span class="comment">// bunch of checks in the `modify` function below. For now just skip this</span>

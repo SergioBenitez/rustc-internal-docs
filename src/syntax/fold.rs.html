@@ -1470,18 +1470,6 @@
 <span id="1425">1425</span>
 <span id="1426">1426</span>
 <span id="1427">1427</span>
-<span id="1428">1428</span>
-<span id="1429">1429</span>
-<span id="1430">1430</span>
-<span id="1431">1431</span>
-<span id="1432">1432</span>
-<span id="1433">1433</span>
-<span id="1434">1434</span>
-<span id="1435">1435</span>
-<span id="1436">1436</span>
-<span id="1437">1437</span>
-<span id="1438">1438</span>
-<span id="1439">1439</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1541,8 +1529,8 @@
         <span class="ident">noop_fold_meta_item</span>(<span class="ident">meta_item</span>, <span class="self">self</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">fold_view_path</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">view_path</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ViewPath</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ViewPath</span><span class="op">&gt;</span> {
-        <span class="ident">noop_fold_view_path</span>(<span class="ident">view_path</span>, <span class="self">self</span>)
+    <span class="kw">fn</span> <span class="ident">fold_use_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">use_tree</span>: <span class="ident">UseTree</span>) <span class="op">-&gt;</span> <span class="ident">UseTree</span> {
+        <span class="ident">noop_fold_use_tree</span>(<span class="ident">use_tree</span>, <span class="self">self</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">fold_foreign_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ni</span>: <span class="ident">ForeignItem</span>) <span class="op">-&gt;</span> <span class="ident">ForeignItem</span> {
@@ -1795,30 +1783,18 @@
     <span class="ident">meta_items</span>.<span class="ident">move_map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">fld</span>.<span class="ident">fold_meta_item</span>(<span class="ident">x</span>))
 }
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">noop_fold_view_path</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Folder</span><span class="op">&gt;</span>(<span class="ident">view_path</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ViewPath</span><span class="op">&gt;</span>, <span class="ident">fld</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ViewPath</span><span class="op">&gt;</span> {
-    <span class="ident">view_path</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">Spanned</span> {<span class="ident">node</span>, <span class="ident">span</span>}<span class="op">|</span> <span class="ident">Spanned</span> {
-        <span class="ident">node</span>: <span class="kw">match</span> <span class="ident">node</span> {
-            <span class="ident">ViewPathSimple</span>(<span class="ident">ident</span>, <span class="ident">path</span>) <span class="op">=&gt;</span> {
-                <span class="ident">ViewPathSimple</span>(<span class="ident">fld</span>.<span class="ident">fold_ident</span>(<span class="ident">ident</span>), <span class="ident">fld</span>.<span class="ident">fold_path</span>(<span class="ident">path</span>))
-            }
-            <span class="ident">ViewPathGlob</span>(<span class="ident">path</span>) <span class="op">=&gt;</span> {
-                <span class="ident">ViewPathGlob</span>(<span class="ident">fld</span>.<span class="ident">fold_path</span>(<span class="ident">path</span>))
-            }
-            <span class="ident">ViewPathList</span>(<span class="ident">path</span>, <span class="ident">path_list_idents</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">fld</span>.<span class="ident">fold_path</span>(<span class="ident">path</span>);
-                <span class="kw">let</span> <span class="ident">path_list_idents</span> <span class="op">=</span> <span class="ident">path_list_idents</span>.<span class="ident">move_map</span>(<span class="op">|</span><span class="ident">path_list_ident</span><span class="op">|</span> <span class="ident">Spanned</span> {
-                    <span class="ident">node</span>: <span class="ident">PathListItem_</span> {
-                        <span class="ident">id</span>: <span class="ident">fld</span>.<span class="ident">new_id</span>(<span class="ident">path_list_ident</span>.<span class="ident">node</span>.<span class="ident">id</span>),
-                        <span class="ident">rename</span>: <span class="ident">path_list_ident</span>.<span class="ident">node</span>.<span class="ident">rename</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">ident</span><span class="op">|</span> <span class="ident">fld</span>.<span class="ident">fold_ident</span>(<span class="ident">ident</span>)),
-                        <span class="ident">name</span>: <span class="ident">fld</span>.<span class="ident">fold_ident</span>(<span class="ident">path_list_ident</span>.<span class="ident">node</span>.<span class="ident">name</span>),
-                    },
-                    <span class="ident">span</span>: <span class="ident">fld</span>.<span class="ident">new_span</span>(<span class="ident">path_list_ident</span>.<span class="ident">span</span>)
-                });
-                <span class="ident">ViewPathList</span>(<span class="ident">path</span>, <span class="ident">path_list_idents</span>)
-            }
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">noop_fold_use_tree</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Folder</span><span class="op">&gt;</span>(<span class="ident">use_tree</span>: <span class="ident">UseTree</span>, <span class="ident">fld</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">UseTree</span> {
+    <span class="ident">UseTree</span> {
+        <span class="ident">span</span>: <span class="ident">fld</span>.<span class="ident">new_span</span>(<span class="ident">use_tree</span>.<span class="ident">span</span>),
+        <span class="ident">prefix</span>: <span class="ident">fld</span>.<span class="ident">fold_path</span>(<span class="ident">use_tree</span>.<span class="ident">prefix</span>),
+        <span class="ident">kind</span>: <span class="kw">match</span> <span class="ident">use_tree</span>.<span class="ident">kind</span> {
+            <span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(<span class="ident">ident</span>) <span class="op">=&gt;</span> <span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(<span class="ident">fld</span>.<span class="ident">fold_ident</span>(<span class="ident">ident</span>)),
+            <span class="ident">UseTreeKind</span>::<span class="ident">Glob</span> <span class="op">=&gt;</span> <span class="ident">UseTreeKind</span>::<span class="ident">Glob</span>,
+            <span class="ident">UseTreeKind</span>::<span class="ident">Nested</span>(<span class="ident">items</span>) <span class="op">=&gt;</span> <span class="ident">UseTreeKind</span>::<span class="ident">Nested</span>(<span class="ident">items</span>.<span class="ident">move_map</span>(<span class="op">|</span>(<span class="ident">tree</span>, <span class="ident">id</span>)<span class="op">|</span> {
+                (<span class="ident">fld</span>.<span class="ident">fold_use_tree</span>(<span class="ident">tree</span>), <span class="ident">fld</span>.<span class="ident">new_id</span>(<span class="ident">id</span>))
+            })),
         },
-        <span class="ident">span</span>: <span class="ident">fld</span>.<span class="ident">new_span</span>(<span class="ident">span</span>)
-    })
+    }
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fold_attrs</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Folder</span><span class="op">&gt;</span>(<span class="ident">attrs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>, <span class="ident">fld</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span> {
@@ -2359,8 +2335,8 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">noop_fold_item_kind</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Folder</span><span class="op">&gt;</span>(<span class="ident">i</span>: <span class="ident">ItemKind</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="ident">ItemKind</span> {
     <span class="kw">match</span> <span class="ident">i</span> {
         <span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(<span class="ident">string</span>) <span class="op">=&gt;</span> <span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(<span class="ident">string</span>),
-        <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="ident">view_path</span>) <span class="op">=&gt;</span> {
-            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="ident">folder</span>.<span class="ident">fold_view_path</span>(<span class="ident">view_path</span>))
+        <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="ident">use_tree</span>) <span class="op">=&gt;</span> {
+            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="ident">use_tree</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">tree</span><span class="op">|</span> <span class="ident">folder</span>.<span class="ident">fold_use_tree</span>(<span class="ident">tree</span>)))
         }
         <span class="ident">ItemKind</span>::<span class="ident">Static</span>(<span class="ident">t</span>, <span class="ident">m</span>, <span class="ident">e</span>) <span class="op">=&gt;</span> {
             <span class="ident">ItemKind</span>::<span class="ident">Static</span>(<span class="ident">folder</span>.<span class="ident">fold_ty</span>(<span class="ident">t</span>), <span class="ident">m</span>, <span class="ident">folder</span>.<span class="ident">fold_expr</span>(<span class="ident">e</span>))

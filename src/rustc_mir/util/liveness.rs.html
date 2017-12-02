@@ -461,6 +461,7 @@
 <span id="416">416</span>
 <span id="417">417</span>
 <span id="418">418</span>
+<span id="419">419</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -498,7 +499,7 @@
 <span class="doccomment">//! doesn&#39;t matter).</span>
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">Visitor</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">PlaceContext</span>, <span class="ident">Visitor</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::{<span class="ident">Idx</span>, <span class="ident">IndexVec</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_set</span>::<span class="ident">IdxSetBuf</span>;
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">pretty</span>::{<span class="ident">dump_enabled</span>, <span class="ident">write_basic_block</span>, <span class="ident">write_mir_intro</span>};
@@ -697,12 +698,12 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Visitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DefsUsesVisitor</span> {
-    <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="ident">Local</span>, <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, _: <span class="ident">Location</span>) {
+    <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="ident">Local</span>, <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, _: <span class="ident">Location</span>) {
         <span class="kw">match</span> <span class="ident">context</span> {
             <span class="comment">///////////////////////////////////////////////////////////////////////////</span>
             <span class="comment">// DEFS</span>
 
-            <span class="ident">LvalueContext</span>::<span class="ident">Store</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Store</span> <span class="op">|</span>
 
             <span class="comment">// We let Call define the result in both the success and</span>
             <span class="comment">// unwind cases. This is not really correct, however it</span>
@@ -712,12 +713,12 @@
             <span class="comment">// properly, we would apply the def in call only to the</span>
             <span class="comment">// input from the success path and not the unwind</span>
             <span class="comment">// path. -nmatsakis</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Call</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Call</span> <span class="op">|</span>
 
             <span class="comment">// Storage live and storage dead aren&#39;t proper defines, but we can ignore</span>
             <span class="comment">// values that come before them.</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">StorageDead</span> <span class="op">=&gt;</span> {
+            <span class="ident">PlaceContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">StorageDead</span> <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">defs_uses</span>.<span class="ident">add_def</span>(<span class="ident">local</span>);
             }
 
@@ -728,17 +729,18 @@
             <span class="comment">// purposes of NLL, these are special in that **all** the</span>
             <span class="comment">// lifetimes appearing in the variable must be live for each regular use.</span>
 
-            <span class="ident">LvalueContext</span>::<span class="ident">Projection</span>(..) <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(..) <span class="op">|</span>
 
             <span class="comment">// Borrows only consider their local used at the point of the borrow.</span>
             <span class="comment">// This won&#39;t affect the results since we use this analysis for generators</span>
             <span class="comment">// and we only care about the result at suspension points. Borrows cannot</span>
             <span class="comment">// cross suspension points so this behavior is unproblematic.</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> { .. } <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> { .. } <span class="op">|</span>
 
-            <span class="ident">LvalueContext</span>::<span class="ident">Inspect</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Consume</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Validate</span> <span class="op">=&gt;</span> {
+            <span class="ident">PlaceContext</span>::<span class="ident">Inspect</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Copy</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Move</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Validate</span> <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mode</span>.<span class="ident">include_regular_use</span> {
                     <span class="self">self</span>.<span class="ident">defs_uses</span>.<span class="ident">add_use</span>(<span class="ident">local</span>);
                 }
@@ -752,7 +754,7 @@
             <span class="comment">// uses in drop are special because `#[may_dangle]`</span>
             <span class="comment">// attributes can affect whether lifetimes must be live.</span>
 
-            <span class="ident">LvalueContext</span>::<span class="ident">Drop</span> <span class="op">=&gt;</span> {
+            <span class="ident">PlaceContext</span>::<span class="ident">Drop</span> <span class="op">=&gt;</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mode</span>.<span class="ident">include_drops</span> {
                     <span class="self">self</span>.<span class="ident">defs_uses</span>.<span class="ident">add_use</span>(<span class="ident">local</span>);
                 }

@@ -342,6 +342,7 @@
 <span id="297">297</span>
 <span id="298">298</span>
 <span id="299">299</span>
+<span id="300">300</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -366,7 +367,7 @@
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">util</span>::<span class="ident">IntTypeExt</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Normal type.</span>
     <span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
 
@@ -376,23 +377,23 @@
                <span class="ident">variant_index</span>: <span class="ident">usize</span> },
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_ty</span>(<span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">ty</span> }
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_ty</span>(<span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">ty</span> }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span>
+            <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span>
                 <span class="ident">ty</span>,
-            <span class="ident">LvalueTy</span>::<span class="ident">Downcast</span> { <span class="ident">adt_def</span>, <span class="ident">substs</span>, <span class="ident">variant_index</span>: _ } <span class="op">=&gt;</span>
+            <span class="ident">PlaceTy</span>::<span class="ident">Downcast</span> { <span class="ident">adt_def</span>, <span class="ident">substs</span>, <span class="ident">variant_index</span>: _ } <span class="op">=&gt;</span>
                 <span class="ident">tcx</span>.<span class="ident">mk_adt</span>(<span class="ident">adt_def</span>, <span class="ident">substs</span>),
         }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">projection_ty</span>(<span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                         <span class="ident">elem</span>: <span class="kw-2">&amp;</span><span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                         <span class="op">-&gt;</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
+                         <span class="ident">elem</span>: <span class="kw-2">&amp;</span><span class="ident">PlaceElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                         <span class="op">-&gt;</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">elem</span> {
             <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> {
@@ -402,17 +403,17 @@
                                  <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;deref projection of non-dereferencable ty {:?}&quot;</span>, <span class="self">self</span>)
                              })
                              .<span class="ident">ty</span>;
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                     <span class="ident">ty</span>,
                 }
             }
             <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(_) <span class="op">|</span> <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { .. } <span class="op">=&gt;</span>
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                     <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">to_ty</span>(<span class="ident">tcx</span>).<span class="ident">builtin_index</span>().<span class="ident">unwrap</span>()
                 },
             <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { <span class="ident">from</span>, <span class="ident">to</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                     <span class="ident">ty</span>: <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
                         <span class="ident">ty</span>::<span class="ident">TyArray</span>(<span class="ident">inner</span>, <span class="ident">size</span>) <span class="op">=&gt;</span> {
                             <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">size</span>.<span class="ident">val</span>.<span class="ident">to_const_int</span>().<span class="ident">unwrap</span>().<span class="ident">to_u64</span>().<span class="ident">unwrap</span>();
@@ -432,7 +433,7 @@
                         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">adt_def</span>.<span class="ident">is_enum</span>());
                         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">index</span> <span class="op">&lt;</span> <span class="ident">adt_def</span>.<span class="ident">variants</span>.<span class="ident">len</span>());
                         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">adt_def</span>, <span class="ident">adt_def1</span>);
-                        <span class="ident">LvalueTy</span>::<span class="ident">Downcast</span> { <span class="ident">adt_def</span>,
+                        <span class="ident">PlaceTy</span>::<span class="ident">Downcast</span> { <span class="ident">adt_def</span>,
                                              <span class="ident">substs</span>,
                                              <span class="ident">variant_index</span>: <span class="ident">index</span> }
                     }
@@ -440,17 +441,17 @@
                         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;cannot downcast non-ADT type: `{:?}`&quot;</span>, <span class="self">self</span>)
                     }
                 },
-            <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(_, <span class="ident">fty</span>) <span class="op">=&gt;</span> <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">fty</span> }
+            <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(_, <span class="ident">fty</span>) <span class="op">=&gt;</span> <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">fty</span> }
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span> <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>) },
-            <span class="ident">LvalueTy</span>::<span class="ident">Downcast</span> { <span class="ident">adt_def</span>, <span class="ident">substs</span>, <span class="ident">variant_index</span> } <span class="op">=&gt;</span> {
-                <span class="ident">LvalueTy</span>::<span class="ident">Downcast</span> {
+            <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span> <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>) },
+            <span class="ident">PlaceTy</span>::<span class="ident">Downcast</span> { <span class="ident">adt_def</span>, <span class="ident">substs</span>, <span class="ident">variant_index</span> } <span class="op">=&gt;</span> {
+                <span class="ident">PlaceTy</span>::<span class="ident">Downcast</span> {
                     <span class="ident">adt_def</span>,
                     <span class="ident">substs</span>: <span class="ident">substs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
                     <span class="ident">variant_index</span>,
@@ -461,22 +462,22 @@
 
     <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span> <span class="ident">ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
-            <span class="ident">LvalueTy</span>::<span class="ident">Downcast</span> { <span class="ident">substs</span>, .. } <span class="op">=&gt;</span> <span class="ident">substs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+            <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span> <span class="ident">ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>),
+            <span class="ident">PlaceTy</span>::<span class="ident">Downcast</span> { <span class="ident">substs</span>, .. } <span class="op">=&gt;</span> <span class="ident">substs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
         }
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ty</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="ident">D</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">local_decls</span>: <span class="kw-2">&amp;</span><span class="ident">D</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ty</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="ident">D</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">local_decls</span>: <span class="kw-2">&amp;</span><span class="ident">D</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
         <span class="kw">where</span> <span class="ident">D</span>: <span class="ident">HasLocalDecls</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=&gt;</span>
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">local_decls</span>.<span class="ident">local_decls</span>()[<span class="ident">index</span>].<span class="ident">ty</span> },
-            <span class="ident">Lvalue</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span>
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">data</span>.<span class="ident">ty</span> },
-            <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span>
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=&gt;</span>
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">local_decls</span>.<span class="ident">local_decls</span>()[<span class="ident">index</span>].<span class="ident">ty</span> },
+            <span class="ident">Place</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> <span class="ident">data</span>) <span class="op">=&gt;</span>
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">data</span>.<span class="ident">ty</span> },
+            <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span>
                 <span class="ident">proj</span>.<span class="ident">base</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">projection_ty</span>(<span class="ident">tcx</span>, <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">elem</span>),
         }
     }
@@ -496,11 +497,11 @@
             <span class="ident">Rvalue</span>::<span class="ident">Repeat</span>(<span class="kw-2">ref</span> <span class="ident">operand</span>, <span class="ident">count</span>) <span class="op">=&gt;</span> {
                 <span class="ident">tcx</span>.<span class="ident">mk_array_const_usize</span>(<span class="ident">operand</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>), <span class="ident">count</span>)
             }
-            <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="ident">reg</span>, <span class="ident">bk</span>, <span class="kw-2">ref</span> <span class="ident">lv</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">lv_ty</span> <span class="op">=</span> <span class="ident">lv</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+            <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="ident">reg</span>, <span class="ident">bk</span>, <span class="kw-2">ref</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">place_ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
                 <span class="ident">tcx</span>.<span class="ident">mk_ref</span>(<span class="ident">reg</span>,
                     <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> {
-                        <span class="ident">ty</span>: <span class="ident">lv_ty</span>,
+                        <span class="ident">ty</span>: <span class="ident">place_ty</span>,
                         <span class="ident">mutbl</span>: <span class="ident">bk</span>.<span class="ident">to_mutbl_lossy</span>()
                     }
                 )
@@ -522,14 +523,14 @@
             <span class="ident">Rvalue</span>::<span class="ident">UnaryOp</span>(<span class="ident">UnOp</span>::<span class="ident">Neg</span>, <span class="kw-2">ref</span> <span class="ident">operand</span>) <span class="op">=&gt;</span> {
                 <span class="ident">operand</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>)
             }
-            <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(<span class="kw-2">ref</span> <span class="ident">lval</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">lval</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+            <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(<span class="kw-2">ref</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">adt_def</span>, _) <span class="op">=</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
                     <span class="ident">adt_def</span>.<span class="ident">repr</span>.<span class="ident">discr_type</span>().<span class="ident">to_ty</span>(<span class="ident">tcx</span>)
                 } <span class="kw">else</span> {
                     <span class="comment">// Undefined behaviour, bug for now; may want to return something for</span>
                     <span class="comment">// the `discriminant` intrinsic later.</span>
-                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Rvalue::Discriminant on Lvalue of type {:?}&quot;</span>, <span class="ident">ty</span>);
+                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Rvalue::Discriminant on Place of type {:?}&quot;</span>, <span class="ident">ty</span>);
                 }
             }
             <span class="ident">Rvalue</span>::<span class="ident">NullaryOp</span>(<span class="ident">NullOp</span>::<span class="ident">Box</span>, <span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">tcx</span>.<span class="ident">mk_box</span>(<span class="ident">t</span>),
@@ -575,7 +576,8 @@
         <span class="kw">where</span> <span class="ident">D</span>: <span class="ident">HasLocalDecls</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="kw-2">&amp;</span><span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">l</span>) <span class="op">=&gt;</span> <span class="ident">l</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>),
+            <span class="kw-2">&amp;</span><span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="kw-2">ref</span> <span class="ident">l</span>) <span class="op">|</span>
+            <span class="kw-2">&amp;</span><span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="kw-2">ref</span> <span class="ident">l</span>) <span class="op">=&gt;</span> <span class="ident">l</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>),
             <span class="kw-2">&amp;</span><span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw-2">ref</span> <span class="ident">c</span>) <span class="op">=&gt;</span> <span class="ident">c</span>.<span class="ident">ty</span>,
         }
     }

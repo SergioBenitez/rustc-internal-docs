@@ -981,6 +981,12 @@
 <span id="936">936</span>
 <span id="937">937</span>
 <span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1091,10 +1097,10 @@
 
             <span class="kw">fn</span> <span class="ident">visit_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                             <span class="ident">block</span>: <span class="ident">BasicBlock</span>,
-                            <span class="ident">lvalue</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                            <span class="ident">place</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">rvalue</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">location</span>: <span class="ident">Location</span>) {
-                <span class="self">self</span>.<span class="ident">super_assign</span>(<span class="ident">block</span>, <span class="ident">lvalue</span>, <span class="ident">rvalue</span>, <span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">super_assign</span>(<span class="ident">block</span>, <span class="ident">place</span>, <span class="ident">rvalue</span>, <span class="ident">location</span>);
             }
 
             <span class="kw">fn</span> <span class="ident">visit_terminator</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
@@ -1129,32 +1135,32 @@
                 <span class="self">self</span>.<span class="ident">super_operand</span>(<span class="ident">operand</span>, <span class="ident">location</span>);
             }
 
-            <span class="kw">fn</span> <span class="ident">visit_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                            <span class="ident">lvalue</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                            <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+            <span class="kw">fn</span> <span class="ident">visit_place</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                            <span class="ident">place</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                            <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">location</span>: <span class="ident">Location</span>) {
-                <span class="self">self</span>.<span class="ident">super_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">super_place</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
             }
 
             <span class="kw">fn</span> <span class="ident">visit_static</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                             <span class="ident">static_</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Static</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                            <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                            <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">location</span>: <span class="ident">Location</span>) {
                 <span class="self">self</span>.<span class="ident">super_static</span>(<span class="ident">static_</span>, <span class="ident">context</span>, <span class="ident">location</span>);
             }
 
             <span class="kw">fn</span> <span class="ident">visit_projection</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                                <span class="ident">lvalue</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">LvalueProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                <span class="ident">place</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">PlaceProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                 <span class="ident">location</span>: <span class="ident">Location</span>) {
-                <span class="self">self</span>.<span class="ident">super_projection</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">super_projection</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
             }
 
             <span class="kw">fn</span> <span class="ident">visit_projection_elem</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                                     <span class="ident">lvalue</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                     <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                     <span class="ident">place</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">PlaceElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                     <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                      <span class="ident">location</span>: <span class="ident">Location</span>) {
-                <span class="self">self</span>.<span class="ident">super_projection_elem</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">super_projection_elem</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
             }
 
             <span class="kw">fn</span> <span class="ident">visit_branch</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
@@ -1247,7 +1253,7 @@
 
             <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                             <span class="ident">_local</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Local</span>,
-                            <span class="ident">_context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                            <span class="ident">_context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">_location</span>: <span class="ident">Location</span>) {
             }
 
@@ -1334,33 +1340,33 @@
 
                 <span class="self">self</span>.<span class="ident">visit_source_info</span>(<span class="ident">source_info</span>);
                 <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">kind</span> {
-                    <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">lvalue</span>,
+                    <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">place</span>,
                                           <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">rvalue</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_assign</span>(<span class="ident">block</span>, <span class="ident">lvalue</span>, <span class="ident">rvalue</span>, <span class="ident">location</span>);
+                        <span class="self">self</span>.<span class="ident">visit_assign</span>(<span class="ident">block</span>, <span class="ident">place</span>, <span class="ident">rvalue</span>, <span class="ident">location</span>);
                     }
                     <span class="ident">StatementKind</span>::<span class="ident">EndRegion</span>(_) <span class="op">=&gt;</span> {}
-                    <span class="ident">StatementKind</span>::<span class="ident">Validate</span>(_, <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">lvalues</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">for</span> <span class="ident">operand</span> <span class="kw">in</span> <span class="ident">lvalues</span> {
-                            <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">operand</span>.<span class="ident">lval</span>,
-                                              <span class="ident">LvalueContext</span>::<span class="ident">Validate</span>, <span class="ident">location</span>);
+                    <span class="ident">StatementKind</span>::<span class="ident">Validate</span>(_, <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">places</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">for</span> <span class="ident">operand</span> <span class="kw">in</span> <span class="ident">places</span> {
+                            <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">operand</span>.<span class="ident">place</span>,
+                                              <span class="ident">PlaceContext</span>::<span class="ident">Validate</span>, <span class="ident">location</span>);
                             <span class="self">self</span>.<span class="ident">visit_ty</span>(<span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">operand</span>.<span class="ident">ty</span>,
                                           <span class="ident">TyContext</span>::<span class="ident">Location</span>(<span class="ident">location</span>));
                         }
                     }
-                    <span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span>{ <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">lvalue</span>, .. } <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">LvalueContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
+                    <span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span>{ <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">place</span>, .. } <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">place</span>, <span class="ident">PlaceContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
                     }
                     <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">local</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">LvalueContext</span>::<span class="ident">StorageLive</span>, <span class="ident">location</span>);
+                        <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">PlaceContext</span>::<span class="ident">StorageLive</span>, <span class="ident">location</span>);
                     }
                     <span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">local</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">LvalueContext</span>::<span class="ident">StorageDead</span>, <span class="ident">location</span>);
+                        <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">PlaceContext</span>::<span class="ident">StorageDead</span>, <span class="ident">location</span>);
                     }
                     <span class="ident">StatementKind</span>::<span class="ident">InlineAsm</span> { <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">outputs</span>,
                                                <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">inputs</span>,
                                                <span class="ident">asm</span>: _ } <span class="op">=&gt;</span> {
                         <span class="kw">for</span> <span class="ident">output</span> <span class="kw">in</span> <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">outputs</span>[..] {
-                            <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">output</span>, <span class="ident">LvalueContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
+                            <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">output</span>, <span class="ident">PlaceContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
                         }
                         <span class="kw">for</span> <span class="ident">input</span> <span class="kw">in</span> <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">inputs</span>[..] {
                             <span class="self">self</span>.<span class="ident">visit_operand</span>(<span class="ident">input</span>, <span class="ident">location</span>);
@@ -1372,10 +1378,10 @@
 
             <span class="kw">fn</span> <span class="ident">super_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                             <span class="ident">_block</span>: <span class="ident">BasicBlock</span>,
-                            <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                            <span class="ident">place</span>: <span class="kw-2">&amp;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">rvalue</span>: <span class="kw-2">&amp;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">location</span>: <span class="ident">Location</span>) {
-                <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">LvalueContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">place</span>, <span class="ident">PlaceContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
                 <span class="self">self</span>.<span class="ident">visit_rvalue</span>(<span class="ident">rvalue</span>, <span class="ident">location</span>);
             }
 
@@ -1424,7 +1430,7 @@
                     <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">location</span>,
                                            <span class="ident">target</span>,
                                            <span class="ident">unwind</span> } <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">location</span>, <span class="ident">LvalueContext</span>::<span class="ident">Drop</span>, <span class="ident">source_location</span>);
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">location</span>, <span class="ident">PlaceContext</span>::<span class="ident">Drop</span>, <span class="ident">source_location</span>);
                         <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">target</span>);
                         <span class="ident">unwind</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">t</span>));
                     }
@@ -1433,7 +1439,7 @@
                                                      <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">value</span>,
                                                      <span class="ident">target</span>,
                                                      <span class="ident">unwind</span> } <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">location</span>, <span class="ident">LvalueContext</span>::<span class="ident">Drop</span>, <span class="ident">source_location</span>);
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">location</span>, <span class="ident">PlaceContext</span>::<span class="ident">Drop</span>, <span class="ident">source_location</span>);
                         <span class="self">self</span>.<span class="ident">visit_operand</span>(<span class="ident">value</span>, <span class="ident">source_location</span>);
                         <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">target</span>);
                         <span class="ident">unwind</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">t</span>));
@@ -1448,7 +1454,7 @@
                             <span class="self">self</span>.<span class="ident">visit_operand</span>(<span class="ident">arg</span>, <span class="ident">source_location</span>);
                         }
                         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">destination</span>, <span class="ident">target</span>)) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">destination</span> {
-                            <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">destination</span>, <span class="ident">LvalueContext</span>::<span class="ident">Call</span>, <span class="ident">source_location</span>);
+                            <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">destination</span>, <span class="ident">PlaceContext</span>::<span class="ident">Call</span>, <span class="ident">source_location</span>);
                             <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">target</span>);
                         }
                         <span class="ident">cleanup</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">visit_branch</span>(<span class="ident">block</span>, <span class="ident">t</span>));
@@ -1516,14 +1522,14 @@
 
                     <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">r</span>, <span class="ident">bk</span>, <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">path</span>) <span class="op">=&gt;</span> {
                         <span class="self">self</span>.<span class="ident">visit_region</span>(<span class="ident">r</span>, <span class="ident">location</span>);
-                        <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">path</span>, <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> {
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">path</span>, <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> {
                             <span class="ident">region</span>: <span class="kw-2">*</span><span class="ident">r</span>,
                             <span class="ident">kind</span>: <span class="ident">bk</span>
                         }, <span class="ident">location</span>);
                     }
 
                     <span class="ident">Rvalue</span>::<span class="ident">Len</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">path</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">path</span>, <span class="ident">LvalueContext</span>::<span class="ident">Inspect</span>, <span class="ident">location</span>);
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">path</span>, <span class="ident">PlaceContext</span>::<span class="ident">Inspect</span>, <span class="ident">location</span>);
                     }
 
                     <span class="ident">Rvalue</span>::<span class="ident">Cast</span>(<span class="ident">_cast_kind</span>,
@@ -1547,8 +1553,8 @@
                         <span class="self">self</span>.<span class="ident">visit_operand</span>(<span class="ident">op</span>, <span class="ident">location</span>);
                     }
 
-                    <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">LvalueContext</span>::<span class="ident">Inspect</span>, <span class="ident">location</span>);
+                    <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">place</span>, <span class="ident">PlaceContext</span>::<span class="ident">Inspect</span>, <span class="ident">location</span>);
                     }
 
                     <span class="ident">Rvalue</span>::<span class="ident">NullaryOp</span>(<span class="ident">_op</span>, <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">ty</span>) <span class="op">=&gt;</span> {
@@ -1595,8 +1601,11 @@
                              <span class="ident">operand</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                              <span class="ident">location</span>: <span class="ident">Location</span>) {
                 <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
-                    <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">LvalueContext</span>::<span class="ident">Consume</span>, <span class="ident">location</span>);
+                    <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">place</span>, <span class="ident">PlaceContext</span>::<span class="ident">Copy</span>, <span class="ident">location</span>);
+                    }
+                    <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">place</span>, <span class="ident">PlaceContext</span>::<span class="ident">Move</span>, <span class="ident">location</span>);
                     }
                     <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">constant</span>) <span class="op">=&gt;</span> {
                         <span class="self">self</span>.<span class="ident">visit_constant</span>(<span class="ident">constant</span>, <span class="ident">location</span>);
@@ -1604,18 +1613,18 @@
                 }
             }
 
-            <span class="kw">fn</span> <span class="ident">super_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                            <span class="ident">lvalue</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                            <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+            <span class="kw">fn</span> <span class="ident">super_place</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                            <span class="ident">place</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                            <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">location</span>: <span class="ident">Location</span>) {
-                <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-                    <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">local</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+                    <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">local</span>) <span class="op">=&gt;</span> {
                         <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">context</span>, <span class="ident">location</span>);
                     }
-                    <span class="ident">Lvalue</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">static_</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">Place</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">static_</span>) <span class="op">=&gt;</span> {
                         <span class="self">self</span>.<span class="ident">visit_static</span>(<span class="ident">static_</span>, <span class="ident">context</span>, <span class="ident">location</span>);
                     }
-                    <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
                         <span class="self">self</span>.<span class="ident">visit_projection</span>(<span class="ident">proj</span>, <span class="ident">context</span>, <span class="ident">location</span>);
                     }
                 }
@@ -1623,7 +1632,7 @@
 
             <span class="kw">fn</span> <span class="ident">super_static</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                             <span class="ident">static_</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">Static</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                            <span class="ident">_context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                            <span class="ident">_context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">location</span>: <span class="ident">Location</span>) {
                 <span class="kw">let</span> <span class="ident">Static</span> {
                     <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">def_id</span>,
@@ -1634,25 +1643,25 @@
             }
 
             <span class="kw">fn</span> <span class="ident">super_projection</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                                <span class="ident">proj</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">LvalueProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                <span class="ident">proj</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">PlaceProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                 <span class="ident">location</span>: <span class="ident">Location</span>) {
                 <span class="kw">let</span> <span class="ident">Projection</span> {
                     <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">base</span>,
                     <span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">elem</span>,
                 } <span class="op">=</span> <span class="kw-2">*</span><span class="ident">proj</span>;
                 <span class="kw">let</span> <span class="ident">context</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">context</span>.<span class="ident">is_mutating_use</span>() {
-                    <span class="ident">LvalueContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>)
+                    <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>)
                 } <span class="kw">else</span> {
-                    <span class="ident">LvalueContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>)
+                    <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>)
                 };
-                <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">base</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">base</span>, <span class="ident">context</span>, <span class="ident">location</span>);
                 <span class="self">self</span>.<span class="ident">visit_projection_elem</span>(<span class="ident">elem</span>, <span class="ident">context</span>, <span class="ident">location</span>);
             }
 
             <span class="kw">fn</span> <span class="ident">super_projection_elem</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                                     <span class="ident">proj</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                     <span class="ident">_context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                     <span class="ident">proj</span>: <span class="op">&amp;</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">PlaceElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                     <span class="ident">_context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                      <span class="ident">location</span>: <span class="ident">Location</span>) {
                 <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">proj</span> {
                     <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> {
@@ -1663,7 +1672,7 @@
                         <span class="self">self</span>.<span class="ident">visit_ty</span>(<span class="ident">ty</span>, <span class="ident">TyContext</span>::<span class="ident">Location</span>(<span class="ident">location</span>));
                     }
                     <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(<span class="kw-2">ref</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mutability</span>)<span class="op">*</span> <span class="ident">local</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">LvalueContext</span>::<span class="ident">Consume</span>, <span class="ident">location</span>);
+                        <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">PlaceContext</span>::<span class="ident">Copy</span>, <span class="ident">location</span>);
                     }
                     <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { <span class="ident">offset</span>: _,
                                                     <span class="ident">min_length</span>: _,
@@ -1812,7 +1821,7 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="comment">// Appears as LHS of an assignment</span>
     <span class="ident">Store</span>,
 
@@ -1828,10 +1837,10 @@
     <span class="comment">// Being borrowed</span>
     <span class="ident">Borrow</span> { <span class="ident">region</span>: <span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">kind</span>: <span class="ident">BorrowKind</span> },
 
-    <span class="comment">// Used as base for another lvalue, e.g. `x` in `x.y`.</span>
+    <span class="comment">// Used as base for another place, e.g. `x` in `x.y`.</span>
     <span class="comment">//</span>
     <span class="comment">// The `Mutability` argument specifies whether the projection is being performed in order to</span>
-    <span class="comment">// (potentially) mutate the lvalue. For example, the projection `x.y` is marked as a mutation</span>
+    <span class="comment">// (potentially) mutate the place. For example, the projection `x.y` is marked as a mutation</span>
     <span class="comment">// in these cases:</span>
     <span class="comment">//</span>
     <span class="comment">//     x.y = ...;</span>
@@ -1844,7 +1853,8 @@
     <span class="ident">Projection</span>(<span class="ident">Mutability</span>),
 
     <span class="comment">// Consumed as part of an operand</span>
-    <span class="ident">Consume</span>,
+    <span class="ident">Copy</span>,
+    <span class="ident">Move</span>,
 
     <span class="comment">// Starting and ending a storage live range</span>
     <span class="ident">StorageLive</span>,
@@ -1854,65 +1864,67 @@
     <span class="ident">Validate</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="doccomment">/// Returns true if this lvalue context represents a drop.</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Returns true if this place context represents a drop.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_drop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueContext</span>::<span class="ident">Drop</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">Drop</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 
-    <span class="doccomment">/// Returns true if this lvalue context represents a storage live or storage dead marker.</span>
+    <span class="doccomment">/// Returns true if this place context represents a storage live or storage dead marker.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_storage_marker</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">StorageDead</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">StorageDead</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 
-    <span class="doccomment">/// Returns true if this lvalue context represents a storage live marker.</span>
+    <span class="doccomment">/// Returns true if this place context represents a storage live marker.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_storage_live_marker</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueContext</span>::<span class="ident">StorageLive</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">StorageLive</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 
-    <span class="doccomment">/// Returns true if this lvalue context represents a storage dead marker.</span>
+    <span class="doccomment">/// Returns true if this place context represents a storage dead marker.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_storage_dead_marker</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueContext</span>::<span class="ident">StorageDead</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">StorageDead</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
             _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 
-    <span class="doccomment">/// Returns true if this lvalue context represents a use that potentially changes the value.</span>
+    <span class="doccomment">/// Returns true if this place context represents a use that potentially changes the value.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_mutating_use</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueContext</span>::<span class="ident">Store</span> <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">Call</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, .. } <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>) <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Drop</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-            <span class="ident">LvalueContext</span>::<span class="ident">Inspect</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, .. } <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, .. } <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>) <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">Consume</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">StorageDead</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Validate</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">Store</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">Call</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, .. } <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>) <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Drop</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">Inspect</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, .. } <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, .. } <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>) <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Copy</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">Move</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">StorageDead</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Validate</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 
-    <span class="doccomment">/// Returns true if this lvalue context represents a use that does not change the value.</span>
+    <span class="doccomment">/// Returns true if this place context represents a use that does not change the value.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_nonmutating_use</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">LvalueContext</span>::<span class="ident">Inspect</span> <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, .. } <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, .. } <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>) <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">Consume</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-            <span class="ident">LvalueContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, .. } <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">Store</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Call</span> <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>) <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Drop</span> <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span> <span class="ident">LvalueContext</span>::<span class="ident">StorageDead</span> <span class="op">|</span>
-            <span class="ident">LvalueContext</span>::<span class="ident">Validate</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">Inspect</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Shared</span>, .. } <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Unique</span>, .. } <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>) <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Copy</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">Move</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">PlaceContext</span>::<span class="ident">Borrow</span> { <span class="ident">kind</span>: <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, .. } <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">Store</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Call</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>) <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Drop</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">StorageLive</span> <span class="op">|</span> <span class="ident">PlaceContext</span>::<span class="ident">StorageDead</span> <span class="op">|</span>
+            <span class="ident">PlaceContext</span>::<span class="ident">Validate</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
         }
     }
 

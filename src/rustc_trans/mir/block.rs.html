@@ -963,6 +963,11 @@
 <span id="918">918</span>
 <span id="919">919</span>
 <span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -997,7 +1002,7 @@
 
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">MirContext</span>, <span class="ident">LocalRef</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">constant</span>::<span class="ident">Const</span>;
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">lvalue</span>::{<span class="ident">Alignment</span>, <span class="ident">LvalueRef</span>};
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">place</span>::{<span class="ident">Alignment</span>, <span class="ident">PlaceRef</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">operand</span>::<span class="ident">OperandRef</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">operand</span>::<span class="ident">OperandValue</span>::{<span class="ident">Pair</span>, <span class="ident">Ref</span>, <span class="ident">Immediate</span>};
 
@@ -1180,7 +1185,7 @@
                     }
 
                     <span class="ident">PassMode</span>::<span class="ident">Direct</span>(_) <span class="op">|</span> <span class="ident">PassMode</span>::<span class="ident">Pair</span>(..) <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_consume</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">mir</span>::<span class="ident">RETURN_POINTER</span>));
+                        <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_consume</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">mir</span>::<span class="ident">RETURN_PLACE</span>));
                         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Ref</span>(<span class="ident">llval</span>, <span class="ident">align</span>) <span class="op">=</span> <span class="ident">op</span>.<span class="ident">val</span> {
                             <span class="ident">bcx</span>.<span class="ident">load</span>(<span class="ident">llval</span>, <span class="ident">align</span>.<span class="ident">non_abi</span>())
                         } <span class="kw">else</span> {
@@ -1189,25 +1194,25 @@
                     }
 
                     <span class="ident">PassMode</span>::<span class="ident">Cast</span>(<span class="ident">cast_ty</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">mir</span>::<span class="ident">RETURN_POINTER</span>] {
+                        <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">mir</span>::<span class="ident">RETURN_PLACE</span>] {
                             <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">op</span>)) <span class="op">=&gt;</span> <span class="ident">op</span>,
                             <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;use of return before def&quot;</span>),
-                            <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">tr_lvalue</span>) <span class="op">=&gt;</span> {
+                            <span class="ident">LocalRef</span>::<span class="ident">Place</span>(<span class="ident">tr_place</span>) <span class="op">=&gt;</span> {
                                 <span class="ident">OperandRef</span> {
-                                    <span class="ident">val</span>: <span class="ident">Ref</span>(<span class="ident">tr_lvalue</span>.<span class="ident">llval</span>, <span class="ident">tr_lvalue</span>.<span class="ident">alignment</span>),
-                                    <span class="ident">layout</span>: <span class="ident">tr_lvalue</span>.<span class="ident">layout</span>
+                                    <span class="ident">val</span>: <span class="ident">Ref</span>(<span class="ident">tr_place</span>.<span class="ident">llval</span>, <span class="ident">tr_place</span>.<span class="ident">alignment</span>),
+                                    <span class="ident">layout</span>: <span class="ident">tr_place</span>.<span class="ident">layout</span>
                                 }
                             }
                         };
                         <span class="kw">let</span> <span class="ident">llslot</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">op</span>.<span class="ident">val</span> {
                             <span class="ident">Immediate</span>(_) <span class="op">|</span> <span class="ident">Pair</span>(..) <span class="op">=&gt;</span> {
-                                <span class="kw">let</span> <span class="ident">scratch</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="self">self</span>.<span class="ident">fn_ty</span>.<span class="ident">ret</span>.<span class="ident">layout</span>, <span class="string">&quot;ret&quot;</span>);
+                                <span class="kw">let</span> <span class="ident">scratch</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="self">self</span>.<span class="ident">fn_ty</span>.<span class="ident">ret</span>.<span class="ident">layout</span>, <span class="string">&quot;ret&quot;</span>);
                                 <span class="ident">op</span>.<span class="ident">val</span>.<span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">scratch</span>);
                                 <span class="ident">scratch</span>.<span class="ident">llval</span>
                             }
                             <span class="ident">Ref</span>(<span class="ident">llval</span>, <span class="ident">align</span>) <span class="op">=&gt;</span> {
                                 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">align</span>, <span class="ident">Alignment</span>::<span class="ident">AbiAligned</span>,
-                                           <span class="string">&quot;return pointer is unaligned!&quot;</span>);
+                                           <span class="string">&quot;return place is unaligned!&quot;</span>);
                                 <span class="ident">llval</span>
                             }
                         };
@@ -1234,9 +1239,9 @@
                     <span class="kw">return</span>
                 }
 
-                <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_lvalue</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">location</span>);
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">args</span>: <span class="kw-2">&amp;</span>[_] <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="ident">lvalue</span>.<span class="ident">llval</span>, <span class="ident">lvalue</span>.<span class="ident">llextra</span>];
-                <span class="ident">args</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">args</span>[..<span class="number">1</span> <span class="op">+</span> <span class="ident">lvalue</span>.<span class="ident">has_extra</span>() <span class="kw">as</span> <span class="ident">usize</span>];
+                <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_place</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">location</span>);
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">args</span>: <span class="kw-2">&amp;</span>[_] <span class="op">=</span> <span class="kw-2">&amp;</span>[<span class="ident">place</span>.<span class="ident">llval</span>, <span class="ident">place</span>.<span class="ident">llextra</span>];
+                <span class="ident">args</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">args</span>[..<span class="number">1</span> <span class="op">+</span> <span class="ident">place</span>.<span class="ident">has_extra</span>() <span class="kw">as</span> <span class="ident">usize</span>];
                 <span class="kw">let</span> (<span class="ident">drop_fn</span>, <span class="ident">fn_ty</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
                     <span class="ident">ty</span>::<span class="ident">TyDynamic</span>(..) <span class="op">=&gt;</span> {
                         <span class="kw">let</span> <span class="ident">fn_ty</span> <span class="op">=</span> <span class="ident">common</span>::<span class="ident">instance_ty</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">drop_fn</span>);
@@ -1244,7 +1249,7 @@
                         <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">tcx</span>().<span class="ident">erase_late_bound_regions_and_normalize</span>(<span class="kw-2">&amp;</span><span class="ident">sig</span>);
                         <span class="kw">let</span> <span class="ident">fn_ty</span> <span class="op">=</span> <span class="ident">FnType</span>::<span class="ident">new_vtable</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">sig</span>, <span class="kw-2">&amp;</span>[]);
                         <span class="ident">args</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">args</span>[..<span class="number">1</span>];
-                        (<span class="ident">meth</span>::<span class="ident">DESTRUCTOR</span>.<span class="ident">get_fn</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">lvalue</span>.<span class="ident">llextra</span>, <span class="kw-2">&amp;</span><span class="ident">fn_ty</span>), <span class="ident">fn_ty</span>)
+                        (<span class="ident">meth</span>::<span class="ident">DESTRUCTOR</span>.<span class="ident">get_fn</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">place</span>.<span class="ident">llextra</span>, <span class="kw-2">&amp;</span><span class="ident">fn_ty</span>), <span class="ident">fn_ty</span>)
                     }
                     _ <span class="op">=&gt;</span> {
                         (<span class="ident">callee</span>::<span class="ident">get_fn</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">drop_fn</span>),
@@ -1483,7 +1488,8 @@
                         <span class="comment">// promotes any complex rvalues to constants.</span>
                         <span class="kw">if</span> <span class="ident">i</span> <span class="op">==</span> <span class="number">2</span> <span class="op">&amp;&amp;</span> <span class="ident">intrinsic</span>.<span class="ident">unwrap</span>().<span class="ident">starts_with</span>(<span class="string">&quot;simd_shuffle&quot;</span>) {
                             <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">arg</span> {
-                                <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Consume</span>(_) <span class="op">=&gt;</span> {
+                                <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Copy</span>(_) <span class="op">|</span>
+                                <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Move</span>(_) <span class="op">=&gt;</span> {
                                     <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">span</span>, <span class="string">&quot;shuffle indices must be constant&quot;</span>);
                                 }
                                 <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw-2">ref</span> <span class="ident">constant</span>) <span class="op">=&gt;</span> {
@@ -1539,10 +1545,14 @@
 
                     <span class="comment">// The callee needs to own the argument memory if we pass it</span>
                     <span class="comment">// by-ref, so make a local copy of non-immediate constants.</span>
-                    <span class="kw">if</span> <span class="kw">let</span> (<span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Constant</span>(_), <span class="ident">Ref</span>(..)) <span class="op">=</span> (<span class="ident">arg</span>, <span class="ident">op</span>.<span class="ident">val</span>) {
-                        <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">op</span>.<span class="ident">layout</span>, <span class="string">&quot;const&quot;</span>);
-                        <span class="ident">op</span>.<span class="ident">val</span>.<span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">tmp</span>);
-                        <span class="ident">op</span>.<span class="ident">val</span> <span class="op">=</span> <span class="ident">Ref</span>(<span class="ident">tmp</span>.<span class="ident">llval</span>, <span class="ident">tmp</span>.<span class="ident">alignment</span>);
+                    <span class="kw">match</span> (<span class="ident">arg</span>, <span class="ident">op</span>.<span class="ident">val</span>) {
+                        (<span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Copy</span>(_), <span class="ident">Ref</span>(..)) <span class="op">|</span>
+                        (<span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Constant</span>(_), <span class="ident">Ref</span>(..)) <span class="op">=&gt;</span> {
+                            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">op</span>.<span class="ident">layout</span>, <span class="string">&quot;const&quot;</span>);
+                            <span class="ident">op</span>.<span class="ident">val</span>.<span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">tmp</span>);
+                            <span class="ident">op</span>.<span class="ident">val</span> <span class="op">=</span> <span class="ident">Ref</span>(<span class="ident">tmp</span>.<span class="ident">llval</span>, <span class="ident">tmp</span>.<span class="ident">alignment</span>);
+                        }
+                        _ <span class="op">=&gt;</span> {}
                     }
 
                     <span class="self">self</span>.<span class="ident">trans_argument</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">op</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">llargs</span>, <span class="kw-2">&amp;</span><span class="ident">fn_ty</span>.<span class="ident">args</span>[<span class="ident">i</span>]);
@@ -1598,7 +1608,7 @@
             <span class="ident">Immediate</span>(_) <span class="op">|</span> <span class="ident">Pair</span>(..) <span class="op">=&gt;</span> {
                 <span class="kw">match</span> <span class="ident">arg</span>.<span class="ident">mode</span> {
                     <span class="ident">PassMode</span>::<span class="ident">Indirect</span>(_) <span class="op">|</span> <span class="ident">PassMode</span>::<span class="ident">Cast</span>(_) <span class="op">=&gt;</span> {
-                        <span class="kw">let</span> <span class="ident">scratch</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="string">&quot;arg&quot;</span>);
+                        <span class="kw">let</span> <span class="ident">scratch</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="string">&quot;arg&quot;</span>);
                         <span class="ident">op</span>.<span class="ident">val</span>.<span class="ident">store</span>(<span class="ident">bcx</span>, <span class="ident">scratch</span>);
                         (<span class="ident">scratch</span>.<span class="ident">llval</span>, <span class="ident">Alignment</span>::<span class="ident">AbiAligned</span>, <span class="bool-val">true</span>)
                     }
@@ -1612,7 +1622,7 @@
                 <span class="comment">// think that ATM (Rust 1.16) we only pass temporaries, but we shouldn&#39;t</span>
                 <span class="comment">// have scary latent bugs around.</span>
 
-                <span class="kw">let</span> <span class="ident">scratch</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="string">&quot;arg&quot;</span>);
+                <span class="kw">let</span> <span class="ident">scratch</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">arg</span>.<span class="ident">layout</span>, <span class="string">&quot;arg&quot;</span>);
                 <span class="ident">base</span>::<span class="ident">memcpy_ty</span>(<span class="ident">bcx</span>, <span class="ident">scratch</span>.<span class="ident">llval</span>, <span class="ident">llval</span>, <span class="ident">op</span>.<span class="ident">layout</span>, <span class="ident">align</span>.<span class="ident">non_abi</span>());
                 (<span class="ident">scratch</span>.<span class="ident">llval</span>, <span class="ident">Alignment</span>::<span class="ident">AbiAligned</span>, <span class="bool-val">true</span>)
             }
@@ -1626,7 +1636,7 @@
                                  (<span class="ident">align</span> <span class="op">|</span> <span class="ident">Alignment</span>::<span class="ident">Packed</span>(<span class="ident">arg</span>.<span class="ident">layout</span>.<span class="ident">align</span>))
                                     .<span class="ident">non_abi</span>());
             } <span class="kw">else</span> {
-                <span class="comment">// We can&#39;t use `LvalueRef::load` here because the argument</span>
+                <span class="comment">// We can&#39;t use `PlaceRef::load` here because the argument</span>
                 <span class="comment">// may have a type we don&#39;t treat as immediate, but the ABI</span>
                 <span class="comment">// used for this call is passing it by-value. In that case,</span>
                 <span class="comment">// the load would just produce `OperandValue::Ref` instead</span>
@@ -1654,7 +1664,7 @@
 
         <span class="comment">// Handle both by-ref and immediate tuples.</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Ref</span>(<span class="ident">llval</span>, <span class="ident">align</span>) <span class="op">=</span> <span class="ident">tuple</span>.<span class="ident">val</span> {
-            <span class="kw">let</span> <span class="ident">tuple_ptr</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">new_sized</span>(<span class="ident">llval</span>, <span class="ident">tuple</span>.<span class="ident">layout</span>, <span class="ident">align</span>);
+            <span class="kw">let</span> <span class="ident">tuple_ptr</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">new_sized</span>(<span class="ident">llval</span>, <span class="ident">tuple</span>.<span class="ident">layout</span>, <span class="ident">align</span>);
             <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">tuple</span>.<span class="ident">layout</span>.<span class="ident">fields</span>.<span class="ident">count</span>() {
                 <span class="kw">let</span> <span class="ident">field_ptr</span> <span class="op">=</span> <span class="ident">tuple_ptr</span>.<span class="ident">project_field</span>(<span class="ident">bcx</span>, <span class="ident">i</span>);
                 <span class="self">self</span>.<span class="ident">trans_argument</span>(<span class="ident">bcx</span>, <span class="ident">field_ptr</span>.<span class="ident">load</span>(<span class="ident">bcx</span>), <span class="ident">llargs</span>, <span class="kw-2">&amp;</span><span class="ident">args</span>[<span class="ident">i</span>]);
@@ -1668,7 +1678,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">get_personality_slot</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LvalueRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_personality_slot</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PlaceRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">ccx</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">ccx</span>;
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">slot</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">personality_slot</span> {
             <span class="ident">slot</span>
@@ -1677,7 +1687,7 @@
                 <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">mk_mut_ptr</span>(<span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">types</span>.<span class="ident">u8</span>),
                 <span class="ident">ccx</span>.<span class="ident">tcx</span>().<span class="ident">types</span>.<span class="ident">i32</span>
             ], <span class="bool-val">false</span>));
-            <span class="kw">let</span> <span class="ident">slot</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">layout</span>, <span class="string">&quot;personalityslot&quot;</span>);
+            <span class="kw">let</span> <span class="ident">slot</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">layout</span>, <span class="string">&quot;personalityslot&quot;</span>);
             <span class="self">self</span>.<span class="ident">personality_slot</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">slot</span>);
             <span class="ident">slot</span>
         }
@@ -1742,23 +1752,23 @@
     }
 
     <span class="kw">fn</span> <span class="ident">make_return_dest</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                        <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">fn_ret</span>: <span class="kw-2">&amp;</span><span class="ident">ArgType</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                        <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">fn_ret</span>: <span class="kw-2">&amp;</span><span class="ident">ArgType</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                         <span class="ident">llargs</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ValueRef</span><span class="op">&gt;</span>, <span class="ident">is_intrinsic</span>: <span class="ident">bool</span>)
                         <span class="op">-&gt;</span> <span class="ident">ReturnDest</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="comment">// If the return is ignored, we can just return a do-nothing ReturnDest</span>
         <span class="kw">if</span> <span class="ident">fn_ret</span>.<span class="ident">is_ignore</span>() {
             <span class="kw">return</span> <span class="ident">ReturnDest</span>::<span class="ident">Nothing</span>;
         }
-        <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dest</span> {
+        <span class="kw">let</span> <span class="ident">dest</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dest</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">index</span>] {
-                <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">dest</span>) <span class="op">=&gt;</span> <span class="ident">dest</span>,
+                <span class="ident">LocalRef</span>::<span class="ident">Place</span>(<span class="ident">dest</span>) <span class="op">=&gt;</span> <span class="ident">dest</span>,
                 <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
-                    <span class="comment">// Handle temporary lvalues, specifically Operand ones, as</span>
+                    <span class="comment">// Handle temporary places, specifically Operand ones, as</span>
                     <span class="comment">// they don&#39;t have allocas</span>
                     <span class="kw">return</span> <span class="kw">if</span> <span class="ident">fn_ret</span>.<span class="ident">is_indirect</span>() {
                         <span class="comment">// Odd, but possible, case, we have an operand temporary,</span>
                         <span class="comment">// but the calling convention has an indirect return.</span>
-                        <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">fn_ret</span>.<span class="ident">layout</span>, <span class="string">&quot;tmp_ret&quot;</span>);
+                        <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">fn_ret</span>.<span class="ident">layout</span>, <span class="string">&quot;tmp_ret&quot;</span>);
                         <span class="ident">tmp</span>.<span class="ident">storage_live</span>(<span class="ident">bcx</span>);
                         <span class="ident">llargs</span>.<span class="ident">push</span>(<span class="ident">tmp</span>.<span class="ident">llval</span>);
                         <span class="ident">ReturnDest</span>::<span class="ident">IndirectOperand</span>(<span class="ident">tmp</span>, <span class="ident">index</span>)
@@ -1766,7 +1776,7 @@
                         <span class="comment">// Currently, intrinsics always need a location to store</span>
                         <span class="comment">// the result. so we create a temporary alloca for the</span>
                         <span class="comment">// result</span>
-                        <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">fn_ret</span>.<span class="ident">layout</span>, <span class="string">&quot;tmp_ret&quot;</span>);
+                        <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">fn_ret</span>.<span class="ident">layout</span>, <span class="string">&quot;tmp_ret&quot;</span>);
                         <span class="ident">tmp</span>.<span class="ident">storage_live</span>(<span class="ident">bcx</span>);
                         <span class="ident">ReturnDest</span>::<span class="ident">IndirectOperand</span>(<span class="ident">tmp</span>, <span class="ident">index</span>)
                     } <span class="kw">else</span> {
@@ -1774,11 +1784,11 @@
                     };
                 }
                 <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(_)) <span class="op">=&gt;</span> {
-                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;lvalue local already assigned to&quot;</span>);
+                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;place local already assigned to&quot;</span>);
                 }
             }
         } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">trans_lvalue</span>(<span class="ident">bcx</span>, <span class="ident">dest</span>)
+            <span class="self">self</span>.<span class="ident">trans_place</span>(<span class="ident">bcx</span>, <span class="ident">dest</span>)
         };
         <span class="kw">if</span> <span class="ident">fn_ret</span>.<span class="ident">is_indirect</span>() {
             <span class="kw">match</span> <span class="ident">dest</span>.<span class="ident">alignment</span> {
@@ -1803,18 +1813,18 @@
 
     <span class="kw">fn</span> <span class="ident">trans_transmute</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                        <span class="ident">src</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                       <span class="ident">dst</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dst</span> {
+                       <span class="ident">dst</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dst</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">index</span>] {
-                <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">lvalue</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">trans_transmute_into</span>(<span class="ident">bcx</span>, <span class="ident">src</span>, <span class="ident">lvalue</span>),
+                <span class="ident">LocalRef</span>::<span class="ident">Place</span>(<span class="ident">place</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">trans_transmute_into</span>(<span class="ident">bcx</span>, <span class="ident">src</span>, <span class="ident">place</span>),
                 <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
-                    <span class="kw">let</span> <span class="ident">dst_layout</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="self">self</span>.<span class="ident">monomorphized_lvalue_ty</span>(<span class="ident">dst</span>));
+                    <span class="kw">let</span> <span class="ident">dst_layout</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="self">self</span>.<span class="ident">monomorphized_place_ty</span>(<span class="ident">dst</span>));
                     <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">dst_layout</span>.<span class="ident">ty</span>.<span class="ident">has_erasable_regions</span>());
-                    <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">dst_layout</span>, <span class="string">&quot;transmute_temp&quot;</span>);
-                    <span class="ident">lvalue</span>.<span class="ident">storage_live</span>(<span class="ident">bcx</span>);
-                    <span class="self">self</span>.<span class="ident">trans_transmute_into</span>(<span class="ident">bcx</span>, <span class="ident">src</span>, <span class="ident">lvalue</span>);
-                    <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="ident">lvalue</span>.<span class="ident">load</span>(<span class="ident">bcx</span>);
-                    <span class="ident">lvalue</span>.<span class="ident">storage_dead</span>(<span class="ident">bcx</span>);
+                    <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">dst_layout</span>, <span class="string">&quot;transmute_temp&quot;</span>);
+                    <span class="ident">place</span>.<span class="ident">storage_live</span>(<span class="ident">bcx</span>);
+                    <span class="self">self</span>.<span class="ident">trans_transmute_into</span>(<span class="ident">bcx</span>, <span class="ident">src</span>, <span class="ident">place</span>);
+                    <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">load</span>(<span class="ident">bcx</span>);
+                    <span class="ident">place</span>.<span class="ident">storage_dead</span>(<span class="ident">bcx</span>);
                     <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">index</span>] <span class="op">=</span> <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">op</span>));
                 }
                 <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">op</span>)) <span class="op">=&gt;</span> {
@@ -1823,20 +1833,20 @@
                 }
             }
         } <span class="kw">else</span> {
-            <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_lvalue</span>(<span class="ident">bcx</span>, <span class="ident">dst</span>);
+            <span class="kw">let</span> <span class="ident">dst</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_place</span>(<span class="ident">bcx</span>, <span class="ident">dst</span>);
             <span class="self">self</span>.<span class="ident">trans_transmute_into</span>(<span class="ident">bcx</span>, <span class="ident">src</span>, <span class="ident">dst</span>);
         }
     }
 
     <span class="kw">fn</span> <span class="ident">trans_transmute_into</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                             <span class="ident">src</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                            <span class="ident">dst</span>: <span class="ident">LvalueRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+                            <span class="ident">dst</span>: <span class="ident">PlaceRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_operand</span>(<span class="ident">bcx</span>, <span class="ident">src</span>);
         <span class="kw">let</span> <span class="ident">llty</span> <span class="op">=</span> <span class="ident">src</span>.<span class="ident">layout</span>.<span class="ident">llvm_type</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>);
         <span class="kw">let</span> <span class="ident">cast_ptr</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">pointercast</span>(<span class="ident">dst</span>.<span class="ident">llval</span>, <span class="ident">llty</span>.<span class="ident">ptr_to</span>());
         <span class="kw">let</span> <span class="ident">align</span> <span class="op">=</span> <span class="ident">src</span>.<span class="ident">layout</span>.<span class="ident">align</span>.<span class="ident">min</span>(<span class="ident">dst</span>.<span class="ident">layout</span>.<span class="ident">align</span>);
         <span class="ident">src</span>.<span class="ident">val</span>.<span class="ident">store</span>(<span class="ident">bcx</span>,
-            <span class="ident">LvalueRef</span>::<span class="ident">new_sized</span>(<span class="ident">cast_ptr</span>, <span class="ident">src</span>.<span class="ident">layout</span>, <span class="ident">Alignment</span>::<span class="ident">Packed</span>(<span class="ident">align</span>)));
+            <span class="ident">PlaceRef</span>::<span class="ident">new_sized</span>(<span class="ident">cast_ptr</span>, <span class="ident">src</span>.<span class="ident">layout</span>, <span class="ident">Alignment</span>::<span class="ident">Packed</span>(<span class="ident">align</span>)));
     }
 
 
@@ -1859,7 +1869,7 @@
             <span class="ident">DirectOperand</span>(<span class="ident">index</span>) <span class="op">=&gt;</span> {
                 <span class="comment">// If there is a cast, we have to store and reload.</span>
                 <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">PassMode</span>::<span class="ident">Cast</span>(_) <span class="op">=</span> <span class="ident">ret_ty</span>.<span class="ident">mode</span> {
-                    <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">LvalueRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">ret_ty</span>.<span class="ident">layout</span>, <span class="string">&quot;tmp_ret&quot;</span>);
+                    <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">PlaceRef</span>::<span class="ident">alloca</span>(<span class="ident">bcx</span>, <span class="ident">ret_ty</span>.<span class="ident">layout</span>, <span class="string">&quot;tmp_ret&quot;</span>);
                     <span class="ident">tmp</span>.<span class="ident">storage_live</span>(<span class="ident">bcx</span>);
                     <span class="ident">ret_ty</span>.<span class="ident">store</span>(<span class="ident">bcx</span>, <span class="ident">llval</span>, <span class="ident">tmp</span>);
                     <span class="kw">let</span> <span class="ident">op</span> <span class="op">=</span> <span class="ident">tmp</span>.<span class="ident">load</span>(<span class="ident">bcx</span>);
@@ -1878,10 +1888,10 @@
     <span class="comment">// Do nothing, the return value is indirect or ignored</span>
     <span class="ident">Nothing</span>,
     <span class="comment">// Store the return value to the pointer</span>
-    <span class="ident">Store</span>(<span class="ident">LvalueRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
-    <span class="comment">// Stores an indirect return value to an operand local lvalue</span>
-    <span class="ident">IndirectOperand</span>(<span class="ident">LvalueRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">mir</span>::<span class="ident">Local</span>),
-    <span class="comment">// Stores a direct return value to an operand local lvalue</span>
+    <span class="ident">Store</span>(<span class="ident">PlaceRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>),
+    <span class="comment">// Stores an indirect return value to an operand local place</span>
+    <span class="ident">IndirectOperand</span>(<span class="ident">PlaceRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">mir</span>::<span class="ident">Local</span>),
+    <span class="comment">// Stores a direct return value to an operand local place</span>
     <span class="ident">DirectOperand</span>(<span class="ident">mir</span>::<span class="ident">Local</span>)
 }
 </pre>

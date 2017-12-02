@@ -159,7 +159,7 @@
     }
 
     <span class="doccomment">/// Compile `expr` into a value that can be used as an operand.</span>
-    <span class="doccomment">/// If `expr` is an lvalue like `x`, this will introduce a</span>
+    <span class="doccomment">/// If `expr` is a place like `x`, this will introduce a</span>
     <span class="doccomment">/// temporary `tmp = x`, so that we capture the value of `x` at</span>
     <span class="doccomment">/// this time.</span>
     <span class="doccomment">///</span>
@@ -197,11 +197,11 @@
                 <span class="kw">let</span> <span class="ident">constant</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">as_constant</span>(<span class="ident">expr</span>);
                 <span class="ident">block</span>.<span class="ident">and</span>(<span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw">box</span> <span class="ident">constant</span>))
             }
-            <span class="ident">Category</span>::<span class="ident">Lvalue</span> <span class="op">|</span>
+            <span class="ident">Category</span>::<span class="ident">Place</span> <span class="op">|</span>
             <span class="ident">Category</span>::<span class="ident">Rvalue</span>(..) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span>
                     <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">as_temp</span>(<span class="ident">block</span>, <span class="ident">scope</span>, <span class="ident">expr</span>));
-                <span class="ident">block</span>.<span class="ident">and</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">operand</span>)))
+                <span class="ident">block</span>.<span class="ident">and</span>(<span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">operand</span>)))
             }
         }
     }

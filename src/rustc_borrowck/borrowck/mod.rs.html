@@ -1563,6 +1563,17 @@
 <span id="1518">1518</span>
 <span id="1519">1519</span>
 <span id="1520">1520</span>
+<span id="1521">1521</span>
+<span id="1522">1522</span>
+<span id="1523">1523</span>
+<span id="1524">1524</span>
+<span id="1525">1525</span>
+<span id="1526">1526</span>
+<span id="1527">1527</span>
+<span id="1528">1528</span>
+<span id="1529">1529</span>
+<span id="1530">1530</span>
+<span id="1531">1531</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1834,6 +1845,17 @@
                                                <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>
     {
         <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">struct_span_err</span>(<span class="ident">sp</span>, <span class="ident">msg</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">cancel_if_wrong_origin</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
+                                <span class="kw-2">mut</span> <span class="ident">diag</span>: <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
+                                <span class="ident">o</span>: <span class="ident">Origin</span>)
+                                <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>
+    {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">o</span>.<span class="ident">should_emit_errors</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">borrowck_mode</span>) {
+            <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">cancel</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">diag</span>);
+        }
+        <span class="ident">diag</span>
     }
 }
 

@@ -655,17 +655,6 @@
 <span id="610">610</span>
 <span id="611">611</span>
 <span id="612">612</span>
-<span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
-<span id="618">618</span>
-<span id="619">619</span>
-<span id="620">620</span>
-<span id="621">621</span>
-<span id="622">622</span>
-<span id="623">623</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -757,6 +746,7 @@
         <span class="ident">body_id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
         <span class="ident">obligation</span>: <span class="ident">RegionObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     ) {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;register_region_obligation({:?}, {:?})&quot;</span>, <span class="ident">body_id</span>, <span class="ident">obligation</span>);
         <span class="self">self</span>.<span class="ident">region_obligations</span>
             .<span class="ident">borrow_mut</span>()
             .<span class="ident">push</span>((<span class="ident">body_id</span>, <span class="ident">obligation</span>));
@@ -848,18 +838,6 @@
         <span class="kw">let</span> <span class="ident">outlives</span> <span class="op">=</span>
             <span class="ident">TypeOutlives</span>::<span class="ident">new</span>(<span class="self">self</span>, <span class="ident">region_bound_pairs</span>, <span class="ident">implicit_region_bound</span>, <span class="ident">param_env</span>);
         <span class="ident">outlives</span>.<span class="ident">type_must_outlive</span>(<span class="ident">origin</span>, <span class="ident">ty</span>, <span class="ident">region</span>);
-    }
-
-    <span class="doccomment">/// Ignore the region obligations, not bothering to prove</span>
-    <span class="doccomment">/// them. This function should not really exist; it is used to</span>
-    <span class="doccomment">/// accommodate some older code for the time being.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ignore_region_obligations</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="macro">assert</span><span class="macro">!</span>(
-            <span class="op">!</span><span class="self">self</span>.<span class="ident">in_snapshot</span>.<span class="ident">get</span>(),
-            <span class="string">&quot;cannot ignore registered region obligations in a snapshot&quot;</span>
-        );
-
-        <span class="self">self</span>.<span class="ident">region_obligations</span>.<span class="ident">borrow_mut</span>().<span class="ident">clear</span>();
     }
 }
 

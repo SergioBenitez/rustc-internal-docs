@@ -2065,33 +2065,6 @@
 <span id="2020">2020</span>
 <span id="2021">2021</span>
 <span id="2022">2022</span>
-<span id="2023">2023</span>
-<span id="2024">2024</span>
-<span id="2025">2025</span>
-<span id="2026">2026</span>
-<span id="2027">2027</span>
-<span id="2028">2028</span>
-<span id="2029">2029</span>
-<span id="2030">2030</span>
-<span id="2031">2031</span>
-<span id="2032">2032</span>
-<span id="2033">2033</span>
-<span id="2034">2034</span>
-<span id="2035">2035</span>
-<span id="2036">2036</span>
-<span id="2037">2037</span>
-<span id="2038">2038</span>
-<span id="2039">2039</span>
-<span id="2040">2040</span>
-<span id="2041">2041</span>
-<span id="2042">2042</span>
-<span id="2043">2043</span>
-<span id="2044">2044</span>
-<span id="2045">2045</span>
-<span id="2046">2046</span>
-<span id="2047">2047</span>
-<span id="2048">2048</span>
-<span id="2049">2049</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2107,7 +2080,6 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">TyParamBound</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">UnsafeSource</span>::<span class="kw-2">*</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">ViewPath_</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">PathParameters</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">symbol</span>::{<span class="ident">Ident</span>, <span class="ident">Symbol</span> <span class="kw">as</span> <span class="ident">Name</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">ThinVec</span>;
@@ -3800,45 +3772,19 @@
 
 <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Variant</span> <span class="op">=</span> <span class="ident">Spanned</span><span class="op">&lt;</span><span class="ident">Variant_</span><span class="op">&gt;</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>, <span class="ident">Copy</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PathListItem_</span> {
-    <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">Ident</span>,
-    <span class="doccomment">/// renamed in list, e.g. `use foo::{bar as baz};`</span>
-    <span class="kw">pub</span> <span class="ident">rename</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">NodeId</span>,
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">UseTreeKind</span> {
+    <span class="ident">Simple</span>(<span class="ident">Ident</span>),
+    <span class="ident">Glob</span>,
+    <span class="ident">Nested</span>(<span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">UseTree</span>, <span class="ident">NodeId</span>)<span class="op">&gt;</span>),
 }
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">PathListItem</span> <span class="op">=</span> <span class="ident">Spanned</span><span class="op">&lt;</span><span class="ident">PathListItem_</span><span class="op">&gt;</span>;
-
-<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">ViewPath</span> <span class="op">=</span> <span class="ident">Spanned</span><span class="op">&lt;</span><span class="ident">ViewPath_</span><span class="op">&gt;</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ViewPath_</span> {
-
-    <span class="doccomment">/// `foo::bar::baz as quux`</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// or just</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// `foo::bar::baz` (with `as baz` implicitly on the right)</span>
-    <span class="ident">ViewPathSimple</span>(<span class="ident">Ident</span>, <span class="ident">Path</span>),
-
-    <span class="doccomment">/// `foo::bar::*`</span>
-    <span class="ident">ViewPathGlob</span>(<span class="ident">Path</span>),
-
-    <span class="doccomment">/// `foo::bar::{a,b,c}`</span>
-    <span class="ident">ViewPathList</span>(<span class="ident">Path</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathListItem</span><span class="op">&gt;</span>)
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">UseTree</span> {
+    <span class="kw">pub</span> <span class="ident">kind</span>: <span class="ident">UseTreeKind</span>,
+    <span class="kw">pub</span> <span class="ident">prefix</span>: <span class="ident">Path</span>,
+    <span class="kw">pub</span> <span class="ident">span</span>: <span class="ident">Span</span>,
 }
-
-<span class="kw">impl</span> <span class="ident">ViewPath_</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">Path</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">ViewPathSimple</span>(_, <span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">|</span>
-            <span class="ident">ViewPathGlob</span> (<span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">|</span>
-            <span class="ident">ViewPathList</span>(<span class="kw-2">ref</span> <span class="ident">path</span>, _) <span class="op">=&gt;</span> <span class="ident">path</span>
-        }
-    }
-}
-
 
 <span class="doccomment">/// Distinguishes between Attributes that decorate items and Attributes that</span>
 <span class="doccomment">/// are contained as statements within items. These two cases need to be</span>
@@ -4008,7 +3954,7 @@
     <span class="doccomment">/// A use declaration (`use` or `pub use`) item.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `use foo;`, `use foo::bar;` or `use foo::bar as FooBar;`</span>
-    <span class="ident">Use</span>(<span class="ident">P</span><span class="op">&lt;</span><span class="ident">ViewPath</span><span class="op">&gt;</span>),
+    <span class="ident">Use</span>(<span class="ident">P</span><span class="op">&lt;</span><span class="ident">UseTree</span><span class="op">&gt;</span>),
     <span class="doccomment">/// A static item (`static` or `pub static`).</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `static FOO: i32 = 42;` or `static FOO: &amp;&#39;static str = &quot;bar&quot;;`</span>

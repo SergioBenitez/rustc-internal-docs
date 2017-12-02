@@ -127,7 +127,7 @@
 <span class="comment">// except according to those terms.</span>
 
 <span class="doccomment">//! The move-analysis portion of borrowck needs to work in an abstract</span>
-<span class="doccomment">//! domain of lifted Lvalues.  Most of the Lvalue variants fall into a</span>
+<span class="doccomment">//! domain of lifted Places.  Most of the Place variants fall into a</span>
 <span class="doccomment">//! one-to-one mapping between the concrete and abstract (e.g. a</span>
 <span class="doccomment">//! field-deref on a local-variable, `x.field`, has the same meaning</span>
 <span class="doccomment">//! in both domains). Indexed-Projections are the exception: `a[x]`</span>
@@ -139,7 +139,7 @@
 <span class="doccomment">//! `a[x]` would still overlap them both. But that is not this</span>
 <span class="doccomment">//! representation does today.)</span>
 
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Local</span>, <span class="ident">LvalueElem</span>, <span class="ident">Operand</span>, <span class="ident">ProjectionElem</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Local</span>, <span class="ident">PlaceElem</span>, <span class="ident">Operand</span>, <span class="ident">ProjectionElem</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">Ty</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>)]</span>
@@ -165,7 +165,7 @@
     <span class="kw">type</span> <span class="ident">Abstract</span> <span class="op">=</span> <span class="ident">AbstractType</span>;
     <span class="kw">fn</span> <span class="ident">lift</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Abstract</span> { <span class="ident">AbstractType</span> }
 }
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lift</span> <span class="kw">for</span> <span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lift</span> <span class="kw">for</span> <span class="ident">PlaceElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">type</span> <span class="ident">Abstract</span> <span class="op">=</span> <span class="ident">AbstractElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">lift</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Abstract</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {

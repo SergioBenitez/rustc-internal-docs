@@ -150,13 +150,13 @@
 <span class="doccomment">//! - `as_operand` -- evaluates the value and yields an `Operand`,</span>
 <span class="doccomment">//!   suitable for use as an argument to an `Rvalue`</span>
 <span class="doccomment">//! - `as_temp` -- evaluates into a temporary; this is similar to `as_operand`</span>
-<span class="doccomment">//!   except it always returns a fresh lvalue, even for constants</span>
+<span class="doccomment">//!   except it always returns a fresh place, even for constants</span>
 <span class="doccomment">//! - `as_rvalue` -- yields an `Rvalue`, suitable for use in an assignment;</span>
 <span class="doccomment">//!   as of this writing, never needed outside of the `expr` module itself</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Sometimes though want the expression&#39;s *location*. An example</span>
 <span class="doccomment">//! would be during a match statement, or the operand of the `&amp;`</span>
-<span class="doccomment">//! operator. In that case, you want `as_lvalue`. This will create a</span>
+<span class="doccomment">//! operator. In that case, you want `as_place`. This will create a</span>
 <span class="doccomment">//! temporary if necessary.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Finally, if it&#39;s a constant you seek, then call</span>
@@ -172,7 +172,7 @@
 <span class="doccomment">//! struct expression (or other expression that creates a new value)</span>
 <span class="doccomment">//! is typically easiest to write in terms of `as_rvalue` or `into`,</span>
 <span class="doccomment">//! whereas a reference to a field is easiest to write in terms of</span>
-<span class="doccomment">//! `as_lvalue`. (The exception to this is scope and paren</span>
+<span class="doccomment">//! `as_place`. (The exception to this is scope and paren</span>
 <span class="doccomment">//! expressions, which have no category.)</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Therefore, the various functions above make use of one another in</span>
@@ -180,12 +180,12 @@
 <span class="doccomment">//! the most suitable spot to implement it, and then just let the</span>
 <span class="doccomment">//! other fns cycle around. The handoff works like this:</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! - `into(lv)` -&gt; fallback is to create a rvalue with `as_rvalue` and assign it to `lv`</span>
+<span class="doccomment">//! - `into(place)` -&gt; fallback is to create a rvalue with `as_rvalue` and assign it to `place`</span>
 <span class="doccomment">//! - `as_rvalue` -&gt; fallback is to create an Operand with `as_operand` and use `Rvalue::use`</span>
 <span class="doccomment">//! - `as_operand` -&gt; either invokes `as_constant` or `as_temp`</span>
 <span class="doccomment">//! - `as_constant` -&gt; (no fallback)</span>
-<span class="doccomment">//! - `as_temp` -&gt; creates a temporary and either calls `as_lvalue` or `into`</span>
-<span class="doccomment">//! - `as_lvalue` -&gt; for rvalues, falls back to `as_temp` and returns that</span>
+<span class="doccomment">//! - `as_temp` -&gt; creates a temporary and either calls `as_place` or `into`</span>
+<span class="doccomment">//! - `as_place` -&gt; for rvalues, falls back to `as_temp` and returns that</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! As you can see, there is a cycle where `into` can (in theory) fallback to `as_temp`</span>
 <span class="doccomment">//! which can fallback to `into`. So if one of the `ExprKind` variants is not, in fact,</span>
@@ -194,10 +194,10 @@
 <span class="doccomment">//! Of those fallbacks, the most interesting one is `as_temp`, because</span>
 <span class="doccomment">//! it discriminates based on the category of the expression. This is</span>
 <span class="doccomment">//! basically the point where the &quot;by value&quot; operations are bridged</span>
-<span class="doccomment">//! over to the &quot;by reference&quot; mode (`as_lvalue`).</span>
+<span class="doccomment">//! over to the &quot;by reference&quot; mode (`as_place`).</span>
 
 <span class="kw">mod</span> <span class="ident">as_constant</span>;
-<span class="kw">mod</span> <span class="ident">as_lvalue</span>;
+<span class="kw">mod</span> <span class="ident">as_place</span>;
 <span class="kw">mod</span> <span class="ident">as_rvalue</span>;
 <span class="kw">mod</span> <span class="ident">as_operand</span>;
 <span class="kw">mod</span> <span class="ident">as_temp</span>;

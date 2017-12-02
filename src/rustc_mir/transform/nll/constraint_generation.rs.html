@@ -277,6 +277,13 @@
 <span id="232">232</span>
 <span id="233">233</span>
 <span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -289,10 +296,10 @@
 <span class="comment">// except according to those terms.</span>
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Location</span>, <span class="ident">Lvalue</span>, <span class="ident">Mir</span>, <span class="ident">Rvalue</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Location</span>, <span class="ident">Place</span>, <span class="ident">Mir</span>, <span class="ident">Rvalue</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::<span class="ident">Visitor</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">Lvalue</span>::<span class="ident">Projection</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">LvalueProjection</span>, <span class="ident">ProjectionElem</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">Place</span>::<span class="ident">Projection</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">PlaceProjection</span>, <span class="ident">ProjectionElem</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">infer</span>::<span class="ident">InferCtxt</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">traits</span>::{<span class="self">self</span>, <span class="ident">ObligationCause</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>};
@@ -432,10 +439,17 @@
             <span class="comment">// associated types and parameters). We need to normalize</span>
             <span class="comment">// associated types here and possibly recursively process.</span>
             <span class="kw">for</span> <span class="ident">ty</span> <span class="kw">in</span> <span class="ident">dtorck_types</span> {
-                <span class="comment">// FIXME -- I think that this may disregard some region obligations</span>
-                <span class="comment">// or something. Do we care? -nmatsakis</span>
                 <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="ident">ObligationCause</span>::<span class="ident">dummy</span>();
-                <span class="kw">match</span> <span class="ident">traits</span>::<span class="ident">fully_normalize</span>(<span class="self">self</span>.<span class="ident">infcx</span>, <span class="ident">cause</span>, <span class="self">self</span>.<span class="ident">param_env</span>, <span class="kw-2">&amp;</span><span class="ident">ty</span>) {
+                <span class="comment">// We know that our original `dropped_ty` is well-formed,</span>
+                <span class="comment">// so region obligations resulting from this normalization</span>
+                <span class="comment">// should always hold.</span>
+                <span class="comment">//</span>
+                <span class="comment">// Therefore we ignore them instead of trying to match</span>
+                <span class="comment">// them up with a location.</span>
+                <span class="kw">let</span> <span class="ident">fulfillcx</span> <span class="op">=</span> <span class="ident">traits</span>::<span class="ident">FulfillmentContext</span>::<span class="ident">new_ignoring_regions</span>();
+                <span class="kw">match</span> <span class="ident">traits</span>::<span class="ident">fully_normalize_with_fulfillcx</span>(
+                    <span class="self">self</span>.<span class="ident">infcx</span>, <span class="ident">fulfillcx</span>, <span class="ident">cause</span>, <span class="self">self</span>.<span class="ident">param_env</span>, <span class="kw-2">&amp;</span><span class="ident">ty</span>
+                ) {
                     <span class="prelude-val">Ok</span>(<span class="ident">ty</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
                         <span class="ident">ty</span>::<span class="ident">TyParam</span>(..) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyProjection</span>(..) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyAnon</span>(..) <span class="op">=&gt;</span> {
                             <span class="self">self</span>.<span class="ident">add_regular_live_constraint</span>(<span class="ident">ty</span>, <span class="ident">location</span>);
@@ -462,10 +476,10 @@
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">location</span>: <span class="ident">Location</span>,
         <span class="ident">borrow_region</span>: <span class="ident">ty</span>::<span class="ident">Region</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="ident">borrowed_lv</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">borrowed_place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     ) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">borrowed_lv</span> {
-            <span class="kw">let</span> <span class="ident">LvalueProjection</span> { <span class="kw-2">ref</span> <span class="ident">base</span>, <span class="kw-2">ref</span> <span class="ident">elem</span> } <span class="op">=</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">proj</span>;
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">borrowed_place</span> {
+            <span class="kw">let</span> <span class="ident">PlaceProjection</span> { <span class="kw-2">ref</span> <span class="ident">base</span>, <span class="kw-2">ref</span> <span class="ident">elem</span> } <span class="op">=</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">proj</span>;
 
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">elem</span> {
                 <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">tcx</span>;
@@ -505,8 +519,8 @@
         <span class="comment">// where L is the path that is borrowed. In that case, we have</span>
         <span class="comment">// to add the reborrow constraints (which don&#39;t fall out</span>
         <span class="comment">// naturally from the type-checker).</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="ident">region</span>, <span class="ident">_bk</span>, <span class="kw-2">ref</span> <span class="ident">borrowed_lv</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">rvalue</span> {
-            <span class="self">self</span>.<span class="ident">add_reborrow_constraint</span>(<span class="ident">location</span>, <span class="ident">region</span>, <span class="ident">borrowed_lv</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="ident">region</span>, <span class="ident">_bk</span>, <span class="kw-2">ref</span> <span class="ident">borrowed_place</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">rvalue</span> {
+            <span class="self">self</span>.<span class="ident">add_reborrow_constraint</span>(<span class="ident">location</span>, <span class="ident">region</span>, <span class="ident">borrowed_place</span>);
         }
 
         <span class="self">self</span>.<span class="ident">super_rvalue</span>(<span class="ident">rvalue</span>, <span class="ident">location</span>);

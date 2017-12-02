@@ -565,6 +565,36 @@
 <span id="520">520</span>
 <span id="521">521</span>
 <span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -614,6 +644,19 @@
     <span class="comment">// A list of all obligations that have been registered with this</span>
     <span class="comment">// fulfillment context.</span>
     <span class="ident">predicates</span>: <span class="ident">ObligationForest</span><span class="op">&lt;</span><span class="ident">PendingPredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
+    <span class="comment">// Should this fulfillment context register type-lives-for-region</span>
+    <span class="comment">// obligations on its parent infcx? In some cases, region</span>
+    <span class="comment">// obligations are either already known to hold (normalization) or</span>
+    <span class="comment">// hopefully verifed elsewhere (type-impls-bound), and therefore</span>
+    <span class="comment">// should not be checked.</span>
+    <span class="comment">//</span>
+    <span class="comment">// Note that if we are normalizing a type that we already</span>
+    <span class="comment">// know is well-formed, there should be no harm setting this</span>
+    <span class="comment">// to true - all the region variables should be determinable</span>
+    <span class="comment">// using the RFC 447 rules, which don&#39;t depend on</span>
+    <span class="comment">// type-lives-for-region constraints, and because the type</span>
+    <span class="comment">// is well-formed, the constraints should hold.</span>
+    <span class="ident">register_region_obligations</span>: <span class="ident">bool</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
@@ -627,6 +670,14 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">FulfillmentContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="ident">FulfillmentContext</span> {
             <span class="ident">predicates</span>: <span class="ident">ObligationForest</span>::<span class="ident">new</span>(),
+            <span class="ident">register_region_obligations</span>: <span class="bool-val">true</span>
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_ignoring_regions</span>() <span class="op">-&gt;</span> <span class="ident">FulfillmentContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">FulfillmentContext</span> {
+            <span class="ident">predicates</span>: <span class="ident">ObligationForest</span>::<span class="ident">new</span>(),
+            <span class="ident">register_region_obligations</span>: <span class="bool-val">false</span>
         }
     }
 
@@ -759,7 +810,10 @@
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;select: starting another iteration&quot;</span>);
 
             <span class="comment">// Process pending obligations.</span>
-            <span class="kw">let</span> <span class="ident">outcome</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">process_obligations</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FulfillProcessor</span> { <span class="ident">selcx</span> });
+            <span class="kw">let</span> <span class="ident">outcome</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">process_obligations</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">FulfillProcessor</span> {
+                <span class="ident">selcx</span>,
+                <span class="ident">register_region_obligations</span>: <span class="self">self</span>.<span class="ident">register_region_obligations</span>
+            });
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;select: outcome={:?}&quot;</span>, <span class="ident">outcome</span>);
 
             <span class="comment">// FIXME: if we kept the original cache key, we could mark projection</span>
@@ -788,6 +842,7 @@
 
 <span class="kw">struct</span> <span class="ident">FulfillProcessor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>: <span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;b</span><span class="op">&gt;</span> {
     <span class="ident">selcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">SelectionContext</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="ident">register_region_obligations</span>: <span class="ident">bool</span>
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">ObligationProcessor</span> <span class="kw">for</span> <span class="ident">FulfillProcessor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -798,7 +853,7 @@
                           <span class="ident">obligation</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>::<span class="ident">Obligation</span>)
                           <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Obligation</span><span class="op">&gt;&gt;</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span>
     {
-        <span class="ident">process_predicate</span>(<span class="self">self</span>.<span class="ident">selcx</span>, <span class="ident">obligation</span>)
+        <span class="ident">process_predicate</span>(<span class="self">self</span>.<span class="ident">selcx</span>, <span class="ident">obligation</span>, <span class="self">self</span>.<span class="ident">register_region_obligations</span>)
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">os</span><span class="op">|</span> <span class="ident">os</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">os</span><span class="op">|</span> <span class="ident">os</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">PendingPredicateObligation</span> {
                 <span class="ident">obligation</span>: <span class="ident">o</span>,
                 <span class="ident">stalled_on</span>: <span class="macro">vec</span><span class="macro">!</span>[]
@@ -837,7 +892,8 @@
 <span class="doccomment">/// - `Err` if the predicate does not hold</span>
 <span class="kw">fn</span> <span class="ident">process_predicate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(
     <span class="ident">selcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SelectionContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-    <span class="ident">pending_obligation</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">PendingPredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+    <span class="ident">pending_obligation</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">PendingPredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="ident">register_region_obligations</span>: <span class="ident">bool</span>)
     <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PredicateObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
               <span class="ident">FulfillmentErrorCode</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
 {
@@ -959,26 +1015,30 @@
                         <span class="comment">// `for&lt;&#39;a&gt; T: &#39;a where &#39;a not in T`, which we can treat as `T: &#39;static`.</span>
                         <span class="prelude-val">Some</span>(<span class="ident">t_a</span>) <span class="op">=&gt;</span> {
                             <span class="kw">let</span> <span class="ident">r_static</span> <span class="op">=</span> <span class="ident">selcx</span>.<span class="ident">tcx</span>().<span class="ident">types</span>.<span class="ident">re_static</span>;
-                            <span class="ident">selcx</span>.<span class="ident">infcx</span>().<span class="ident">register_region_obligation</span>(
-                                <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">body_id</span>,
-                                <span class="ident">RegionObligation</span> {
-                                    <span class="ident">sup_type</span>: <span class="ident">t_a</span>,
-                                    <span class="ident">sub_region</span>: <span class="ident">r_static</span>,
-                                    <span class="ident">cause</span>: <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">clone</span>(),
-                                });
+                            <span class="kw">if</span> <span class="ident">register_region_obligations</span> {
+                                <span class="ident">selcx</span>.<span class="ident">infcx</span>().<span class="ident">register_region_obligation</span>(
+                                    <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">body_id</span>,
+                                    <span class="ident">RegionObligation</span> {
+                                        <span class="ident">sup_type</span>: <span class="ident">t_a</span>,
+                                        <span class="ident">sub_region</span>: <span class="ident">r_static</span>,
+                                        <span class="ident">cause</span>: <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">clone</span>(),
+                                    });
+                            }
                             <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[]))
                         }
                     }
                 }
                 <span class="comment">// If there aren&#39;t, register the obligation.</span>
                 <span class="prelude-val">Some</span>(<span class="ident">ty</span>::<span class="ident">OutlivesPredicate</span>(<span class="ident">t_a</span>, <span class="ident">r_b</span>)) <span class="op">=&gt;</span> {
-                    <span class="ident">selcx</span>.<span class="ident">infcx</span>().<span class="ident">register_region_obligation</span>(
-                        <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">body_id</span>,
-                        <span class="ident">RegionObligation</span> {
-                            <span class="ident">sup_type</span>: <span class="ident">t_a</span>,
-                            <span class="ident">sub_region</span>: <span class="ident">r_b</span>,
-                            <span class="ident">cause</span>: <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">clone</span>()
-                        });
+                    <span class="kw">if</span> <span class="ident">register_region_obligations</span> {
+                        <span class="ident">selcx</span>.<span class="ident">infcx</span>().<span class="ident">register_region_obligation</span>(
+                            <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">body_id</span>,
+                            <span class="ident">RegionObligation</span> {
+                                <span class="ident">sup_type</span>: <span class="ident">t_a</span>,
+                                <span class="ident">sub_region</span>: <span class="ident">r_b</span>,
+                                <span class="ident">cause</span>: <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">clone</span>()
+                            });
+                    }
                     <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[]))
                 }
             }

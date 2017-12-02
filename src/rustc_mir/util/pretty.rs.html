@@ -811,12 +811,12 @@
         }
     }
 
-    <span class="comment">// Print return pointer</span>
+    <span class="comment">// Print return place</span>
     <span class="kw">let</span> <span class="ident">indented_retptr</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}let mut {:?}: {};&quot;</span>,
                                   <span class="ident">INDENT</span>,
-                                  <span class="ident">RETURN_POINTER</span>,
-                                  <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">RETURN_POINTER</span>].<span class="ident">ty</span>);
-    <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{0:1$} // return pointer&quot;</span>,
+                                  <span class="ident">RETURN_PLACE</span>,
+                                  <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">RETURN_PLACE</span>].<span class="ident">ty</span>);
+    <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{0:1$} // return place&quot;</span>,
              <span class="ident">indented_retptr</span>,
              <span class="ident">ALIGN</span>)<span class="question-mark">?</span>;
 
@@ -856,7 +856,7 @@
                 <span class="kw">if</span> <span class="ident">i</span> <span class="op">!=</span> <span class="number">0</span> {
                     <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;, &quot;</span>)<span class="question-mark">?</span>;
                 }
-                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{:?}: {}&quot;</span>, <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">arg</span>), <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">arg</span>].<span class="ident">ty</span>)<span class="question-mark">?</span>;
+                <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{:?}: {}&quot;</span>, <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">arg</span>), <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">arg</span>].<span class="ident">ty</span>)<span class="question-mark">?</span>;
             }
 
             <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;) -&gt; {}&quot;</span>, <span class="ident">mir</span>.<span class="ident">return_ty</span>())

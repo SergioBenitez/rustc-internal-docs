@@ -610,6 +610,8 @@
 <span id="565">565</span>
 <span id="566">566</span>
 <span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -644,9 +646,9 @@
         <span class="bool-val">false</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">load_from_disk</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(_: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">fn</span> <span class="ident">try_load_from_disk</span>(_: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                           _: <span class="ident">SerializedDepNodeIndex</span>)
-                          <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Value</span> {
+                          <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Value</span><span class="op">&gt;</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;QueryDescription::load_from_disk() called for unsupport query.&quot;</span>)
     }
 }
@@ -1169,12 +1171,14 @@
         <span class="ident">def_id</span>.<span class="ident">is_local</span>()
     }
 
-    <span class="kw">fn</span> <span class="ident">load_from_disk</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">fn</span> <span class="ident">try_load_from_disk</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                           <span class="ident">id</span>: <span class="ident">SerializedDepNodeIndex</span>)
-                          <span class="op">-&gt;</span> <span class="self">Self</span>::<span class="ident">Value</span> {
-        <span class="kw">let</span> <span class="ident">typeck_tables</span>: <span class="ident">ty</span>::<span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">on_disk_query_result_cache</span>
-                                                       .<span class="ident">load_query_result</span>(<span class="ident">tcx</span>, <span class="ident">id</span>);
-        <span class="ident">tcx</span>.<span class="ident">alloc_tables</span>(<span class="ident">typeck_tables</span>)
+                          <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Value</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">typeck_tables</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">TypeckTables</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="ident">tcx</span>
+            .<span class="ident">on_disk_query_result_cache</span>
+            .<span class="ident">try_load_query_result</span>(<span class="ident">tcx</span>, <span class="ident">id</span>);
+
+        <span class="ident">typeck_tables</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">tables</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">alloc_tables</span>(<span class="ident">tables</span>))
     }
 }
 

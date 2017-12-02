@@ -195,11 +195,11 @@
 
 <span class="doccomment">//! Simplifying Candidates</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! *Simplifying* a match pair `lvalue @ pattern` means breaking it down</span>
+<span class="doccomment">//! *Simplifying* a match pair `place @ pattern` means breaking it down</span>
 <span class="doccomment">//! into bindings or other, simpler match pairs. For example:</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! - `lvalue @ (P1, P2)` can be simplified to `[lvalue.0 @ P1, lvalue.1 @ P2]`</span>
-<span class="doccomment">//! - `lvalue @ x` can be simplified to `[]` by binding `x` to `lvalue`</span>
+<span class="doccomment">//! - `place @ (P1, P2)` can be simplified to `[place.0 @ P1, place.1 @ P2]`</span>
+<span class="doccomment">//! - `place @ x` can be simplified to `[]` by binding `x` to `place`</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The `simplify_candidate` routine just repeatedly applies these</span>
 <span class="doccomment">//! sort of simplifications until there is nothing left to</span>
@@ -258,7 +258,7 @@
                     <span class="ident">name</span>,
                     <span class="ident">mutability</span>,
                     <span class="ident">span</span>: <span class="ident">match_pair</span>.<span class="ident">pattern</span>.<span class="ident">span</span>,
-                    <span class="ident">source</span>: <span class="ident">match_pair</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>(),
+                    <span class="ident">source</span>: <span class="ident">match_pair</span>.<span class="ident">place</span>.<span class="ident">clone</span>(),
                     <span class="ident">var_id</span>: <span class="ident">var</span>,
                     <span class="ident">var_ty</span>: <span class="ident">ty</span>,
                     <span class="ident">binding_mode</span>: <span class="ident">mode</span>,
@@ -266,7 +266,7 @@
 
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">subpattern</span>) <span class="op">=</span> <span class="ident">subpattern</span>.<span class="ident">as_ref</span>() {
                     <span class="comment">// this is the `x @ P` case; have to keep matching against `P` now</span>
-                    <span class="ident">candidate</span>.<span class="ident">match_pairs</span>.<span class="ident">push</span>(<span class="ident">MatchPair</span>::<span class="ident">new</span>(<span class="ident">match_pair</span>.<span class="ident">lvalue</span>, <span class="ident">subpattern</span>));
+                    <span class="ident">candidate</span>.<span class="ident">match_pairs</span>.<span class="ident">push</span>(<span class="ident">MatchPair</span>::<span class="ident">new</span>(<span class="ident">match_pair</span>.<span class="ident">place</span>, <span class="ident">subpattern</span>));
                 }
 
                 <span class="prelude-val">Ok</span>(())
@@ -290,8 +290,8 @@
                     }
                 });
                 <span class="kw">if</span> <span class="ident">irrefutable</span> {
-                    <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">match_pair</span>.<span class="ident">lvalue</span>.<span class="ident">downcast</span>(<span class="ident">adt_def</span>, <span class="ident">variant_index</span>);
-                    <span class="ident">candidate</span>.<span class="ident">match_pairs</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">field_match_pairs</span>(<span class="ident">lvalue</span>, <span class="ident">subpatterns</span>));
+                    <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="ident">match_pair</span>.<span class="ident">place</span>.<span class="ident">downcast</span>(<span class="ident">adt_def</span>, <span class="ident">variant_index</span>);
+                    <span class="ident">candidate</span>.<span class="ident">match_pairs</span>.<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">field_match_pairs</span>(<span class="ident">place</span>, <span class="ident">subpatterns</span>));
                     <span class="prelude-val">Ok</span>(())
                 } <span class="kw">else</span> {
                     <span class="prelude-val">Err</span>(<span class="ident">match_pair</span>)
@@ -300,7 +300,7 @@
 
             <span class="ident">PatternKind</span>::<span class="ident">Array</span> { <span class="kw-2">ref</span> <span class="ident">prefix</span>, <span class="kw-2">ref</span> <span class="ident">slice</span>, <span class="kw-2">ref</span> <span class="ident">suffix</span> } <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">prefix_slice_suffix</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">candidate</span>.<span class="ident">match_pairs</span>,
-                                         <span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">lvalue</span>,
+                                         <span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">place</span>,
                                          <span class="ident">prefix</span>,
                                          <span class="ident">slice</span>.<span class="ident">as_ref</span>(),
                                          <span class="ident">suffix</span>);
@@ -310,13 +310,13 @@
             <span class="ident">PatternKind</span>::<span class="ident">Leaf</span> { <span class="kw-2">ref</span> <span class="ident">subpatterns</span> } <span class="op">=&gt;</span> {
                 <span class="comment">// tuple struct, match subpats (if any)</span>
                 <span class="ident">candidate</span>.<span class="ident">match_pairs</span>
-                         .<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">field_match_pairs</span>(<span class="ident">match_pair</span>.<span class="ident">lvalue</span>, <span class="ident">subpatterns</span>));
+                         .<span class="ident">extend</span>(<span class="self">self</span>.<span class="ident">field_match_pairs</span>(<span class="ident">match_pair</span>.<span class="ident">place</span>, <span class="ident">subpatterns</span>));
                 <span class="prelude-val">Ok</span>(())
             }
 
             <span class="ident">PatternKind</span>::<span class="ident">Deref</span> { <span class="kw-2">ref</span> <span class="ident">subpattern</span> } <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">match_pair</span>.<span class="ident">lvalue</span>.<span class="ident">deref</span>();
-                <span class="ident">candidate</span>.<span class="ident">match_pairs</span>.<span class="ident">push</span>(<span class="ident">MatchPair</span>::<span class="ident">new</span>(<span class="ident">lvalue</span>, <span class="ident">subpattern</span>));
+                <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="ident">match_pair</span>.<span class="ident">place</span>.<span class="ident">deref</span>();
+                <span class="ident">candidate</span>.<span class="ident">match_pairs</span>.<span class="ident">push</span>(<span class="ident">MatchPair</span>::<span class="ident">new</span>(<span class="ident">place</span>, <span class="ident">subpattern</span>));
                 <span class="prelude-val">Ok</span>(())
             }
         }

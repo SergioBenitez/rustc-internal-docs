@@ -1734,6 +1734,66 @@
 <span id="1689">1689</span>
 <span id="1690">1690</span>
 <span id="1691">1691</span>
+<span id="1692">1692</span>
+<span id="1693">1693</span>
+<span id="1694">1694</span>
+<span id="1695">1695</span>
+<span id="1696">1696</span>
+<span id="1697">1697</span>
+<span id="1698">1698</span>
+<span id="1699">1699</span>
+<span id="1700">1700</span>
+<span id="1701">1701</span>
+<span id="1702">1702</span>
+<span id="1703">1703</span>
+<span id="1704">1704</span>
+<span id="1705">1705</span>
+<span id="1706">1706</span>
+<span id="1707">1707</span>
+<span id="1708">1708</span>
+<span id="1709">1709</span>
+<span id="1710">1710</span>
+<span id="1711">1711</span>
+<span id="1712">1712</span>
+<span id="1713">1713</span>
+<span id="1714">1714</span>
+<span id="1715">1715</span>
+<span id="1716">1716</span>
+<span id="1717">1717</span>
+<span id="1718">1718</span>
+<span id="1719">1719</span>
+<span id="1720">1720</span>
+<span id="1721">1721</span>
+<span id="1722">1722</span>
+<span id="1723">1723</span>
+<span id="1724">1724</span>
+<span id="1725">1725</span>
+<span id="1726">1726</span>
+<span id="1727">1727</span>
+<span id="1728">1728</span>
+<span id="1729">1729</span>
+<span id="1730">1730</span>
+<span id="1731">1731</span>
+<span id="1732">1732</span>
+<span id="1733">1733</span>
+<span id="1734">1734</span>
+<span id="1735">1735</span>
+<span id="1736">1736</span>
+<span id="1737">1737</span>
+<span id="1738">1738</span>
+<span id="1739">1739</span>
+<span id="1740">1740</span>
+<span id="1741">1741</span>
+<span id="1742">1742</span>
+<span id="1743">1743</span>
+<span id="1744">1744</span>
+<span id="1745">1745</span>
+<span id="1746">1746</span>
+<span id="1747">1747</span>
+<span id="1748">1748</span>
+<span id="1749">1749</span>
+<span id="1750">1750</span>
+<span id="1751">1751</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2130,7 +2190,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">TraitDef</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expand</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expand</span>(<span class="self">self</span>,
                   <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>,
                   <span class="ident">mitem</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">MetaItem</span>,
                   <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Annotatable</span>,
@@ -2138,7 +2198,7 @@
         <span class="self">self</span>.<span class="ident">expand_ext</span>(<span class="ident">cx</span>, <span class="ident">mitem</span>, <span class="ident">item</span>, <span class="ident">push</span>, <span class="bool-val">false</span>);
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expand_ext</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expand_ext</span>(<span class="self">self</span>,
                       <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>,
                       <span class="ident">mitem</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">MetaItem</span>,
                       <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Annotatable</span>,
@@ -2146,23 +2206,15 @@
                       <span class="ident">from_scratch</span>: <span class="ident">bool</span>) {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">item</span> {
             <span class="ident">Annotatable</span>::<span class="ident">Item</span>(<span class="kw-2">ref</span> <span class="ident">item</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">newitem</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
-                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Struct</span>(<span class="kw-2">ref</span> <span class="ident">struct_def</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">expand_struct_def</span>(<span class="ident">cx</span>, <span class="kw-2">&amp;</span><span class="ident">struct_def</span>, <span class="ident">item</span>.<span class="ident">ident</span>, <span class="ident">generics</span>, <span class="ident">from_scratch</span>)
-                    }
-                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Enum</span>(<span class="kw-2">ref</span> <span class="ident">enum_def</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
-                        <span class="self">self</span>.<span class="ident">expand_enum_def</span>(<span class="ident">cx</span>, <span class="ident">enum_def</span>, <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">attrs</span>,
-                                             <span class="ident">item</span>.<span class="ident">ident</span>, <span class="ident">generics</span>, <span class="ident">from_scratch</span>)
-                    }
-                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Union</span>(<span class="kw-2">ref</span> <span class="ident">struct_def</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">supports_unions</span> {
-                            <span class="self">self</span>.<span class="ident">expand_struct_def</span>(<span class="ident">cx</span>, <span class="kw-2">&amp;</span><span class="ident">struct_def</span>, <span class="ident">item</span>.<span class="ident">ident</span>,
-                                                   <span class="ident">generics</span>, <span class="ident">from_scratch</span>)
-                        } <span class="kw">else</span> {
-                            <span class="ident">cx</span>.<span class="ident">span_err</span>(<span class="ident">mitem</span>.<span class="ident">span</span>,
-                                        <span class="string">&quot;this trait cannot be derived for unions&quot;</span>);
-                            <span class="kw">return</span>;
-                        }
+                <span class="kw">let</span> <span class="ident">is_packed</span> <span class="op">=</span> <span class="ident">item</span>.<span class="ident">attrs</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">attr</span><span class="op">|</span> {
+                    <span class="ident">attr</span>::<span class="ident">find_repr_attrs</span>(<span class="kw-2">&amp;</span><span class="ident">cx</span>.<span class="ident">parse_sess</span>.<span class="ident">span_diagnostic</span>, <span class="ident">attr</span>)
+                        .<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">attr</span>::<span class="ident">ReprPacked</span>)
+                });
+                <span class="kw">let</span> <span class="ident">has_no_type_params</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
+                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Struct</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
+                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Enum</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">|</span>
+                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Union</span>(_, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">generics</span>.<span class="ident">ty_params</span>.<span class="ident">is_empty</span>()
                     }
                     _ <span class="op">=&gt;</span> {
                         <span class="comment">// Non-ADT derive is an error, but it should have been</span>
@@ -2170,6 +2222,39 @@
                         <span class="comment">// libsyntax/ext/expand.rs:MacroExpander::expand()</span>
                         <span class="kw">return</span>;
                     }
+                };
+                <span class="kw">let</span> <span class="ident">is_always_copy</span> <span class="op">=</span>
+                    <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">attrs</span>, <span class="string">&quot;rustc_copy_clone_marker&quot;</span>) <span class="op">&amp;&amp;</span>
+                    <span class="ident">has_no_type_params</span>;
+                <span class="kw">let</span> <span class="ident">use_temporaries</span> <span class="op">=</span> <span class="ident">is_packed</span> <span class="op">&amp;&amp;</span> <span class="ident">is_always_copy</span>;
+
+                <span class="kw">let</span> <span class="ident">newitem</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
+                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Struct</span>(<span class="kw-2">ref</span> <span class="ident">struct_def</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
+                        <span class="self">self</span>.<span class="ident">expand_struct_def</span>(<span class="ident">cx</span>, <span class="kw-2">&amp;</span><span class="ident">struct_def</span>, <span class="ident">item</span>.<span class="ident">ident</span>, <span class="ident">generics</span>, <span class="ident">from_scratch</span>,
+                                               <span class="ident">use_temporaries</span>)
+                    }
+                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Enum</span>(<span class="kw-2">ref</span> <span class="ident">enum_def</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
+                        <span class="comment">// We ignore `use_temporaries` here, because</span>
+                        <span class="comment">// `repr(packed)` enums cause an error later on.</span>
+                        <span class="comment">//</span>
+                        <span class="comment">// This can only cause further compilation errors</span>
+                        <span class="comment">// downstream in blatantly illegal code, so it</span>
+                        <span class="comment">// is fine.</span>
+                        <span class="self">self</span>.<span class="ident">expand_enum_def</span>(<span class="ident">cx</span>, <span class="ident">enum_def</span>, <span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">attrs</span>,
+                                             <span class="ident">item</span>.<span class="ident">ident</span>, <span class="ident">generics</span>, <span class="ident">from_scratch</span>)
+                    }
+                    <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Union</span>(<span class="kw-2">ref</span> <span class="ident">struct_def</span>, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">supports_unions</span> {
+                            <span class="self">self</span>.<span class="ident">expand_struct_def</span>(<span class="ident">cx</span>, <span class="kw-2">&amp;</span><span class="ident">struct_def</span>, <span class="ident">item</span>.<span class="ident">ident</span>,
+                                                   <span class="ident">generics</span>, <span class="ident">from_scratch</span>,
+                                                   <span class="ident">use_temporaries</span>)
+                        } <span class="kw">else</span> {
+                            <span class="ident">cx</span>.<span class="ident">span_err</span>(<span class="ident">mitem</span>.<span class="ident">span</span>,
+                                        <span class="string">&quot;this trait cannot be derived for unions&quot;</span>);
+                            <span class="kw">return</span>;
+                        }
+                    }
+                    _ <span class="op">=&gt;</span> <span class="macro">unreachable</span><span class="macro">!</span>(),
                 };
                 <span class="comment">// Keep the lint attributes of the previous item to control how the</span>
                 <span class="comment">// generated implementations are linted</span>
@@ -2412,7 +2497,8 @@
                          <span class="ident">struct_def</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">VariantData</span>,
                          <span class="ident">type_ident</span>: <span class="ident">Ident</span>,
                          <span class="ident">generics</span>: <span class="kw-2">&amp;</span><span class="ident">Generics</span>,
-                         <span class="ident">from_scratch</span>: <span class="ident">bool</span>)
+                         <span class="ident">from_scratch</span>: <span class="ident">bool</span>,
+                         <span class="ident">use_temporaries</span>: <span class="ident">bool</span>)
                          <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">field_tys</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Ty</span><span class="op">&gt;&gt;</span> <span class="op">=</span> <span class="ident">struct_def</span>.<span class="ident">fields</span>()
             .<span class="ident">iter</span>()
@@ -2438,7 +2524,8 @@
                                                          <span class="ident">struct_def</span>,
                                                          <span class="ident">type_ident</span>,
                                                          <span class="kw-2">&amp;</span><span class="ident">self_args</span>[..],
-                                                         <span class="kw-2">&amp;</span><span class="ident">nonself_args</span>[..])
+                                                         <span class="kw-2">&amp;</span><span class="ident">nonself_args</span>[..],
+                                                         <span class="ident">use_temporaries</span>)
                 };
 
                 <span class="ident">method_def</span>.<span class="ident">create_method</span>(<span class="ident">cx</span>,
@@ -2695,6 +2782,22 @@
     <span class="doccomment">///         }</span>
     <span class="doccomment">///     }</span>
     <span class="doccomment">/// }</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // or if A is repr(packed) - note fields are matched by-value</span>
+    <span class="doccomment">/// // instead of by-reference.</span>
+    <span class="doccomment">/// impl PartialEq for A {</span>
+    <span class="doccomment">///     fn eq(&amp;self, __arg_1: &amp;A) -&gt; bool {</span>
+    <span class="doccomment">///         match *self {</span>
+    <span class="doccomment">///             A {x: __self_0_0, y: __self_0_1} =&gt; {</span>
+    <span class="doccomment">///                 match __arg_1 {</span>
+    <span class="doccomment">///                     A {x: __self_1_0, y: __self_1_1} =&gt; {</span>
+    <span class="doccomment">///                         __self_0_0.eq(&amp;__self_1_0) &amp;&amp; __self_0_1.eq(&amp;__self_1_1)</span>
+    <span class="doccomment">///                     }</span>
+    <span class="doccomment">///                 }</span>
+    <span class="doccomment">///             }</span>
+    <span class="doccomment">///         }</span>
+    <span class="doccomment">///     }</span>
+    <span class="doccomment">/// }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">expand_struct_method_body</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                      <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>,
@@ -2702,7 +2805,8 @@
                                      <span class="ident">struct_def</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="ident">VariantData</span>,
                                      <span class="ident">type_ident</span>: <span class="ident">Ident</span>,
                                      <span class="ident">self_args</span>: <span class="kw-2">&amp;</span>[<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>],
-                                     <span class="ident">nonself_args</span>: <span class="kw-2">&amp;</span>[<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>])
+                                     <span class="ident">nonself_args</span>: <span class="kw-2">&amp;</span>[<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>],
+                                     <span class="ident">use_temporaries</span>: <span class="ident">bool</span>)
                                      <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span> {
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">raw_fields</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>(); <span class="comment">// Vec&lt;[fields of self],</span>
@@ -2714,7 +2818,8 @@
                                                                  <span class="ident">struct_path</span>,
                                                                  <span class="ident">struct_def</span>,
                                                                  <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;__self_{}&quot;</span>, <span class="ident">i</span>),
-                                                                 <span class="ident">ast</span>::<span class="ident">Mutability</span>::<span class="ident">Immutable</span>);
+                                                                 <span class="ident">ast</span>::<span class="ident">Mutability</span>::<span class="ident">Immutable</span>,
+                                                                 <span class="ident">use_temporaries</span>);
             <span class="ident">patterns</span>.<span class="ident">push</span>(<span class="ident">pat</span>);
             <span class="ident">raw_fields</span>.<span class="ident">push</span>(<span class="ident">ident_expr</span>);
         }
@@ -2877,7 +2982,6 @@
                                   <span class="ident">self_args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;&gt;</span>,
                                   <span class="ident">nonself_args</span>: <span class="kw-2">&amp;</span>[<span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>])
                                   <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span> {
-
         <span class="kw">let</span> <span class="ident">sp</span> <span class="op">=</span> <span class="ident">trait_</span>.<span class="ident">span</span>;
         <span class="kw">let</span> <span class="ident">variants</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">enum_def</span>.<span class="ident">variants</span>;
 
@@ -3249,12 +3353,18 @@
     <span class="kw">fn</span> <span class="ident">create_subpatterns</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                           <span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>,
                           <span class="ident">field_paths</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">SpannedIdent</span><span class="op">&gt;</span>,
-                          <span class="ident">mutbl</span>: <span class="ident">ast</span>::<span class="ident">Mutability</span>)
+                          <span class="ident">mutbl</span>: <span class="ident">ast</span>::<span class="ident">Mutability</span>,
+                          <span class="ident">use_temporaries</span>: <span class="ident">bool</span>)
                           <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Pat</span><span class="op">&gt;&gt;</span> {
         <span class="ident">field_paths</span>.<span class="ident">iter</span>()
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">path</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">binding_mode</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">use_temporaries</span> {
+                    <span class="ident">ast</span>::<span class="ident">BindingMode</span>::<span class="ident">ByValue</span>(<span class="ident">ast</span>::<span class="ident">Mutability</span>::<span class="ident">Immutable</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">ast</span>::<span class="ident">BindingMode</span>::<span class="ident">ByRef</span>(<span class="ident">mutbl</span>)
+                };
                 <span class="ident">cx</span>.<span class="ident">pat</span>(<span class="ident">path</span>.<span class="ident">span</span>,
-                       <span class="ident">PatKind</span>::<span class="ident">Ident</span>(<span class="ident">ast</span>::<span class="ident">BindingMode</span>::<span class="ident">ByRef</span>(<span class="ident">mutbl</span>), (<span class="kw-2">*</span><span class="ident">path</span>).<span class="ident">clone</span>(), <span class="prelude-val">None</span>))
+                       <span class="ident">PatKind</span>::<span class="ident">Ident</span>(<span class="ident">binding_mode</span>, (<span class="kw-2">*</span><span class="ident">path</span>).<span class="ident">clone</span>(), <span class="prelude-val">None</span>))
             })
             .<span class="ident">collect</span>()
     }
@@ -3265,8 +3375,10 @@
          <span class="ident">struct_path</span>: <span class="ident">ast</span>::<span class="ident">Path</span>,
          <span class="ident">struct_def</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">VariantData</span>,
          <span class="ident">prefix</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-         <span class="ident">mutbl</span>: <span class="ident">ast</span>::<span class="ident">Mutability</span>)
-         <span class="op">-&gt;</span> (<span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Pat</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>, <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">ast</span>::<span class="ident">Attribute</span>])<span class="op">&gt;</span>) {
+         <span class="ident">mutbl</span>: <span class="ident">ast</span>::<span class="ident">Mutability</span>,
+         <span class="ident">use_temporaries</span>: <span class="ident">bool</span>)
+         <span class="op">-&gt;</span> (<span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Pat</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Span</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ident</span><span class="op">&gt;</span>, <span class="ident">P</span><span class="op">&lt;</span><span class="ident">Expr</span><span class="op">&gt;</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">ast</span>::<span class="ident">Attribute</span>])<span class="op">&gt;</span>)
+    {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">paths</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ident_exprs</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
         <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">struct_field</span>) <span class="kw">in</span> <span class="ident">struct_def</span>.<span class="ident">fields</span>().<span class="ident">iter</span>().<span class="ident">enumerate</span>() {
@@ -3276,12 +3388,18 @@
                 <span class="ident">span</span>: <span class="ident">sp</span>,
                 <span class="ident">node</span>: <span class="ident">ident</span>,
             });
-            <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">expr_deref</span>(<span class="ident">sp</span>, <span class="ident">cx</span>.<span class="ident">expr_path</span>(<span class="ident">cx</span>.<span class="ident">path_ident</span>(<span class="ident">sp</span>, <span class="ident">ident</span>)));
+            <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">expr_path</span>(<span class="ident">cx</span>.<span class="ident">path_ident</span>(<span class="ident">sp</span>, <span class="ident">ident</span>));
+            <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">use_temporaries</span> {
+                <span class="ident">val</span>
+            } <span class="kw">else</span> {
+                <span class="ident">cx</span>.<span class="ident">expr_deref</span>(<span class="ident">sp</span>, <span class="ident">val</span>)
+            };
             <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">expr</span>(<span class="ident">sp</span>, <span class="ident">ast</span>::<span class="ident">ExprKind</span>::<span class="ident">Paren</span>(<span class="ident">val</span>));
+
             <span class="ident">ident_exprs</span>.<span class="ident">push</span>((<span class="ident">sp</span>, <span class="ident">struct_field</span>.<span class="ident">ident</span>, <span class="ident">val</span>, <span class="kw-2">&amp;</span><span class="ident">struct_field</span>.<span class="ident">attrs</span>[..]));
         }
 
-        <span class="kw">let</span> <span class="ident">subpats</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_subpatterns</span>(<span class="ident">cx</span>, <span class="ident">paths</span>, <span class="ident">mutbl</span>);
+        <span class="kw">let</span> <span class="ident">subpats</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_subpatterns</span>(<span class="ident">cx</span>, <span class="ident">paths</span>, <span class="ident">mutbl</span>, <span class="ident">use_temporaries</span>);
         <span class="kw">let</span> <span class="ident">pattern</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">struct_def</span> {
             <span class="ident">VariantData</span>::<span class="ident">Struct</span>(..) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">field_pats</span> <span class="op">=</span> <span class="ident">subpats</span>.<span class="ident">into_iter</span>()
@@ -3325,7 +3443,9 @@
         <span class="kw">let</span> <span class="ident">variant_ident</span> <span class="op">=</span> <span class="ident">variant</span>.<span class="ident">node</span>.<span class="ident">name</span>;
         <span class="kw">let</span> <span class="ident">sp</span> <span class="op">=</span> <span class="ident">variant</span>.<span class="ident">span</span>.<span class="ident">with_ctxt</span>(<span class="self">self</span>.<span class="ident">span</span>.<span class="ident">ctxt</span>());
         <span class="kw">let</span> <span class="ident">variant_path</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">path</span>(<span class="ident">sp</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">enum_ident</span>, <span class="ident">variant_ident</span>]);
-        <span class="self">self</span>.<span class="ident">create_struct_pattern</span>(<span class="ident">cx</span>, <span class="ident">variant_path</span>, <span class="kw-2">&amp;</span><span class="ident">variant</span>.<span class="ident">node</span>.<span class="ident">data</span>, <span class="ident">prefix</span>, <span class="ident">mutbl</span>)
+        <span class="kw">let</span> <span class="ident">use_temporaries</span> <span class="op">=</span> <span class="bool-val">false</span>; <span class="comment">// enums can&#39;t be repr(packed)</span>
+        <span class="self">self</span>.<span class="ident">create_struct_pattern</span>(<span class="ident">cx</span>, <span class="ident">variant_path</span>, <span class="kw-2">&amp;</span><span class="ident">variant</span>.<span class="ident">node</span>.<span class="ident">data</span>, <span class="ident">prefix</span>, <span class="ident">mutbl</span>,
+                                   <span class="ident">use_temporaries</span>)
     }
 }
 

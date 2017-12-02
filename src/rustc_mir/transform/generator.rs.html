@@ -956,7 +956,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">Visitor</span>, <span class="ident">MutVisitor</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">PlaceContext</span>, <span class="ident">Visitor</span>, <span class="ident">MutVisitor</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>, <span class="ident">AdtDef</span>, <span class="ident">Ty</span>, <span class="ident">GeneratorInterior</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">subst</span>::{<span class="ident">Kind</span>, <span class="ident">Substs</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">dump_mir</span>;
@@ -983,7 +983,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MutVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">RenameLocalVisitor</span> {
     <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                    <span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Local</span>,
-                   _: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                   _: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                    _: <span class="ident">Location</span>) {
         <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">local</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">from</span> {
             <span class="kw-2">*</span><span class="ident">local</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to</span>;
@@ -996,22 +996,22 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MutVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DerefArgVisitor</span> {
     <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                    <span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Local</span>,
-                   _: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                   _: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                    _: <span class="ident">Location</span>) {
         <span class="macro">assert_ne</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">local</span>, <span class="ident">self_arg</span>());
     }
 
-    <span class="kw">fn</span> <span class="ident">visit_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                    <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">fn</span> <span class="ident">visit_place</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                    <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">location</span>: <span class="ident">Location</span>) {
-        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">lvalue</span> <span class="op">==</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">self_arg</span>()) {
-            <span class="kw-2">*</span><span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">Projection</span> {
-                <span class="ident">base</span>: <span class="ident">lvalue</span>.<span class="ident">clone</span>(),
+        <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">place</span> <span class="op">==</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">self_arg</span>()) {
+            <span class="kw-2">*</span><span class="ident">place</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">Projection</span> {
+                <span class="ident">base</span>: <span class="ident">place</span>.<span class="ident">clone</span>(),
                 <span class="ident">elem</span>: <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span>,
             }));
         } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">super_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+            <span class="self">self</span>.<span class="ident">super_place</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
         }
     }
 }
@@ -1044,7 +1044,7 @@
     <span class="comment">// A list of suspension points, generated during the transform</span>
     <span class="ident">suspension_points</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SuspensionPoint</span><span class="op">&gt;</span>,
 
-    <span class="comment">// The original RETURN_POINTER local</span>
+    <span class="comment">// The original RETURN_PLACE local</span>
     <span class="ident">new_ret_local</span>: <span class="ident">Local</span>,
 }
 
@@ -1055,14 +1055,14 @@
         <span class="ident">Rvalue</span>::<span class="ident">Aggregate</span>(<span class="kw">box</span> <span class="ident">adt</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">val</span>])
     }
 
-    <span class="comment">// Create a Lvalue referencing a generator struct field</span>
-    <span class="kw">fn</span> <span class="ident">make_field</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">idx</span>: <span class="ident">usize</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">self_arg</span>());
+    <span class="comment">// Create a Place referencing a generator struct field</span>
+    <span class="kw">fn</span> <span class="ident">make_field</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">idx</span>: <span class="ident">usize</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">base</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">self_arg</span>());
         <span class="kw">let</span> <span class="ident">field</span> <span class="op">=</span> <span class="ident">Projection</span> {
             <span class="ident">base</span>: <span class="ident">base</span>,
             <span class="ident">elem</span>: <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(<span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">idx</span>), <span class="ident">ty</span>),
         };
-        <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">field</span>))
+        <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">field</span>))
     }
 
     <span class="comment">// Create a statement which changes the generator state</span>
@@ -1088,22 +1088,22 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MutVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">TransformVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                    <span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Local</span>,
-                   _: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                   _: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                    _: <span class="ident">Location</span>) {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">remap</span>.<span class="ident">get</span>(<span class="ident">local</span>), <span class="prelude-val">None</span>);
     }
 
-    <span class="kw">fn</span> <span class="ident">visit_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                    <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">fn</span> <span class="ident">visit_place</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                    <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">location</span>: <span class="ident">Location</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">l</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">l</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
             <span class="comment">// Replace an Local in the remap with a generator struct access</span>
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>(<span class="ident">ty</span>, <span class="ident">idx</span>)) <span class="op">=</span> <span class="self">self</span>.<span class="ident">remap</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">l</span>) {
-                <span class="kw-2">*</span><span class="ident">lvalue</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_field</span>(<span class="ident">idx</span>, <span class="ident">ty</span>);
+                <span class="kw-2">*</span><span class="ident">place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">make_field</span>(<span class="ident">idx</span>, <span class="ident">ty</span>);
             }
         } <span class="kw">else</span> {
-            <span class="self">self</span>.<span class="ident">super_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+            <span class="self">self</span>.<span class="ident">super_place</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
         }
     }
 
@@ -1123,7 +1123,7 @@
         <span class="kw">let</span> <span class="ident">ret_val</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">data</span>.<span class="ident">terminator</span>().<span class="ident">kind</span> {
             <span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>((<span class="number">1</span>,
                 <span class="prelude-val">None</span>,
-                <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_ret_local</span>)),
+                <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_ret_local</span>)),
                 <span class="prelude-val">None</span>)),
             <span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { <span class="kw-2">ref</span> <span class="ident">value</span>, <span class="ident">resume</span>, <span class="ident">drop</span> } <span class="op">=&gt;</span> <span class="prelude-val">Some</span>((<span class="number">0</span>,
                 <span class="prelude-val">Some</span>(<span class="ident">resume</span>),
@@ -1137,7 +1137,7 @@
             <span class="comment">// We must assign the value first in case it gets declared dead below</span>
             <span class="ident">data</span>.<span class="ident">statements</span>.<span class="ident">push</span>(<span class="ident">Statement</span> {
                 <span class="ident">source_info</span>,
-                <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">RETURN_POINTER</span>),
+                <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">RETURN_PLACE</span>),
                     <span class="self">self</span>.<span class="ident">make_state</span>(<span class="ident">state_idx</span>, <span class="ident">v</span>)),
             });
             <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">resume</span>) <span class="op">=</span> <span class="ident">resume</span> { <span class="comment">// Yield</span>
@@ -1203,7 +1203,7 @@
     <span class="ident">mir</span>.<span class="ident">local_decls</span>.<span class="ident">swap</span>(<span class="number">0</span>, <span class="ident">new_ret_local</span>.<span class="ident">index</span>());
 
     <span class="ident">RenameLocalVisitor</span> {
-        <span class="ident">from</span>: <span class="ident">RETURN_POINTER</span>,
+        <span class="ident">from</span>: <span class="ident">RETURN_PLACE</span>,
         <span class="ident">to</span>: <span class="ident">new_ret_local</span>,
     }.<span class="ident">visit_mir</span>(<span class="ident">mir</span>);
 
@@ -1345,7 +1345,7 @@
     <span class="kw">let</span> <span class="ident">default_block</span> <span class="op">=</span> <span class="ident">insert_term_block</span>(<span class="ident">mir</span>, <span class="ident">default</span>);
 
     <span class="kw">let</span> <span class="ident">switch</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">SwitchInt</span> {
-        <span class="ident">discr</span>: <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">transform</span>.<span class="ident">make_field</span>(<span class="ident">transform</span>.<span class="ident">state_field</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>)),
+        <span class="ident">discr</span>: <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="ident">transform</span>.<span class="ident">make_field</span>(<span class="ident">transform</span>.<span class="ident">state_field</span>, <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>)),
         <span class="ident">switch_ty</span>: <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">u32</span>,
         <span class="ident">values</span>: <span class="ident">Cow</span>::<span class="ident">from</span>(<span class="ident">cases</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">i</span>, _)<span class="op">|</span> <span class="ident">ConstInt</span>::<span class="ident">U32</span>(<span class="ident">i</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;&gt;</span>()),
         <span class="ident">targets</span>: <span class="ident">cases</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(_, <span class="ident">d</span>)<span class="op">|</span> <span class="ident">d</span>).<span class="ident">chain</span>(<span class="ident">once</span>(<span class="ident">default_block</span>)).<span class="ident">collect</span>(),
@@ -1387,7 +1387,7 @@
             <span class="kw-2">&amp;</span><span class="ident">Terminator</span> {
                 <span class="ident">source_info</span>,
                 <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> {
-                    <span class="ident">location</span>: <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>),
+                    <span class="ident">location</span>: <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>),
                     <span class="ident">target</span>,
                     <span class="ident">unwind</span>
                 }
@@ -1409,7 +1409,7 @@
             <span class="ident">elaborate_drop</span>(
                 <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">elaborator</span>,
                 <span class="ident">source_info</span>,
-                <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">gen</span>),
+                <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">gen</span>),
                 (),
                 <span class="ident">target</span>,
                 <span class="ident">unwind</span>,
@@ -1450,7 +1450,7 @@
     }
 
     <span class="comment">// Replace the return variable</span>
-    <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">RETURN_POINTER</span>] <span class="op">=</span> <span class="ident">LocalDecl</span> {
+    <span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">RETURN_PLACE</span>] <span class="op">=</span> <span class="ident">LocalDecl</span> {
         <span class="ident">mutability</span>: <span class="ident">Mutability</span>::<span class="ident">Mut</span>,
         <span class="ident">ty</span>: <span class="ident">tcx</span>.<span class="ident">mk_nil</span>(),
         <span class="ident">name</span>: <span class="prelude-val">None</span>,
@@ -1584,7 +1584,7 @@
     <span class="comment">// Create a block to destroy an unresumed generators. This can only destroy upvars.</span>
     <span class="kw">let</span> <span class="ident">drop_clean</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">mir</span>.<span class="ident">basic_blocks</span>().<span class="ident">len</span>());
     <span class="kw">let</span> <span class="ident">term</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> {
-        <span class="ident">location</span>: <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">self_arg</span>()),
+        <span class="ident">location</span>: <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">self_arg</span>()),
         <span class="ident">target</span>: <span class="ident">return_block</span>,
         <span class="ident">unwind</span>: <span class="prelude-val">None</span>,
     };
@@ -1676,8 +1676,8 @@
             <span class="ident">Kind</span>::<span class="ident">from</span>(<span class="ident">mir</span>.<span class="ident">return_ty</span>())].<span class="ident">iter</span>());
         <span class="kw">let</span> <span class="ident">ret_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_adt</span>(<span class="ident">state_adt_ref</span>, <span class="ident">state_substs</span>);
 
-        <span class="comment">// We rename RETURN_POINTER which has type mir.return_ty to new_ret_local</span>
-        <span class="comment">// RETURN_POINTER then is a fresh unused local with type ret_ty.</span>
+        <span class="comment">// We rename RETURN_PLACE which has type mir.return_ty to new_ret_local</span>
+        <span class="comment">// RETURN_PLACE then is a fresh unused local with type ret_ty.</span>
         <span class="kw">let</span> <span class="ident">new_ret_local</span> <span class="op">=</span> <span class="ident">replace_result_variable</span>(<span class="ident">ret_ty</span>, <span class="ident">mir</span>);
 
         <span class="comment">// Extract locals which are live across suspension point into `layout`</span>
@@ -1687,7 +1687,7 @@
 
         <span class="kw">let</span> <span class="ident">state_field</span> <span class="op">=</span> <span class="ident">mir</span>.<span class="ident">upvar_decls</span>.<span class="ident">len</span>();
 
-        <span class="comment">// Run the transformation which converts Lvalues from Local to generator struct</span>
+        <span class="comment">// Run the transformation which converts Places from Local to generator struct</span>
         <span class="comment">// accesses for locals in `remap`.</span>
         <span class="comment">// It also rewrites `return x` and `yield y` as writing a new generator state and returning</span>
         <span class="comment">// GeneratorState::Complete(x) and GeneratorState::Yielded(y) respectively.</span>

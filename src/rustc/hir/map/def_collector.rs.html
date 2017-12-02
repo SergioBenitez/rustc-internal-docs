@@ -338,14 +338,6 @@
 <span id="293">293</span>
 <span id="294">294</span>
 <span id="295">295</span>
-<span id="296">296</span>
-<span id="297">297</span>
-<span id="298">298</span>
-<span id="299">299</span>
-<span id="300">300</span>
-<span id="301">301</span>
-<span id="302">302</span>
-<span id="303">303</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -467,21 +459,8 @@
             <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(..) <span class="op">=&gt;</span> <span class="ident">DefPathData</span>::<span class="ident">MacroDef</span>(<span class="ident">i</span>.<span class="ident">ident</span>.<span class="ident">name</span>.<span class="ident">as_str</span>()),
             <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(..) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="self">self</span>.<span class="ident">visit_macro_invoc</span>(<span class="ident">i</span>.<span class="ident">id</span>, <span class="bool-val">false</span>),
             <span class="ident">ItemKind</span>::<span class="ident">GlobalAsm</span>(..) <span class="op">=&gt;</span> <span class="ident">DefPathData</span>::<span class="ident">Misc</span>,
-            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">view_path</span>) <span class="op">=&gt;</span> {
-                <span class="kw">match</span> <span class="ident">view_path</span>.<span class="ident">node</span> {
-                    <span class="ident">ViewPathGlob</span>(..) <span class="op">=&gt;</span> {}
-
-                    <span class="comment">// FIXME(eddyb) Should use the real name. Which namespace?</span>
-                    <span class="ident">ViewPathSimple</span>(..) <span class="op">=&gt;</span> {}
-                    <span class="ident">ViewPathList</span>(_, <span class="kw-2">ref</span> <span class="ident">imports</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">for</span> <span class="ident">import</span> <span class="kw">in</span> <span class="ident">imports</span> {
-                            <span class="self">self</span>.<span class="ident">create_def</span>(<span class="ident">import</span>.<span class="ident">node</span>.<span class="ident">id</span>,
-                                            <span class="ident">DefPathData</span>::<span class="ident">Misc</span>,
-                                            <span class="ident">ITEM_LIKE_SPACE</span>);
-                        }
-                    }
-                }
-                <span class="ident">DefPathData</span>::<span class="ident">Misc</span>
+            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(..) <span class="op">=&gt;</span> {
+                <span class="kw">return</span> <span class="ident">visit</span>::<span class="ident">walk_item</span>(<span class="self">self</span>, <span class="ident">i</span>);
             }
         };
         <span class="kw">let</span> <span class="ident">def</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">create_def</span>(<span class="ident">i</span>.<span class="ident">id</span>, <span class="ident">def_data</span>, <span class="ident">ITEM_LIKE_SPACE</span>);
@@ -527,6 +506,11 @@
             }
             <span class="ident">visit</span>::<span class="ident">walk_item</span>(<span class="ident">this</span>, <span class="ident">i</span>);
         });
+    }
+
+    <span class="kw">fn</span> <span class="ident">visit_use_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">use_tree</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">UseTree</span>, <span class="ident">id</span>: <span class="ident">NodeId</span>, <span class="ident">_nested</span>: <span class="ident">bool</span>) {
+        <span class="self">self</span>.<span class="ident">create_def</span>(<span class="ident">id</span>, <span class="ident">DefPathData</span>::<span class="ident">Misc</span>, <span class="ident">ITEM_LIKE_SPACE</span>);
+        <span class="ident">visit</span>::<span class="ident">walk_use_tree</span>(<span class="self">self</span>, <span class="ident">use_tree</span>, <span class="ident">id</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">visit_foreign_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">foreign_item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ForeignItem</span>) {

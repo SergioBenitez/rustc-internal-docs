@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["LvalueContext",""],["TyContext","Extra information passed to `visit_ty` and friends to give context about where the type etc appears."]],"trait":[["MutVisitor",""],["Visitor",""]]});
+initSidebarItems({"enum":[["PlaceContext",""],["TyContext","Extra information passed to `visit_ty` and friends to give context about where the type etc appears."]],"trait":[["MutVisitor",""],["Visitor",""]]});

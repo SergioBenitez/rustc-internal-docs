@@ -826,6 +826,8 @@
 <span id="781">781</span>
 <span id="782">782</span>
 <span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1308,6 +1310,7 @@
     [] <span class="ident">BorrowCheck</span>(<span class="ident">DefId</span>),
     [] <span class="ident">MirBorrowCheck</span>(<span class="ident">DefId</span>),
     [] <span class="ident">UnsafetyCheckResult</span>(<span class="ident">DefId</span>),
+    [] <span class="ident">UnsafeDeriveOnReprPacked</span>(<span class="ident">DefId</span>),
 
     [] <span class="ident">Reachability</span>,
     [] <span class="ident">MirKeys</span>,
@@ -1345,6 +1348,7 @@
     [] <span class="ident">UsedTraitImports</span>(<span class="ident">DefId</span>),
     [] <span class="ident">HasTypeckTables</span>(<span class="ident">DefId</span>),
     [] <span class="ident">ConstEval</span> { <span class="ident">param_env</span>: <span class="ident">ParamEnvAnd</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, (<span class="ident">DefId</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)<span class="op">&gt;</span> },
+    [] <span class="ident">CheckMatch</span>(<span class="ident">DefId</span>),
     [] <span class="ident">SymbolName</span>(<span class="ident">DefId</span>),
     [] <span class="ident">InstanceSymbolName</span> { <span class="ident">instance</span>: <span class="ident">Instance</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> },
     [] <span class="ident">SpecializationGraph</span>(<span class="ident">DefId</span>),
@@ -1389,7 +1393,7 @@
     [] <span class="ident">IsPanicRuntime</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">IsCompilerBuiltins</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">HasGlobalAllocator</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">ExternCrate</span>(<span class="ident">DefId</span>),
+    [<span class="ident">input</span>] <span class="ident">ExternCrate</span>(<span class="ident">DefId</span>),
     [<span class="ident">eval_always</span>] <span class="ident">LintLevels</span>,
     [] <span class="ident">Specializes</span> { <span class="ident">impl1</span>: <span class="ident">DefId</span>, <span class="ident">impl2</span>: <span class="ident">DefId</span> },
     [<span class="ident">input</span>] <span class="ident">InScopeTraits</span>(<span class="ident">DefIndex</span>),
@@ -1429,8 +1433,8 @@
     [] <span class="ident">MissingLangItems</span>(<span class="ident">CrateNum</span>),
     [] <span class="ident">ExternConstBody</span>(<span class="ident">DefId</span>),
     [] <span class="ident">VisibleParentMap</span>,
-    [] <span class="ident">MissingExternCrateItem</span>(<span class="ident">CrateNum</span>),
-    [] <span class="ident">UsedCrateSource</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">MissingExternCrateItem</span>(<span class="ident">CrateNum</span>),
+    [<span class="ident">input</span>] <span class="ident">UsedCrateSource</span>(<span class="ident">CrateNum</span>),
     [<span class="ident">input</span>] <span class="ident">PostorderCnums</span>,
     [<span class="ident">input</span>] <span class="ident">HasCloneClosures</span>(<span class="ident">CrateNum</span>),
     [<span class="ident">input</span>] <span class="ident">HasCopyClosures</span>(<span class="ident">CrateNum</span>),
@@ -1446,7 +1450,7 @@
     [<span class="ident">input</span>] <span class="ident">Freevars</span>(<span class="ident">DefId</span>),
     [<span class="ident">input</span>] <span class="ident">MaybeUnusedTraitImport</span>(<span class="ident">DefId</span>),
     [<span class="ident">input</span>] <span class="ident">MaybeUnusedExternCrates</span>,
-    [] <span class="ident">StabilityIndex</span>,
+    [<span class="ident">eval_always</span>] <span class="ident">StabilityIndex</span>,
     [<span class="ident">input</span>] <span class="ident">AllCrateNums</span>,
     [] <span class="ident">ExportedSymbols</span>(<span class="ident">CrateNum</span>),
     [<span class="ident">eval_always</span>] <span class="ident">CollectAndPartitionTranslationItems</span>,

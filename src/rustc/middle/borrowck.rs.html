@@ -74,6 +74,7 @@
 <span id="29">29</span>
 <span id="30">30</span>
 <span id="31">31</span>
+<span id="32">32</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -92,6 +93,7 @@
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">stable_hasher</span>::{<span class="ident">HashStable</span>, <span class="ident">StableHasher</span>,
                                            <span class="ident">StableHasherResult</span>};
 
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BorrowCheckResult</span> {
     <span class="kw">pub</span> <span class="ident">used_mut_nodes</span>: <span class="ident">FxHashSet</span><span class="op">&lt;</span><span class="ident">HirId</span><span class="op">&gt;</span>,
 }

@@ -1108,7 +1108,7 @@
                 },
             };
 
-            <span class="ident">overloaded_lvalue</span>(<span class="ident">cx</span>, <span class="ident">hir_expr</span>, <span class="ident">adjustment</span>.<span class="ident">target</span>, <span class="prelude-val">Some</span>(<span class="ident">call</span>), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">expr</span>.<span class="ident">to_ref</span>()])
+            <span class="ident">overloaded_place</span>(<span class="ident">cx</span>, <span class="ident">hir_expr</span>, <span class="ident">adjustment</span>.<span class="ident">target</span>, <span class="prelude-val">Some</span>(<span class="ident">call</span>), <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">expr</span>.<span class="ident">to_ref</span>()])
         }
         <span class="ident">Adjust</span>::<span class="ident">Borrow</span>(<span class="ident">AutoBorrow</span>::<span class="ident">Ref</span>(<span class="ident">r</span>, <span class="ident">m</span>)) <span class="op">=&gt;</span> {
             <span class="ident">ExprKind</span>::<span class="ident">Borrow</span> {
@@ -1327,7 +1327,7 @@
 
         <span class="ident">hir</span>::<span class="ident">ExprIndex</span>(<span class="kw-2">ref</span> <span class="ident">lhs</span>, <span class="kw-2">ref</span> <span class="ident">index</span>) <span class="op">=&gt;</span> {
             <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">tables</span>().<span class="ident">is_method_call</span>(<span class="ident">expr</span>) {
-                <span class="ident">overloaded_lvalue</span>(<span class="ident">cx</span>, <span class="ident">expr</span>, <span class="ident">expr_ty</span>, <span class="prelude-val">None</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">lhs</span>.<span class="ident">to_ref</span>(), <span class="ident">index</span>.<span class="ident">to_ref</span>()])
+                <span class="ident">overloaded_place</span>(<span class="ident">cx</span>, <span class="ident">expr</span>, <span class="ident">expr_ty</span>, <span class="prelude-val">None</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">lhs</span>.<span class="ident">to_ref</span>(), <span class="ident">index</span>.<span class="ident">to_ref</span>()])
             } <span class="kw">else</span> {
                 <span class="ident">ExprKind</span>::<span class="ident">Index</span> {
                     <span class="ident">lhs</span>: <span class="ident">lhs</span>.<span class="ident">to_ref</span>(),
@@ -1338,7 +1338,7 @@
 
         <span class="ident">hir</span>::<span class="ident">ExprUnary</span>(<span class="ident">hir</span>::<span class="ident">UnOp</span>::<span class="ident">UnDeref</span>, <span class="kw-2">ref</span> <span class="ident">arg</span>) <span class="op">=&gt;</span> {
             <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">tables</span>().<span class="ident">is_method_call</span>(<span class="ident">expr</span>) {
-                <span class="ident">overloaded_lvalue</span>(<span class="ident">cx</span>, <span class="ident">expr</span>, <span class="ident">expr_ty</span>, <span class="prelude-val">None</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">arg</span>.<span class="ident">to_ref</span>()])
+                <span class="ident">overloaded_place</span>(<span class="ident">cx</span>, <span class="ident">expr</span>, <span class="ident">expr_ty</span>, <span class="prelude-val">None</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">arg</span>.<span class="ident">to_ref</span>()])
             } <span class="kw">else</span> {
                 <span class="ident">ExprKind</span>::<span class="ident">Deref</span> { <span class="ident">arg</span>: <span class="ident">arg</span>.<span class="ident">to_ref</span>() }
             }
@@ -1836,15 +1836,15 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">overloaded_lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Cx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+<span class="kw">fn</span> <span class="ident">overloaded_place</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Cx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                      <span class="ident">expr</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Expr</span>,
-                                     <span class="ident">lvalue_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                                     <span class="ident">place_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                      <span class="ident">custom_callee</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">DefId</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)<span class="op">&gt;</span>,
                                      <span class="ident">args</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ExprRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)
                                      <span class="op">-&gt;</span> <span class="ident">ExprKind</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="comment">// For an overloaded *x or x[y] expression of type T, the method</span>
     <span class="comment">// call returns an &amp;T and we must add the deref so that the types</span>
-    <span class="comment">// line up (this is because `*x` and `x[y]` represent lvalues):</span>
+    <span class="comment">// line up (this is because `*x` and `x[y]` represent places):</span>
 
     <span class="kw">let</span> <span class="ident">recv_ty</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">args</span>[<span class="number">0</span>] {
         <span class="ident">ExprRef</span>::<span class="ident">Hair</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="ident">cx</span>.<span class="ident">tables</span>().<span class="ident">expr_ty_adjusted</span>(<span class="ident">e</span>),
@@ -1856,10 +1856,10 @@
     <span class="comment">// `Deref(Mut)::Deref(_mut)` and `Index(Mut)::index(_mut)`.</span>
     <span class="kw">let</span> (<span class="ident">region</span>, <span class="ident">mt</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">recv_ty</span>.<span class="ident">sty</span> {
         <span class="ident">ty</span>::<span class="ident">TyRef</span>(<span class="ident">region</span>, <span class="ident">mt</span>) <span class="op">=&gt;</span> (<span class="ident">region</span>, <span class="ident">mt</span>),
-        _ <span class="op">=&gt;</span> <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">expr</span>.<span class="ident">span</span>, <span class="string">&quot;overloaded_lvalue: receiver is not a reference&quot;</span>),
+        _ <span class="op">=&gt;</span> <span class="macro">span_bug</span><span class="macro">!</span>(<span class="ident">expr</span>.<span class="ident">span</span>, <span class="string">&quot;overloaded_place: receiver is not a reference&quot;</span>),
     };
     <span class="kw">let</span> <span class="ident">ref_ty</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">tcx</span>.<span class="ident">mk_ref</span>(<span class="ident">region</span>, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> {
-        <span class="ident">ty</span>: <span class="ident">lvalue_ty</span>,
+        <span class="ident">ty</span>: <span class="ident">place_ty</span>,
         <span class="ident">mutbl</span>: <span class="ident">mt</span>.<span class="ident">mutbl</span>,
     });
 

@@ -308,6 +308,41 @@
 <span id="263">263</span>
 <span id="264">264</span>
 <span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -371,12 +406,16 @@
     <span class="doccomment">/// Index into MoveData.moves.</span>
     <span class="macro">new_index</span><span class="macro">!</span>(<span class="ident">MoveOutIndex</span>, <span class="string">&quot;mo&quot;</span>);
 
+    <span class="doccomment">/// Index into MoveData.inits.</span>
+    <span class="macro">new_index</span><span class="macro">!</span>(<span class="ident">InitIndex</span>, <span class="string">&quot;in&quot;</span>);
+
     <span class="doccomment">/// Index into Borrows.locations</span>
     <span class="macro">new_index</span><span class="macro">!</span>(<span class="ident">BorrowIndex</span>, <span class="string">&quot;bw&quot;</span>);
 }
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">indexes</span>::<span class="ident">MovePathIndex</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">indexes</span>::<span class="ident">MoveOutIndex</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">indexes</span>::<span class="ident">InitIndex</span>;
 
 <span class="kw">impl</span> <span class="ident">MoveOutIndex</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">move_path_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">move_data</span>: <span class="kw-2">&amp;</span><span class="ident">MoveData</span>) <span class="op">-&gt;</span> <span class="ident">MovePathIndex</span> {
@@ -401,7 +440,7 @@
     <span class="kw">pub</span> <span class="ident">next_sibling</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MovePathIndex</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">first_child</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MovePathIndex</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">parent</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MovePathIndex</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">lvalue</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">place</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">MovePath</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -416,13 +455,13 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">next_sibling</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_sibling</span> {
             <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot; next_sibling: {:?}&quot;</span>, <span class="ident">next_sibling</span>)<span class="question-mark">?</span>;
         }
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot; lvalue: {:?} }}&quot;</span>, <span class="self">self</span>.<span class="ident">lvalue</span>)
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot; place: {:?} }}&quot;</span>, <span class="self">self</span>.<span class="ident">place</span>)
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">MovePath</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">lvalue</span>)
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.<span class="ident">place</span>)
     }
 }
 
@@ -437,6 +476,11 @@
     <span class="kw">pub</span> <span class="ident">loc_map</span>: <span class="ident">LocationMap</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MoveOutIndex</span><span class="op">&gt;&gt;</span>,
     <span class="kw">pub</span> <span class="ident">path_map</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">MovePathIndex</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MoveOutIndex</span><span class="op">&gt;&gt;</span>,
     <span class="kw">pub</span> <span class="ident">rev_lookup</span>: <span class="ident">MovePathLookup</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">inits</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">InitIndex</span>, <span class="ident">Init</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// Each Location `l` is mapped to the Inits that are effects</span>
+    <span class="doccomment">/// of executing the code at `l`.</span>
+    <span class="kw">pub</span> <span class="ident">init_loc_map</span>: <span class="ident">LocationMap</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InitIndex</span><span class="op">&gt;&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">init_path_map</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">MovePathIndex</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InitIndex</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">HasMoveData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -493,16 +537,44 @@
     }
 }
 
+<span class="doccomment">/// `Init` represents a point in a program that initializes some L-value;</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Init</span> {
+    <span class="doccomment">/// path being initialized</span>
+    <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">MovePathIndex</span>,
+    <span class="doccomment">/// span of initialization</span>
+    <span class="kw">pub</span> <span class="ident">span</span>: <span class="ident">Span</span>,
+    <span class="doccomment">/// Extra information about this initialization</span>
+    <span class="kw">pub</span> <span class="ident">kind</span>: <span class="ident">InitKind</span>,
+}
+
+<span class="doccomment">/// Additional information about the initialization.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">InitKind</span> {
+    <span class="doccomment">/// Deep init, even on panic</span>
+    <span class="ident">Deep</span>,
+    <span class="doccomment">/// Only does a shallow init</span>
+    <span class="ident">Shallow</span>,
+    <span class="doccomment">/// This doesn&#39;t initialize the variabe on panic (and a panic is possible).</span>
+    <span class="ident">NonPanicPathOnly</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Init</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{:?}@{:?} ({:?})&quot;</span>, <span class="self">self</span>.<span class="ident">path</span>, <span class="self">self</span>.<span class="ident">span</span>, <span class="self">self</span>.<span class="ident">kind</span>)
+    }
+}
+
 <span class="doccomment">/// Tables mapping from an l-value to its MovePathIndex.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MovePathLookup</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="ident">locals</span>: <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">Local</span>, <span class="ident">MovePathIndex</span><span class="op">&gt;</span>,
 
-    <span class="doccomment">/// projections are made from a base-lvalue and a projection</span>
-    <span class="doccomment">/// elem. The base-lvalue will have a unique MovePathIndex; we use</span>
+    <span class="doccomment">/// projections are made from a base-place and a projection</span>
+    <span class="doccomment">/// elem. The base-place will have a unique MovePathIndex; we use</span>
     <span class="doccomment">/// the latter as the index into the outer vector (narrowing</span>
     <span class="doccomment">/// subsequent search so that it is solely relative to that</span>
-    <span class="doccomment">/// base-lvalue). For the remaining lookup, we map the projection</span>
+    <span class="doccomment">/// base-place). For the remaining lookup, we map the projection</span>
     <span class="doccomment">/// elem to the associated MovePathIndex.</span>
     <span class="ident">projections</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span>(<span class="ident">MovePathIndex</span>, <span class="ident">AbstractElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>), <span class="ident">MovePathIndex</span><span class="op">&gt;</span>
 }
@@ -520,11 +592,11 @@
     <span class="comment">// alternative will *not* create a MovePath on the fly for an</span>
     <span class="comment">// unknown l-value, but will rather return the nearest available</span>
     <span class="comment">// parent.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lval</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LookupResult</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">lval</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=&gt;</span> <span class="ident">LookupResult</span>::<span class="ident">Exact</span>(<span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">local</span>]),
-            <span class="ident">Lvalue</span>::<span class="ident">Static</span>(..) <span class="op">=&gt;</span> <span class="ident">LookupResult</span>::<span class="ident">Parent</span>(<span class="prelude-val">None</span>),
-            <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">find</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LookupResult</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=&gt;</span> <span class="ident">LookupResult</span>::<span class="ident">Exact</span>(<span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">local</span>]),
+            <span class="ident">Place</span>::<span class="ident">Static</span>(..) <span class="op">=&gt;</span> <span class="ident">LookupResult</span>::<span class="ident">Parent</span>(<span class="prelude-val">None</span>),
+            <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">find</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>) {
                     <span class="ident">LookupResult</span>::<span class="ident">Exact</span>(<span class="ident">base_path</span>) <span class="op">=&gt;</span> {
                         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">projections</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span>(<span class="ident">base_path</span>, <span class="ident">proj</span>.<span class="ident">elem</span>.<span class="ident">lift</span>())) {
@@ -567,11 +639,9 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MoveData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gather_moves</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                        <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                        <span class="ident">param_env</span>: <span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gather_moves</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, (<span class="self">Self</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MoveError</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)<span class="op">&gt;</span> {
-        <span class="ident">builder</span>::<span class="ident">gather_moves</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>, <span class="ident">param_env</span>)
+        <span class="ident">builder</span>::<span class="ident">gather_moves</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>)
     }
 }
 </pre>

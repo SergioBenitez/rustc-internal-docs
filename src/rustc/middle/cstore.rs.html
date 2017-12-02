@@ -448,32 +448,6 @@
 <span id="403">403</span>
 <span id="404">404</span>
 <span id="405">405</span>
-<span id="406">406</span>
-<span id="407">407</span>
-<span id="408">408</span>
-<span id="409">409</span>
-<span id="410">410</span>
-<span id="411">411</span>
-<span id="412">412</span>
-<span id="413">413</span>
-<span id="414">414</span>
-<span id="415">415</span>
-<span id="416">416</span>
-<span id="417">417</span>
-<span id="418">418</span>
-<span id="419">419</span>
-<span id="420">420</span>
-<span id="421">421</span>
-<span id="422">422</span>
-<span id="423">423</span>
-<span id="424">424</span>
-<span id="425">425</span>
-<span id="426">426</span>
-<span id="427">427</span>
-<span id="428">428</span>
-<span id="429">429</span>
-<span id="430">430</span>
-<span id="431">431</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -652,32 +626,6 @@
     }
 }
 
-<span class="doccomment">/// The hash for some metadata that (when saving) will be exported</span>
-<span class="doccomment">/// from this crate, or which (when importing) was exported by an</span>
-<span class="doccomment">/// upstream crate.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EncodedMetadataHash</span> {
-    <span class="kw">pub</span> <span class="ident">def_index</span>: <span class="ident">u32</span>,
-    <span class="kw">pub</span> <span class="ident">hash</span>: <span class="ident">ich</span>::<span class="ident">Fingerprint</span>,
-}
-
-<span class="doccomment">/// The hash for some metadata that (when saving) will be exported</span>
-<span class="doccomment">/// from this crate, or which (when importing) was exported by an</span>
-<span class="doccomment">/// upstream crate.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">EncodedMetadataHashes</span> {
-    <span class="comment">// Stable content hashes for things in crate metadata, indexed by DefIndex.</span>
-    <span class="kw">pub</span> <span class="ident">hashes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">EncodedMetadataHash</span><span class="op">&gt;</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">EncodedMetadataHashes</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">EncodedMetadataHashes</span> {
-        <span class="ident">EncodedMetadataHashes</span> {
-            <span class="ident">hashes</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        }
-    }
-}
-
 <span class="doccomment">/// The backend&#39;s way to give the crate store access to the metadata in a library.</span>
 <span class="doccomment">/// Note that it returns the raw metadata bytes stored in the library file, whether</span>
 <span class="doccomment">/// it is compressed, uncompressed, some weird mix, etc.</span>
@@ -763,7 +711,7 @@
                                  <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                  <span class="ident">link_meta</span>: <span class="kw-2">&amp;</span><span class="ident">LinkMeta</span>,
                                  <span class="ident">reachable</span>: <span class="kw-2">&amp;</span><span class="ident">NodeSet</span>)
-                                 <span class="op">-&gt;</span> (<span class="ident">EncodedMetadata</span>, <span class="ident">EncodedMetadataHashes</span>);
+                                 <span class="op">-&gt;</span> <span class="ident">EncodedMetadata</span>;
     <span class="kw">fn</span> <span class="ident">metadata_encoding_version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>];
 }
 
@@ -847,7 +795,7 @@
                                  <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                  <span class="ident">link_meta</span>: <span class="kw-2">&amp;</span><span class="ident">LinkMeta</span>,
                                  <span class="ident">reachable</span>: <span class="kw-2">&amp;</span><span class="ident">NodeSet</span>)
-                                 <span class="op">-&gt;</span> (<span class="ident">EncodedMetadata</span>, <span class="ident">EncodedMetadataHashes</span>) {
+                                 <span class="op">-&gt;</span> <span class="ident">EncodedMetadata</span> {
         <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;encode_metadata&quot;</span>)
     }
     <span class="kw">fn</span> <span class="ident">metadata_encoding_version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] { <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;metadata_encoding_version&quot;</span>) }

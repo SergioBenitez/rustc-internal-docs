@@ -361,19 +361,19 @@
                 };
 
                 <span class="kw">let</span> <span class="ident">bin_statement</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">statements</span>.<span class="ident">pop</span>().<span class="ident">unwrap</span>();
-                <span class="kw">let</span> (<span class="ident">source_info</span>, <span class="ident">lvalue</span>, <span class="ident">lhs</span>, <span class="kw-2">mut</span> <span class="ident">rhs</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">bin_statement</span> {
+                <span class="kw">let</span> (<span class="ident">source_info</span>, <span class="ident">place</span>, <span class="ident">lhs</span>, <span class="kw-2">mut</span> <span class="ident">rhs</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">bin_statement</span> {
                     <span class="ident">Statement</span> {
                         <span class="ident">source_info</span>,
                         <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                            <span class="ident">lvalue</span>,
+                            <span class="ident">place</span>,
                             <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(_, <span class="ident">lhs</span>, <span class="ident">rhs</span>))
-                    } <span class="op">=&gt;</span> (<span class="ident">source_info</span>, <span class="ident">lvalue</span>, <span class="ident">lhs</span>, <span class="ident">rhs</span>),
+                    } <span class="op">=&gt;</span> (<span class="ident">source_info</span>, <span class="ident">place</span>, <span class="ident">lhs</span>, <span class="ident">rhs</span>),
                     <span class="ident">Statement</span> {
                         <span class="ident">source_info</span>,
                         <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                            <span class="ident">lvalue</span>,
+                            <span class="ident">place</span>,
                             <span class="ident">Rvalue</span>::<span class="ident">CheckedBinaryOp</span>(_, <span class="ident">lhs</span>, <span class="ident">rhs</span>))
-                    } <span class="op">=&gt;</span> (<span class="ident">source_info</span>, <span class="ident">lvalue</span>, <span class="ident">lhs</span>, <span class="ident">rhs</span>),
+                    } <span class="op">=&gt;</span> (<span class="ident">source_info</span>, <span class="ident">place</span>, <span class="ident">lhs</span>, <span class="ident">rhs</span>),
                     _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Statement doesn&#39;t match pattern any more?&quot;</span>),
                 };
 
@@ -385,17 +385,17 @@
                     <span class="ident">block</span>.<span class="ident">statements</span>.<span class="ident">push</span>(<span class="ident">Statement</span> {
                         <span class="ident">source_info</span>: <span class="ident">source_info</span>,
                         <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>),
+                            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>),
                             <span class="ident">Rvalue</span>::<span class="ident">Cast</span>(
                                 <span class="ident">CastKind</span>::<span class="ident">Misc</span>,
                                 <span class="ident">rhs</span>,
                                 <span class="ident">rhs_override_ty</span>.<span class="ident">unwrap</span>())),
                     });
-                    <span class="ident">rhs</span> <span class="op">=</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>));
+                    <span class="ident">rhs</span> <span class="op">=</span> <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>));
                 }
 
                 <span class="kw">let</span> <span class="ident">call_did</span> <span class="op">=</span> <span class="ident">check_lang_item_type</span>(
-                    <span class="ident">lang_item</span>, <span class="kw-2">&amp;</span><span class="ident">lvalue</span>, <span class="kw-2">&amp;</span><span class="ident">lhs</span>, <span class="kw-2">&amp;</span><span class="ident">rhs</span>, <span class="ident">local_decls</span>, <span class="ident">tcx</span>);
+                    <span class="ident">lang_item</span>, <span class="kw-2">&amp;</span><span class="ident">place</span>, <span class="kw-2">&amp;</span><span class="ident">lhs</span>, <span class="kw-2">&amp;</span><span class="ident">rhs</span>, <span class="ident">local_decls</span>, <span class="ident">tcx</span>);
 
                 <span class="kw">let</span> <span class="ident">bb</span> <span class="op">=</span> <span class="ident">BasicBlock</span>::<span class="ident">new</span>(<span class="ident">cur_len</span> <span class="op">+</span> <span class="ident">new_blocks</span>.<span class="ident">len</span>());
                 <span class="ident">new_blocks</span>.<span class="ident">push</span>(<span class="ident">after_call</span>);
@@ -407,7 +407,7 @@
                             <span class="ident">func</span>: <span class="ident">Operand</span>::<span class="ident">function_handle</span>(<span class="ident">tcx</span>, <span class="ident">call_did</span>,
                                 <span class="ident">Slice</span>::<span class="ident">empty</span>(), <span class="ident">source_info</span>.<span class="ident">span</span>),
                             <span class="ident">args</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">lhs</span>, <span class="ident">rhs</span>],
-                            <span class="ident">destination</span>: <span class="prelude-val">Some</span>((<span class="ident">lvalue</span>, <span class="ident">bb</span>)),
+                            <span class="ident">destination</span>: <span class="prelude-val">Some</span>((<span class="ident">place</span>, <span class="ident">bb</span>)),
                             <span class="ident">cleanup</span>: <span class="prelude-val">None</span>,
                         },
                     });
@@ -420,7 +420,7 @@
 
 <span class="kw">fn</span> <span class="ident">check_lang_item_type</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">D</span><span class="op">&gt;</span>(
     <span class="ident">lang_item</span>: <span class="ident">LangItem</span>,
-    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">lhs</span>: <span class="kw-2">&amp;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">rhs</span>: <span class="kw-2">&amp;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">local_decls</span>: <span class="kw-2">&amp;</span><span class="ident">D</span>,
@@ -433,8 +433,8 @@
     <span class="kw">let</span> <span class="ident">sig</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">no_late_bound_regions</span>(<span class="kw-2">&amp;</span><span class="ident">poly_sig</span>).<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">lhs_ty</span> <span class="op">=</span> <span class="ident">lhs</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>);
     <span class="kw">let</span> <span class="ident">rhs_ty</span> <span class="op">=</span> <span class="ident">rhs</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>);
-    <span class="kw">let</span> <span class="ident">lvalue_ty</span> <span class="op">=</span> <span class="ident">lvalue</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
-    <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> [<span class="ident">lhs_ty</span>, <span class="ident">rhs_ty</span>, <span class="ident">lvalue_ty</span>];
+    <span class="kw">let</span> <span class="ident">place_ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+    <span class="kw">let</span> <span class="ident">expected</span> <span class="op">=</span> [<span class="ident">lhs_ty</span>, <span class="ident">rhs_ty</span>, <span class="ident">place_ty</span>];
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">sig</span>.<span class="ident">inputs_and_output</span>[..], <span class="ident">expected</span>,
         <span class="string">&quot;lang item {}&quot;</span>, <span class="ident">tcx</span>.<span class="ident">def_symbol_name</span>(<span class="ident">did</span>));
     <span class="ident">did</span>
@@ -523,7 +523,8 @@
         _ <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;That should be all the checked ones?&quot;</span>),
     };
     <span class="prelude-val">Some</span>(<span class="ident">i</span>)
-}</pre>
+}
+</pre>
 </section>
     <section id='search' class="content hidden"></section>
 

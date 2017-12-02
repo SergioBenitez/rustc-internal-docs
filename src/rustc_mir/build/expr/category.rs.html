@@ -158,7 +158,7 @@
     <span class="comment">// An assignable memory location like `x`, `x.f`, `foo()[3]`, that</span>
     <span class="comment">// sort of thing. Something that could appear on the LHS of an `=`</span>
     <span class="comment">// sign.</span>
-    <span class="ident">Lvalue</span>,
+    <span class="ident">Place</span>,
 
     <span class="comment">// A literal like `23` or `&quot;foo&quot;`. Does not include constant</span>
     <span class="comment">// expressions like `3 + 5`.</span>
@@ -194,7 +194,7 @@
             <span class="ident">ExprKind</span>::<span class="ident">SelfRef</span> <span class="op">|</span>
             <span class="ident">ExprKind</span>::<span class="ident">VarRef</span> { .. } <span class="op">|</span>
             <span class="ident">ExprKind</span>::<span class="ident">StaticRef</span> { .. } <span class="op">=&gt;</span>
-                <span class="prelude-val">Some</span>(<span class="ident">Category</span>::<span class="ident">Lvalue</span>),
+                <span class="prelude-val">Some</span>(<span class="ident">Category</span>::<span class="ident">Place</span>),
 
             <span class="ident">ExprKind</span>::<span class="ident">LogicalOp</span> { .. } <span class="op">|</span>
             <span class="ident">ExprKind</span>::<span class="ident">If</span> { .. } <span class="op">|</span>

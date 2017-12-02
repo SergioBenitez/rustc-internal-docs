@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rustc/mir/mod.rs.html#11-2158' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rustc/mir/mod.rs.html#11-2175' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>MIR datatypes and passes. See <a href="README.md">the README</a> for details.</p>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
@@ -145,8 +145,8 @@ building is complete.</p>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] <p>The <code>Projection</code> data structure defines things of the form <code>B.x</code>
 or <code>*B</code> or <code>B[index]</code>. Note that it is parameterized because it is
-shared between <code>Constant</code> and <code>Lvalue</code>. See the aliases
-<code>LvalueProjection</code> etc below.</p>
+shared between <code>Constant</code> and <code>Place</code>. See the aliases
+<code>PlaceProjection</code> etc below.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
@@ -273,8 +273,8 @@ stored to avoid requiring normalization when reading MIR).</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
-                           <td><a class="enum" href="enum.ClearOnDecode.html"
-                                  title='enum rustc::mir::ClearOnDecode'>ClearOnDecode</a></td>
+                           <td><a class="enum" href="enum.ClearCrossCrate.html"
+                                  title='enum rustc::mir::ClearCrossCrate'>ClearCrossCrate</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] 
                            </td>
@@ -291,14 +291,6 @@ stored to avoid requiring normalization when reading MIR).</p>
                                   title='enum rustc::mir::LocalKind'>LocalKind</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] <p>Classifies locals into categories. See <code>Mir::local_kind</code>.</p>
-                           </td>
-                       </tr>
-                       <tr class='unstable module-item'>
-                           <td><a class="enum" href="enum.Lvalue.html"
-                                  title='enum rustc::mir::Lvalue'>Lvalue</a></td>
-                           <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] <p>A path to a value; something that can be evaluated without
-changing or disturbing program state.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
@@ -320,8 +312,16 @@ changing or disturbing program state.</p>
                                   title='enum rustc::mir::Operand'>Operand</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] <p>These are values that can appear inside an rvalue (or an index
-lvalue). They are intentionally limited to prevent rvalues from
+place). They are intentionally limited to prevent rvalues from
 being nested in one another.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="enum" href="enum.Place.html"
+                                  title='enum rustc::mir::Place'>Place</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>A path to a value; something that can be evaluated without
+changing or disturbing program state.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
@@ -367,6 +367,13 @@ being nested in one another.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
+                           <td><a class="enum" href="enum.UnsafetyViolationKind.html"
+                                  title='enum rustc::mir::UnsafetyViolationKind'>UnsafetyViolationKind</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
                            <td><a class="enum" href="enum.ValidationOp.html"
                                   title='enum rustc::mir::ValidationOp'>ValidationOp</a></td>
                            <td class='docblock-short'>
@@ -383,8 +390,8 @@ being nested in one another.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
-                           <td><a class="constant" href="constant.RETURN_POINTER.html"
-                                  title='constant rustc::mir::RETURN_POINTER'>RETURN_POINTER</a></td>
+                           <td><a class="constant" href="constant.RETURN_PLACE.html"
+                                  title='constant rustc::mir::RETURN_PLACE'>RETURN_PLACE</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] 
                            </td>
@@ -406,18 +413,18 @@ being nested in one another.</p>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
                        <tr class='unstable module-item'>
-                           <td><a class="type" href="type.LvalueElem.html"
-                                  title='type rustc::mir::LvalueElem'>LvalueElem</a></td>
+                           <td><a class="type" href="type.PlaceElem.html"
+                                  title='type rustc::mir::PlaceElem'>PlaceElem</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] <p>Alias for projections as they appear in lvalues, where the base is an lvalue
+                               [<div class='stab unstable'>Experimental</div>] <p>Alias for projections as they appear in places, where the base is a place
 and the index is a local.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
-                           <td><a class="type" href="type.LvalueProjection.html"
-                                  title='type rustc::mir::LvalueProjection'>LvalueProjection</a></td>
+                           <td><a class="type" href="type.PlaceProjection.html"
+                                  title='type rustc::mir::PlaceProjection'>PlaceProjection</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] <p>Alias for projections as they appear in lvalues, where the base is an lvalue
+                               [<div class='stab unstable'>Experimental</div>] <p>Alias for projections as they appear in places, where the base is a place
 and the index is a local.</p>
                            </td>
                        </tr></table></section>

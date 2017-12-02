@@ -1190,6 +1190,15 @@
 <span id="1145">1145</span>
 <span id="1146">1146</span>
 <span id="1147">1147</span>
+<span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
+<span id="1151">1151</span>
+<span id="1152">1152</span>
+<span id="1153">1153</span>
+<span id="1154">1154</span>
+<span id="1155">1155</span>
+<span id="1156">1156</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1214,6 +1223,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">CrateNum</span>, <span class="ident">DefId</span>, <span class="ident">DefIndex</span>, <span class="ident">CRATE_DEF_INDEX</span>, <span class="ident">LOCAL_CRATE</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ich</span>::<span class="ident">Fingerprint</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">lang_items</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">Session</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">codec</span>::<span class="ident">TyDecoder</span>;
@@ -1517,6 +1527,14 @@
         <span class="kw">let</span> <span class="ident">hi</span> <span class="op">=</span> (<span class="ident">hi</span> <span class="op">+</span> <span class="ident">filemap</span>.<span class="ident">translated_filemap</span>.<span class="ident">start_pos</span>) <span class="op">-</span> <span class="ident">filemap</span>.<span class="ident">original_start_pos</span>;
 
         <span class="prelude-val">Ok</span>(<span class="ident">Span</span>::<span class="ident">new</span>(<span class="ident">lo</span>, <span class="ident">hi</span>, <span class="ident">NO_EXPANSION</span>))
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">T</span>: <span class="ident">Decodable</span><span class="op">&gt;</span> <span class="ident">SpecializedDecoder</span><span class="op">&lt;</span><span class="ident">mir</span>::<span class="ident">ClearCrossCrate</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>
+<span class="kw">for</span> <span class="ident">DecodeContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">specialized_decode</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">mir</span>::<span class="ident">ClearCrossCrate</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="ident">mir</span>::<span class="ident">ClearCrossCrate</span>::<span class="ident">Clear</span>)
     }
 }
 

@@ -263,6 +263,9 @@
 <span id="218">218</span>
 <span id="219">219</span>
 <span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -372,7 +375,8 @@
 
     <span class="ident">ErroneousReferencedConstant</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">ConstEvalErr</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>),
 
-    <span class="ident">TypeckError</span>
+    <span class="ident">TypeckError</span>,
+    <span class="ident">CheckMatchError</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">ConstMathErr</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ErrKind</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -434,6 +438,7 @@
             <span class="ident">ErroneousReferencedConstant</span>(_) <span class="op">=&gt;</span> <span class="macro">simple</span><span class="macro">!</span>(<span class="string">&quot;could not evaluate referenced constant&quot;</span>),
 
             <span class="ident">TypeckError</span> <span class="op">=&gt;</span> <span class="macro">simple</span><span class="macro">!</span>(<span class="string">&quot;type-checking failed&quot;</span>),
+            <span class="ident">CheckMatchError</span> <span class="op">=&gt;</span> <span class="macro">simple</span><span class="macro">!</span>(<span class="string">&quot;match-checking failed&quot;</span>),
         }
     }
 
@@ -478,8 +483,9 @@
         <span class="ident">primary_span</span>: <span class="ident">Span</span>,
         <span class="ident">primary_kind</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>)
     {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ErrKind</span>::<span class="ident">TypeckError</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">kind</span> {
-            <span class="kw">return</span>;
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">kind</span> {
+            <span class="ident">ErrKind</span>::<span class="ident">TypeckError</span> <span class="op">|</span> <span class="ident">ErrKind</span>::<span class="ident">CheckMatchError</span> <span class="op">=&gt;</span> <span class="kw">return</span>,
+            _ <span class="op">=&gt;</span> {}
         }
         <span class="self">self</span>.<span class="ident">struct_error</span>(<span class="ident">tcx</span>, <span class="ident">primary_span</span>, <span class="ident">primary_kind</span>).<span class="ident">emit</span>();
     }

@@ -983,6 +983,7 @@
 <span id="938">938</span>
 <span id="939">939</span>
 <span id="940">940</span>
+<span id="941">941</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1091,7 +1092,7 @@
 
     <span class="ident">source_info</span>: <span class="ident">SourceInfo</span>,
 
-    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;l</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;l</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">path</span>: <span class="ident">D</span>::<span class="ident">Path</span>,
     <span class="ident">succ</span>: <span class="ident">BasicBlock</span>,
     <span class="ident">unwind</span>: <span class="ident">Unwind</span>,
@@ -1100,7 +1101,7 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">elaborate_drop</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">D</span><span class="op">&gt;</span>(
     <span class="ident">elaborator</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">D</span>,
     <span class="ident">source_info</span>: <span class="ident">SourceInfo</span>,
-    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">path</span>: <span class="ident">D</span>::<span class="ident">Path</span>,
     <span class="ident">succ</span>: <span class="ident">BasicBlock</span>,
     <span class="ident">unwind</span>: <span class="ident">Unwind</span>,
@@ -1108,15 +1109,15 @@
     <span class="kw">where</span> <span class="ident">D</span>: <span class="ident">DropElaborator</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
 {
     <span class="ident">DropCtxt</span> {
-        <span class="ident">elaborator</span>, <span class="ident">source_info</span>, <span class="ident">lvalue</span>, <span class="ident">path</span>, <span class="ident">succ</span>, <span class="ident">unwind</span>
+        <span class="ident">elaborator</span>, <span class="ident">source_info</span>, <span class="ident">place</span>, <span class="ident">path</span>, <span class="ident">succ</span>, <span class="ident">unwind</span>
     }.<span class="ident">elaborate_drop</span>(<span class="ident">bb</span>)
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;l</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DropCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;l</span>, <span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;tcx</span>, <span class="ident">D</span><span class="op">&gt;</span>
     <span class="kw">where</span> <span class="ident">D</span>: <span class="ident">DropElaborator</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
 {
-    <span class="kw">fn</span> <span class="ident">lvalue_ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="ident">lvalue</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">mir</span>(), <span class="self">self</span>.<span class="ident">tcx</span>()).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>())
+    <span class="kw">fn</span> <span class="ident">place_ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">place</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">mir</span>(), <span class="self">self</span>.<span class="ident">tcx</span>()).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>())
     }
 
     <span class="kw">fn</span> <span class="ident">tcx</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
@@ -1155,7 +1156,7 @@
                 <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">terminator_loc</span>(<span class="ident">bb</span>);
                 <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">clear_drop_flag</span>(<span class="ident">loc</span>, <span class="self">self</span>.<span class="ident">path</span>, <span class="ident">DropFlagMode</span>::<span class="ident">Deep</span>);
                 <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">patch</span>().<span class="ident">patch_terminator</span>(<span class="ident">bb</span>, <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> {
-                    <span class="ident">location</span>: <span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>(),
+                    <span class="ident">location</span>: <span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>(),
                     <span class="ident">target</span>: <span class="self">self</span>.<span class="ident">succ</span>,
                     <span class="ident">unwind</span>: <span class="self">self</span>.<span class="ident">unwind</span>.<span class="ident">into_option</span>(),
                 });
@@ -1177,14 +1178,14 @@
         }
     }
 
-    <span class="doccomment">/// Return the lvalue and move path for each field of `variant`,</span>
+    <span class="doccomment">/// Return the place and move path for each field of `variant`,</span>
     <span class="doccomment">/// (the move path is `None` if the field is a rest field).</span>
     <span class="kw">fn</span> <span class="ident">move_paths_for_fields</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                             <span class="ident">base_lv</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                             <span class="ident">base_place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                              <span class="ident">variant_path</span>: <span class="ident">D</span>::<span class="ident">Path</span>,
                              <span class="ident">variant</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">VariantDef</span>,
                              <span class="ident">substs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">Substs</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                             <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Path</span><span class="op">&gt;</span>)<span class="op">&gt;</span>
+                             <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Path</span><span class="op">&gt;</span>)<span class="op">&gt;</span>
     {
         <span class="ident">variant</span>.<span class="ident">fields</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">f</span>)<span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">field</span> <span class="op">=</span> <span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">i</span>);
@@ -1195,32 +1196,32 @@
                     <span class="kw-2">&amp;</span><span class="ident">f</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>(), <span class="ident">substs</span>),
                     <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">param_env</span>()
                 );
-            (<span class="ident">base_lv</span>.<span class="ident">clone</span>().<span class="ident">field</span>(<span class="ident">field</span>, <span class="ident">field_ty</span>), <span class="ident">subpath</span>)
+            (<span class="ident">base_place</span>.<span class="ident">clone</span>().<span class="ident">field</span>(<span class="ident">field</span>, <span class="ident">field_ty</span>), <span class="ident">subpath</span>)
         }).<span class="ident">collect</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">drop_subpath</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Path</span><span class="op">&gt;</span>,
                     <span class="ident">succ</span>: <span class="ident">BasicBlock</span>,
                     <span class="ident">unwind</span>: <span class="ident">Unwind</span>)
                     <span class="op">-&gt;</span> <span class="ident">BasicBlock</span>
     {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">path</span> {
-            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;drop_subpath: for std field {:?}&quot;</span>, <span class="ident">lvalue</span>);
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;drop_subpath: for std field {:?}&quot;</span>, <span class="ident">place</span>);
 
             <span class="ident">DropCtxt</span> {
                 <span class="ident">elaborator</span>: <span class="self">self</span>.<span class="ident">elaborator</span>,
                 <span class="ident">source_info</span>: <span class="self">self</span>.<span class="ident">source_info</span>,
-                <span class="ident">path</span>, <span class="ident">lvalue</span>, <span class="ident">succ</span>, <span class="ident">unwind</span>,
+                <span class="ident">path</span>, <span class="ident">place</span>, <span class="ident">succ</span>, <span class="ident">unwind</span>,
             }.<span class="ident">elaborated_drop_block</span>()
         } <span class="kw">else</span> {
-            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;drop_subpath: for rest field {:?}&quot;</span>, <span class="ident">lvalue</span>);
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;drop_subpath: for rest field {:?}&quot;</span>, <span class="ident">place</span>);
 
             <span class="ident">DropCtxt</span> {
                 <span class="ident">elaborator</span>: <span class="self">self</span>.<span class="ident">elaborator</span>,
                 <span class="ident">source_info</span>: <span class="self">self</span>.<span class="ident">source_info</span>,
-                <span class="ident">lvalue</span>, <span class="ident">succ</span>, <span class="ident">unwind</span>,
+                <span class="ident">place</span>, <span class="ident">succ</span>, <span class="ident">unwind</span>,
                 <span class="comment">// Using `self.path` here to condition the drop on</span>
                 <span class="comment">// our own drop flag.</span>
                 <span class="ident">path</span>: <span class="self">self</span>.<span class="ident">path</span>
@@ -1237,13 +1238,13 @@
     <span class="kw">fn</span> <span class="ident">drop_halfladder</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                        <span class="ident">unwind_ladder</span>: <span class="kw-2">&amp;</span>[<span class="ident">Unwind</span>],
                        <span class="kw-2">mut</span> <span class="ident">succ</span>: <span class="ident">BasicBlock</span>,
-                       <span class="ident">fields</span>: <span class="kw-2">&amp;</span>[(<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Path</span><span class="op">&gt;</span>)])
+                       <span class="ident">fields</span>: <span class="kw-2">&amp;</span>[(<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Path</span><span class="op">&gt;</span>)])
                        <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BasicBlock</span><span class="op">&gt;</span>
     {
         <span class="prelude-val">Some</span>(<span class="ident">succ</span>).<span class="ident">into_iter</span>().<span class="ident">chain</span>(
             <span class="ident">fields</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">zip</span>(<span class="ident">unwind_ladder</span>)
-                .<span class="ident">map</span>(<span class="op">|</span>(<span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">lv</span>, <span class="ident">path</span>), <span class="kw-2">&amp;</span><span class="ident">unwind_succ</span>)<span class="op">|</span> {
-                    <span class="ident">succ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">drop_subpath</span>(<span class="ident">lv</span>, <span class="ident">path</span>, <span class="ident">succ</span>, <span class="ident">unwind_succ</span>);
+                .<span class="ident">map</span>(<span class="op">|</span>(<span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">place</span>, <span class="ident">path</span>), <span class="kw-2">&amp;</span><span class="ident">unwind_succ</span>)<span class="op">|</span> {
+                    <span class="ident">succ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">drop_subpath</span>(<span class="ident">place</span>, <span class="ident">path</span>, <span class="ident">succ</span>, <span class="ident">unwind_succ</span>);
                     <span class="ident">succ</span>
                 })
         ).<span class="ident">collect</span>()
@@ -1280,7 +1281,7 @@
     <span class="doccomment">/// NOTE: this does not clear the master drop flag, so you need</span>
     <span class="doccomment">/// to point succ/unwind on a `drop_ladder_bottom`.</span>
     <span class="kw">fn</span> <span class="ident">drop_ladder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                       <span class="ident">fields</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Path</span><span class="op">&gt;</span>)<span class="op">&gt;</span>,
+                       <span class="ident">fields</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">D</span>::<span class="ident">Path</span><span class="op">&gt;</span>)<span class="op">&gt;</span>,
                        <span class="ident">succ</span>: <span class="ident">BasicBlock</span>,
                        <span class="ident">unwind</span>: <span class="ident">Unwind</span>)
                        <span class="op">-&gt;</span> (<span class="ident">BasicBlock</span>, <span class="ident">Unwind</span>)
@@ -1288,8 +1289,8 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;drop_ladder({:?}, {:?})&quot;</span>, <span class="self">self</span>, <span class="ident">fields</span>);
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fields</span> <span class="op">=</span> <span class="ident">fields</span>;
-        <span class="ident">fields</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>, _)<span class="op">|</span> {
-            <span class="self">self</span>.<span class="ident">lvalue_ty</span>(<span class="ident">lvalue</span>).<span class="ident">needs_drop</span>(<span class="self">self</span>.<span class="ident">tcx</span>(), <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">param_env</span>())
+        <span class="ident">fields</span>.<span class="ident">retain</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">place</span>, _)<span class="op">|</span> {
+            <span class="self">self</span>.<span class="ident">place_ty</span>(<span class="ident">place</span>).<span class="ident">needs_drop</span>(<span class="self">self</span>.<span class="ident">tcx</span>(), <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">param_env</span>())
         });
 
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;drop_ladder - fields needing drop: {:?}&quot;</span>, <span class="ident">fields</span>);
@@ -1314,7 +1315,7 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;open_drop_for_tuple({:?}, {:?})&quot;</span>, <span class="self">self</span>, <span class="ident">tys</span>);
 
         <span class="kw">let</span> <span class="ident">fields</span> <span class="op">=</span> <span class="ident">tys</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="kw-2">&amp;</span><span class="ident">ty</span>)<span class="op">|</span> {
-            (<span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>().<span class="ident">field</span>(<span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">i</span>), <span class="ident">ty</span>),
+            (<span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>().<span class="ident">field</span>(<span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">i</span>), <span class="ident">ty</span>),
              <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">field_subpath</span>(<span class="self">self</span>.<span class="ident">path</span>, <span class="ident">Field</span>::<span class="ident">new</span>(<span class="ident">i</span>)))
         }).<span class="ident">collect</span>();
 
@@ -1326,7 +1327,7 @@
     {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;open_drop_for_box({:?}, {:?})&quot;</span>, <span class="self">self</span>, <span class="ident">ty</span>);
 
-        <span class="kw">let</span> <span class="ident">interior</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>().<span class="ident">deref</span>();
+        <span class="kw">let</span> <span class="ident">interior</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>().<span class="ident">deref</span>();
         <span class="kw">let</span> <span class="ident">interior_path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">deref_subpath</span>(<span class="self">self</span>.<span class="ident">path</span>);
 
         <span class="kw">let</span> <span class="ident">succ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">succ</span>; <span class="comment">// FIXME(#6393)</span>
@@ -1372,7 +1373,7 @@
         <span class="kw">let</span> (<span class="ident">succ</span>, <span class="ident">unwind</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">drop_ladder_bottom</span>();
         <span class="kw">if</span> <span class="op">!</span><span class="ident">adt</span>.<span class="ident">is_enum</span>() {
             <span class="kw">let</span> <span class="ident">fields</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">move_paths_for_fields</span>(
-                <span class="self">self</span>.<span class="ident">lvalue</span>,
+                <span class="self">self</span>.<span class="ident">place</span>,
                 <span class="self">self</span>.<span class="ident">path</span>,
                 <span class="kw-2">&amp;</span><span class="ident">adt</span>.<span class="ident">variants</span>[<span class="number">0</span>],
                 <span class="ident">substs</span>
@@ -1402,11 +1403,11 @@
             <span class="kw">let</span> <span class="ident">subpath</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">downcast_subpath</span>(
                 <span class="self">self</span>.<span class="ident">path</span>, <span class="ident">variant_index</span>);
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">variant_path</span>) <span class="op">=</span> <span class="ident">subpath</span> {
-                <span class="kw">let</span> <span class="ident">base_lv</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>().<span class="ident">elem</span>(
+                <span class="kw">let</span> <span class="ident">base_place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>().<span class="ident">elem</span>(
                     <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(<span class="ident">adt</span>, <span class="ident">variant_index</span>)
                         );
                 <span class="kw">let</span> <span class="ident">fields</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">move_paths_for_fields</span>(
-                    <span class="kw-2">&amp;</span><span class="ident">base_lv</span>,
+                    <span class="kw-2">&amp;</span><span class="ident">base_place</span>,
                     <span class="ident">variant_path</span>,
                     <span class="kw-2">&amp;</span><span class="ident">adt</span>.<span class="ident">variants</span>[<span class="ident">variant_index</span>],
                     <span class="ident">substs</span>);
@@ -1477,14 +1478,14 @@
         <span class="comment">// discriminant after it is free-ed, because that</span>
         <span class="comment">// way lies only trouble.</span>
         <span class="kw">let</span> <span class="ident">discr_ty</span> <span class="op">=</span> <span class="ident">adt</span>.<span class="ident">repr</span>.<span class="ident">discr_type</span>().<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>());
-        <span class="kw">let</span> <span class="ident">discr</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">discr_ty</span>));
-        <span class="kw">let</span> <span class="ident">discr_rv</span> <span class="op">=</span> <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(<span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">discr</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">discr_ty</span>));
+        <span class="kw">let</span> <span class="ident">discr_rv</span> <span class="op">=</span> <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(<span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>());
         <span class="kw">let</span> <span class="ident">switch_block</span> <span class="op">=</span> <span class="ident">BasicBlockData</span> {
             <span class="ident">statements</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">discr</span>, <span class="ident">discr_rv</span>)],
             <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
                 <span class="ident">source_info</span>: <span class="self">self</span>.<span class="ident">source_info</span>,
                 <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">SwitchInt</span> {
-                    <span class="ident">discr</span>: <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">discr</span>),
+                    <span class="ident">discr</span>: <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">discr</span>),
                     <span class="ident">switch_ty</span>: <span class="ident">discr_ty</span>,
                     <span class="ident">values</span>: <span class="ident">From</span>::<span class="ident">from</span>(<span class="ident">values</span>.<span class="ident">to_owned</span>()),
                     <span class="ident">targets</span>: <span class="ident">blocks</span>,
@@ -1503,26 +1504,26 @@
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
         <span class="kw">let</span> <span class="ident">drop_trait</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">lang_items</span>().<span class="ident">drop_trait</span>().<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">drop_fn</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">associated_items</span>(<span class="ident">drop_trait</span>).<span class="ident">next</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lvalue_ty</span>(<span class="self">self</span>.<span class="ident">lvalue</span>);
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">place_ty</span>(<span class="self">self</span>.<span class="ident">place</span>);
         <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_substs</span>(<span class="ident">iter</span>::<span class="ident">once</span>(<span class="ident">Kind</span>::<span class="ident">from</span>(<span class="ident">ty</span>)));
 
         <span class="kw">let</span> <span class="ident">ref_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_ref</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_erased</span>, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> {
             <span class="ident">ty</span>,
             <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">Mutability</span>::<span class="ident">MutMutable</span>
         });
-        <span class="kw">let</span> <span class="ident">ref_lvalue</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">ref_ty</span>);
-        <span class="kw">let</span> <span class="ident">unit_temp</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">mk_nil</span>()));
+        <span class="kw">let</span> <span class="ident">ref_place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">ref_ty</span>);
+        <span class="kw">let</span> <span class="ident">unit_temp</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">mk_nil</span>()));
 
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">BasicBlockData</span> {
             <span class="ident">statements</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="self">self</span>.<span class="ident">assign</span>(
-                <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">ref_lvalue</span>),
-                <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_erased</span>, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, <span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>())
+                <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">ref_place</span>),
+                <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_erased</span>, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, <span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>())
             )],
             <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
                 <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">Call</span> {
                     <span class="ident">func</span>: <span class="ident">Operand</span>::<span class="ident">function_handle</span>(<span class="ident">tcx</span>, <span class="ident">drop_fn</span>.<span class="ident">def_id</span>, <span class="ident">substs</span>,
                                                    <span class="self">self</span>.<span class="ident">source_info</span>.<span class="ident">span</span>),
-                    <span class="ident">args</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">ref_lvalue</span>))],
+                    <span class="ident">args</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">ref_place</span>))],
                     <span class="ident">destination</span>: <span class="prelude-val">Some</span>((<span class="ident">unit_temp</span>, <span class="ident">succ</span>)),
                     <span class="ident">cleanup</span>: <span class="ident">unwind</span>.<span class="ident">into_option</span>(),
                 },
@@ -1552,38 +1553,39 @@
     <span class="kw">fn</span> <span class="ident">drop_loop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                  <span class="ident">succ</span>: <span class="ident">BasicBlock</span>,
                  <span class="ident">cur</span>: <span class="ident">Local</span>,
-                 <span class="ident">length_or_end</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                 <span class="ident">length_or_end</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                  <span class="ident">ety</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                  <span class="ident">unwind</span>: <span class="ident">Unwind</span>,
                  <span class="ident">ptr_based</span>: <span class="ident">bool</span>)
                  <span class="op">-&gt;</span> <span class="ident">BasicBlock</span>
     {
-        <span class="kw">let</span> <span class="ident">use_</span> <span class="op">=</span> <span class="op">|</span><span class="ident">lv</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">lv</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">copy</span> <span class="op">=</span> <span class="op">|</span><span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="ident">place</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">move_</span> <span class="op">=</span> <span class="op">|</span><span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">place</span>.<span class="ident">clone</span>());
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
 
         <span class="kw">let</span> <span class="ident">ref_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_ref</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_erased</span>, <span class="ident">ty</span>::<span class="ident">TypeAndMut</span> {
             <span class="ident">ty</span>: <span class="ident">ety</span>,
             <span class="ident">mutbl</span>: <span class="ident">hir</span>::<span class="ident">Mutability</span>::<span class="ident">MutMutable</span>
         });
-        <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">ref_ty</span>));
-        <span class="kw">let</span> <span class="ident">can_go</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>));
+        <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">ref_ty</span>));
+        <span class="kw">let</span> <span class="ident">can_go</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>));
 
         <span class="kw">let</span> <span class="ident">one</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">constant_usize</span>(<span class="number">1</span>);
         <span class="kw">let</span> (<span class="ident">ptr_next</span>, <span class="ident">cur_next</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">ptr_based</span> {
-            (<span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">use_</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">cur</span>))),
-             <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">BinOp</span>::<span class="ident">Offset</span>, <span class="ident">use_</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">cur</span>)), <span class="ident">one</span>))
+            (<span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">copy</span>(<span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">cur</span>))),
+             <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">BinOp</span>::<span class="ident">Offset</span>, <span class="ident">copy</span>(<span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">cur</span>)), <span class="ident">one</span>))
         } <span class="kw">else</span> {
             (<span class="ident">Rvalue</span>::<span class="ident">Ref</span>(
                  <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_erased</span>,
                  <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>,
-                 <span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>().<span class="ident">index</span>(<span class="ident">cur</span>)),
-             <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">BinOp</span>::<span class="ident">Add</span>, <span class="ident">use_</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">cur</span>)), <span class="ident">one</span>))
+                 <span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>().<span class="ident">index</span>(<span class="ident">cur</span>)),
+             <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">BinOp</span>::<span class="ident">Add</span>, <span class="ident">copy</span>(<span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">cur</span>)), <span class="ident">one</span>))
         };
 
         <span class="kw">let</span> <span class="ident">drop_block</span> <span class="op">=</span> <span class="ident">BasicBlockData</span> {
             <span class="ident">statements</span>: <span class="macro">vec</span><span class="macro">!</span>[
                 <span class="self">self</span>.<span class="ident">assign</span>(<span class="ident">ptr</span>, <span class="ident">ptr_next</span>),
-                <span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">cur</span>), <span class="ident">cur_next</span>)
+                <span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">cur</span>), <span class="ident">cur_next</span>)
             ],
             <span class="ident">is_cleanup</span>: <span class="ident">unwind</span>.<span class="ident">is_cleanup</span>(),
             <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
@@ -1597,13 +1599,13 @@
         <span class="kw">let</span> <span class="ident">loop_block</span> <span class="op">=</span> <span class="ident">BasicBlockData</span> {
             <span class="ident">statements</span>: <span class="macro">vec</span><span class="macro">!</span>[
                 <span class="self">self</span>.<span class="ident">assign</span>(<span class="ident">can_go</span>, <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">BinOp</span>::<span class="ident">Eq</span>,
-                                                     <span class="ident">use_</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">cur</span>)),
-                                                     <span class="ident">use_</span>(<span class="ident">length_or_end</span>)))
+                                                     <span class="ident">copy</span>(<span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">cur</span>)),
+                                                     <span class="ident">copy</span>(<span class="ident">length_or_end</span>)))
             ],
             <span class="ident">is_cleanup</span>: <span class="ident">unwind</span>.<span class="ident">is_cleanup</span>(),
             <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
                 <span class="ident">source_info</span>: <span class="self">self</span>.<span class="ident">source_info</span>,
-                <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">if_</span>(<span class="ident">tcx</span>, <span class="ident">use_</span>(<span class="ident">can_go</span>), <span class="ident">succ</span>, <span class="ident">drop_block</span>)
+                <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">if_</span>(<span class="ident">tcx</span>, <span class="ident">move_</span>(<span class="ident">can_go</span>), <span class="ident">succ</span>, <span class="ident">drop_block</span>)
             })
         };
         <span class="kw">let</span> <span class="ident">loop_block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">patch</span>().<span class="ident">new_block</span>(<span class="ident">loop_block</span>);
@@ -1628,14 +1630,14 @@
 
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
 
-        <span class="kw">let</span> <span class="ident">use_</span> <span class="op">=</span> <span class="op">|</span><span class="ident">lv</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">lv</span>.<span class="ident">clone</span>());
-        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>));
-        <span class="kw">let</span> <span class="ident">size_is_zero</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>));
+        <span class="kw">let</span> <span class="ident">move_</span> <span class="op">=</span> <span class="op">|</span><span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span><span class="op">|</span> <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">place</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>));
+        <span class="kw">let</span> <span class="ident">size_is_zero</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">bool</span>));
         <span class="kw">let</span> <span class="ident">base_block</span> <span class="op">=</span> <span class="ident">BasicBlockData</span> {
             <span class="ident">statements</span>: <span class="macro">vec</span><span class="macro">!</span>[
                 <span class="self">self</span>.<span class="ident">assign</span>(<span class="ident">size</span>, <span class="ident">Rvalue</span>::<span class="ident">NullaryOp</span>(<span class="ident">NullOp</span>::<span class="ident">SizeOf</span>, <span class="ident">ety</span>)),
                 <span class="self">self</span>.<span class="ident">assign</span>(<span class="ident">size_is_zero</span>, <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">BinOp</span>::<span class="ident">Eq</span>,
-                                                           <span class="ident">use_</span>(<span class="ident">size</span>),
+                                                           <span class="ident">move_</span>(<span class="ident">size</span>),
                                                            <span class="self">self</span>.<span class="ident">constant_usize</span>(<span class="number">0</span>)))
             ],
             <span class="ident">is_cleanup</span>: <span class="self">self</span>.<span class="ident">unwind</span>.<span class="ident">is_cleanup</span>(),
@@ -1643,7 +1645,7 @@
                 <span class="ident">source_info</span>: <span class="self">self</span>.<span class="ident">source_info</span>,
                 <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">if_</span>(
                     <span class="ident">tcx</span>,
-                    <span class="ident">use_</span>(<span class="ident">size_is_zero</span>),
+                    <span class="ident">move_</span>(<span class="ident">size_is_zero</span>),
                     <span class="self">self</span>.<span class="ident">drop_loop_pair</span>(<span class="ident">ety</span>, <span class="bool-val">false</span>),
                     <span class="self">self</span>.<span class="ident">drop_loop_pair</span>(<span class="ident">ety</span>, <span class="bool-val">true</span>)
                 )
@@ -1652,7 +1654,7 @@
         <span class="self">self</span>.<span class="ident">elaborator</span>.<span class="ident">patch</span>().<span class="ident">new_block</span>(<span class="ident">base_block</span>)
     }
 
-    <span class="comment">// create a pair of drop-loops of `lvalue`, which drops its contents</span>
+    <span class="comment">// create a pair of drop-loops of `place`, which drops its contents</span>
     <span class="comment">// even in the case of 1 panic. If `ptr_based`, create a pointer loop,</span>
     <span class="comment">// otherwise create an index loop.</span>
     <span class="kw">fn</span> <span class="ident">drop_loop_pair</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ety</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">ptr_based</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
@@ -1665,9 +1667,9 @@
         };
 
         <span class="kw">let</span> <span class="ident">cur</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">iter_ty</span>);
-        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>));
+        <span class="kw">let</span> <span class="ident">length</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span>));
         <span class="kw">let</span> <span class="ident">length_or_end</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">ptr_based</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">iter_ty</span>))
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">iter_ty</span>))
         } <span class="kw">else</span> {
             <span class="ident">length</span>.<span class="ident">clone</span>()
         };
@@ -1690,25 +1692,25 @@
             <span class="ident">unwind</span>,
             <span class="ident">ptr_based</span>);
 
-        <span class="kw">let</span> <span class="ident">cur</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">cur</span>);
+        <span class="kw">let</span> <span class="ident">cur</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">cur</span>);
         <span class="kw">let</span> <span class="ident">zero</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">constant_usize</span>(<span class="number">0</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">drop_block_stmts</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
-        <span class="ident">drop_block_stmts</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">length</span>, <span class="ident">Rvalue</span>::<span class="ident">Len</span>(<span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>())));
+        <span class="ident">drop_block_stmts</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">length</span>, <span class="ident">Rvalue</span>::<span class="ident">Len</span>(<span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>())));
         <span class="kw">if</span> <span class="ident">ptr_based</span> {
-            <span class="kw">let</span> <span class="ident">tmp_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_mut_ptr</span>(<span class="self">self</span>.<span class="ident">lvalue_ty</span>(<span class="self">self</span>.<span class="ident">lvalue</span>));
-            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tmp_ty</span>));
+            <span class="kw">let</span> <span class="ident">tmp_ty</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_mut_ptr</span>(<span class="self">self</span>.<span class="ident">place_ty</span>(<span class="self">self</span>.<span class="ident">place</span>));
+            <span class="kw">let</span> <span class="ident">tmp</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tmp_ty</span>));
             <span class="comment">// tmp = &amp;LV;</span>
             <span class="comment">// cur = tmp as *mut T;</span>
             <span class="comment">// end = Offset(cur, len);</span>
             <span class="ident">drop_block_stmts</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">tmp</span>, <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(
-                <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_erased</span>, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, <span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>()
+                <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">re_erased</span>, <span class="ident">BorrowKind</span>::<span class="ident">Mut</span>, <span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>()
             )));
             <span class="ident">drop_block_stmts</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">cur</span>, <span class="ident">Rvalue</span>::<span class="ident">Cast</span>(
-                <span class="ident">CastKind</span>::<span class="ident">Misc</span>, <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">tmp</span>.<span class="ident">clone</span>()), <span class="ident">iter_ty</span>
+                <span class="ident">CastKind</span>::<span class="ident">Misc</span>, <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">tmp</span>.<span class="ident">clone</span>()), <span class="ident">iter_ty</span>
             )));
             <span class="ident">drop_block_stmts</span>.<span class="ident">push</span>(<span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">length_or_end</span>,
                 <span class="ident">Rvalue</span>::<span class="ident">BinaryOp</span>(<span class="ident">BinOp</span>::<span class="ident">Offset</span>,
-                     <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">cur</span>.<span class="ident">clone</span>()), <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">length</span>.<span class="ident">clone</span>())
+                     <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="ident">cur</span>.<span class="ident">clone</span>()), <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">length</span>.<span class="ident">clone</span>())
             )));
         } <span class="kw">else</span> {
             <span class="comment">// index = 0 (length already pushed)</span>
@@ -1737,7 +1739,7 @@
     <span class="doccomment">/// This creates a &quot;drop ladder&quot; that drops the needed fields of the</span>
     <span class="doccomment">/// ADT, both in the success case or if one of the destructors fail.</span>
     <span class="kw">fn</span> <span class="ident">open_drop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lvalue_ty</span>(<span class="self">self</span>.<span class="ident">lvalue</span>);
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">place_ty</span>(<span class="self">self</span>.<span class="ident">place</span>);
         <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
             <span class="ident">ty</span>::<span class="ident">TyClosure</span>(<span class="ident">def_id</span>, <span class="ident">substs</span>) <span class="op">|</span>
             <span class="comment">// Note that `elaborate_drops` only drops the upvars of a generator,</span>
@@ -1771,13 +1773,13 @@
         }
     }
 
-    <span class="doccomment">/// Return a basic block that drop an lvalue using the context</span>
+    <span class="doccomment">/// Return a basic block that drop a place using the context</span>
     <span class="doccomment">/// and path in `c`. If `mode` is something, also clear `c`</span>
     <span class="doccomment">/// according to it.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// if FLAG(self.path)</span>
     <span class="doccomment">///     if let Some(mode) = mode: FLAG(self.path)[mode] = false</span>
-    <span class="doccomment">///     drop(self.lv)</span>
+    <span class="doccomment">///     drop(self.place)</span>
     <span class="kw">fn</span> <span class="ident">complete_drop</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                          <span class="ident">drop_mode</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DropFlagMode</span><span class="op">&gt;</span>,
                          <span class="ident">succ</span>: <span class="ident">BasicBlock</span>,
@@ -1834,13 +1836,13 @@
         <span class="ident">unwind</span>: <span class="ident">Unwind</span>
     ) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
-        <span class="kw">let</span> <span class="ident">unit_temp</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">mk_nil</span>()));
+        <span class="kw">let</span> <span class="ident">unit_temp</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="self">self</span>.<span class="ident">new_temp</span>(<span class="ident">tcx</span>.<span class="ident">mk_nil</span>()));
         <span class="kw">let</span> <span class="ident">free_func</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">require_lang_item</span>(<span class="ident">lang_items</span>::<span class="ident">BoxFreeFnLangItem</span>);
         <span class="kw">let</span> <span class="ident">substs</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">mk_substs</span>(<span class="ident">iter</span>::<span class="ident">once</span>(<span class="ident">Kind</span>::<span class="ident">from</span>(<span class="ident">ty</span>)));
 
         <span class="kw">let</span> <span class="ident">call</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Call</span> {
             <span class="ident">func</span>: <span class="ident">Operand</span>::<span class="ident">function_handle</span>(<span class="ident">tcx</span>, <span class="ident">free_func</span>, <span class="ident">substs</span>, <span class="self">self</span>.<span class="ident">source_info</span>.<span class="ident">span</span>),
-            <span class="ident">args</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>())],
+            <span class="ident">args</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>())],
             <span class="ident">destination</span>: <span class="prelude-val">Some</span>((<span class="ident">unit_temp</span>, <span class="ident">target</span>)),
             <span class="ident">cleanup</span>: <span class="prelude-val">None</span>
         }; <span class="comment">// FIXME(#6393)</span>
@@ -1853,7 +1855,7 @@
 
     <span class="kw">fn</span> <span class="ident">drop_block</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">target</span>: <span class="ident">BasicBlock</span>, <span class="ident">unwind</span>: <span class="ident">Unwind</span>) <span class="op">-&gt;</span> <span class="ident">BasicBlock</span> {
         <span class="kw">let</span> <span class="ident">block</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> {
-            <span class="ident">location</span>: <span class="self">self</span>.<span class="ident">lvalue</span>.<span class="ident">clone</span>(),
+            <span class="ident">location</span>: <span class="self">self</span>.<span class="ident">place</span>.<span class="ident">clone</span>(),
             <span class="ident">target</span>,
             <span class="ident">unwind</span>: <span class="ident">unwind</span>.<span class="ident">into_option</span>()
         };
@@ -1917,7 +1919,7 @@
         })
     }
 
-    <span class="kw">fn</span> <span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lhs</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">rhs</span>: <span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Statement</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">lhs</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">rhs</span>: <span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Statement</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="ident">Statement</span> {
             <span class="ident">source_info</span>: <span class="self">self</span>.<span class="ident">source_info</span>,
             <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">lhs</span>.<span class="ident">clone</span>(), <span class="ident">rhs</span>)

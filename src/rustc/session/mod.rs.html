@@ -1453,7 +1453,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">emit_end_regions</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">emit_end_regions</span> <span class="op">||</span>
             (<span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">mir_emit_validate</span> <span class="op">&gt;</span> <span class="number">0</span>) <span class="op">||</span>
-            <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">borrowck_mir</span>
+            <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">borrowck_mode</span>.<span class="ident">use_mir</span>()
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lto</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">lto</span> <span class="op">||</span> <span class="self">self</span>.<span class="ident">target</span>.<span class="ident">target</span>.<span class="ident">options</span>.<span class="ident">requires_lto</span>

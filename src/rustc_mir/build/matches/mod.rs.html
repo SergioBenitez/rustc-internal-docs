@@ -886,13 +886,13 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">match_expr</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                      <span class="ident">destination</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                      <span class="ident">destination</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                       <span class="ident">span</span>: <span class="ident">Span</span>,
                       <span class="kw-2">mut</span> <span class="ident">block</span>: <span class="ident">BasicBlock</span>,
                       <span class="ident">discriminant</span>: <span class="ident">ExprRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                       <span class="ident">arms</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Arm</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>)
                       <span class="op">-&gt;</span> <span class="ident">BlockAnd</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">discriminant_lvalue</span> <span class="op">=</span> <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_lvalue</span>(<span class="ident">block</span>, <span class="ident">discriminant</span>));
+        <span class="kw">let</span> <span class="ident">discriminant_place</span> <span class="op">=</span> <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_place</span>(<span class="ident">block</span>, <span class="ident">discriminant</span>));
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">arm_blocks</span> <span class="op">=</span> <span class="ident">ArmBlocks</span> {
             <span class="ident">blocks</span>: <span class="ident">arms</span>.<span class="ident">iter</span>()
@@ -933,7 +933,7 @@
                        (<span class="ident">pre_binding_block</span>, <span class="ident">next_candidate_pre_binding_block</span>))<span class="op">|</span> {
                     <span class="ident">Candidate</span> {
                         <span class="ident">span</span>: <span class="ident">pattern</span>.<span class="ident">span</span>,
-                        <span class="ident">match_pairs</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">MatchPair</span>::<span class="ident">new</span>(<span class="ident">discriminant_lvalue</span>.<span class="ident">clone</span>(), <span class="ident">pattern</span>)],
+                        <span class="ident">match_pairs</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">MatchPair</span>::<span class="ident">new</span>(<span class="ident">discriminant_place</span>.<span class="ident">clone</span>(), <span class="ident">pattern</span>)],
                         <span class="ident">bindings</span>: <span class="macro">vec</span><span class="macro">!</span>[],
                         <span class="ident">guard</span>,
                         <span class="ident">arm_index</span>,
@@ -947,7 +947,7 @@
         <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">terminate</span>(<span class="kw-2">*</span><span class="ident">pre_binding_blocks</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>(),
                            <span class="ident">outer_source_info</span>, <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span>);
 
-        <span class="comment">// this will generate code to test discriminant_lvalue and</span>
+        <span class="comment">// this will generate code to test discriminant_place and</span>
         <span class="comment">// branch to the appropriate arm block</span>
         <span class="kw">let</span> <span class="ident">otherwise</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">match_candidates</span>(<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">arm_blocks</span>, <span class="ident">candidates</span>, <span class="ident">block</span>);
 
@@ -995,22 +995,22 @@
             <span class="ident">PatternKind</span>::<span class="ident">Binding</span> { <span class="ident">mode</span>: <span class="ident">BindingMode</span>::<span class="ident">ByValue</span>,
                                    <span class="ident">var</span>,
                                    <span class="ident">subpattern</span>: <span class="prelude-val">None</span>, .. } <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">storage_live_binding</span>(<span class="ident">block</span>, <span class="ident">var</span>, <span class="ident">irrefutable_pat</span>.<span class="ident">span</span>);
-                <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">into</span>(<span class="kw-2">&amp;</span><span class="ident">lvalue</span>, <span class="ident">block</span>, <span class="ident">initializer</span>));
+                <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">storage_live_binding</span>(<span class="ident">block</span>, <span class="ident">var</span>, <span class="ident">irrefutable_pat</span>.<span class="ident">span</span>);
+                <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">into</span>(<span class="kw-2">&amp;</span><span class="ident">place</span>, <span class="ident">block</span>, <span class="ident">initializer</span>));
                 <span class="self">self</span>.<span class="ident">schedule_drop_for_binding</span>(<span class="ident">var</span>, <span class="ident">irrefutable_pat</span>.<span class="ident">span</span>);
                 <span class="ident">block</span>.<span class="ident">unit</span>()
             }
             _ <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_lvalue</span>(<span class="ident">block</span>, <span class="ident">initializer</span>));
-                <span class="self">self</span>.<span class="ident">lvalue_into_pattern</span>(<span class="ident">block</span>, <span class="ident">irrefutable_pat</span>, <span class="kw-2">&amp;</span><span class="ident">lvalue</span>)
+                <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="macro">unpack</span><span class="macro">!</span>(<span class="ident">block</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_place</span>(<span class="ident">block</span>, <span class="ident">initializer</span>));
+                <span class="self">self</span>.<span class="ident">place_into_pattern</span>(<span class="ident">block</span>, <span class="ident">irrefutable_pat</span>, <span class="kw-2">&amp;</span><span class="ident">place</span>)
             }
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lvalue_into_pattern</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">place_into_pattern</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                <span class="kw-2">mut</span> <span class="ident">block</span>: <span class="ident">BasicBlock</span>,
                                <span class="ident">irrefutable_pat</span>: <span class="ident">Pattern</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                               <span class="ident">initializer</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                               <span class="ident">initializer</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                <span class="op">-&gt;</span> <span class="ident">BlockAnd</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="comment">// create a dummy candidate</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">candidate</span> <span class="op">=</span> <span class="ident">Candidate</span> {
@@ -1079,7 +1079,7 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">storage_live_binding</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">block</span>: <span class="ident">BasicBlock</span>, <span class="ident">var</span>: <span class="ident">NodeId</span>, <span class="ident">span</span>: <span class="ident">Span</span>)
-                            <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
+                            <span class="op">-&gt;</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
         <span class="kw">let</span> <span class="ident">local_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">var_indices</span>[<span class="kw-2">&amp;</span><span class="ident">var</span>];
         <span class="kw">let</span> <span class="ident">source_info</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">source_info</span>(<span class="ident">span</span>);
@@ -1087,7 +1087,7 @@
             <span class="ident">source_info</span>,
             <span class="ident">kind</span>: <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(<span class="ident">local_id</span>)
         });
-        <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local_id</span>)
+        <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local_id</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">schedule_drop_for_binding</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">var</span>: <span class="ident">NodeId</span>, <span class="ident">span</span>: <span class="ident">Span</span>) {
@@ -1095,7 +1095,7 @@
         <span class="kw">let</span> <span class="ident">var_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">local_decls</span>[<span class="ident">local_id</span>].<span class="ident">ty</span>;
         <span class="kw">let</span> <span class="ident">hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>().<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">var</span>);
         <span class="kw">let</span> <span class="ident">region_scope</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">region_scope_tree</span>.<span class="ident">var_scope</span>(<span class="ident">hir_id</span>.<span class="ident">local_id</span>);
-        <span class="self">self</span>.<span class="ident">schedule_drop</span>(<span class="ident">span</span>, <span class="ident">region_scope</span>, <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local_id</span>), <span class="ident">var_ty</span>);
+        <span class="self">self</span>.<span class="ident">schedule_drop</span>(<span class="ident">span</span>, <span class="ident">region_scope</span>, <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local_id</span>), <span class="ident">var_ty</span>);
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">visit_bindings</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">Pattern</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>)
@@ -1161,7 +1161,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">struct</span> <span class="ident">Binding</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="ident">span</span>: <span class="ident">Span</span>,
-    <span class="ident">source</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="ident">source</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     <span class="ident">name</span>: <span class="ident">Name</span>,
     <span class="ident">var_id</span>: <span class="ident">NodeId</span>,
     <span class="ident">var_ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -1171,8 +1171,8 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MatchPair</span><span class="op">&lt;</span><span class="lifetime">&#39;pat</span>, <span class="lifetime">&#39;tcx</span>:<span class="lifetime">&#39;pat</span><span class="op">&gt;</span> {
-    <span class="comment">// this lvalue...</span>
-    <span class="ident">lvalue</span>: <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="comment">// this place...</span>
+    <span class="ident">place</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
 
     <span class="comment">// ... must match this pattern.</span>
     <span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;pat</span> <span class="ident">Pattern</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -1491,7 +1491,7 @@
         <span class="kw">match</span> <span class="ident">test</span>.<span class="ident">kind</span> {
             <span class="ident">TestKind</span>::<span class="ident">SwitchInt</span> { <span class="ident">switch_ty</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">options</span>, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">indices</span> } <span class="op">=&gt;</span> {
                 <span class="kw">for</span> <span class="ident">candidate</span> <span class="kw">in</span> <span class="ident">candidates</span>.<span class="ident">iter</span>() {
-                    <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">add_cases_to_switch</span>(<span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">lvalue</span>,
+                    <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">add_cases_to_switch</span>(<span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">place</span>,
                                                  <span class="ident">candidate</span>,
                                                  <span class="ident">switch_ty</span>,
                                                  <span class="ident">options</span>,
@@ -1502,7 +1502,7 @@
             }
             <span class="ident">TestKind</span>::<span class="ident">Switch</span> { <span class="ident">adt_def</span>: _, <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">variants</span>} <span class="op">=&gt;</span> {
                 <span class="kw">for</span> <span class="ident">candidate</span> <span class="kw">in</span> <span class="ident">candidates</span>.<span class="ident">iter</span>() {
-                    <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">add_variants_to_switch</span>(<span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">lvalue</span>,
+                    <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">add_variants_to_switch</span>(<span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">place</span>,
                                                     <span class="ident">candidate</span>,
                                                     <span class="ident">variants</span>) {
                         <span class="kw">break</span>;
@@ -1517,7 +1517,7 @@
         <span class="comment">// vector of candidates. Those are the candidates that still</span>
         <span class="comment">// apply if the test has that particular outcome.</span>
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;match_candidates: test={:?} match_pair={:?}&quot;</span>, <span class="ident">test</span>, <span class="ident">match_pair</span>);
-        <span class="kw">let</span> <span class="ident">target_blocks</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">perform_test</span>(<span class="ident">block</span>, <span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">lvalue</span>, <span class="kw-2">&amp;</span><span class="ident">test</span>);
+        <span class="kw">let</span> <span class="ident">target_blocks</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">perform_test</span>(<span class="ident">block</span>, <span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">place</span>, <span class="kw-2">&amp;</span><span class="ident">test</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">target_candidates</span>: <span class="ident">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">target_blocks</span>.<span class="ident">len</span>()).<span class="ident">map</span>(<span class="op">|</span>_<span class="op">|</span> <span class="macro">vec</span><span class="macro">!</span>[]).<span class="ident">collect</span>();
 
         <span class="comment">// Sort the candidates into the appropriate vector in</span>
@@ -1526,7 +1526,7 @@
         <span class="comment">// that point, we stop sorting.</span>
         <span class="kw">let</span> <span class="ident">tested_candidates</span> <span class="op">=</span>
             <span class="ident">candidates</span>.<span class="ident">iter</span>()
-                      .<span class="ident">take_while</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">sort_candidate</span>(<span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">lvalue</span>,
+                      .<span class="ident">take_while</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">sort_candidate</span>(<span class="kw-2">&amp;</span><span class="ident">match_pair</span>.<span class="ident">place</span>,
                                                           <span class="kw-2">&amp;</span><span class="ident">test</span>,
                                                           <span class="ident">c</span>,
                                                           <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">target_candidates</span>))
@@ -1629,7 +1629,7 @@
             <span class="self">self</span>.<span class="ident">schedule_drop_for_binding</span>(<span class="ident">binding</span>.<span class="ident">var_id</span>, <span class="ident">binding</span>.<span class="ident">span</span>);
             <span class="kw">let</span> <span class="ident">rvalue</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">binding</span>.<span class="ident">binding_mode</span> {
                 <span class="ident">BindingMode</span>::<span class="ident">ByValue</span> <span class="op">=&gt;</span>
-                    <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">binding</span>.<span class="ident">source</span>)),
+                    <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="self">self</span>.<span class="ident">consume_by_copy_or_move</span>(<span class="ident">binding</span>.<span class="ident">source</span>)),
                 <span class="ident">BindingMode</span>::<span class="ident">ByRef</span>(<span class="ident">region</span>, <span class="ident">borrow_kind</span>) <span class="op">=&gt;</span>
                     <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(<span class="ident">region</span>, <span class="ident">borrow_kind</span>, <span class="ident">binding</span>.<span class="ident">source</span>),
             };

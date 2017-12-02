@@ -751,6 +751,10 @@
 <span id="706">706</span>
 <span id="707">707</span>
 <span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1209,9 +1213,11 @@ mod __test {
     <span class="kw">let</span> <span class="ident">id_test</span> <span class="op">=</span> <span class="ident">Ident</span>::<span class="ident">from_str</span>(<span class="string">&quot;test&quot;</span>);
     <span class="kw">let</span> <span class="ident">sp</span> <span class="op">=</span> <span class="ident">ignored_span</span>(<span class="ident">cx</span>, <span class="ident">DUMMY_SP</span>);
     <span class="kw">let</span> (<span class="ident">vi</span>, <span class="ident">vis</span>, <span class="ident">ident</span>) <span class="op">=</span> <span class="kw">if</span> <span class="ident">cx</span>.<span class="ident">is_libtest</span> {
-        (<span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Use</span>(
-            <span class="ident">P</span>(<span class="ident">nospan</span>(<span class="ident">ast</span>::<span class="ident">ViewPathSimple</span>(<span class="ident">id_test</span>,
-                                         <span class="ident">path_node</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">id_test</span>]))))),
+        (<span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">UseTree</span> {
+            <span class="ident">span</span>: <span class="ident">DUMMY_SP</span>,
+            <span class="ident">prefix</span>: <span class="ident">path_node</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">id_test</span>]),
+            <span class="ident">kind</span>: <span class="ident">ast</span>::<span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(<span class="ident">id_test</span>),
+        })),
          <span class="ident">ast</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span>, <span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>())
     } <span class="kw">else</span> {
         (<span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(<span class="prelude-val">None</span>), <span class="ident">ast</span>::<span class="ident">Visibility</span>::<span class="ident">Inherited</span>, <span class="ident">id_test</span>)
@@ -1301,9 +1307,11 @@ mod __test {
         <span class="comment">// building `use &lt;ident&gt; = __test::main`</span>
         <span class="kw">let</span> <span class="ident">reexport_ident</span> <span class="op">=</span> <span class="ident">Ident</span>::<span class="ident">with_empty_ctxt</span>(<span class="ident">s</span>);
 
-        <span class="kw">let</span> <span class="ident">use_path</span> <span class="op">=</span>
-            <span class="ident">nospan</span>(<span class="ident">ast</span>::<span class="ident">ViewPathSimple</span>(<span class="ident">reexport_ident</span>,
-                                       <span class="ident">path_node</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">mod_ident</span>, <span class="ident">Ident</span>::<span class="ident">from_str</span>(<span class="string">&quot;main&quot;</span>)])));
+        <span class="kw">let</span> <span class="ident">use_path</span> <span class="op">=</span> <span class="ident">ast</span>::<span class="ident">UseTree</span> {
+            <span class="ident">span</span>: <span class="ident">DUMMY_SP</span>,
+            <span class="ident">prefix</span>: <span class="ident">path_node</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">mod_ident</span>, <span class="ident">Ident</span>::<span class="ident">from_str</span>(<span class="string">&quot;main&quot;</span>)]),
+            <span class="ident">kind</span>: <span class="ident">ast</span>::<span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(<span class="ident">reexport_ident</span>),
+        };
 
         <span class="ident">expander</span>.<span class="ident">fold_item</span>(<span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">Item</span> {
             <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>,

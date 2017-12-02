@@ -998,6 +998,28 @@
 <span id="953">953</span>
 <span id="954">954</span>
 <span id="955">955</span>
+<span id="956">956</span>
+<span id="957">957</span>
+<span id="958">958</span>
+<span id="959">959</span>
+<span id="960">960</span>
+<span id="961">961</span>
+<span id="962">962</span>
+<span id="963">963</span>
+<span id="964">964</span>
+<span id="965">965</span>
+<span id="966">966</span>
+<span id="967">967</span>
+<span id="968">968</span>
+<span id="969">969</span>
+<span id="970">970</span>
+<span id="971">971</span>
+<span id="972">972</span>
+<span id="973">973</span>
+<span id="974">974</span>
+<span id="975">975</span>
+<span id="976">976</span>
+<span id="977">977</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1082,17 +1104,18 @@
         <span class="comment">// (And cycle errors around impls tend to occur during the</span>
         <span class="comment">// collect/coherence phases anyhow.)</span>
         <span class="ident">item_path</span>::<span class="ident">with_forced_impl_filename_line</span>(<span class="op">||</span> {
+            <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">def_span</span>(<span class="ident">span</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span>
                 <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0391</span>,
                                  <span class="string">&quot;unsupported cyclic reference between types/traits detected&quot;</span>);
             <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="string">&quot;cyclic reference&quot;</span>);
 
-            <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="ident">stack</span>[<span class="number">0</span>].<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the cycle begins when {}...&quot;</span>,
-                                               <span class="ident">stack</span>[<span class="number">0</span>].<span class="number">1</span>.<span class="ident">describe</span>(<span class="self">self</span>)));
+            <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">def_span</span>(<span class="ident">stack</span>[<span class="number">0</span>].<span class="number">0</span>),
+                          <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the cycle begins when {}...&quot;</span>, <span class="ident">stack</span>[<span class="number">0</span>].<span class="number">1</span>.<span class="ident">describe</span>(<span class="self">self</span>)));
 
             <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">span</span>, <span class="kw-2">ref</span> <span class="ident">query</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">stack</span>[<span class="number">1</span>..] {
-                <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;...which then requires {}...&quot;</span>,
-                                             <span class="ident">query</span>.<span class="ident">describe</span>(<span class="self">self</span>)));
+                <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">def_span</span>(<span class="ident">span</span>),
+                              <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;...which then requires {}...&quot;</span>, <span class="ident">query</span>.<span class="ident">describe</span>(<span class="self">self</span>)));
             }
 
             <span class="ident">err</span>.<span class="ident">note</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;...which then again requires {}, completing the cycle.&quot;</span>,
@@ -1145,7 +1168,7 @@
                 <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">dep_graph</span>.<span class="ident">is_fully_enabled</span>() {
                     <span class="kw">return</span> <span class="prelude-val">None</span>;
                 }
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">dep_graph</span>.<span class="ident">try_mark_green</span>(<span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">dep_node</span>) {
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">dep_graph</span>.<span class="ident">try_mark_green</span>(<span class="self">self</span>.<span class="ident">global_tcx</span>(), <span class="kw-2">&amp;</span><span class="ident">dep_node</span>) {
                     <span class="prelude-val">Some</span>(<span class="ident">dep_node_index</span>) <span class="op">=&gt;</span> {
                         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">dep_graph</span>.<span class="ident">is_green</span>(<span class="ident">dep_node_index</span>));
                         <span class="self">self</span>.<span class="ident">dep_graph</span>.<span class="ident">read_index</span>(<span class="ident">dep_node_index</span>);
@@ -1392,12 +1415,31 @@
             {
                 <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">is_green</span>(<span class="ident">dep_node_index</span>));
 
-                <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental_queries</span> <span class="op">&amp;&amp;</span>
-                                <span class="self">Self</span>::<span class="ident">cache_on_disk</span>(<span class="ident">key</span>) {
+                <span class="comment">// First we try to load the result from the on-disk cache</span>
+                <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">Self</span>::<span class="ident">cache_on_disk</span>(<span class="ident">key</span>) <span class="op">&amp;&amp;</span>
+                                <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental_queries</span> {
                     <span class="kw">let</span> <span class="ident">prev_dep_node_index</span> <span class="op">=</span>
                         <span class="ident">tcx</span>.<span class="ident">dep_graph</span>.<span class="ident">prev_dep_node_index_of</span>(<span class="ident">dep_node</span>);
-                    <span class="self">Self</span>::<span class="ident">load_from_disk</span>(<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(), <span class="ident">prev_dep_node_index</span>)
+                    <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">try_load_from_disk</span>(<span class="ident">tcx</span>.<span class="ident">global_tcx</span>(),
+                                                          <span class="ident">prev_dep_node_index</span>);
+
+                    <span class="comment">// We always expect to find a cached result for things that</span>
+                    <span class="comment">// can be forced from DepNode.</span>
+                    <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">dep_node</span>.<span class="ident">kind</span>.<span class="ident">can_reconstruct_query_key</span>() <span class="op">||</span>
+                                  <span class="ident">result</span>.<span class="ident">is_some</span>(),
+                                  <span class="string">&quot;Missing on-disk cache entry for {:?}&quot;</span>,
+                                  <span class="ident">dep_node</span>);
+                    <span class="ident">result</span>
                 } <span class="kw">else</span> {
+                    <span class="comment">// Some things are never cached on disk.</span>
+                    <span class="prelude-val">None</span>
+                };
+
+                <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">result</span>) <span class="op">=</span> <span class="ident">result</span> {
+                    <span class="ident">result</span>
+                } <span class="kw">else</span> {
+                    <span class="comment">// We could not load a result from the on-disk cache, so</span>
+                    <span class="comment">// recompute.</span>
                     <span class="kw">let</span> (<span class="ident">result</span>, _ ) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">cycle_check</span>(<span class="ident">span</span>, <span class="ident">Query</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>(<span class="ident">key</span>), <span class="op">||</span> {
                         <span class="comment">// The diagnostics for this query have already been</span>
                         <span class="comment">// promoted to the current session during</span>
@@ -1769,6 +1811,7 @@
         <span class="ident">DepKind</span>::<span class="ident">BorrowCheck</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">borrowck</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">MirBorrowCheck</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_borrowck</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">UnsafetyCheckResult</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">unsafety_check_result</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
+        <span class="ident">DepKind</span>::<span class="ident">UnsafeDeriveOnReprPacked</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">unsafe_derive_on_repr_packed</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">Reachability</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">reachable_set</span>, <span class="ident">LOCAL_CRATE</span>); }
         <span class="ident">DepKind</span>::<span class="ident">MirKeys</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">mir_keys</span>, <span class="ident">LOCAL_CRATE</span>); }
         <span class="ident">DepKind</span>::<span class="ident">CrateVariances</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">crate_variances</span>, <span class="ident">LOCAL_CRATE</span>); }
@@ -1801,6 +1844,7 @@
         <span class="ident">DepKind</span>::<span class="ident">SpecializationGraph</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">specialization_graph_of</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">ObjectSafety</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">is_object_safe</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">TraitImpls</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">trait_impls_of</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
+        <span class="ident">DepKind</span>::<span class="ident">CheckMatch</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">check_match</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
 
         <span class="ident">DepKind</span>::<span class="ident">ParamEnv</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">param_env</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">DescribeDef</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">describe_def</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }

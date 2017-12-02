@@ -322,6 +322,27 @@
 <span id="277">277</span>
 <span id="278">278</span>
 <span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -342,6 +363,7 @@
 <span class="kw">use</span> <span class="ident">bitslice</span>::{<span class="ident">BitSlice</span>, <span class="ident">Word</span>};
 <span class="kw">use</span> <span class="ident">bitslice</span>::{<span class="ident">bitwise</span>, <span class="ident">Union</span>, <span class="ident">Subtract</span>, <span class="ident">Intersect</span>};
 <span class="kw">use</span> <span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
+<span class="kw">use</span> <span class="ident">rustc_serialize</span>;
 
 <span class="doccomment">/// Represents a set (or packed family of sets), of some element type</span>
 <span class="doccomment">/// E, where each E is identified by some unique index type `T`.</span>
@@ -359,6 +381,26 @@
         <span class="ident">IdxSetBuf</span> { <span class="ident">_pd</span>: <span class="ident">PhantomData</span>, <span class="ident">bits</span>: <span class="self">self</span>.<span class="ident">bits</span>.<span class="ident">clone</span>() }
     }
 }
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Idx</span><span class="op">&gt;</span> <span class="ident">rustc_serialize</span>::<span class="ident">Encodable</span> <span class="kw">for</span> <span class="ident">IdxSetBuf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">encode</span><span class="op">&lt;</span><span class="ident">E</span>: <span class="ident">rustc_serialize</span>::<span class="ident">Encoder</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                     <span class="ident">encoder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">E</span>)
+                                     <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">E</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">bits</span>.<span class="ident">encode</span>(<span class="ident">encoder</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Idx</span><span class="op">&gt;</span> <span class="ident">rustc_serialize</span>::<span class="ident">Decodable</span> <span class="kw">for</span> <span class="ident">IdxSetBuf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">decode</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="ident">rustc_serialize</span>::<span class="ident">Decoder</span><span class="op">&gt;</span>(<span class="ident">d</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">D</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">IdxSetBuf</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">D</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">words</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Word</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">rustc_serialize</span>::<span class="ident">Decodable</span>::<span class="ident">decode</span>(<span class="ident">d</span>)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(<span class="ident">IdxSetBuf</span> {
+            <span class="ident">_pd</span>: <span class="ident">PhantomData</span>,
+            <span class="ident">bits</span>: <span class="ident">words</span>,
+        })
+    }
+}
+
 
 <span class="comment">// pnkfelix wants to have this be `IdxSet&lt;T&gt;([Word]) and then pass</span>
 <span class="comment">// around `&amp;mut IdxSet&lt;T&gt;` or `&amp;IdxSet&lt;T&gt;`.</span>

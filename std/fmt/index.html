@@ -260,7 +260,9 @@ are currently implemented are:</p>
 <span class="macro">writeln</span><span class="macro">!</span>     <span class="comment">// same as write but appends a newline</span>
 <span class="macro">print</span><span class="macro">!</span>       <span class="comment">// the format string is printed to the standard output</span>
 <span class="macro">println</span><span class="macro">!</span>     <span class="comment">// same as print but appends a newline</span>
-<span class="macro">format_args</span><span class="macro">!</span> <span class="comment">// described below.</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aformat!%20%20%20%20%20%20%2F%2F%20described%20above%0Awrite!%20%20%20%20%20%20%20%2F%2F%20first%20argument%20is%20a%20%26mut%20io%3A%3AWrite%2C%20the%20destination%0Awriteln!%20%20%20%20%20%2F%2F%20same%20as%20write%20but%20appends%20a%20newline%0Aprint!%20%20%20%20%20%20%20%2F%2F%20the%20format%20string%20is%20printed%20to%20the%20standard%20output%0Aprintln!%20%20%20%20%20%2F%2F%20same%20as%20print%20but%20appends%20a%20newline%0Aformat_args!%20%2F%2F%20described%20below.%0A%7D">Run</a></pre>
+<span class="macro">eprint</span><span class="macro">!</span>      <span class="comment">// the format string is printed to the standard error</span>
+<span class="macro">eprintln</span><span class="macro">!</span>    <span class="comment">// same as eprint but appends a newline</span>
+<span class="macro">format_args</span><span class="macro">!</span> <span class="comment">// described below.</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aformat!%20%20%20%20%20%20%2F%2F%20described%20above%0Awrite!%20%20%20%20%20%20%20%2F%2F%20first%20argument%20is%20a%20%26mut%20io%3A%3AWrite%2C%20the%20destination%0Awriteln!%20%20%20%20%20%2F%2F%20same%20as%20write%20but%20appends%20a%20newline%0Aprint!%20%20%20%20%20%20%20%2F%2F%20the%20format%20string%20is%20printed%20to%20the%20standard%20output%0Aprintln!%20%20%20%20%20%2F%2F%20same%20as%20print%20but%20appends%20a%20newline%0Aeprint!%20%20%20%20%20%20%2F%2F%20the%20format%20string%20is%20printed%20to%20the%20standard%20error%0Aeprintln!%20%20%20%20%2F%2F%20same%20as%20eprint%20but%20appends%20a%20newline%0Aformat_args!%20%2F%2F%20described%20below.%0A%7D">Run</a></pre>
 
 <h3 id='write' class='section-header'><a href='#write'><code>write!</code></a></h3>
 <p>This and <a href="../../std/macro.writeln.html"><code>writeln!</code></a> are two macros which are used to emit the format string
@@ -282,6 +284,11 @@ printing output. Example usage is:</p>
 <pre class="rust rust-example-rendered">
 <span class="macro">print</span><span class="macro">!</span>(<span class="string">&quot;Hello {}!&quot;</span>, <span class="string">&quot;world&quot;</span>);
 <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;I have a newline {}&quot;</span>, <span class="string">&quot;character at the end&quot;</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aprint!(%22Hello%20%7B%7D!%22%2C%20%22world%22)%3B%0Aprintln!(%22I%20have%20a%20newline%20%7B%7D%22%2C%20%22character%20at%20the%20end%22)%3B%0A%7D">Run</a></pre>
+
+<h3 id='eprint' class='section-header'><a href='#eprint'><code>eprint!</code></a></h3>
+<p>The <a href="../../std/macro.eprint.html"><code>eprint!</code></a> and <a href="../../std/macro.eprintln.html"><code>eprintln!</code></a> macros are identical to
+<a href="../../std/macro.print.html"><code>print!</code></a> and <a href="../../std/macro.println.html"><code>println!</code></a>, respectively, except they emit their
+output to stderr.</p>
 
 <h3 id='format_args' class='section-header'><a href='#format_args'><code>format_args!</code></a></h3>
 <p>This is a curious macro which is used to safely pass around

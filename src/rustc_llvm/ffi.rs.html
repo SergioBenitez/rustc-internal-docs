@@ -1774,9 +1774,6 @@
 <span id="1729">1729</span>
 <span id="1730">1730</span>
 <span id="1731">1731</span>
-<span id="1732">1732</span>
-<span id="1733">1733</span>
-<span id="1734">1734</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2285,17 +2282,13 @@
 
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ModuleBuffer</span> {}
 
-<span class="comment">// Link to our native llvm bindings (things that we need to use the C++ api</span>
-<span class="comment">// for) and because llvm is written in C++ we need to link against libstdc++</span>
-<span class="comment">//</span>
-<span class="comment">// You&#39;ll probably notice that there is an omission of all LLVM libraries</span>
-<span class="comment">// from this location. This is because the set of LLVM libraries that we</span>
-<span class="comment">// link to is mostly defined by LLVM, and the `llvm-config` tool is used to</span>
-<span class="comment">// figure out the exact set of libraries. To do this, the build system</span>
-<span class="comment">// generates an llvmdeps.rs file next to this one which will be</span>
-<span class="comment">// automatically updated whenever LLVM is updated to include an up-to-date</span>
-<span class="comment">// set of the libraries we need to link to LLVM for.</span>
-<span class="attribute">#[<span class="ident">link</span>(<span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;rustllvm&quot;</span>, <span class="ident">kind</span> <span class="op">=</span> <span class="string">&quot;static&quot;</span>)]</span> <span class="comment">// not quite true but good enough</span>
+<span class="comment">// This annotation is primarily needed for MSVC where attributes like</span>
+<span class="comment">// dllimport/dllexport are applied and need to be correct for everything to</span>
+<span class="comment">// link successfully. The #[link] annotation here says &quot;these symbols are</span>
+<span class="comment">// included statically&quot; which means that they&#39;re all exported with dllexport</span>
+<span class="comment">// and from the rustc_llvm dynamic library. Otherwise the rustc_trans dynamic</span>
+<span class="comment">// library would not be able to access these symbols.</span>
+<span class="attribute">#[<span class="ident">link</span>(<span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;rustllvm&quot;</span>, <span class="ident">kind</span> <span class="op">=</span> <span class="string">&quot;static&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> {
     <span class="comment">// Create and destroy contexts.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMContextCreate</span>() <span class="op">-&gt;</span> <span class="ident">ContextRef</span>;
@@ -2367,6 +2360,7 @@
 
     <span class="comment">// Operations on other types</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMVoidTypeInContext</span>(<span class="ident">C</span>: <span class="ident">ContextRef</span>) <span class="op">-&gt;</span> <span class="ident">TypeRef</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMX86MMXTypeInContext</span>(<span class="ident">C</span>: <span class="ident">ContextRef</span>) <span class="op">-&gt;</span> <span class="ident">TypeRef</span>;
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">LLVMRustMetadataTypeInContext</span>(<span class="ident">C</span>: <span class="ident">ContextRef</span>) <span class="op">-&gt;</span> <span class="ident">TypeRef</span>;
 
     <span class="comment">// Operations on all values</span>

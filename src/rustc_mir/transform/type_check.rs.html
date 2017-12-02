@@ -1258,6 +1258,23 @@
 <span id="1213">1213</span>
 <span id="1214">1214</span>
 <span id="1215">1215</span>
+<span id="1216">1216</span>
+<span id="1217">1217</span>
+<span id="1218">1218</span>
+<span id="1219">1219</span>
+<span id="1220">1220</span>
+<span id="1221">1221</span>
+<span id="1222">1222</span>
+<span id="1223">1223</span>
+<span id="1224">1224</span>
+<span id="1225">1225</span>
+<span id="1226">1226</span>
+<span id="1227">1227</span>
+<span id="1228">1228</span>
+<span id="1229">1229</span>
+<span id="1230">1230</span>
+<span id="1231">1231</span>
+<span id="1232">1232</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1280,8 +1297,8 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeVariants</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstVal</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">tcx</span>::<span class="ident">LvalueTy</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::<span class="ident">Visitor</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">tcx</span>::<span class="ident">PlaceTy</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">PlaceContext</span>, <span class="ident">Visitor</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
@@ -1365,13 +1382,13 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">visit_lvalue</span>(
+    <span class="kw">fn</span> <span class="ident">visit_place</span>(
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-        <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="ident">_context</span>: <span class="ident">visit</span>::<span class="ident">LvalueContext</span>,
+        <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">context</span>: <span class="ident">PlaceContext</span>,
         <span class="ident">location</span>: <span class="ident">Location</span>,
     ) {
-        <span class="self">self</span>.<span class="ident">sanitize_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">location</span>);
+        <span class="self">self</span>.<span class="ident">sanitize_place</span>(<span class="ident">place</span>, <span class="ident">location</span>, <span class="ident">context</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">visit_constant</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">constant</span>: <span class="kw-2">&amp;</span><span class="ident">Constant</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">location</span>: <span class="ident">Location</span>) {
@@ -1425,14 +1442,18 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">sanitize_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">location</span>: <span class="ident">Location</span>) <span class="op">-&gt;</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;sanitize_lvalue: {:?}&quot;</span>, <span class="ident">lvalue</span>);
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=&gt;</span> <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+    <span class="kw">fn</span> <span class="ident">sanitize_place</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                       <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                       <span class="ident">location</span>: <span class="ident">Location</span>,
+                       <span class="ident">context</span>: <span class="ident">PlaceContext</span>)
+                       <span class="op">-&gt;</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;sanitize_place: {:?}&quot;</span>, <span class="ident">place</span>);
+        <span class="kw">let</span> <span class="ident">place_ty</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=&gt;</span> <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                 <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">index</span>].<span class="ident">ty</span>,
             },
-            <span class="ident">Lvalue</span>::<span class="ident">Static</span>(<span class="kw">box</span> <span class="ident">Static</span> { <span class="ident">def_id</span>, <span class="ident">ty</span>: <span class="ident">sty</span> }) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">sty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sanitize_type</span>(<span class="ident">lvalue</span>, <span class="ident">sty</span>);
+            <span class="ident">Place</span>::<span class="ident">Static</span>(<span class="kw">box</span> <span class="ident">Static</span> { <span class="ident">def_id</span>, <span class="ident">ty</span>: <span class="ident">sty</span> }) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">sty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sanitize_type</span>(<span class="ident">place</span>, <span class="ident">sty</span>);
                 <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">type_of</span>(<span class="ident">def_id</span>);
                 <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cx</span>.<span class="ident">normalize</span>(<span class="kw-2">&amp;</span><span class="ident">ty</span>, <span class="ident">location</span>);
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">terr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">cx</span>
@@ -1440,73 +1461,86 @@
                 {
                     <span class="macro">span_mirbug</span><span class="macro">!</span>(
                         <span class="self">self</span>,
-                        <span class="ident">lvalue</span>,
+                        <span class="ident">place</span>,
                         <span class="string">&quot;bad static type ({:?}: {:?}): {:?}&quot;</span>,
                         <span class="ident">ty</span>,
                         <span class="ident">sty</span>,
                         <span class="ident">terr</span>
                     );
                 }
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">sty</span> }
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">sty</span> }
             }
-            <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">base_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sanitize_lvalue</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>, <span class="ident">location</span>);
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=</span> <span class="ident">base_ty</span> {
+            <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">base_context</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">context</span>.<span class="ident">is_mutating_use</span>() {
+                    <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Mut</span>)
+                } <span class="kw">else</span> {
+                    <span class="ident">PlaceContext</span>::<span class="ident">Projection</span>(<span class="ident">Mutability</span>::<span class="ident">Not</span>)
+                };
+                <span class="kw">let</span> <span class="ident">base_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sanitize_place</span>(<span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>, <span class="ident">location</span>, <span class="ident">base_context</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=</span> <span class="ident">base_ty</span> {
                     <span class="kw">if</span> <span class="ident">ty</span>.<span class="ident">references_error</span>() {
                         <span class="macro">assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">errors_reported</span>);
-                        <span class="kw">return</span> <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                        <span class="kw">return</span> <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                             <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">types</span>.<span class="ident">err</span>,
                         };
                     }
                 }
-                <span class="self">self</span>.<span class="ident">sanitize_projection</span>(<span class="ident">base_ty</span>, <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">elem</span>, <span class="ident">lvalue</span>, <span class="ident">location</span>)
+                <span class="self">self</span>.<span class="ident">sanitize_projection</span>(<span class="ident">base_ty</span>, <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">elem</span>, <span class="ident">place</span>, <span class="ident">location</span>)
+            }
+        };
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">PlaceContext</span>::<span class="ident">Copy</span> <span class="op">=</span> <span class="ident">context</span> {
+            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">place_ty</span>.<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>());
+            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cx</span>.<span class="ident">infcx</span>.<span class="ident">type_moves_by_default</span>(<span class="self">self</span>.<span class="ident">cx</span>.<span class="ident">param_env</span>, <span class="ident">ty</span>, <span class="ident">DUMMY_SP</span>) {
+                <span class="macro">span_mirbug</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">place</span>,
+                             <span class="string">&quot;attempted copy of non-Copy type ({:?})&quot;</span>, <span class="ident">ty</span>);
             }
         }
+        <span class="ident">place_ty</span>
     }
 
     <span class="kw">fn</span> <span class="ident">sanitize_projection</span>(
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-        <span class="ident">base</span>: <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="ident">pi</span>: <span class="kw-2">&amp;</span><span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">base</span>: <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">pi</span>: <span class="kw-2">&amp;</span><span class="ident">PlaceElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">location</span>: <span class="ident">Location</span>,
-    ) <span class="op">-&gt;</span> <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;sanitize_projection: {:?} {:?} {:?}&quot;</span>, <span class="ident">base</span>, <span class="ident">pi</span>, <span class="ident">lvalue</span>);
+    ) <span class="op">-&gt;</span> <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;sanitize_projection: {:?} {:?} {:?}&quot;</span>, <span class="ident">base</span>, <span class="ident">pi</span>, <span class="ident">place</span>);
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
         <span class="kw">let</span> <span class="ident">base_ty</span> <span class="op">=</span> <span class="ident">base</span>.<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">last_span</span>;
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">pi</span> {
             <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">deref_ty</span> <span class="op">=</span> <span class="ident">base_ty</span>.<span class="ident">builtin_deref</span>(<span class="bool-val">true</span>, <span class="ident">ty</span>::<span class="ident">LvaluePreference</span>::<span class="ident">NoPreference</span>);
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                     <span class="ident">ty</span>: <span class="ident">deref_ty</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">ty</span>).<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
-                        <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">lvalue</span>, <span class="string">&quot;deref of non-pointer {:?}&quot;</span>, <span class="ident">base_ty</span>)
+                        <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">place</span>, <span class="string">&quot;deref of non-pointer {:?}&quot;</span>, <span class="ident">base_ty</span>)
                     }),
                 }
             }
             <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">index_ty</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">i</span>).<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+                <span class="kw">let</span> <span class="ident">index_ty</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">i</span>).<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
                 <span class="kw">if</span> <span class="ident">index_ty</span> <span class="op">!=</span> <span class="ident">tcx</span>.<span class="ident">types</span>.<span class="ident">usize</span> {
-                    <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                    <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                         <span class="ident">ty</span>: <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">i</span>, <span class="string">&quot;index by non-usize {:?}&quot;</span>, <span class="ident">i</span>),
                     }
                 } <span class="kw">else</span> {
-                    <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                    <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                         <span class="ident">ty</span>: <span class="ident">base_ty</span>.<span class="ident">builtin_index</span>().<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
-                            <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">lvalue</span>, <span class="string">&quot;index of non-array {:?}&quot;</span>, <span class="ident">base_ty</span>)
+                            <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">place</span>, <span class="string">&quot;index of non-array {:?}&quot;</span>, <span class="ident">base_ty</span>)
                         }),
                     }
                 }
             }
             <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { .. } <span class="op">=&gt;</span> {
                 <span class="comment">// consider verifying in-bounds</span>
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                     <span class="ident">ty</span>: <span class="ident">base_ty</span>.<span class="ident">builtin_index</span>().<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
-                        <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">lvalue</span>, <span class="string">&quot;index of non-array {:?}&quot;</span>, <span class="ident">base_ty</span>)
+                        <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">place</span>, <span class="string">&quot;index of non-array {:?}&quot;</span>, <span class="ident">base_ty</span>)
                     }),
                 }
             }
-            <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { <span class="ident">from</span>, <span class="ident">to</span> } <span class="op">=&gt;</span> <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+            <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { <span class="ident">from</span>, <span class="ident">to</span> } <span class="op">=&gt;</span> <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                 <span class="ident">ty</span>: <span class="kw">match</span> <span class="ident">base_ty</span>.<span class="ident">sty</span> {
                     <span class="ident">ty</span>::<span class="ident">TyArray</span>(<span class="ident">inner</span>, <span class="ident">size</span>) <span class="op">=&gt;</span> {
                         <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">size</span>.<span class="ident">val</span>.<span class="ident">to_const_int</span>().<span class="ident">unwrap</span>().<span class="ident">to_u64</span>().<span class="ident">unwrap</span>();
@@ -1516,40 +1550,40 @@
                         } <span class="kw">else</span> {
                             <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(
                                 <span class="self">self</span>,
-                                <span class="ident">lvalue</span>,
+                                <span class="ident">place</span>,
                                 <span class="string">&quot;taking too-small slice of {:?}&quot;</span>,
                                 <span class="ident">base_ty</span>
                             )
                         }
                     }
                     <span class="ident">ty</span>::<span class="ident">TySlice</span>(..) <span class="op">=&gt;</span> <span class="ident">base_ty</span>,
-                    _ <span class="op">=&gt;</span> <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">lvalue</span>, <span class="string">&quot;slice of non-array {:?}&quot;</span>, <span class="ident">base_ty</span>),
+                    _ <span class="op">=&gt;</span> <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">place</span>, <span class="string">&quot;slice of non-array {:?}&quot;</span>, <span class="ident">base_ty</span>),
                 },
             },
             <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(<span class="ident">adt_def1</span>, <span class="ident">index</span>) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">base_ty</span>.<span class="ident">sty</span> {
                 <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">adt_def</span>, <span class="ident">substs</span>) <span class="kw">if</span> <span class="ident">adt_def</span>.<span class="ident">is_enum</span>() <span class="op">&amp;&amp;</span> <span class="ident">adt_def</span> <span class="op">==</span> <span class="ident">adt_def1</span> <span class="op">=&gt;</span> {
                     <span class="kw">if</span> <span class="ident">index</span> <span class="op">&gt;=</span> <span class="ident">adt_def</span>.<span class="ident">variants</span>.<span class="ident">len</span>() {
-                        <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                        <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                             <span class="ident">ty</span>: <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(
                                 <span class="self">self</span>,
-                                <span class="ident">lvalue</span>,
+                                <span class="ident">place</span>,
                                 <span class="string">&quot;cast to variant #{:?} but enum only has {:?}&quot;</span>,
                                 <span class="ident">index</span>,
                                 <span class="ident">adt_def</span>.<span class="ident">variants</span>.<span class="ident">len</span>()
                             ),
                         }
                     } <span class="kw">else</span> {
-                        <span class="ident">LvalueTy</span>::<span class="ident">Downcast</span> {
+                        <span class="ident">PlaceTy</span>::<span class="ident">Downcast</span> {
                             <span class="ident">adt_def</span>,
                             <span class="ident">substs</span>,
                             <span class="ident">variant_index</span>: <span class="ident">index</span>,
                         }
                     }
                 }
-                _ <span class="op">=&gt;</span> <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> {
+                _ <span class="op">=&gt;</span> <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> {
                     <span class="ident">ty</span>: <span class="macro">span_mirbug_and_err</span><span class="macro">!</span>(
                         <span class="self">self</span>,
-                        <span class="ident">lvalue</span>,
+                        <span class="ident">place</span>,
                         <span class="string">&quot;can&#39;t downcast {:?} as {:?}&quot;</span>,
                         <span class="ident">base_ty</span>,
                         <span class="ident">adt_def1</span>
@@ -1557,13 +1591,13 @@
                 },
             },
             <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(<span class="ident">field</span>, <span class="ident">fty</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">fty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sanitize_type</span>(<span class="ident">lvalue</span>, <span class="ident">fty</span>);
-                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">field_ty</span>(<span class="ident">lvalue</span>, <span class="ident">base</span>, <span class="ident">field</span>, <span class="ident">location</span>) {
+                <span class="kw">let</span> <span class="ident">fty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sanitize_type</span>(<span class="ident">place</span>, <span class="ident">fty</span>);
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">field_ty</span>(<span class="ident">place</span>, <span class="ident">base</span>, <span class="ident">field</span>, <span class="ident">location</span>) {
                     <span class="prelude-val">Ok</span>(<span class="ident">ty</span>) <span class="op">=&gt;</span> {
                         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">terr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">cx</span>.<span class="ident">eq_types</span>(<span class="ident">span</span>, <span class="ident">ty</span>, <span class="ident">fty</span>, <span class="ident">location</span>.<span class="ident">at_self</span>()) {
                             <span class="macro">span_mirbug</span><span class="macro">!</span>(
                                 <span class="self">self</span>,
-                                <span class="ident">lvalue</span>,
+                                <span class="ident">place</span>,
                                 <span class="string">&quot;bad field access ({:?}: {:?}): {:?}&quot;</span>,
                                 <span class="ident">ty</span>,
                                 <span class="ident">fty</span>,
@@ -1573,13 +1607,13 @@
                     }
                     <span class="prelude-val">Err</span>(<span class="ident">FieldAccessError</span>::<span class="ident">OutOfRange</span> { <span class="ident">field_count</span> }) <span class="op">=&gt;</span> <span class="macro">span_mirbug</span><span class="macro">!</span>(
                         <span class="self">self</span>,
-                        <span class="ident">lvalue</span>,
+                        <span class="ident">place</span>,
                         <span class="string">&quot;accessed field #{} but variant only has {}&quot;</span>,
                         <span class="ident">field</span>.<span class="ident">index</span>(),
                         <span class="ident">field_count</span>
                     ),
                 }
-                <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">fty</span> }
+                <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span>: <span class="ident">fty</span> }
             }
         }
     }
@@ -1592,19 +1626,19 @@
     <span class="kw">fn</span> <span class="ident">field_ty</span>(
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">parent</span>: <span class="kw-2">&amp;</span><span class="ident">fmt</span>::<span class="ident">Debug</span>,
-        <span class="ident">base_ty</span>: <span class="ident">LvalueTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+        <span class="ident">base_ty</span>: <span class="ident">PlaceTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">field</span>: <span class="ident">Field</span>,
         <span class="ident">location</span>: <span class="ident">Location</span>,
     ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">FieldAccessError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
 
         <span class="kw">let</span> (<span class="ident">variant</span>, <span class="ident">substs</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">base_ty</span> {
-            <span class="ident">LvalueTy</span>::<span class="ident">Downcast</span> {
+            <span class="ident">PlaceTy</span>::<span class="ident">Downcast</span> {
                 <span class="ident">adt_def</span>,
                 <span class="ident">substs</span>,
                 <span class="ident">variant_index</span>,
             } <span class="op">=&gt;</span> (<span class="kw-2">&amp;</span><span class="ident">adt_def</span>.<span class="ident">variants</span>[<span class="ident">variant_index</span>], <span class="ident">substs</span>),
-            <span class="ident">LvalueTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
+            <span class="ident">PlaceTy</span>::<span class="ident">Ty</span> { <span class="ident">ty</span> } <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
                 <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">adt_def</span>, <span class="ident">substs</span>) <span class="kw">if</span> <span class="op">!</span><span class="ident">adt_def</span>.<span class="ident">is_enum</span>() <span class="op">=&gt;</span> {
                     (<span class="kw-2">&amp;</span><span class="ident">adt_def</span>.<span class="ident">variants</span>[<span class="number">0</span>], <span class="ident">substs</span>)
                 }
@@ -1795,17 +1829,17 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;check_stmt: {:?}&quot;</span>, <span class="ident">stmt</span>);
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
         <span class="kw">match</span> <span class="ident">stmt</span>.<span class="ident">kind</span> {
-            <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">lv</span>, <span class="kw-2">ref</span> <span class="ident">rv</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">lv_ty</span> <span class="op">=</span> <span class="ident">lv</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+            <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">place</span>, <span class="kw-2">ref</span> <span class="ident">rv</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">place_ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
                 <span class="kw">let</span> <span class="ident">rv_ty</span> <span class="op">=</span> <span class="ident">rv</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>);
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">terr</span>) <span class="op">=</span>
-                    <span class="self">self</span>.<span class="ident">sub_types</span>(<span class="ident">rv_ty</span>, <span class="ident">lv_ty</span>, <span class="ident">location</span>.<span class="ident">at_successor_within_block</span>())
+                    <span class="self">self</span>.<span class="ident">sub_types</span>(<span class="ident">rv_ty</span>, <span class="ident">place_ty</span>, <span class="ident">location</span>.<span class="ident">at_successor_within_block</span>())
                 {
                     <span class="macro">span_mirbug</span><span class="macro">!</span>(
                         <span class="self">self</span>,
                         <span class="ident">stmt</span>,
                         <span class="string">&quot;bad assignment ({:?} = {:?}): {:?}&quot;</span>,
-                        <span class="ident">lv_ty</span>,
+                        <span class="ident">place_ty</span>,
                         <span class="ident">rv_ty</span>,
                         <span class="ident">terr</span>
                     );
@@ -1813,17 +1847,17 @@
                 <span class="self">self</span>.<span class="ident">check_rvalue</span>(<span class="ident">mir</span>, <span class="ident">rv</span>, <span class="ident">location</span>);
             }
             <span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span> {
-                <span class="kw-2">ref</span> <span class="ident">lvalue</span>,
+                <span class="kw-2">ref</span> <span class="ident">place</span>,
                 <span class="ident">variant_index</span>,
             } <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">lvalue_type</span> <span class="op">=</span> <span class="ident">lvalue</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
-                <span class="kw">let</span> <span class="ident">adt</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">lvalue_type</span>.<span class="ident">sty</span> {
+                <span class="kw">let</span> <span class="ident">place_type</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+                <span class="kw">let</span> <span class="ident">adt</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">place_type</span>.<span class="ident">sty</span> {
                     <span class="ident">TypeVariants</span>::<span class="ident">TyAdt</span>(<span class="ident">adt</span>, _) <span class="kw">if</span> <span class="ident">adt</span>.<span class="ident">is_enum</span>() <span class="op">=&gt;</span> <span class="ident">adt</span>,
                     _ <span class="op">=&gt;</span> {
                         <span class="macro">span_bug</span><span class="macro">!</span>(
                             <span class="ident">stmt</span>.<span class="ident">source_info</span>.<span class="ident">span</span>,
                             <span class="string">&quot;bad set discriminant ({:?} = {:?}): lhs is not an enum&quot;</span>,
-                            <span class="ident">lvalue</span>,
+                            <span class="ident">place</span>,
                             <span class="ident">variant_index</span>
                         );
                     }
@@ -1832,7 +1866,7 @@
                     <span class="macro">span_bug</span><span class="macro">!</span>(
                         <span class="ident">stmt</span>.<span class="ident">source_info</span>.<span class="ident">span</span>,
                         <span class="string">&quot;bad set discriminant ({:?} = {:?}): value of of range&quot;</span>,
-                        <span class="ident">lvalue</span>,
+                        <span class="ident">place</span>,
                         <span class="ident">variant_index</span>
                     );
                 };
@@ -1871,19 +1905,19 @@
                 <span class="ident">target</span>,
                 <span class="ident">unwind</span>,
             } <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">lv_ty</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+                <span class="kw">let</span> <span class="ident">place_ty</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
                 <span class="kw">let</span> <span class="ident">rv_ty</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">ty</span>(<span class="ident">mir</span>, <span class="ident">tcx</span>);
 
                 <span class="kw">let</span> <span class="ident">locations</span> <span class="op">=</span> <span class="ident">Locations</span> {
                     <span class="ident">from_location</span>: <span class="ident">term_location</span>,
                     <span class="ident">at_location</span>: <span class="ident">target</span>.<span class="ident">start_location</span>(),
                 };
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">terr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">sub_types</span>(<span class="ident">rv_ty</span>, <span class="ident">lv_ty</span>, <span class="ident">locations</span>) {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">terr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">sub_types</span>(<span class="ident">rv_ty</span>, <span class="ident">place_ty</span>, <span class="ident">locations</span>) {
                     <span class="macro">span_mirbug</span><span class="macro">!</span>(
                         <span class="self">self</span>,
                         <span class="ident">term</span>,
                         <span class="string">&quot;bad DropAndReplace ({:?} = {:?}): {:?}&quot;</span>,
-                        <span class="ident">lv_ty</span>,
+                        <span class="ident">place_ty</span>,
                         <span class="ident">rv_ty</span>,
                         <span class="ident">terr</span>
                     );
@@ -1897,12 +1931,12 @@
                         <span class="ident">from_location</span>: <span class="ident">term_location</span>,
                         <span class="ident">at_location</span>: <span class="ident">unwind</span>.<span class="ident">start_location</span>(),
                     };
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">terr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">sub_types</span>(<span class="ident">rv_ty</span>, <span class="ident">lv_ty</span>, <span class="ident">locations</span>) {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">terr</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">sub_types</span>(<span class="ident">rv_ty</span>, <span class="ident">place_ty</span>, <span class="ident">locations</span>) {
                         <span class="macro">span_mirbug</span><span class="macro">!</span>(
                             <span class="self">self</span>,
                             <span class="ident">term</span>,
                             <span class="string">&quot;bad DropAndReplace ({:?} = {:?}): {:?}&quot;</span>,
-                            <span class="ident">lv_ty</span>,
+                            <span class="ident">place_ty</span>,
                             <span class="ident">rv_ty</span>,
                             <span class="ident">terr</span>
                         );
@@ -2015,7 +2049,7 @@
         <span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">term</span>: <span class="kw-2">&amp;</span><span class="ident">Terminator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
         <span class="ident">sig</span>: <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">FnSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="ident">destination</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">BasicBlock</span>)<span class="op">&gt;</span>,
+        <span class="ident">destination</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">BasicBlock</span>)<span class="op">&gt;</span>,
         <span class="ident">term_location</span>: <span class="ident">Location</span>,
     ) {
         <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>();
@@ -2453,8 +2487,8 @@
     <span class="doccomment">/// its successor within the block is the at-location. This means</span>
     <span class="doccomment">/// that any required region relationships must hold only upon</span>
     <span class="doccomment">/// **exiting** the statement/terminator indicated by `self`. This</span>
-    <span class="doccomment">/// is for example used when you have a `lv = rv` statement: it</span>
-    <span class="doccomment">/// indicates that the `typeof(rv) &lt;: typeof(lv)` as of the</span>
+    <span class="doccomment">/// is for example used when you have a `place = rv` statement: it</span>
+    <span class="doccomment">/// indicates that the `typeof(rv) &lt;: typeof(place)` as of the</span>
     <span class="doccomment">/// **next** statement.</span>
     <span class="kw">fn</span> <span class="ident">at_successor_within_block</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Locations</span>;
 }

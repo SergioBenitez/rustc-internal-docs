@@ -307,6 +307,20 @@
 <span id="262">262</span>
 <span id="263">263</span>
 <span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -466,6 +480,12 @@
 }
 
 <span class="macro">declare_lint</span><span class="macro">!</span> {
+    <span class="kw">pub</span> <span class="ident">SAFE_PACKED_BORROWS</span>,
+    <span class="ident">Warn</span>,
+    <span class="string">&quot;safe borrows of fields of packed structs were was erroneously allowed&quot;</span>
+}
+
+<span class="macro">declare_lint</span><span class="macro">!</span> {
     <span class="kw">pub</span> <span class="ident">PATTERNS_IN_FNS_WITHOUT_BODY</span>,
     <span class="ident">Warn</span>,
     <span class="string">&quot;patterns in functions without body were erroneously allowed&quot;</span>
@@ -526,6 +546,12 @@
     <span class="string">&quot;detect mut variables which don&#39;t need to be mutable&quot;</span>
 }
 
+<span class="macro">declare_lint</span><span class="macro">!</span> {
+    <span class="kw">pub</span> <span class="ident">COERCE_NEVER</span>,
+    <span class="ident">Deny</span>,
+    <span class="string">&quot;detect coercion to !&quot;</span>
+}
+
 <span class="doccomment">/// Does nothing as a lint pass, but registers some `Lint`s</span>
 <span class="doccomment">/// which are used by other parts of the compiler.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
@@ -557,6 +583,7 @@
             <span class="ident">RENAMED_AND_REMOVED_LINTS</span>,
             <span class="ident">RESOLVE_TRAIT_ON_DEFAULTED_UNIT</span>,
             <span class="ident">SAFE_EXTERN_STATICS</span>,
+            <span class="ident">SAFE_PACKED_BORROWS</span>,
             <span class="ident">PATTERNS_IN_FNS_WITHOUT_BODY</span>,
             <span class="ident">LEGACY_DIRECTORY_OWNERSHIP</span>,
             <span class="ident">LEGACY_IMPORTS</span>,
@@ -566,7 +593,8 @@
             <span class="ident">LATE_BOUND_LIFETIME_ARGUMENTS</span>,
             <span class="ident">DEPRECATED</span>,
             <span class="ident">UNUSED_UNSAFE</span>,
-            <span class="ident">UNUSED_MUT</span>
+            <span class="ident">UNUSED_MUT</span>,
+            <span class="ident">COERCE_NEVER</span>
         )
     }
 }

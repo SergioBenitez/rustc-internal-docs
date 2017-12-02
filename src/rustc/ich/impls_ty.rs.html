@@ -1021,6 +1021,7 @@
 <span id="976">976</span>
 <span id="977">977</span>
 <span id="978">978</span>
+<span id="979">979</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1395,7 +1396,8 @@
             <span class="ident">MiscBinaryOp</span> <span class="op">|</span>
             <span class="ident">MiscCatchAll</span> <span class="op">|</span>
             <span class="ident">IndexOpFeatureGated</span> <span class="op">|</span>
-            <span class="ident">TypeckError</span> <span class="op">=&gt;</span> {
+            <span class="ident">TypeckError</span> <span class="op">|</span>
+            <span class="ident">CheckMatchError</span> <span class="op">=&gt;</span> {
                 <span class="comment">// nothing to do</span>
             }
             <span class="ident">UnimplementedConstVal</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> {

@@ -1296,6 +1296,20 @@
 <span id="1251">1251</span>
 <span id="1252">1252</span>
 <span id="1253">1253</span>
+<span id="1254">1254</span>
+<span id="1255">1255</span>
+<span id="1256">1256</span>
+<span id="1257">1257</span>
+<span id="1258">1258</span>
+<span id="1259">1259</span>
+<span id="1260">1260</span>
+<span id="1261">1261</span>
+<span id="1262">1262</span>
+<span id="1263">1263</span>
+<span id="1264">1264</span>
+<span id="1265">1265</span>
+<span id="1266">1266</span>
+<span id="1267">1267</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1334,8 +1348,10 @@
 <span class="kw">use</span> <span class="ident">iter</span>::<span class="ident">FromIterator</span>;
 <span class="kw">use</span> <span class="ident">mem</span>;
 <span class="kw">use</span> <span class="ident">ops</span>;
+<span class="kw">use</span> <span class="ident">rc</span>::<span class="ident">Rc</span>;
 <span class="kw">use</span> <span class="ident">slice</span>;
 <span class="kw">use</span> <span class="ident">str</span>;
+<span class="kw">use</span> <span class="ident">sync</span>::<span class="ident">Arc</span>;
 <span class="kw">use</span> <span class="ident">sys_common</span>::<span class="ident">AsInner</span>;
 
 <span class="kw">const</span> <span class="ident">UTF8_REPLACEMENT_CHARACTER</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;\u{FFFD}&quot;</span>;
@@ -1939,6 +1955,18 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">empty_box</span>() <span class="op">-&gt;</span> <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Wtf8</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">boxed</span>: <span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
         <span class="kw">unsafe</span> { <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">boxed</span>) }
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_arc</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Wtf8</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">arc</span>: <span class="ident">Arc</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">bytes</span>);
+        <span class="kw">unsafe</span> { <span class="ident">Arc</span>::<span class="ident">from_raw</span>(<span class="ident">Arc</span>::<span class="ident">into_raw</span>(<span class="ident">arc</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Wtf8</span>) }
+    }
+
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_rc</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Wtf8</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">rc</span>: <span class="ident">Rc</span><span class="op">&lt;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">from</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">bytes</span>);
+        <span class="kw">unsafe</span> { <span class="ident">Rc</span>::<span class="ident">from_raw</span>(<span class="ident">Rc</span>::<span class="ident">into_raw</span>(<span class="ident">rc</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">Wtf8</span>) }
     }
 }
 

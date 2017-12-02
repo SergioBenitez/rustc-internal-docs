@@ -2768,6 +2768,44 @@
 <span id="2723">2723</span>
 <span id="2724">2724</span>
 <span id="2725">2725</span>
+<span id="2726">2726</span>
+<span id="2727">2727</span>
+<span id="2728">2728</span>
+<span id="2729">2729</span>
+<span id="2730">2730</span>
+<span id="2731">2731</span>
+<span id="2732">2732</span>
+<span id="2733">2733</span>
+<span id="2734">2734</span>
+<span id="2735">2735</span>
+<span id="2736">2736</span>
+<span id="2737">2737</span>
+<span id="2738">2738</span>
+<span id="2739">2739</span>
+<span id="2740">2740</span>
+<span id="2741">2741</span>
+<span id="2742">2742</span>
+<span id="2743">2743</span>
+<span id="2744">2744</span>
+<span id="2745">2745</span>
+<span id="2746">2746</span>
+<span id="2747">2747</span>
+<span id="2748">2748</span>
+<span id="2749">2749</span>
+<span id="2750">2750</span>
+<span id="2751">2751</span>
+<span id="2752">2752</span>
+<span id="2753">2753</span>
+<span id="2754">2754</span>
+<span id="2755">2755</span>
+<span id="2756">2756</span>
+<span id="2757">2757</span>
+<span id="2758">2758</span>
+<span id="2759">2759</span>
+<span id="2760">2760</span>
+<span id="2761">2761</span>
+<span id="2762">2762</span>
+<span id="2763">2763</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3133,6 +3171,9 @@
 
         <span class="ident">debugging_opts</span>: <span class="ident">DebuggingOptions</span> [<span class="ident">TRACKED</span>],
         <span class="ident">prints</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PrintRequest</span><span class="op">&gt;</span> [<span class="ident">UNTRACKED</span>],
+        <span class="comment">// Determines which borrow checker(s) to run. This is the parsed, sanitized</span>
+        <span class="comment">// version of `debugging_opts.borrowck`, which is just a plain string.</span>
+        <span class="ident">borrowck_mode</span>: <span class="ident">BorrowckMode</span> [<span class="ident">UNTRACKED</span>],
         <span class="ident">cg</span>: <span class="ident">CodegenOptions</span> [<span class="ident">TRACKED</span>],
         <span class="comment">// FIXME(mw): We track this for now but it actually doesn&#39;t make too</span>
         <span class="comment">//            much sense: The value of this option can stay the same</span>
@@ -3170,6 +3211,32 @@
     <span class="ident">TlsModels</span>,
     <span class="ident">TargetSpec</span>,
     <span class="ident">NativeStaticLibs</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">BorrowckMode</span> {
+    <span class="ident">Ast</span>,
+    <span class="ident">Mir</span>,
+    <span class="ident">Compare</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">BorrowckMode</span> {
+    <span class="doccomment">/// Should we emit the AST-based borrow checker errors?</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">use_ast</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">BorrowckMode</span>::<span class="ident">Ast</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">BorrowckMode</span>::<span class="ident">Compare</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">BorrowckMode</span>::<span class="ident">Mir</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        }
+    }
+    <span class="doccomment">/// Should we emit the MIR-based borrow checker errors?</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">use_mir</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">BorrowckMode</span>::<span class="ident">Ast</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="ident">BorrowckMode</span>::<span class="ident">Compare</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+            <span class="ident">BorrowckMode</span>::<span class="ident">Mir</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        }
+    }
 }
 
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Input</span> {
@@ -3297,6 +3364,7 @@
         <span class="ident">incremental</span>: <span class="prelude-val">None</span>,
         <span class="ident">debugging_opts</span>: <span class="ident">basic_debugging_options</span>(),
         <span class="ident">prints</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
+        <span class="ident">borrowck_mode</span>: <span class="ident">BorrowckMode</span>::<span class="ident">Ast</span>,
         <span class="ident">cg</span>: <span class="ident">basic_codegen_options</span>(),
         <span class="ident">error_format</span>: <span class="ident">ErrorOutputType</span>::<span class="ident">default</span>(),
         <span class="ident">externs</span>: <span class="ident">Externs</span>(<span class="ident">BTreeMap</span>::<span class="ident">new</span>()),
@@ -3744,8 +3812,8 @@
         <span class="string">&quot;make unnamed regions display as &#39;# (where # is some non-ident unique id)&quot;</span>),
     <span class="ident">emit_end_regions</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;emit EndRegion as part of MIR; enable transforms that solely process EndRegion&quot;</span>),
-    <span class="ident">borrowck_mir</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
-        <span class="string">&quot;implicitly treat functions as if they have `#[rustc_mir_borrowck]` attribute&quot;</span>),
+    <span class="ident">borrowck</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
+        <span class="string">&quot;select which borrowck is used (`ast`, `mir`, or `compare`)&quot;</span>),
     <span class="ident">time_passes</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;measure time of each rustc pass&quot;</span>),
     <span class="ident">count_llvm_insns</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>,
@@ -3813,8 +3881,6 @@
           <span class="string">&quot;attempt to recover from parse errors (experimental)&quot;</span>),
     <span class="ident">incremental</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
           <span class="string">&quot;enable incremental compilation (experimental)&quot;</span>),
-    <span class="ident">incremental_cc</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
-          <span class="string">&quot;enable cross-crate incremental compilation (even more experimental)&quot;</span>),
     <span class="ident">incremental_queries</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">true</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
           <span class="string">&quot;enable incremental compilation support for queries (experimental)&quot;</span>),
     <span class="ident">incremental_info</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
@@ -4514,6 +4580,15 @@
         }
     }));
 
+    <span class="kw">let</span> <span class="ident">borrowck_mode</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">debugging_opts</span>.<span class="ident">borrowck</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">s</span>[..]) {
+        <span class="prelude-val">None</span> <span class="op">|</span> <span class="prelude-val">Some</span>(<span class="string">&quot;ast&quot;</span>) <span class="op">=&gt;</span> <span class="ident">BorrowckMode</span>::<span class="ident">Ast</span>,
+        <span class="prelude-val">Some</span>(<span class="string">&quot;mir&quot;</span>) <span class="op">=&gt;</span> <span class="ident">BorrowckMode</span>::<span class="ident">Mir</span>,
+        <span class="prelude-val">Some</span>(<span class="string">&quot;compare&quot;</span>) <span class="op">=&gt;</span> <span class="ident">BorrowckMode</span>::<span class="ident">Compare</span>,
+        <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="op">=&gt;</span> {
+            <span class="ident">early_error</span>(<span class="ident">error_format</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;unknown borrowck mode `{}`&quot;</span>, <span class="ident">m</span>))
+        },
+    };
+
     <span class="kw">if</span> <span class="op">!</span><span class="ident">cg</span>.<span class="ident">remark</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="ident">debuginfo</span> <span class="op">==</span> <span class="ident">NoDebugInfo</span> {
         <span class="ident">early_warn</span>(<span class="ident">error_format</span>, <span class="string">&quot;-C remark will not show source locations without \
                                 --debuginfo&quot;</span>);
@@ -4555,6 +4630,7 @@
         <span class="ident">incremental</span>,
         <span class="ident">debugging_opts</span>,
         <span class="ident">prints</span>,
+        <span class="ident">borrowck_mode</span>,
         <span class="ident">cg</span>,
         <span class="ident">error_format</span>,
         <span class="ident">externs</span>: <span class="ident">Externs</span>(<span class="ident">externs</span>),

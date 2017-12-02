@@ -404,6 +404,12 @@
 <span id="359">359</span>
 <span id="360">360</span>
 <span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -437,7 +443,7 @@
 <span class="doccomment">//! future.</span>
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">hir</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Constant</span>, <span class="ident">Local</span>, <span class="ident">LocalKind</span>, <span class="ident">Location</span>, <span class="ident">Lvalue</span>, <span class="ident">Mir</span>, <span class="ident">Operand</span>, <span class="ident">Rvalue</span>, <span class="ident">StatementKind</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Constant</span>, <span class="ident">Local</span>, <span class="ident">LocalKind</span>, <span class="ident">Location</span>, <span class="ident">Place</span>, <span class="ident">Mir</span>, <span class="ident">Operand</span>, <span class="ident">Rvalue</span>, <span class="ident">StatementKind</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::<span class="ident">MutVisitor</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">TyCtxt</span>;
 <span class="kw">use</span> <span class="ident">transform</span>::{<span class="ident">MirPass</span>, <span class="ident">MirSource</span>};
@@ -515,8 +521,8 @@
                             <span class="ident">dest_local</span>);
                         <span class="kw">continue</span>;
                     }
-                    <span class="kw">let</span> <span class="ident">dest_lvalue_def</span> <span class="op">=</span> <span class="ident">dest_use_info</span>.<span class="ident">defs_not_including_drop</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>();
-                    <span class="ident">location</span> <span class="op">=</span> <span class="ident">dest_lvalue_def</span>.<span class="ident">location</span>;
+                    <span class="kw">let</span> <span class="ident">dest_place_def</span> <span class="op">=</span> <span class="ident">dest_use_info</span>.<span class="ident">defs_not_including_drop</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>();
+                    <span class="ident">location</span> <span class="op">=</span> <span class="ident">dest_place_def</span>.<span class="ident">location</span>;
 
                     <span class="kw">let</span> <span class="ident">basic_block</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">mir</span>[<span class="ident">location</span>.<span class="ident">block</span>];
                     <span class="kw">let</span> <span class="ident">statement_index</span> <span class="op">=</span> <span class="ident">location</span>.<span class="ident">statement_index</span>;
@@ -530,11 +536,12 @@
 
                     <span class="comment">// That use of the source must be an assignment.</span>
                     <span class="kw">match</span> <span class="ident">statement</span>.<span class="ident">kind</span> {
-                        <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>), <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">operand</span>)) <span class="kw">if</span>
+                        <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>), <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">operand</span>)) <span class="kw">if</span>
                                 <span class="ident">local</span> <span class="op">==</span> <span class="ident">dest_local</span> <span class="op">=&gt;</span> {
                             <span class="kw">let</span> <span class="ident">maybe_action</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
-                                <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">src_lvalue</span>) <span class="op">=&gt;</span> {
-                                    <span class="ident">Action</span>::<span class="ident">local_copy</span>(<span class="kw-2">&amp;</span><span class="ident">mir</span>, <span class="kw-2">&amp;</span><span class="ident">def_use_analysis</span>, <span class="ident">src_lvalue</span>)
+                                <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="kw-2">ref</span> <span class="ident">src_place</span>) <span class="op">|</span>
+                                <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="kw-2">ref</span> <span class="ident">src_place</span>) <span class="op">=&gt;</span> {
+                                    <span class="ident">Action</span>::<span class="ident">local_copy</span>(<span class="kw-2">&amp;</span><span class="ident">mir</span>, <span class="kw-2">&amp;</span><span class="ident">def_use_analysis</span>, <span class="ident">src_place</span>)
                                 }
                                 <span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw-2">ref</span> <span class="ident">src_constant</span>) <span class="op">=&gt;</span> {
                                     <span class="ident">Action</span>::<span class="ident">constant</span>(<span class="ident">src_constant</span>)
@@ -579,8 +586,12 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">stmt</span>) <span class="op">=</span> <span class="ident">mir</span>[<span class="ident">location</span>.<span class="ident">block</span>].<span class="ident">statements</span>.<span class="ident">get</span>(<span class="ident">location</span>.<span class="ident">statement_index</span>) {
                 <span class="kw">match</span> <span class="ident">stmt</span>.<span class="ident">kind</span> {
                     <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
-                        <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>),
-                        <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">src_local</span>))),
+                        <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>),
+                        <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">src_local</span>))),
+                    ) <span class="op">|</span>
+                    <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(
+                        <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>),
+                        <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">src_local</span>))),
                     ) <span class="kw">if</span> <span class="ident">local</span> <span class="op">==</span> <span class="ident">dest_local</span> <span class="op">&amp;&amp;</span> <span class="ident">dest_local</span> <span class="op">==</span> <span class="ident">src_local</span> <span class="op">=&gt;</span> {}
                     _ <span class="op">=&gt;</span> {
                         <span class="kw">continue</span>;
@@ -604,10 +615,10 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Action</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">local_copy</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">def_use_analysis</span>: <span class="kw-2">&amp;</span><span class="ident">DefUseAnalysis</span>, <span class="ident">src_lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+    <span class="kw">fn</span> <span class="ident">local_copy</span>(<span class="ident">mir</span>: <span class="kw-2">&amp;</span><span class="ident">Mir</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">def_use_analysis</span>: <span class="kw-2">&amp;</span><span class="ident">DefUseAnalysis</span>, <span class="ident">src_place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                   <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Action</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
         <span class="comment">// The source must be a local.</span>
-        <span class="kw">let</span> <span class="ident">src_local</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">src_lvalue</span> {
+        <span class="kw">let</span> <span class="ident">src_local</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">src_place</span> {
             <span class="ident">local</span>
         } <span class="kw">else</span> {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;  Can&#39;t copy-propagate local: source is not a local&quot;</span>);
@@ -671,14 +682,14 @@
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;  Replacing all uses of {:?} with {:?} (local)&quot;</span>,
                        <span class="ident">dest_local</span>,
                        <span class="ident">src_local</span>);
-                <span class="kw">for</span> <span class="ident">lvalue_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">def_use_analysis</span>.<span class="ident">local_info</span>(<span class="ident">dest_local</span>).<span class="ident">defs_and_uses</span> {
-                    <span class="kw">if</span> <span class="ident">lvalue_use</span>.<span class="ident">context</span>.<span class="ident">is_storage_marker</span>() {
-                        <span class="ident">mir</span>.<span class="ident">make_statement_nop</span>(<span class="ident">lvalue_use</span>.<span class="ident">location</span>)
+                <span class="kw">for</span> <span class="ident">place_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">def_use_analysis</span>.<span class="ident">local_info</span>(<span class="ident">dest_local</span>).<span class="ident">defs_and_uses</span> {
+                    <span class="kw">if</span> <span class="ident">place_use</span>.<span class="ident">context</span>.<span class="ident">is_storage_marker</span>() {
+                        <span class="ident">mir</span>.<span class="ident">make_statement_nop</span>(<span class="ident">place_use</span>.<span class="ident">location</span>)
                     }
                 }
-                <span class="kw">for</span> <span class="ident">lvalue_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">def_use_analysis</span>.<span class="ident">local_info</span>(<span class="ident">src_local</span>).<span class="ident">defs_and_uses</span> {
-                    <span class="kw">if</span> <span class="ident">lvalue_use</span>.<span class="ident">context</span>.<span class="ident">is_storage_marker</span>() {
-                        <span class="ident">mir</span>.<span class="ident">make_statement_nop</span>(<span class="ident">lvalue_use</span>.<span class="ident">location</span>)
+                <span class="kw">for</span> <span class="ident">place_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">def_use_analysis</span>.<span class="ident">local_info</span>(<span class="ident">src_local</span>).<span class="ident">defs_and_uses</span> {
+                    <span class="kw">if</span> <span class="ident">place_use</span>.<span class="ident">context</span>.<span class="ident">is_storage_marker</span>() {
+                        <span class="ident">mir</span>.<span class="ident">make_statement_nop</span>(<span class="ident">place_use</span>.<span class="ident">location</span>)
                     }
                 }
 
@@ -699,22 +710,22 @@
                        <span class="ident">dest_local</span>,
                        <span class="ident">src_constant</span>);
                 <span class="kw">let</span> <span class="ident">dest_local_info</span> <span class="op">=</span> <span class="ident">def_use_analysis</span>.<span class="ident">local_info</span>(<span class="ident">dest_local</span>);
-                <span class="kw">for</span> <span class="ident">lvalue_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">dest_local_info</span>.<span class="ident">defs_and_uses</span> {
-                    <span class="kw">if</span> <span class="ident">lvalue_use</span>.<span class="ident">context</span>.<span class="ident">is_storage_marker</span>() {
-                        <span class="ident">mir</span>.<span class="ident">make_statement_nop</span>(<span class="ident">lvalue_use</span>.<span class="ident">location</span>)
+                <span class="kw">for</span> <span class="ident">place_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">dest_local_info</span>.<span class="ident">defs_and_uses</span> {
+                    <span class="kw">if</span> <span class="ident">place_use</span>.<span class="ident">context</span>.<span class="ident">is_storage_marker</span>() {
+                        <span class="ident">mir</span>.<span class="ident">make_statement_nop</span>(<span class="ident">place_use</span>.<span class="ident">location</span>)
                     }
                 }
 
                 <span class="comment">// Replace all uses of the destination local with the constant.</span>
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">visitor</span> <span class="op">=</span> <span class="ident">ConstantPropagationVisitor</span>::<span class="ident">new</span>(<span class="ident">dest_local</span>,
                                                                   <span class="ident">src_constant</span>);
-                <span class="kw">for</span> <span class="ident">dest_lvalue_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">dest_local_info</span>.<span class="ident">defs_and_uses</span> {
-                    <span class="ident">visitor</span>.<span class="ident">visit_location</span>(<span class="ident">mir</span>, <span class="ident">dest_lvalue_use</span>.<span class="ident">location</span>)
+                <span class="kw">for</span> <span class="ident">dest_place_use</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">dest_local_info</span>.<span class="ident">defs_and_uses</span> {
+                    <span class="ident">visitor</span>.<span class="ident">visit_location</span>(<span class="ident">mir</span>, <span class="ident">dest_place_use</span>.<span class="ident">location</span>)
                 }
 
                 <span class="comment">// Zap the assignment instruction if we eliminated all the uses. We won&#39;t have been</span>
                 <span class="comment">// able to do that if the destination was used in a projection, because projections</span>
-                <span class="comment">// must have lvalues on their LHS.</span>
+                <span class="comment">// must have places on their LHS.</span>
                 <span class="kw">let</span> <span class="ident">use_count</span> <span class="op">=</span> <span class="ident">dest_local_info</span>.<span class="ident">use_count</span>();
                 <span class="kw">if</span> <span class="ident">visitor</span>.<span class="ident">uses_replaced</span> <span class="op">==</span> <span class="ident">use_count</span> {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;  {} of {} use(s) replaced; deleting assignment&quot;</span>,
@@ -758,7 +769,8 @@
         <span class="self">self</span>.<span class="ident">super_operand</span>(<span class="ident">operand</span>, <span class="ident">location</span>);
 
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
-            <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>)) <span class="kw">if</span> <span class="ident">local</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">dest_local</span> <span class="op">=&gt;</span> {}
+            <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>)) <span class="op">|</span>
+            <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>)) <span class="kw">if</span> <span class="ident">local</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">dest_local</span> <span class="op">=&gt;</span> {}
             _ <span class="op">=&gt;</span> <span class="kw">return</span>,
         }
 

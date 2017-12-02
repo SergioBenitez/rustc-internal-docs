@@ -370,6 +370,7 @@
 <span id="325">325</span>
 <span id="326">326</span>
 <span id="327">327</span>
+<span id="328">328</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -398,7 +399,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ptr</span>;
 
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">MirContext</span>, <span class="ident">LocalRef</span>};
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">lvalue</span>::{<span class="ident">Alignment</span>, <span class="ident">LvalueRef</span>};
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">place</span>::{<span class="ident">Alignment</span>, <span class="ident">PlaceRef</span>};
 
 <span class="doccomment">/// The representation of a Rust value. The enum variant is in fact</span>
 <span class="doccomment">/// uniquely determined by the value&#39;s type, but is kept as a</span>
@@ -472,7 +473,7 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deref</span>(<span class="self">self</span>, <span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">LvalueRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">deref</span>(<span class="self">self</span>, <span class="ident">ccx</span>: <span class="kw-2">&amp;</span><span class="ident">CrateContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">PlaceRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">projected_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">layout</span>.<span class="ident">ty</span>.<span class="ident">builtin_deref</span>(<span class="bool-val">true</span>, <span class="ident">ty</span>::<span class="ident">NoPreference</span>)
             .<span class="ident">unwrap_or_else</span>(<span class="op">||</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;deref of non-pointer {:?}&quot;</span>, <span class="self">self</span>)).<span class="ident">ty</span>;
         <span class="kw">let</span> (<span class="ident">llptr</span>, <span class="ident">llextra</span>) <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">val</span> {
@@ -480,7 +481,7 @@
             <span class="ident">OperandValue</span>::<span class="ident">Pair</span>(<span class="ident">llptr</span>, <span class="ident">llextra</span>) <span class="op">=&gt;</span> (<span class="ident">llptr</span>, <span class="ident">llextra</span>),
             <span class="ident">OperandValue</span>::<span class="ident">Ref</span>(..) <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;Deref of by-Ref operand {:?}&quot;</span>, <span class="self">self</span>)
         };
-        <span class="ident">LvalueRef</span> {
+        <span class="ident">PlaceRef</span> {
             <span class="ident">llval</span>: <span class="ident">llptr</span>,
             <span class="ident">llextra</span>,
             <span class="ident">layout</span>: <span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">projected_ty</span>),
@@ -585,7 +586,7 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">OperandValue</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">store</span>(<span class="self">self</span>, <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">dest</span>: <span class="ident">LvalueRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">store</span>(<span class="self">self</span>, <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">dest</span>: <span class="ident">PlaceRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;OperandRef::store: operand={:?}, dest={:?}&quot;</span>, <span class="self">self</span>, <span class="ident">dest</span>);
         <span class="comment">// Avoid generating stores of zero-sized values, because the only way to have a zero-sized</span>
         <span class="comment">// value is through `undef`, and store itself is useless.</span>
@@ -616,29 +617,29 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">MirContext</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">maybe_trans_consume_direct</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                   <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                  <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                                  <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                    <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OperandRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
     {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;maybe_trans_consume_direct(lvalue={:?})&quot;</span>, <span class="ident">lvalue</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;maybe_trans_consume_direct(place={:?})&quot;</span>, <span class="ident">place</span>);
 
         <span class="comment">// watch out for locals that do not have an</span>
         <span class="comment">// alloca; they are handled somewhat differently</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">index</span>] {
                 <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">Some</span>(<span class="ident">o</span>)) <span class="op">=&gt;</span> {
                     <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">o</span>);
                 }
                 <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
-                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;use of {:?} before def&quot;</span>, <span class="ident">lvalue</span>);
+                    <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;use of {:?} before def&quot;</span>, <span class="ident">place</span>);
                 }
-                <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(..) <span class="op">=&gt;</span> {
+                <span class="ident">LocalRef</span>::<span class="ident">Place</span>(..) <span class="op">=&gt;</span> {
                     <span class="comment">// use path below</span>
                 }
             }
         }
 
         <span class="comment">// Moves out of scalar and scalar pair fields are trivial.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=</span> <span class="ident">lvalue</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=</span> <span class="ident">place</span> {
             <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(<span class="kw-2">ref</span> <span class="ident">f</span>, _) <span class="op">=</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">o</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">maybe_trans_consume_direct</span>(<span class="ident">bcx</span>, <span class="kw-2">&amp;</span><span class="ident">proj</span>.<span class="ident">base</span>) {
                     <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">o</span>.<span class="ident">extract_field</span>(<span class="ident">bcx</span>, <span class="ident">f</span>.<span class="ident">index</span>()));
@@ -651,12 +652,12 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trans_consume</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                          <span class="ident">bcx</span>: <span class="kw-2">&amp;</span><span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                         <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                         <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">mir</span>::<span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                          <span class="op">-&gt;</span> <span class="ident">OperandRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trans_consume(lvalue={:?})&quot;</span>, <span class="ident">lvalue</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trans_consume(place={:?})&quot;</span>, <span class="ident">place</span>);
 
-        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monomorphized_lvalue_ty</span>(<span class="ident">lvalue</span>);
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">monomorphized_place_ty</span>(<span class="ident">place</span>);
         <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="ident">bcx</span>.<span class="ident">ccx</span>.<span class="ident">layout_of</span>(<span class="ident">ty</span>);
 
         <span class="comment">// ZSTs don&#39;t require any actual memory access.</span>
@@ -664,13 +665,13 @@
             <span class="kw">return</span> <span class="ident">OperandRef</span>::<span class="ident">new_zst</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>, <span class="ident">layout</span>);
         }
 
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">o</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">maybe_trans_consume_direct</span>(<span class="ident">bcx</span>, <span class="ident">lvalue</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">o</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">maybe_trans_consume_direct</span>(<span class="ident">bcx</span>, <span class="ident">place</span>) {
             <span class="kw">return</span> <span class="ident">o</span>;
         }
 
-        <span class="comment">// for most lvalues, to consume them we just load them</span>
+        <span class="comment">// for most places, to consume them we just load them</span>
         <span class="comment">// out from their home</span>
-        <span class="self">self</span>.<span class="ident">trans_lvalue</span>(<span class="ident">bcx</span>, <span class="ident">lvalue</span>).<span class="ident">load</span>(<span class="ident">bcx</span>)
+        <span class="self">self</span>.<span class="ident">trans_place</span>(<span class="ident">bcx</span>, <span class="ident">place</span>).<span class="ident">load</span>(<span class="ident">bcx</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trans_operand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
@@ -681,8 +682,9 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trans_operand(operand={:?})&quot;</span>, <span class="ident">operand</span>);
 
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
-            <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">trans_consume</span>(<span class="ident">bcx</span>, <span class="ident">lvalue</span>)
+            <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="kw-2">ref</span> <span class="ident">place</span>) <span class="op">|</span>
+            <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="kw-2">ref</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">trans_consume</span>(<span class="ident">bcx</span>, <span class="ident">place</span>)
             }
 
             <span class="ident">mir</span>::<span class="ident">Operand</span>::<span class="ident">Constant</span>(<span class="kw-2">ref</span> <span class="ident">constant</span>) <span class="op">=&gt;</span> {
@@ -690,7 +692,7 @@
                 <span class="kw">let</span> <span class="ident">operand</span> <span class="op">=</span> <span class="ident">val</span>.<span class="ident">to_operand</span>(<span class="ident">bcx</span>.<span class="ident">ccx</span>);
                 <span class="kw">if</span> <span class="kw">let</span> <span class="ident">OperandValue</span>::<span class="ident">Ref</span>(<span class="ident">ptr</span>, <span class="ident">align</span>) <span class="op">=</span> <span class="ident">operand</span>.<span class="ident">val</span> {
                     <span class="comment">// If this is a OperandValue::Ref to an immediate constant, load it.</span>
-                    <span class="ident">LvalueRef</span>::<span class="ident">new_sized</span>(<span class="ident">ptr</span>, <span class="ident">operand</span>.<span class="ident">layout</span>, <span class="ident">align</span>).<span class="ident">load</span>(<span class="ident">bcx</span>)
+                    <span class="ident">PlaceRef</span>::<span class="ident">new_sized</span>(<span class="ident">ptr</span>, <span class="ident">operand</span>.<span class="ident">layout</span>, <span class="ident">align</span>).<span class="ident">load</span>(<span class="ident">bcx</span>)
                 } <span class="kw">else</span> {
                     <span class="ident">operand</span>
                 }

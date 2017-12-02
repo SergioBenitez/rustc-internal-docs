@@ -330,9 +330,9 @@
         <span class="self">self</span>.<span class="ident">count</span> <span class="op">+=</span> <span class="number">1</span>;
         <span class="ident">walk_path</span>(<span class="self">self</span>, <span class="ident">path</span>)
     }
-    <span class="kw">fn</span> <span class="ident">visit_path_list_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">prefix</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">PathListItem</span>) {
+    <span class="kw">fn</span> <span class="ident">visit_use_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">use_tree</span>: <span class="kw-2">&amp;</span><span class="ident">UseTree</span>, <span class="ident">id</span>: <span class="ident">NodeId</span>, <span class="ident">_nested</span>: <span class="ident">bool</span>) {
         <span class="self">self</span>.<span class="ident">count</span> <span class="op">+=</span> <span class="number">1</span>;
-        <span class="ident">walk_path_list_item</span>(<span class="self">self</span>, <span class="ident">prefix</span>, <span class="ident">item</span>)
+        <span class="ident">walk_use_tree</span>(<span class="self">self</span>, <span class="ident">use_tree</span>, <span class="ident">id</span>)
     }
     <span class="kw">fn</span> <span class="ident">visit_path_parameters</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">path_span</span>: <span class="ident">Span</span>, <span class="ident">path_parameters</span>: <span class="kw-2">&amp;</span><span class="ident">PathParameters</span>) {
         <span class="self">self</span>.<span class="ident">count</span> <span class="op">+=</span> <span class="number">1</span>;

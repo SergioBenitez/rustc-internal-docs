@@ -161,10 +161,10 @@
 
         <span class="self">self</span>.<span class="ident">set_debug_loc</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">statement</span>.<span class="ident">source_info</span>);
         <span class="kw">match</span> <span class="ident">statement</span>.<span class="ident">kind</span> {
-            <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>, <span class="kw-2">ref</span> <span class="ident">rvalue</span>) <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
+            <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">place</span>, <span class="kw-2">ref</span> <span class="ident">rvalue</span>) <span class="op">=&gt;</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
                     <span class="kw">match</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">index</span>] {
-                        <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">tr_dest</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">LocalRef</span>::<span class="ident">Place</span>(<span class="ident">tr_dest</span>) <span class="op">=&gt;</span> {
                             <span class="self">self</span>.<span class="ident">trans_rvalue</span>(<span class="ident">bcx</span>, <span class="ident">tr_dest</span>, <span class="ident">rvalue</span>)
                         }
                         <span class="ident">LocalRef</span>::<span class="ident">Operand</span>(<span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
@@ -185,30 +185,30 @@
                         }
                     }
                 } <span class="kw">else</span> {
-                    <span class="kw">let</span> <span class="ident">tr_dest</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_lvalue</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">lvalue</span>);
+                    <span class="kw">let</span> <span class="ident">tr_dest</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">trans_place</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">place</span>);
                     <span class="self">self</span>.<span class="ident">trans_rvalue</span>(<span class="ident">bcx</span>, <span class="ident">tr_dest</span>, <span class="ident">rvalue</span>)
                 }
             }
-            <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span>{<span class="kw-2">ref</span> <span class="ident">lvalue</span>, <span class="ident">variant_index</span>} <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">trans_lvalue</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">lvalue</span>)
+            <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span>{<span class="kw-2">ref</span> <span class="ident">place</span>, <span class="ident">variant_index</span>} <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">trans_place</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">place</span>)
                     .<span class="ident">trans_set_discr</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">variant_index</span>);
                 <span class="ident">bcx</span>
             }
             <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(<span class="ident">local</span>) <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">tr_lval</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">local</span>] {
-                    <span class="ident">tr_lval</span>.<span class="ident">storage_live</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">LocalRef</span>::<span class="ident">Place</span>(<span class="ident">tr_place</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">local</span>] {
+                    <span class="ident">tr_place</span>.<span class="ident">storage_live</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>);
                 }
                 <span class="ident">bcx</span>
             }
             <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">StorageDead</span>(<span class="ident">local</span>) <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">LocalRef</span>::<span class="ident">Lvalue</span>(<span class="ident">tr_lval</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">local</span>] {
-                    <span class="ident">tr_lval</span>.<span class="ident">storage_dead</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">LocalRef</span>::<span class="ident">Place</span>(<span class="ident">tr_place</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">locals</span>[<span class="ident">local</span>] {
+                    <span class="ident">tr_place</span>.<span class="ident">storage_dead</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>);
                 }
                 <span class="ident">bcx</span>
             }
             <span class="ident">mir</span>::<span class="ident">StatementKind</span>::<span class="ident">InlineAsm</span> { <span class="kw-2">ref</span> <span class="ident">asm</span>, <span class="kw-2">ref</span> <span class="ident">outputs</span>, <span class="kw-2">ref</span> <span class="ident">inputs</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">outputs</span> <span class="op">=</span> <span class="ident">outputs</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">output</span><span class="op">|</span> {
-                    <span class="self">self</span>.<span class="ident">trans_lvalue</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">output</span>)
+                    <span class="self">self</span>.<span class="ident">trans_place</span>(<span class="kw-2">&amp;</span><span class="ident">bcx</span>, <span class="ident">output</span>)
                 }).<span class="ident">collect</span>();
 
                 <span class="kw">let</span> <span class="ident">input_vals</span> <span class="op">=</span> <span class="ident">inputs</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">input</span><span class="op">|</span> {

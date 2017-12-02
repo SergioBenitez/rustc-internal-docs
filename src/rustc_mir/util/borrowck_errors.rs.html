@@ -504,6 +504,62 @@
 <span id="459">459</span>
 <span id="460">460</span>
 <span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -516,6 +572,7 @@
 <span class="comment">// except according to those terms.</span>
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">TyCtxt</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">session</span>::<span class="ident">config</span>::<span class="ident">BorrowckMode</span>;
 <span class="kw">use</span> <span class="ident">rustc_errors</span>::{<span class="ident">DiagnosticBuilder</span>, <span class="ident">DiagnosticId</span>};
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">MultiSpan</span>, <span class="ident">Span</span>};
 
@@ -526,20 +583,34 @@
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Origin</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">w</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Origin</span>::<span class="ident">Mir</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot; (Mir)&quot;</span>),
-            <span class="ident">Origin</span>::<span class="ident">Ast</span> <span class="op">=&gt;</span> <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with_opt</span>(<span class="op">|</span><span class="ident">opt_tcx</span><span class="op">|</span> {
-                <span class="comment">// If user passed `-Z borrowck-mir`, then include an</span>
-                <span class="comment">// AST origin as part of the error report</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tcx</span>) <span class="op">=</span> <span class="ident">opt_tcx</span> {
-                    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">borrowck_mir</span> {
-                        <span class="kw">return</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot; (Ast)&quot;</span>);
-                    }
-                }
-                <span class="comment">// otherwise, do not include the origin (i.e., print</span>
-                <span class="comment">// nothing at all)</span>
-                <span class="prelude-val">Ok</span>(())
-            }),
+        <span class="comment">// If the user passed `-Z borrowck=compare`, then include</span>
+        <span class="comment">// origin info as part of the error report,</span>
+        <span class="comment">// otherwise</span>
+        <span class="kw">let</span> <span class="ident">display_origin</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">tls</span>::<span class="ident">with_opt</span>(<span class="op">|</span><span class="ident">opt_tcx</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">tcx</span>) <span class="op">=</span> <span class="ident">opt_tcx</span> {
+                <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">borrowck_mode</span> <span class="op">==</span> <span class="ident">BorrowckMode</span>::<span class="ident">Compare</span>
+            } <span class="kw">else</span> {
+                <span class="bool-val">false</span>
+            }
+        });
+        <span class="kw">if</span> <span class="ident">display_origin</span> {
+            <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+                <span class="ident">Origin</span>::<span class="ident">Mir</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot; (Mir)&quot;</span>),
+                <span class="ident">Origin</span>::<span class="ident">Ast</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">w</span>, <span class="string">&quot; (Ast)&quot;</span>),
+            }
+        } <span class="kw">else</span> {
+            <span class="comment">// Print no origin info</span>
+            <span class="prelude-val">Ok</span>(())
+        }
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Origin</span> {
+    <span class="doccomment">/// Whether we should emit errors for the origin in the given mode</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">should_emit_errors</span>(<span class="self">self</span>, <span class="ident">mode</span>: <span class="ident">BorrowckMode</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">Origin</span>::<span class="ident">Ast</span> <span class="op">=&gt;</span> <span class="ident">mode</span>.<span class="ident">use_ast</span>(),
+            <span class="ident">Origin</span>::<span class="ident">Mir</span> <span class="op">=&gt;</span> <span class="ident">mode</span>.<span class="ident">use_mir</span>(),
         }
     }
 }
@@ -556,12 +627,23 @@
                                                <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>)
                                                <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>;
 
+    <span class="doccomment">/// Cancels the given error if we shouldn&#39;t emit errors for a given</span>
+    <span class="doccomment">/// origin in the current mode.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Always make sure that the error gets passed through this function</span>
+    <span class="doccomment">/// before you return it.</span>
+    <span class="kw">fn</span> <span class="ident">cancel_if_wrong_origin</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
+                                <span class="ident">diag</span>: <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
+                                <span class="ident">o</span>: <span class="ident">Origin</span>)
+                                <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>;
+
     <span class="kw">fn</span> <span class="ident">cannot_move_when_borrowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">o</span>: <span class="ident">Origin</span>)
                                  <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span>
     {
-        <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0505</span>,
-                         <span class="string">&quot;cannot move out of `{}` because it is borrowed{OGN}&quot;</span>,
-                         <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>)
+        <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0505</span>,
+                                   <span class="string">&quot;cannot move out of `{}` because it is borrowed{OGN}&quot;</span>,
+                                   <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_use_when_mutably_borrowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -579,7 +661,7 @@
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">borrow_span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;borrow of `{}` occurs here&quot;</span>, <span class="ident">borrow_desc</span>));
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;use of borrowed `{}`&quot;</span>, <span class="ident">borrow_desc</span>));
 
-        <span class="ident">err</span>
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_act_on_uninitialized_variable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -589,9 +671,10 @@
                                             <span class="ident">o</span>: <span class="ident">Origin</span>)
                                             <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span>
     {
-        <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0381</span>,
-                         <span class="string">&quot;{} of possibly uninitialized variable: `{}`{OGN}&quot;</span>,
-                         <span class="ident">verb</span>, <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>)
+        <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0381</span>,
+                                   <span class="string">&quot;{} of possibly uninitialized variable: `{}`{OGN}&quot;</span>,
+                                   <span class="ident">verb</span>, <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_mutably_borrow_multiply</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -625,7 +708,7 @@
                 <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">old_load_end_span</span>, <span class="string">&quot;first borrow ends here&quot;</span>);
             }
         }
-        <span class="ident">err</span>
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_uniquely_borrow_by_two_closures</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -650,7 +733,7 @@
                 <span class="ident">old_load_end_span</span>,
                 <span class="string">&quot;borrow from first closure ends here&quot;</span>);
         }
-        <span class="ident">err</span>
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_uniquely_borrow_by_one_closure</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -674,7 +757,7 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">previous_end_span</span>) <span class="op">=</span> <span class="ident">previous_end_span</span> {
             <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">previous_end_span</span>, <span class="string">&quot;borrow ends here&quot;</span>);
         }
-        <span class="ident">err</span>
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_reborrow_already_uniquely_borrowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -699,7 +782,7 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">previous_end_span</span>) <span class="op">=</span> <span class="ident">previous_end_span</span> {
             <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">previous_end_span</span>, <span class="string">&quot;borrow from closure ends here&quot;</span>);
         }
-        <span class="ident">err</span>
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_reborrow_already_borrowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -723,7 +806,7 @@
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">old_load_end_span</span>) <span class="op">=</span> <span class="ident">old_load_end_span</span> {
             <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">old_load_end_span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{} borrow ends here&quot;</span>, <span class="ident">kind_old</span>));
         }
-        <span class="ident">err</span>
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_assign_to_borrowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">borrow_span</span>: <span class="ident">Span</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">o</span>: <span class="ident">Origin</span>)
@@ -736,30 +819,35 @@
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">borrow_span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;borrow of `{}` occurs here&quot;</span>, <span class="ident">desc</span>));
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;assignment to borrowed `{}` occurs here&quot;</span>, <span class="ident">desc</span>));
 
-        <span class="ident">err</span>
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_move_into_closure</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">o</span>: <span class="ident">Origin</span>)
                                 <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span>
     {
-        <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0504</span>,
-                         <span class="string">&quot;cannot move `{}` into closure because it is borrowed{OGN}&quot;</span>,
-                         <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>)
+        <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0504</span>,
+                                   <span class="string">&quot;cannot move `{}` into closure because it is borrowed{OGN}&quot;</span>,
+                                   <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_reassign_immutable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">o</span>: <span class="ident">Origin</span>)
                                  <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span>
     {
-        <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0384</span>,
-                         <span class="string">&quot;cannot assign twice to immutable variable `{}`{OGN}&quot;</span>,
-                         <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>)
+        <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0384</span>,
+                                   <span class="string">&quot;cannot assign twice to immutable variable `{}`{OGN}&quot;</span>,
+                                   <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_assign</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">o</span>: <span class="ident">Origin</span>) <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span>
     {
-        <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0594</span>,
-                         <span class="string">&quot;cannot assign to {}{OGN}&quot;</span>,
-                         <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>)
+        <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0594</span>,
+                                  <span class="string">&quot;cannot assign to {}{OGN}&quot;</span>,
+                                  <span class="ident">desc</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_assign_static</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">desc</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">o</span>: <span class="ident">Origin</span>)
@@ -777,7 +865,8 @@
         <span class="ident">err</span>.<span class="ident">span_label</span>(
             <span class="ident">move_from_span</span>,
             <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;cannot move out of {}&quot;</span>, <span class="ident">move_from_desc</span>));
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_move_out_of_interior_noncopy</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -797,7 +886,8 @@
                                         a non-copy {}{OGN}&quot;</span>,
                                        <span class="ident">ty</span>, <span class="ident">type_name</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">move_from_span</span>, <span class="string">&quot;cannot move out of here&quot;</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_move_out_of_interior_of_drop</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -811,7 +901,8 @@
                                         which implements the `Drop` trait{OGN}&quot;</span>,
                                        <span class="ident">container_ty</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">move_from_span</span>, <span class="string">&quot;cannot move out of here&quot;</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_act_on_moved_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -825,7 +916,8 @@
         <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">use_span</span>, <span class="ident">E0382</span>,
                                    <span class="string">&quot;{} of {}moved value: `{}`{OGN}&quot;</span>,
                                    <span class="ident">verb</span>, <span class="ident">optional_adverb_for_moved</span>, <span class="ident">moved_path</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_partially_reinit_an_uninit_struct</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -839,7 +931,8 @@
                                    <span class="ident">E0383</span>,
                                    <span class="string">&quot;partial reinitialization of uninitialized structure `{}`{OGN}&quot;</span>,
                                    <span class="ident">uninit_path</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">closure_cannot_assign_to_borrowed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -850,7 +943,8 @@
     {
         <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0595</span>, <span class="string">&quot;closure cannot assign to {}{OGN}&quot;</span>,
                                    <span class="ident">descr</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_borrow_path_as_mutable</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -861,7 +955,8 @@
     {
         <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0596</span>, <span class="string">&quot;cannot borrow {} as mutable{OGN}&quot;</span>,
                                    <span class="ident">path</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_borrow_across_generator_yield</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -876,7 +971,8 @@
                                        <span class="string">&quot;borrow may still be in use when generator yields{OGN}&quot;</span>,
                                        <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">yield_span</span>, <span class="string">&quot;possible yield occurs here&quot;</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">path_does_not_live_long_enough</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -887,7 +983,8 @@
     {
         <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0597</span>, <span class="string">&quot;{} does not live long enough{OGN}&quot;</span>,
                                    <span class="ident">path</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">lifetime_too_short_for_reborrow</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -900,7 +997,8 @@
                                    <span class="string">&quot;lifetime of {} is too short to guarantee \
                                     its contents can be safely reborrowed{OGN}&quot;</span>,
                                    <span class="ident">path</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_act_on_capture_in_sharable_fn</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -915,7 +1013,8 @@
                                        <span class="string">&quot;{} in a captured outer variable in an `Fn` closure{OGN}&quot;</span>,
                                        <span class="ident">bad_thing</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
         <span class="ident">err</span>.<span class="ident">span_help</span>(<span class="ident">help_span</span>, <span class="ident">help_msg</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_assign_into_immutable_reference</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -927,7 +1026,8 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">span</span>, <span class="ident">E0389</span>, <span class="string">&quot;{} in a `&amp;` reference{OGN}&quot;</span>,
                                        <span class="ident">bad_thing</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="string">&quot;assignment into an immutable reference&quot;</span>);
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">cannot_capture_in_long_lived_closure</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -944,7 +1044,8 @@
                                        <span class="ident">borrowed_path</span>, <span class="ident">OGN</span><span class="op">=</span><span class="ident">o</span>);
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">capture_span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{} is borrowed here&quot;</span>, <span class="ident">borrowed_path</span>))
             .<span class="ident">span_label</span>(<span class="ident">closure_span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;may outlive borrowed value {}&quot;</span>, <span class="ident">borrowed_path</span>));
-        <span class="ident">err</span>
+
+        <span class="self">self</span>.<span class="ident">cancel_if_wrong_origin</span>(<span class="ident">err</span>, <span class="ident">o</span>)
     }
 }
 
@@ -964,6 +1065,17 @@
                                                <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>
     {
         <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">struct_span_err</span>(<span class="ident">sp</span>, <span class="ident">msg</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">cancel_if_wrong_origin</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
+                                <span class="kw-2">mut</span> <span class="ident">diag</span>: <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
+                                <span class="ident">o</span>: <span class="ident">Origin</span>)
+                                <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>
+    {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">o</span>.<span class="ident">should_emit_errors</span>(<span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">borrowck_mode</span>) {
+            <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">diagnostic</span>().<span class="ident">cancel</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">diag</span>);
+        }
+        <span class="ident">diag</span>
     }
 }
 </pre>

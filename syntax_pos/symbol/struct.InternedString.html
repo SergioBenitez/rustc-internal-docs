@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         <a href='../../syntax_pos/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Struct InternedString</p><div class="block items"><a class="sidebar-title" href="#deref-methods">Methods from Deref&lt;Target=str&gt;</a><div class="sidebar-links"><a href="#method.len">len</a><a href="#method.is_empty">is_empty</a><a href="#method.is_char_boundary">is_char_boundary</a><a href="#method.as_bytes">as_bytes</a><a href="#method.as_ptr">as_ptr</a><a href="#method.get">get</a><a href="#method.get_unchecked">get_unchecked</a><a href="#method.slice_unchecked">slice_unchecked</a><a href="#method.split_at">split_at</a><a href="#method.chars">chars</a><a href="#method.char_indices">char_indices</a><a href="#method.bytes">bytes</a><a href="#method.split_whitespace">split_whitespace</a><a href="#method.lines">lines</a><a href="#method.lines_any">lines_any</a><a href="#method.encode_utf16">encode_utf16</a><a href="#method.contains">contains</a><a href="#method.starts_with">starts_with</a><a href="#method.ends_with">ends_with</a><a href="#method.find">find</a><a href="#method.rfind">rfind</a><a href="#method.split">split</a><a href="#method.rsplit">rsplit</a><a href="#method.split_terminator">split_terminator</a><a href="#method.rsplit_terminator">rsplit_terminator</a><a href="#method.splitn">splitn</a><a href="#method.rsplitn">rsplitn</a><a href="#method.matches">matches</a><a href="#method.rmatches">rmatches</a><a href="#method.match_indices">match_indices</a><a href="#method.rmatch_indices">rmatch_indices</a><a href="#method.trim">trim</a><a href="#method.trim_left">trim_left</a><a href="#method.trim_right">trim_right</a><a href="#method.trim_matches">trim_matches</a><a href="#method.trim_left_matches">trim_left_matches</a><a href="#method.trim_right_matches">trim_right_matches</a><a href="#method.parse">parse</a><a href="#method.replace">replace</a><a href="#method.replacen">replacen</a><a href="#method.to_lowercase">to_lowercase</a><a href="#method.to_uppercase">to_uppercase</a><a href="#method.escape_debug">escape_debug</a><a href="#method.escape_default">escape_default</a><a href="#method.escape_unicode">escape_unicode</a><a href="#method.repeat">repeat</a><a href="#method.is_ascii">is_ascii</a><a href="#method.to_ascii_uppercase">to_ascii_uppercase</a><a href="#method.to_ascii_lowercase">to_ascii_lowercase</a><a href="#method.eq_ignore_ascii_case">eq_ignore_ascii_case</a><a href="#method.is_ascii_alphabetic">is_ascii_alphabetic</a><a href="#method.is_ascii_uppercase">is_ascii_uppercase</a><a href="#method.is_ascii_lowercase">is_ascii_lowercase</a><a href="#method.is_ascii_alphanumeric">is_ascii_alphanumeric</a><a href="#method.is_ascii_digit">is_ascii_digit</a><a href="#method.is_ascii_hexdigit">is_ascii_hexdigit</a><a href="#method.is_ascii_punctuation">is_ascii_punctuation</a><a href="#method.is_ascii_graphic">is_ascii_graphic</a><a href="#method.is_ascii_whitespace">is_ascii_whitespace</a><a href="#method.is_ascii_control">is_ascii_control</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Clone">Clone</a><a href="#impl-Copy">Copy</a><a href="#impl-Hash">Hash</a><a href="#impl-PartialOrd">PartialOrd</a><a href="#impl-Eq">Eq</a><a href="#impl-Ord">Ord</a><a href="#impl-AsRef%3CU%3E">AsRef&lt;U&gt;</a><a href="#impl-PartialEq%3CT%3E">PartialEq&lt;T&gt;</a><a href="#impl-PartialEq%3CInternedString%3E">PartialEq&lt;InternedString&gt;</a><a href="#impl-Send">!Send</a><a href="#impl-Deref">Deref</a><a href="#impl-Debug">Debug</a><a href="#impl-Display">Display</a><a href="#impl-Decodable">Decodable</a><a href="#impl-Encodable">Encodable</a></div></div><p class='location'><a href='../index.html'>syntax_pos</a>::<wbr><a href='index.html'>symbol</a></p><script>window.sidebarCurrent = {name: 'InternedString', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct InternedString</p><div class="block items"><a class="sidebar-title" href="#deref-methods">Methods from Deref&lt;Target=str&gt;</a><div class="sidebar-links"><a href="#method.len">len</a><a href="#method.is_empty">is_empty</a><a href="#method.is_char_boundary">is_char_boundary</a><a href="#method.as_bytes">as_bytes</a><a href="#method.as_ptr">as_ptr</a><a href="#method.get">get</a><a href="#method.get_unchecked">get_unchecked</a><a href="#method.slice_unchecked">slice_unchecked</a><a href="#method.split_at">split_at</a><a href="#method.chars">chars</a><a href="#method.char_indices">char_indices</a><a href="#method.bytes">bytes</a><a href="#method.split_whitespace">split_whitespace</a><a href="#method.lines">lines</a><a href="#method.lines_any">lines_any</a><a href="#method.encode_utf16">encode_utf16</a><a href="#method.contains">contains</a><a href="#method.starts_with">starts_with</a><a href="#method.ends_with">ends_with</a><a href="#method.find">find</a><a href="#method.rfind">rfind</a><a href="#method.split">split</a><a href="#method.rsplit">rsplit</a><a href="#method.split_terminator">split_terminator</a><a href="#method.rsplit_terminator">rsplit_terminator</a><a href="#method.splitn">splitn</a><a href="#method.rsplitn">rsplitn</a><a href="#method.matches">matches</a><a href="#method.rmatches">rmatches</a><a href="#method.match_indices">match_indices</a><a href="#method.rmatch_indices">rmatch_indices</a><a href="#method.trim">trim</a><a href="#method.trim_left">trim_left</a><a href="#method.trim_right">trim_right</a><a href="#method.trim_matches">trim_matches</a><a href="#method.trim_left_matches">trim_left_matches</a><a href="#method.trim_right_matches">trim_right_matches</a><a href="#method.parse">parse</a><a href="#method.replace">replace</a><a href="#method.replacen">replacen</a><a href="#method.to_lowercase">to_lowercase</a><a href="#method.to_uppercase">to_uppercase</a><a href="#method.escape_debug">escape_debug</a><a href="#method.escape_default">escape_default</a><a href="#method.escape_unicode">escape_unicode</a><a href="#method.repeat">repeat</a><a href="#method.is_ascii">is_ascii</a><a href="#method.to_ascii_uppercase">to_ascii_uppercase</a><a href="#method.to_ascii_lowercase">to_ascii_lowercase</a><a href="#method.eq_ignore_ascii_case">eq_ignore_ascii_case</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Clone">Clone</a><a href="#impl-Copy">Copy</a><a href="#impl-Hash">Hash</a><a href="#impl-PartialOrd">PartialOrd</a><a href="#impl-Eq">Eq</a><a href="#impl-Ord">Ord</a><a href="#impl-AsRef%3CU%3E">AsRef&lt;U&gt;</a><a href="#impl-PartialEq%3CT%3E">PartialEq&lt;T&gt;</a><a href="#impl-PartialEq%3CInternedString%3E">PartialEq&lt;InternedString&gt;</a><a href="#impl-Send">!Send</a><a href="#impl-Deref">Deref</a><a href="#impl-Debug">Debug</a><a href="#impl-Display">Display</a><a href="#impl-Decodable">Decodable</a><a href="#impl-Encodable">Encodable</a></div></div><p class='location'><a href='../index.html'>syntax_pos</a>::<wbr><a href='index.html'>symbol</a></p><script>window.sidebarCurrent = {name: 'InternedString', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -1252,105 +1252,6 @@ but without allocating and copying temporaries.</p>
 <span class="macro">assert</span><span class="macro">!</span>(<span class="string">&quot;Ferris&quot;</span>.<span class="ident">eq_ignore_ascii_case</span>(<span class="string">&quot;FERRIS&quot;</span>));
 <span class="macro">assert</span><span class="macro">!</span>(<span class="string">&quot;Ferrös&quot;</span>.<span class="ident">eq_ignore_ascii_case</span>(<span class="string">&quot;FERRöS&quot;</span>));
 <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="string">&quot;Ferrös&quot;</span>.<span class="ident">eq_ignore_ascii_case</span>(<span class="string">&quot;FERRÖS&quot;</span>));</pre>
-</div><h4 id='method.is_ascii_alphabetic' class="method"><span id='is_ascii_alphabetic.v' class='invisible'><code>fn <a href='#method.is_ascii_alphabetic' class='fnname'>is_ascii_alphabetic</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2210-2212' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII alphabetic
-characters:</p>
-
-<ul>
-<li>U+0041 &#39;A&#39; ... U+005A &#39;Z&#39;, or</li>
-<li>U+0061 &#39;a&#39; ... U+007A &#39;z&#39;.</li>
-</ul>
-</div><h4 id='method.is_ascii_uppercase' class="method"><span id='is_ascii_uppercase.v' class='invisible'><code>fn <a href='#method.is_ascii_uppercase' class='fnname'>is_ascii_uppercase</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2233-2235' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII uppercase characters:
-U+0041 &#39;A&#39; ... U+005A &#39;Z&#39;.</p>
-
-<h1 id='example' class='section-header'><a href='#example'>Example</a></h1>
-<pre class="rust rust-example-rendered">
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">ascii_ctype</span>)]</span>
-
-<span class="comment">// Only ascii uppercase characters</span>
-<span class="macro">assert</span><span class="macro">!</span>(<span class="string">&quot;HELLO&quot;</span>.<span class="ident">is_ascii_uppercase</span>());
-
-<span class="comment">// While all characters are ascii, &#39;y&#39; and &#39;e&#39; are not uppercase</span>
-<span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="string">&quot;Bye&quot;</span>.<span class="ident">is_ascii_uppercase</span>());
-
-<span class="comment">// While all characters are uppercase, &#39;Ü&#39; is not ascii</span>
-<span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="string">&quot;TSCHÜSS&quot;</span>.<span class="ident">is_ascii_uppercase</span>());</pre>
-</div><h4 id='method.is_ascii_lowercase' class="method"><span id='is_ascii_lowercase.v' class='invisible'><code>fn <a href='#method.is_ascii_lowercase' class='fnname'>is_ascii_lowercase</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2256-2258' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII lowercase characters:
-U+0061 &#39;a&#39; ... U+007A &#39;z&#39;.</p>
-
-<h1 id='example-1' class='section-header'><a href='#example-1'>Example</a></h1>
-<pre class="rust rust-example-rendered">
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">ascii_ctype</span>)]</span>
-
-<span class="comment">// Only ascii uppercase characters</span>
-<span class="macro">assert</span><span class="macro">!</span>(<span class="string">&quot;hello&quot;</span>.<span class="ident">is_ascii_lowercase</span>());
-
-<span class="comment">// While all characters are ascii, &#39;B&#39; is not lowercase</span>
-<span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="string">&quot;Bye&quot;</span>.<span class="ident">is_ascii_lowercase</span>());
-
-<span class="comment">// While all characters are lowercase, &#39;Ü&#39; is not ascii</span>
-<span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="string">&quot;tschüss&quot;</span>.<span class="ident">is_ascii_lowercase</span>());</pre>
-</div><h4 id='method.is_ascii_alphanumeric' class="method"><span id='is_ascii_alphanumeric.v' class='invisible'><code>fn <a href='#method.is_ascii_alphanumeric' class='fnname'>is_ascii_alphanumeric</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2268-2270' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII alphanumeric
-characters:</p>
-
-<ul>
-<li>U+0041 &#39;A&#39; ... U+005A &#39;Z&#39;, or</li>
-<li>U+0061 &#39;a&#39; ... U+007A &#39;z&#39;, or</li>
-<li>U+0030 &#39;0&#39; ... U+0039 &#39;9&#39;.</li>
-</ul>
-</div><h4 id='method.is_ascii_digit' class="method"><span id='is_ascii_digit.v' class='invisible'><code>fn <a href='#method.is_ascii_digit' class='fnname'>is_ascii_digit</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2276-2278' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII decimal digit:
-U+0030 &#39;0&#39; ... U+0039 &#39;9&#39;.</p>
-</div><h4 id='method.is_ascii_hexdigit' class="method"><span id='is_ascii_hexdigit.v' class='invisible'><code>fn <a href='#method.is_ascii_hexdigit' class='fnname'>is_ascii_hexdigit</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2287-2289' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII hexadecimal digits:</p>
-
-<ul>
-<li>U+0030 &#39;0&#39; ... U+0039 &#39;9&#39;, or</li>
-<li>U+0041 &#39;A&#39; ... U+0046 &#39;F&#39;, or</li>
-<li>U+0061 &#39;a&#39; ... U+0066 &#39;f&#39;.</li>
-</ul>
-</div><h4 id='method.is_ascii_punctuation' class="method"><span id='is_ascii_punctuation.v' class='invisible'><code>fn <a href='#method.is_ascii_punctuation' class='fnname'>is_ascii_punctuation</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2300-2302' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII punctuation
-characters:</p>
-
-<ul>
-<li>U+0021 ... U+002F <code>! &quot; # $ % &amp; &#39; ( ) * + , - . /</code>, or</li>
-<li>U+003A ... U+0040 <code>: ; &lt; = &gt; ? @</code>, or</li>
-<li>U+005B ... U+0060 <code>[ \ ] ^ _ `</code>, or</li>
-<li>U+007B ... U+007E <code>{ | } ~</code></li>
-</ul>
-</div><h4 id='method.is_ascii_graphic' class="method"><span id='is_ascii_graphic.v' class='invisible'><code>fn <a href='#method.is_ascii_graphic' class='fnname'>is_ascii_graphic</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2308-2310' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII graphic characters:
-U+0021 &#39;@&#39; ... U+007E &#39;~&#39;.</p>
-</div><h4 id='method.is_ascii_whitespace' class="method"><span id='is_ascii_whitespace.v' class='invisible'><code>fn <a href='#method.is_ascii_whitespace' class='fnname'>is_ascii_whitespace</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2333-2335' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII whitespace characters:
-U+0020 SPACE, U+0009 HORIZONTAL TAB, U+000A LINE FEED,
-U+000C FORM FEED, or U+000D CARRIAGE RETURN.</p>
-
-<p>Rust uses the WhatWG Infra Standard&#39;s <a href="https://infra.spec.whatwg.org/#ascii-whitespace">definition of ASCII
-whitespace</a>. There are several other definitions in
-wide use. For instance, <a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap07.html#tag_07_03_01">the POSIX locale</a> includes
-U+000B VERTICAL TAB as well as all the above characters,
-but—from the very same specification—<a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_05">the default rule for
-&quot;field splitting&quot; in the Bourne shell</a> considers <em>only</em>
-SPACE, HORIZONTAL TAB, and LINE FEED as whitespace.</p>
-
-<p>If you are writing a program that will process an existing
-file format, check what that format&#39;s definition of whitespace is
-before using this function.</p>
-</div><h4 id='method.is_ascii_control' class="method"><span id='is_ascii_control.v' class='invisible'><code>fn <a href='#method.is_ascii_control' class='fnname'>is_ascii_control</a>(&amp;self) -&gt; <a class="primitive" href="../../std/primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/alloc/str.rs.html#2346-2348' title='goto source code'>[src]</a></span></h4>
-<div class='stability'><div class='stab unstable'><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>ascii_ctype</code>)</div></div><div class='docblock'><p>Checks if all characters of this string are ASCII control characters:</p>
-
-<ul>
-<li>U+0000 NUL ... U+001F UNIT SEPARATOR, or</li>
-<li>U+007F DELETE.</li>
-</ul>
-
-<p>Note that most ASCII whitespace characters are control
-characters, but SPACE is not.</p>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>

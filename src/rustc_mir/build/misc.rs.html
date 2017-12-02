@@ -179,6 +179,16 @@
 <span id="134">134</span>
 <span id="135">135</span>
 <span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -201,7 +211,7 @@
 
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Builder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Add a new temporary value of type `ty` storing the result of</span>
@@ -209,12 +219,12 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// NB: **No cleanup is scheduled for this temporary.** You should</span>
     <span class="doccomment">/// call `schedule_drop` once the temporary is initialized.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">temp</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">span</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">temp</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">span</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">temp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">local_decls</span>.<span class="ident">push</span>(<span class="ident">LocalDecl</span>::<span class="ident">new_temp</span>(<span class="ident">ty</span>, <span class="ident">span</span>));
-        <span class="kw">let</span> <span class="ident">lvalue</span> <span class="op">=</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">temp</span>);
+        <span class="kw">let</span> <span class="ident">place</span> <span class="op">=</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">temp</span>);
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;temp: created temp {:?} with type {:?}&quot;</span>,
-               <span class="ident">lvalue</span>, <span class="self">self</span>.<span class="ident">local_decls</span>[<span class="ident">temp</span>].<span class="ident">ty</span>);
-        <span class="ident">lvalue</span>
+               <span class="ident">place</span>, <span class="self">self</span>.<span class="ident">local_decls</span>[<span class="ident">temp</span>].<span class="ident">ty</span>);
+        <span class="ident">place</span>
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">literal_operand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
@@ -303,7 +313,7 @@
                       <span class="ident">block</span>: <span class="ident">BasicBlock</span>,
                       <span class="ident">source_info</span>: <span class="ident">SourceInfo</span>,
                       <span class="ident">value</span>: <span class="ident">u64</span>)
-                      <span class="op">-&gt;</span> <span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+                      <span class="op">-&gt;</span> <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">usize_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">usize_ty</span>();
         <span class="kw">let</span> <span class="ident">temp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">temp</span>(<span class="ident">usize_ty</span>, <span class="ident">source_info</span>.<span class="ident">span</span>);
         <span class="self">self</span>.<span class="ident">cfg</span>.<span class="ident">push_assign_constant</span>(
@@ -314,6 +324,16 @@
                 <span class="ident">literal</span>: <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">usize_literal</span>(<span class="ident">value</span>),
             });
         <span class="ident">temp</span>
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">consume_by_copy_or_move</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">place</span>: <span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">tcx</span>();
+        <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">local_decls</span>, <span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">tcx</span>);
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">hir</span>.<span class="ident">type_moves_by_default</span>(<span class="ident">ty</span>, <span class="ident">DUMMY_SP</span>) {
+            <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">place</span>)
+        } <span class="kw">else</span> {
+            <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="ident">place</span>)
+        }
     }
 }
 </pre>

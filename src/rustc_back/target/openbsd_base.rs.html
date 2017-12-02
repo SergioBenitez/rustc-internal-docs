@@ -83,6 +83,7 @@
 <span id="38">38</span>
 <span id="39">39</span>
 <span id="40">40</span>
+<span id="41">41</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -120,6 +121,7 @@
         <span class="ident">is_like_openbsd</span>: <span class="bool-val">true</span>,
         <span class="ident">pre_link_args</span>: <span class="ident">args</span>,
         <span class="ident">position_independent_executables</span>: <span class="bool-val">true</span>,
+        <span class="ident">eliminate_frame_pointer</span>: <span class="bool-val">false</span>, <span class="comment">// FIXME 43575</span>
         <span class="ident">relro_level</span>: <span class="ident">RelroLevel</span>::<span class="ident">Full</span>,
         .. <span class="ident">Default</span>::<span class="ident">default</span>()
     }

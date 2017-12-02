@@ -1236,6 +1236,9 @@
 <span id="1191">1191</span>
 <span id="1192">1192</span>
 <span id="1193">1193</span>
+<span id="1194">1194</span>
+<span id="1195">1195</span>
+<span id="1196">1196</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1530,7 +1533,7 @@
                        <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">MetaItem</span>;
 
     <span class="kw">fn</span> <span class="ident">item_use</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>,
-                <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>, <span class="ident">vp</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">ViewPath</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span>;
+                <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>, <span class="ident">vp</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">UseTree</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">item_use_simple</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>, <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>, <span class="ident">path</span>: <span class="ident">ast</span>::<span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">item_use_simple_</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>, <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>,
                         <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>, <span class="ident">path</span>: <span class="ident">ast</span>::<span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span>;
@@ -2381,7 +2384,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">item_use</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>,
-                <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>, <span class="ident">vp</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">ViewPath</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+                <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>, <span class="ident">vp</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">UseTree</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">Item</span> {
             <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>,
             <span class="ident">ident</span>: <span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>(),
@@ -2400,34 +2403,37 @@
 
     <span class="kw">fn</span> <span class="ident">item_use_simple_</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>, <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>,
                         <span class="ident">ident</span>: <span class="ident">ast</span>::<span class="ident">Ident</span>, <span class="ident">path</span>: <span class="ident">ast</span>::<span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">item_use</span>(<span class="ident">sp</span>, <span class="ident">vis</span>,
-                      <span class="ident">P</span>(<span class="ident">respan</span>(<span class="ident">sp</span>,
-                               <span class="ident">ast</span>::<span class="ident">ViewPathSimple</span>(<span class="ident">ident</span>,
-                                                   <span class="ident">path</span>))))
+        <span class="self">self</span>.<span class="ident">item_use</span>(<span class="ident">sp</span>, <span class="ident">vis</span>, <span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">UseTree</span> {
+            <span class="ident">span</span>: <span class="ident">sp</span>,
+            <span class="ident">prefix</span>: <span class="ident">path</span>,
+            <span class="ident">kind</span>: <span class="ident">ast</span>::<span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(<span class="ident">ident</span>),
+        }))
     }
 
     <span class="kw">fn</span> <span class="ident">item_use_list</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>, <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>,
                      <span class="ident">path</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Ident</span><span class="op">&gt;</span>, <span class="ident">imports</span>: <span class="kw-2">&amp;</span>[<span class="ident">ast</span>::<span class="ident">Ident</span>]) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">imports</span> <span class="op">=</span> <span class="ident">imports</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> {
-            <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="ident">ast</span>::<span class="ident">PathListItem_</span> {
-                <span class="ident">name</span>: <span class="kw-2">*</span><span class="ident">id</span>,
-                <span class="ident">rename</span>: <span class="prelude-val">None</span>,
-                <span class="ident">id</span>: <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>,
-            };
-            <span class="ident">respan</span>(<span class="ident">sp</span>, <span class="ident">item</span>)
+            (<span class="ident">ast</span>::<span class="ident">UseTree</span> {
+                <span class="ident">span</span>: <span class="ident">sp</span>,
+                <span class="ident">prefix</span>: <span class="self">self</span>.<span class="ident">path</span>(<span class="ident">sp</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="kw-2">*</span><span class="ident">id</span>]),
+                <span class="ident">kind</span>: <span class="ident">ast</span>::<span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(<span class="kw-2">*</span><span class="ident">id</span>),
+            }, <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span>)
         }).<span class="ident">collect</span>();
 
-        <span class="self">self</span>.<span class="ident">item_use</span>(<span class="ident">sp</span>, <span class="ident">vis</span>,
-                      <span class="ident">P</span>(<span class="ident">respan</span>(<span class="ident">sp</span>,
-                               <span class="ident">ast</span>::<span class="ident">ViewPathList</span>(<span class="self">self</span>.<span class="ident">path</span>(<span class="ident">sp</span>, <span class="ident">path</span>),
-                                                 <span class="ident">imports</span>))))
+        <span class="self">self</span>.<span class="ident">item_use</span>(<span class="ident">sp</span>, <span class="ident">vis</span>, <span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">UseTree</span> {
+            <span class="ident">span</span>: <span class="ident">sp</span>,
+            <span class="ident">prefix</span>: <span class="self">self</span>.<span class="ident">path</span>(<span class="ident">sp</span>, <span class="ident">path</span>),
+            <span class="ident">kind</span>: <span class="ident">ast</span>::<span class="ident">UseTreeKind</span>::<span class="ident">Nested</span>(<span class="ident">imports</span>),
+        }))
     }
 
     <span class="kw">fn</span> <span class="ident">item_use_glob</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>,
                      <span class="ident">vis</span>: <span class="ident">ast</span>::<span class="ident">Visibility</span>, <span class="ident">path</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Ident</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">item_use</span>(<span class="ident">sp</span>, <span class="ident">vis</span>,
-                      <span class="ident">P</span>(<span class="ident">respan</span>(<span class="ident">sp</span>,
-                               <span class="ident">ast</span>::<span class="ident">ViewPathGlob</span>(<span class="self">self</span>.<span class="ident">path</span>(<span class="ident">sp</span>, <span class="ident">path</span>)))))
+        <span class="self">self</span>.<span class="ident">item_use</span>(<span class="ident">sp</span>, <span class="ident">vis</span>, <span class="ident">P</span>(<span class="ident">ast</span>::<span class="ident">UseTree</span> {
+            <span class="ident">span</span>: <span class="ident">sp</span>,
+            <span class="ident">prefix</span>: <span class="self">self</span>.<span class="ident">path</span>(<span class="ident">sp</span>, <span class="ident">path</span>),
+            <span class="ident">kind</span>: <span class="ident">ast</span>::<span class="ident">UseTreeKind</span>::<span class="ident">Glob</span>,
+        }))
     }
 }
 </pre>

@@ -1107,6 +1107,11 @@
 <span id="1062">1062</span>
 <span id="1063">1063</span>
 <span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1136,7 +1141,7 @@
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">ty</span>::<span class="ident">maps</span>::<span class="ident">Providers</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">traversal</span>::<span class="ident">ReversePostorder</span>;
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">LvalueContext</span>, <span class="ident">Visitor</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::<span class="ident">visit</span>::{<span class="ident">PlaceContext</span>, <span class="ident">Visitor</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">middle</span>::<span class="ident">lang_items</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">abi</span>::<span class="ident">Abi</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">attr</span>;
@@ -1161,7 +1166,7 @@
         <span class="comment">// Function argument.</span>
         <span class="kw">const</span> <span class="ident">FN_ARGUMENT</span>       <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">2</span>;
 
-        <span class="comment">// Static lvalue or move from a static.</span>
+        <span class="comment">// Static place or move from a static.</span>
         <span class="kw">const</span> <span class="ident">STATIC</span>            <span class="op">=</span> <span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">3</span>;
 
         <span class="comment">// Reference to a static.</span>
@@ -1307,7 +1312,7 @@
         <span class="self">self</span>.<span class="ident">add</span>(<span class="ident">original</span>);
     }
 
-    <span class="doccomment">/// Check if an Lvalue with the current qualifications could</span>
+    <span class="doccomment">/// Check if an Place with the current qualifications could</span>
     <span class="doccomment">/// be consumed, by either an operand or a Deref projection.</span>
     <span class="kw">fn</span> <span class="ident">try_consume</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">qualif</span>.<span class="ident">intersects</span>(<span class="ident">Qualif</span>::<span class="ident">STATIC</span>) <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">mode</span> <span class="op">!=</span> <span class="ident">Mode</span>::<span class="ident">Fn</span> {
@@ -1334,7 +1339,7 @@
     }
 
     <span class="doccomment">/// Assign the current qualification to the given destination.</span>
-    <span class="kw">fn</span> <span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">location</span>: <span class="ident">Location</span>) {
+    <span class="kw">fn</span> <span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">location</span>: <span class="ident">Location</span>) {
         <span class="kw">let</span> <span class="ident">qualif</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">qualif</span>;
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">span</span>;
         <span class="kw">let</span> <span class="ident">store</span> <span class="op">=</span> <span class="op">|</span><span class="ident">slot</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Qualif</span><span class="op">&gt;</span><span class="op">|</span> {
@@ -1346,7 +1351,7 @@
 
         <span class="comment">// Only handle promotable temps in non-const functions.</span>
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mode</span> <span class="op">==</span> <span class="ident">Mode</span>::<span class="ident">Fn</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dest</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dest</span> {
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">index</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Temp</span>
                 <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">temp_promotion_state</span>[<span class="ident">index</span>].<span class="ident">is_promotable</span>() {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;store to promotable temp {:?}&quot;</span>, <span class="ident">index</span>);
@@ -1359,24 +1364,24 @@
         <span class="comment">// When initializing a local, record whether the *value* being</span>
         <span class="comment">// stored in it needs dropping, which it may not, even if its</span>
         <span class="comment">// type does, e.g. `None::&lt;String&gt;`.</span>
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dest</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">dest</span> {
             <span class="kw">if</span> <span class="ident">qualif</span>.<span class="ident">intersects</span>(<span class="ident">Qualif</span>::<span class="ident">NEEDS_DROP</span>) {
                 <span class="self">self</span>.<span class="ident">local_needs_drop</span>[<span class="ident">local</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">span</span>);
             }
         }
 
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">dest</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">index</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Temp</span> <span class="op">=&gt;</span> {
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">index</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Temp</span> <span class="op">=&gt;</span> {
                 <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;store to temp {:?}&quot;</span>, <span class="ident">index</span>);
                 <span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">temp_qualif</span>[<span class="ident">index</span>])
             }
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">index</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">ReturnPointer</span> <span class="op">=&gt;</span> {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;store to return pointer {:?}&quot;</span>, <span class="ident">index</span>);
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>) <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">index</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">ReturnPointer</span> <span class="op">=&gt;</span> {
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;store to return place {:?}&quot;</span>, <span class="ident">index</span>);
                 <span class="ident">store</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">return_qualif</span>)
             }
 
-            <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw">box</span> <span class="ident">Projection</span> {
-                <span class="ident">base</span>: <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>),
+            <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="kw">box</span> <span class="ident">Projection</span> {
+                <span class="ident">base</span>: <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>),
                 <span class="ident">elem</span>: <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span>
             }) <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">index</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Temp</span>
                <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">index</span>].<span class="ident">ty</span>.<span class="ident">is_box</span>()
@@ -1390,7 +1395,7 @@
             <span class="comment">// This must be an explicit assignment.</span>
             _ <span class="op">=&gt;</span> {
                 <span class="comment">// Catch more errors in the destination.</span>
-                <span class="self">self</span>.<span class="ident">visit_lvalue</span>(<span class="ident">dest</span>, <span class="ident">LvalueContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
+                <span class="self">self</span>.<span class="ident">visit_place</span>(<span class="ident">dest</span>, <span class="ident">PlaceContext</span>::<span class="ident">Store</span>, <span class="ident">location</span>);
                 <span class="self">self</span>.<span class="ident">statement_like</span>();
             }
         }
@@ -1461,7 +1466,7 @@
                     <span class="kw">for</span> <span class="ident">index</span> <span class="kw">in</span> <span class="ident">mir</span>.<span class="ident">vars_iter</span>() {
                         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">const_fn_arg_vars</span>.<span class="ident">contains</span>(<span class="ident">index</span>.<span class="ident">index</span>()) {
                             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;unassigned variable {:?}&quot;</span>, <span class="ident">index</span>);
-                            <span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>), <span class="ident">Location</span> {
+                            <span class="self">self</span>.<span class="ident">assign</span>(<span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>), <span class="ident">Location</span> {
                                 <span class="ident">block</span>: <span class="ident">bb</span>,
                                 <span class="ident">statement_index</span>: <span class="ident">usize</span>::<span class="ident">MAX</span>,
                             });
@@ -1502,7 +1507,7 @@
             <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">candidate</span> {
                 <span class="ident">Candidate</span>::<span class="ident">Ref</span>(<span class="ident">Location</span> { <span class="ident">block</span>: <span class="ident">bb</span>, <span class="ident">statement_index</span>: <span class="ident">stmt_idx</span> }) <span class="op">=&gt;</span> {
                     <span class="kw">match</span> <span class="self">self</span>.<span class="ident">mir</span>[<span class="ident">bb</span>].<span class="ident">statements</span>[<span class="ident">stmt_idx</span>].<span class="ident">kind</span> {
-                        <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(_, <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(_, _, <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>))) <span class="op">=&gt;</span> {
+                        <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(_, <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(_, _, <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>))) <span class="op">=&gt;</span> {
                             <span class="ident">promoted_temps</span>.<span class="ident">add</span>(<span class="kw-2">&amp;</span><span class="ident">index</span>);
                         }
                         _ <span class="op">=&gt;</span> {}
@@ -1522,7 +1527,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Visitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Qualifier</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">visit_local</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                    <span class="kw-2">&amp;</span><span class="ident">local</span>: <span class="kw-2">&amp;</span><span class="ident">Local</span>,
-                   _: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                   _: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                    _: <span class="ident">Location</span>) {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">local</span>) {
             <span class="ident">LocalKind</span>::<span class="ident">ReturnPointer</span> <span class="op">=&gt;</span> {
@@ -1548,13 +1553,13 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">visit_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                    <span class="ident">context</span>: <span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">fn</span> <span class="ident">visit_place</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                    <span class="ident">context</span>: <span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">location</span>: <span class="ident">Location</span>) {
-        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="kw-2">ref</span> <span class="ident">local</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">context</span>, <span class="ident">location</span>),
-            <span class="ident">Lvalue</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> <span class="ident">global</span>) <span class="op">=&gt;</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+            <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="kw-2">ref</span> <span class="ident">local</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">visit_local</span>(<span class="ident">local</span>, <span class="ident">context</span>, <span class="ident">location</span>),
+            <span class="ident">Place</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> <span class="ident">global</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">add</span>(<span class="ident">Qualif</span>::<span class="ident">STATIC</span>);
 
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mode</span> <span class="op">!=</span> <span class="ident">Mode</span>::<span class="ident">Fn</span> {
@@ -1575,9 +1580,9 @@
                                a constant instead&quot;</span>, <span class="self">self</span>.<span class="ident">mode</span>);
                 }
             }
-            <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
+            <span class="ident">Place</span>::<span class="ident">Projection</span>(<span class="kw-2">ref</span> <span class="ident">proj</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">nest</span>(<span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
-                    <span class="ident">this</span>.<span class="ident">super_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+                    <span class="ident">this</span>.<span class="ident">super_place</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
                     <span class="kw">match</span> <span class="ident">proj</span>.<span class="ident">elem</span> {
                         <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> {
                             <span class="kw">if</span> <span class="op">!</span><span class="ident">this</span>.<span class="ident">try_consume</span>() {
@@ -1612,7 +1617,7 @@
                                           <span class="string">&quot;cannot refer to the interior of another \
                                            static, use a constant instead&quot;</span>);
                             }
-                            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">lvalue</span>.<span class="ident">ty</span>(<span class="ident">this</span>.<span class="ident">mir</span>, <span class="ident">this</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">this</span>.<span class="ident">tcx</span>);
+                            <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="ident">this</span>.<span class="ident">mir</span>, <span class="ident">this</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="ident">this</span>.<span class="ident">tcx</span>);
                             <span class="ident">this</span>.<span class="ident">qualif</span>.<span class="ident">restrict</span>(<span class="ident">ty</span>, <span class="ident">this</span>.<span class="ident">tcx</span>, <span class="ident">this</span>.<span class="ident">param_env</span>);
                         }
 
@@ -1629,14 +1634,15 @@
 
     <span class="kw">fn</span> <span class="ident">visit_operand</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">operand</span>: <span class="kw-2">&amp;</span><span class="ident">Operand</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">location</span>: <span class="ident">Location</span>) {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
-            <span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
+            <span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="kw-2">ref</span> <span class="ident">place</span>) <span class="op">|</span>
+            <span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="kw-2">ref</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">nest</span>(<span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
                     <span class="ident">this</span>.<span class="ident">super_operand</span>(<span class="ident">operand</span>, <span class="ident">location</span>);
                     <span class="ident">this</span>.<span class="ident">try_consume</span>();
                 });
 
                 <span class="comment">// Mark the consumed locals to indicate later drops are noops.</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
                     <span class="self">self</span>.<span class="ident">local_needs_drop</span>[<span class="ident">local</span>] <span class="op">=</span> <span class="prelude-val">None</span>;
                 }
             }
@@ -1664,7 +1670,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">visit_rvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">rvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">location</span>: <span class="ident">Location</span>) {
-        <span class="comment">// Recurse through operands and lvalues.</span>
+        <span class="comment">// Recurse through operands and places.</span>
         <span class="self">self</span>.<span class="ident">super_rvalue</span>(<span class="ident">rvalue</span>, <span class="ident">location</span>);
 
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rvalue</span> {
@@ -1681,20 +1687,20 @@
             <span class="ident">Rvalue</span>::<span class="ident">Discriminant</span>(..) <span class="op">=&gt;</span> {}
 
             <span class="ident">Rvalue</span>::<span class="ident">Len</span>(_) <span class="op">=&gt;</span> {
-                <span class="comment">// Static lvalues in consts would have errored already,</span>
+                <span class="comment">// Static places in consts would have errored already,</span>
                 <span class="comment">// don&#39;t treat length checks as reads from statics.</span>
                 <span class="self">self</span>.<span class="ident">qualif</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">qualif</span> <span class="op">-</span> <span class="ident">Qualif</span>::<span class="ident">STATIC</span>;
             }
 
-            <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(_, <span class="ident">kind</span>, <span class="kw-2">ref</span> <span class="ident">lvalue</span>) <span class="op">=&gt;</span> {
-                <span class="comment">// Static lvalues in consts would have errored already,</span>
+            <span class="ident">Rvalue</span>::<span class="ident">Ref</span>(_, <span class="ident">kind</span>, <span class="kw-2">ref</span> <span class="ident">place</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// Static places in consts would have errored already,</span>
                 <span class="comment">// only keep track of references to them here.</span>
                 <span class="kw">if</span> <span class="self">self</span>.<span class="ident">qualif</span>.<span class="ident">intersects</span>(<span class="ident">Qualif</span>::<span class="ident">STATIC</span>) {
                     <span class="self">self</span>.<span class="ident">qualif</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">qualif</span> <span class="op">-</span> <span class="ident">Qualif</span>::<span class="ident">STATIC</span>;
                     <span class="self">self</span>.<span class="ident">add</span>(<span class="ident">Qualif</span>::<span class="ident">STATIC_REF</span>);
                 }
 
-                <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">lvalue</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>);
+                <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>);
                 <span class="kw">if</span> <span class="ident">kind</span> <span class="op">==</span> <span class="ident">BorrowKind</span>::<span class="ident">Mut</span> {
                     <span class="comment">// In theory, any zero-sized value could be borrowed</span>
                     <span class="comment">// mutably without consequences. However, only &amp;mut []</span>
@@ -1744,7 +1750,7 @@
                 <span class="kw">let</span> <span class="ident">candidate</span> <span class="op">=</span> <span class="ident">Candidate</span>::<span class="ident">Ref</span>(<span class="ident">location</span>);
                 <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">qualif</span>.<span class="ident">intersects</span>(<span class="ident">Qualif</span>::<span class="ident">NEVER_PROMOTE</span>) {
                     <span class="comment">// We can only promote direct borrows of temps.</span>
-                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
                         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">local</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Temp</span> {
                             <span class="self">self</span>.<span class="ident">promotion_candidates</span>.<span class="ident">push</span>(<span class="ident">candidate</span>);
                         }
@@ -1938,14 +1944,14 @@
                 }
                 <span class="self">self</span>.<span class="ident">assign</span>(<span class="ident">dest</span>, <span class="ident">location</span>);
             }
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { <span class="ident">location</span>: <span class="kw-2">ref</span> <span class="ident">lvalue</span>, .. } <span class="op">=</span> <span class="kw-2">*</span><span class="ident">kind</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { <span class="ident">location</span>: <span class="kw-2">ref</span> <span class="ident">place</span>, .. } <span class="op">=</span> <span class="kw-2">*</span><span class="ident">kind</span> {
             <span class="self">self</span>.<span class="ident">super_terminator_kind</span>(<span class="ident">bb</span>, <span class="ident">kind</span>, <span class="ident">location</span>);
 
             <span class="comment">// Deny *any* live drops anywhere other than functions.</span>
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mode</span> <span class="op">!=</span> <span class="ident">Mode</span>::<span class="ident">Fn</span> {
                 <span class="comment">// HACK(eddyb) Emulate a bit of dataflow analysis,</span>
                 <span class="comment">// conservatively, that drop elaboration will do.</span>
-                <span class="kw">let</span> <span class="ident">needs_drop</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
+                <span class="kw">let</span> <span class="ident">needs_drop</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">place</span> {
                     <span class="self">self</span>.<span class="ident">local_needs_drop</span>[<span class="ident">local</span>]
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
@@ -1953,7 +1959,7 @@
 
                 <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">span</span>) <span class="op">=</span> <span class="ident">needs_drop</span> {
                     <span class="comment">// Double-check the type being dropped, to minimize false positives.</span>
-                    <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">lvalue</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>);
+                    <span class="kw">let</span> <span class="ident">ty</span> <span class="op">=</span> <span class="ident">place</span>.<span class="ident">ty</span>(<span class="self">self</span>.<span class="ident">mir</span>, <span class="self">self</span>.<span class="ident">tcx</span>).<span class="ident">to_ty</span>(<span class="self">self</span>.<span class="ident">tcx</span>);
                     <span class="kw">if</span> <span class="ident">ty</span>.<span class="ident">needs_drop</span>(<span class="self">self</span>.<span class="ident">tcx</span>, <span class="self">self</span>.<span class="ident">param_env</span>) {
                         <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">span</span>, <span class="ident">E0493</span>,
                                          <span class="string">&quot;destructors cannot be evaluated at compile-time&quot;</span>)
@@ -1971,21 +1977,25 @@
 
     <span class="kw">fn</span> <span class="ident">visit_assign</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                     _: <span class="ident">BasicBlock</span>,
-                    <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                    <span class="ident">dest</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">rvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Rvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">location</span>: <span class="ident">Location</span>) {
         <span class="self">self</span>.<span class="ident">visit_rvalue</span>(<span class="ident">rvalue</span>, <span class="ident">location</span>);
 
         <span class="comment">// Check the allowed const fn argument forms.</span>
-        <span class="kw">if</span> <span class="kw">let</span> (<span class="ident">Mode</span>::<span class="ident">ConstFn</span>, <span class="kw-2">&amp;</span><span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>)) <span class="op">=</span> (<span class="self">self</span>.<span class="ident">mode</span>, <span class="ident">dest</span>) {
+        <span class="kw">if</span> <span class="kw">let</span> (<span class="ident">Mode</span>::<span class="ident">ConstFn</span>, <span class="kw-2">&amp;</span><span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>)) <span class="op">=</span> (<span class="self">self</span>.<span class="ident">mode</span>, <span class="ident">dest</span>) {
             <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">index</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Var</span> <span class="op">&amp;&amp;</span>
                <span class="self">self</span>.<span class="ident">const_fn_arg_vars</span>.<span class="ident">insert</span>(<span class="ident">index</span>.<span class="ident">index</span>()) {
 
                 <span class="comment">// Direct use of an argument is permitted.</span>
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Consume</span>(<span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">local</span>))) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">rvalue</span> {
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">local</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Arg</span> {
-                        <span class="kw">return</span>;
+                <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rvalue</span> {
+                    <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Copy</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>))) <span class="op">|</span>
+                    <span class="ident">Rvalue</span>::<span class="ident">Use</span>(<span class="ident">Operand</span>::<span class="ident">Move</span>(<span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>))) <span class="op">=&gt;</span> {
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_kind</span>(<span class="ident">local</span>) <span class="op">==</span> <span class="ident">LocalKind</span>::<span class="ident">Arg</span> {
+                            <span class="kw">return</span>;
+                        }
                     }
+                    _ <span class="op">=&gt;</span> {}
                 }
 
                 <span class="comment">// Avoid a generic error for other uses of arguments.</span>
@@ -2010,8 +2020,8 @@
         <span class="self">self</span>.<span class="ident">nest</span>(<span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
             <span class="ident">this</span>.<span class="ident">visit_source_info</span>(<span class="kw-2">&amp;</span><span class="ident">statement</span>.<span class="ident">source_info</span>);
             <span class="kw">match</span> <span class="ident">statement</span>.<span class="ident">kind</span> {
-                <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">lvalue</span>, <span class="kw-2">ref</span> <span class="ident">rvalue</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">this</span>.<span class="ident">visit_assign</span>(<span class="ident">bb</span>, <span class="ident">lvalue</span>, <span class="ident">rvalue</span>, <span class="ident">location</span>);
+                <span class="ident">StatementKind</span>::<span class="ident">Assign</span>(<span class="kw-2">ref</span> <span class="ident">place</span>, <span class="kw-2">ref</span> <span class="ident">rvalue</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">this</span>.<span class="ident">visit_assign</span>(<span class="ident">bb</span>, <span class="ident">place</span>, <span class="ident">rvalue</span>, <span class="ident">location</span>);
                 }
                 <span class="ident">StatementKind</span>::<span class="ident">SetDiscriminant</span> { .. } <span class="op">|</span>
                 <span class="ident">StatementKind</span>::<span class="ident">StorageLive</span>(_) <span class="op">|</span>
@@ -2135,7 +2145,7 @@
                 });
                 <span class="kw">let</span> <span class="ident">terminator</span> <span class="op">=</span> <span class="ident">block</span>.<span class="ident">terminator_mut</span>();
                 <span class="kw">match</span> <span class="ident">terminator</span>.<span class="ident">kind</span> {
-                    <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { <span class="ident">location</span>: <span class="ident">Lvalue</span>::<span class="ident">Local</span>(<span class="ident">index</span>), <span class="ident">target</span>, .. } <span class="op">=&gt;</span> {
+                    <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { <span class="ident">location</span>: <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">index</span>), <span class="ident">target</span>, .. } <span class="op">=&gt;</span> {
                         <span class="kw">if</span> <span class="ident">promoted_temps</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">index</span>) {
                             <span class="ident">terminator</span>.<span class="ident">kind</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> {
                                 <span class="ident">target</span>,

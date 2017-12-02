@@ -1364,6 +1364,54 @@
 <span id="1319">1319</span>
 <span id="1320">1320</span>
 <span id="1321">1321</span>
+<span id="1322">1322</span>
+<span id="1323">1323</span>
+<span id="1324">1324</span>
+<span id="1325">1325</span>
+<span id="1326">1326</span>
+<span id="1327">1327</span>
+<span id="1328">1328</span>
+<span id="1329">1329</span>
+<span id="1330">1330</span>
+<span id="1331">1331</span>
+<span id="1332">1332</span>
+<span id="1333">1333</span>
+<span id="1334">1334</span>
+<span id="1335">1335</span>
+<span id="1336">1336</span>
+<span id="1337">1337</span>
+<span id="1338">1338</span>
+<span id="1339">1339</span>
+<span id="1340">1340</span>
+<span id="1341">1341</span>
+<span id="1342">1342</span>
+<span id="1343">1343</span>
+<span id="1344">1344</span>
+<span id="1345">1345</span>
+<span id="1346">1346</span>
+<span id="1347">1347</span>
+<span id="1348">1348</span>
+<span id="1349">1349</span>
+<span id="1350">1350</span>
+<span id="1351">1351</span>
+<span id="1352">1352</span>
+<span id="1353">1353</span>
+<span id="1354">1354</span>
+<span id="1355">1355</span>
+<span id="1356">1356</span>
+<span id="1357">1357</span>
+<span id="1358">1358</span>
+<span id="1359">1359</span>
+<span id="1360">1360</span>
+<span id="1361">1361</span>
+<span id="1362">1362</span>
+<span id="1363">1363</span>
+<span id="1364">1364</span>
+<span id="1365">1365</span>
+<span id="1366">1366</span>
+<span id="1367">1367</span>
+<span id="1368">1368</span>
+<span id="1369">1369</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1375,6 +1423,11 @@
 <span class="comment">// option. This file may not be copied, modified, or distributed</span>
 <span class="comment">// except according to those terms.</span>
 
+<span class="doccomment">//! This module contains implements of the `Lift` and `TypeFoldable`</span>
+<span class="doccomment">//! traits for various types in the Rust compiler. Most are written by</span>
+<span class="doccomment">//! hand, though we&#39;ve recently added some macros (e.g.,</span>
+<span class="doccomment">//! `BraceStructLiftImpl!`) to help with the tedium.</span>
+
 <span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">type_variable</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>::{<span class="self">self</span>, <span class="ident">ConstVal</span>, <span class="ident">ConstAggregate</span>, <span class="ident">ConstEvalErr</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Lift</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
@@ -1383,9 +1436,158 @@
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::{<span class="ident">IndexVec</span>, <span class="ident">Idx</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::<span class="ident">Rc</span>;
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">abi</span>;
 
-<span class="kw">use</span> <span class="ident">hir</span>;
+<span class="comment">///////////////////////////////////////////////////////////////////////////</span>
+<span class="comment">// Atomic structs</span>
+<span class="comment">//</span>
+<span class="comment">// For things that don&#39;t carry any arena-allocated data (and are</span>
+<span class="comment">// copy...), just add them to this list.</span>
+
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">CopyImpls</span> {
+    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>,)<span class="op">+</span>) <span class="op">=&gt;</span> {
+        $(
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lift</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
+                <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="self">Self</span>;
+                <span class="kw">fn</span> <span class="ident">lift_to_tcx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, _: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+                    <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="self">self</span>)
+                }
+            }
+
+            <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
+                <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, _: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
+                    <span class="kw-2">*</span><span class="self">self</span>
+                }
+
+                <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, _: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+                    <span class="bool-val">false</span>
+                }
+            }
+        )<span class="op">+</span>
+    }
+}
+
+<span class="macro">CopyImpls</span><span class="macro">!</span> {
+    (),
+    ::<span class="ident">hir</span>::<span class="ident">Unsafety</span>,
+    ::<span class="ident">syntax</span>::<span class="ident">abi</span>::<span class="ident">Abi</span>,
+    ::<span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>,
+    ::<span class="ident">mir</span>::<span class="ident">Local</span>,
+    ::<span class="ident">traits</span>::<span class="ident">Reveal</span>,
+    ::<span class="ident">syntax_pos</span>::<span class="ident">Span</span>,
+}
+
+<span class="comment">///////////////////////////////////////////////////////////////////////////</span>
+<span class="comment">// Macros</span>
+<span class="comment">//</span>
+<span class="comment">// When possible, use one of these (relatively) convenient macros to write</span>
+<span class="comment">// the impls for you.</span>
+
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">BraceStructLiftImpl</span> {
+    (<span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>:<span class="ident">tt</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="ident">Lift</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">path</span> {
+        <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lifted</span>:<span class="ident">ty</span>;
+        $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>:<span class="ident">ident</span>),<span class="op">*</span> $(,)<span class="op">*</span>
+    } $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">Lift</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>
+            $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>)<span class="kw-2">*</span>)<span class="op">*</span>
+        {
+            <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lifted</span>;
+
+            <span class="kw">fn</span> <span class="ident">lift_to_tcx</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lifted</span><span class="op">&gt;</span> {
+                $(<span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span> <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>)<span class="question-mark">?</span>;)<span class="op">*</span>
+                <span class="prelude-val">Some</span>(<span class="self">Self</span>::<span class="ident">Lifted</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>),<span class="op">*</span> })
+            }
+        }
+    };
+}
+
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">EnumLiftImpl</span> {
+    (<span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>:<span class="ident">tt</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="ident">Lift</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">path</span> {
+        <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lifted</span>:<span class="ident">ty</span>;
+        $(
+            (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span>:<span class="ident">path</span>) ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>:<span class="ident">ident</span>),<span class="op">*</span> )
+        ),<span class="op">*</span>
+        $(,)<span class="op">*</span>
+    } $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">Lift</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>
+            $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>)<span class="kw-2">*</span>)<span class="op">*</span>
+        {
+            <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lifted</span>;
+
+            <span class="kw">fn</span> <span class="ident">lift_to_tcx</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">lifted</span><span class="op">&gt;</span> {
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>),<span class="op">*</span> ) <span class="op">=&gt;</span> {
+                        <span class="prelude-val">Some</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> ( $(<span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>)<span class="question-mark">?</span>),<span class="op">*</span> ))
+                    })<span class="op">*</span>
+                }
+            }
+        }
+    };
+}
+
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">BraceStructTypeFoldableImpl</span> {
+    (<span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>:<span class="ident">tt</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">path</span> {
+        $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>:<span class="ident">ident</span>),<span class="op">*</span> $(,)<span class="op">*</span>
+    } $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">fold</span>::<span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>
+            $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>)<span class="kw-2">*</span>)<span class="op">*</span>
+        {
+            <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="ident">V</span>: <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">fold</span>::<span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span>(
+                <span class="kw-2">&amp;</span><span class="self">self</span>,
+                <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>,
+            ) <span class="op">-&gt;</span> <span class="self">Self</span> {
+                <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>,)<span class="op">*</span> } <span class="op">=</span> <span class="self">self</span>;
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),)<span class="op">*</span> }
+            }
+
+            <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">fold</span>::<span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span>(
+                <span class="kw-2">&amp;</span><span class="self">self</span>,
+                <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>,
+            ) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+                <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span> { $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>,)<span class="op">*</span> } <span class="op">=</span> <span class="self">self</span>;
+                <span class="bool-val">false</span> $(<span class="op">||</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>))<span class="op">*</span>
+            }
+        }
+    };
+}
+
+<span class="attribute">#[<span class="ident">macro_export</span>]</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">EnumTypeFoldableImpl</span> {
+    (<span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>:<span class="ident">tt</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>:<span class="ident">tt</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>:<span class="ident">path</span> {
+        $(
+            (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span>:<span class="ident">path</span>) ( $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>:<span class="ident">ident</span>),<span class="op">*</span> )
+        ),<span class="op">*</span>
+        $(,)<span class="op">*</span>
+    } $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        <span class="kw">impl</span><span class="op">&lt;</span>$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">p</span>),<span class="kw-2">*</span><span class="op">&gt;</span> <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">fold</span>::<span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">s</span>
+            $(<span class="kw">where</span> $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">wc</span>)<span class="kw-2">*</span>)<span class="op">*</span>
+        {
+            <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span>, <span class="ident">V</span>: <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">fold</span>::<span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span>(
+                <span class="kw-2">&amp;</span><span class="self">self</span>,
+                <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>,
+            ) <span class="op">-&gt;</span> <span class="self">Self</span> {
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>),<span class="op">*</span> ) <span class="op">=&gt;</span> {
+                        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),<span class="op">*</span> )
+                    })<span class="op">*</span>
+                }
+            }
+
+            <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="macro-nonterminal">$</span><span class="kw">crate</span>::<span class="macro-nonterminal">ty</span>::<span class="ident">fold</span>::<span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">tcx</span><span class="op">&gt;&gt;</span>(
+                <span class="kw-2">&amp;</span><span class="self">self</span>,
+                <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>,
+            ) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+                <span class="kw">match</span> <span class="self">self</span> {
+                    $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant</span> ( $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>),<span class="op">*</span> ) <span class="op">=&gt;</span> {
+                        <span class="bool-val">false</span> $(<span class="op">||</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">variant_arg</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>))<span class="op">*</span>
+                    })<span class="op">*</span>
+                }
+            }
+        }
+    };
+}
 
 <span class="comment">///////////////////////////////////////////////////////////////////////////</span>
 <span class="comment">// Lift implementations</span>
@@ -1454,6 +1656,15 @@
     <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span>::<span class="ident">Lifted</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">lift_to_tcx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Lifted</span><span class="op">&gt;</span> {
         <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="kw-2">&amp;</span><span class="self">self</span>[..])
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">I</span>: <span class="ident">Idx</span>, <span class="ident">T</span>: <span class="ident">Lift</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="ident">Lift</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="ident">IndexVec</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span>::<span class="ident">Lifted</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">lift_to_tcx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Lifted</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="ident">e</span>))
+            .<span class="ident">collect</span>()
     }
 }
 
@@ -1751,16 +1962,10 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lift</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">type_variable</span>::<span class="ident">Default</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="ident">type_variable</span>::<span class="ident">Default</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">lift_to_tcx</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Lifted</span><span class="op">&gt;</span> {
-        <span class="ident">tcx</span>.<span class="ident">lift</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">ty</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">ty</span><span class="op">|</span> {
-            <span class="ident">type_variable</span>::<span class="ident">Default</span> {
-                <span class="ident">ty</span>,
-                <span class="ident">origin_span</span>: <span class="self">self</span>.<span class="ident">origin_span</span>,
-                <span class="ident">def_id</span>: <span class="self">self</span>.<span class="ident">def_id</span>
-            }
-        })
+<span class="macro">BraceStructLiftImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lift</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">type_variable</span>::<span class="ident">Default</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+        <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="ident">type_variable</span>::<span class="ident">Default</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>;
+        <span class="ident">ty</span>, <span class="ident">origin_span</span>, <span class="ident">def_id</span>
     }
 }
 
@@ -1844,6 +2049,7 @@
             }
 
             <span class="ident">TypeckError</span> <span class="op">=&gt;</span> <span class="ident">TypeckError</span>,
+            <span class="ident">CheckMatchError</span> <span class="op">=&gt;</span> <span class="ident">CheckMatchError</span>,
         })
     }
 }
@@ -1872,31 +2078,6 @@
 <span class="comment">// override the behavior, but there are a lot of random types and one</span>
 <span class="comment">// can easily refactor the folding into the TypeFolder trait as</span>
 <span class="comment">// needed.</span>
-
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">CopyImpls</span> {
-    ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span>:<span class="ident">ty</span>),<span class="op">+</span>) <span class="op">=&gt;</span> {
-        $(
-            <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">Lift</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-                <span class="kw">type</span> <span class="ident">Lifted</span> <span class="op">=</span> <span class="self">Self</span>;
-                <span class="kw">fn</span> <span class="ident">lift_to_tcx</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, _: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-                    <span class="prelude-val">Some</span>(<span class="kw-2">*</span><span class="self">self</span>)
-                }
-            }
-
-            <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-                <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, _: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
-                    <span class="kw-2">*</span><span class="self">self</span>
-                }
-
-                <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, _: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-                    <span class="bool-val">false</span>
-                }
-            }
-        )<span class="op">+</span>
-    }
-}
-
-<span class="macro">CopyImpls</span><span class="macro">!</span> { (), <span class="ident">hir</span>::<span class="ident">Unsafety</span>, <span class="ident">abi</span>::<span class="ident">Abi</span>, <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>, ::<span class="ident">mir</span>::<span class="ident">Local</span> }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">T</span>:<span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">U</span>:<span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> (<span class="ident">T</span>, <span class="ident">U</span>) {
     <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> (<span class="ident">T</span>, <span class="ident">U</span>) {
@@ -1967,18 +2148,8 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">ParamEnv</span> {
-            <span class="ident">reveal</span>: <span class="self">self</span>.<span class="ident">reveal</span>,
-            <span class="ident">caller_bounds</span>: <span class="self">self</span>.<span class="ident">caller_bounds</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="ident">ty</span>::<span class="ident">ParamEnv</span> { <span class="ident">reveal</span>: _, <span class="kw-2">ref</span> <span class="ident">caller_bounds</span> } <span class="op">=</span> <span class="self">self</span>;
-        <span class="ident">caller_bounds</span>.<span class="ident">super_visit_with</span>(<span class="ident">visitor</span>)
-    }
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ParamEnv</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> { <span class="ident">reveal</span>, <span class="ident">caller_bounds</span> }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">ty</span>::<span class="ident">Slice</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">ExistentialPredicate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
@@ -2100,17 +2271,9 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">GenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">GenSig</span> {
-            <span class="ident">yield_ty</span>: <span class="self">self</span>.<span class="ident">yield_ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">return_ty</span>: <span class="self">self</span>.<span class="ident">return_ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">yield_ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span>
-        <span class="self">self</span>.<span class="ident">return_ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">GenSig</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">yield_ty</span>, <span class="ident">return_ty</span>
     }
 }
 
@@ -2131,46 +2294,20 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">TraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">TraitRef</span> {
-            <span class="ident">def_id</span>: <span class="self">self</span>.<span class="ident">def_id</span>,
-            <span class="ident">substs</span>: <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
-    }
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">TraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> { <span class="ident">def_id</span>, <span class="ident">substs</span> }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ExistentialTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">ExistentialTraitRef</span> {
-            <span class="ident">def_id</span>: <span class="self">self</span>.<span class="ident">def_id</span>,
-            <span class="ident">substs</span>: <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
-    }
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ExistentialTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> { <span class="ident">def_id</span>, <span class="ident">substs</span> }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ImplHeader</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">ImplHeader</span> {
-            <span class="ident">impl_def_id</span>: <span class="self">self</span>.<span class="ident">impl_def_id</span>,
-            <span class="ident">self_ty</span>: <span class="self">self</span>.<span class="ident">self_ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">trait_ref</span>: <span class="self">self</span>.<span class="ident">trait_ref</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)),
-            <span class="ident">predicates</span>: <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>)).<span class="ident">collect</span>(),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">self_ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span>
-            <span class="self">self</span>.<span class="ident">trait_ref</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">r</span><span class="op">|</span> <span class="ident">r</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) <span class="op">||</span>
-            <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>))
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ImplHeader</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">impl_def_id</span>,
+        <span class="ident">self_ty</span>,
+        <span class="ident">trait_ref</span>,
+        <span class="ident">predicates</span>,
     }
 }
 
@@ -2214,17 +2351,10 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">adjustment</span>::<span class="ident">Adjustment</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">adjustment</span>::<span class="ident">Adjustment</span> {
-            <span class="ident">kind</span>: <span class="self">self</span>.<span class="ident">kind</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">target</span>: <span class="self">self</span>.<span class="ident">target</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">kind</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span>
-        <span class="self">self</span>.<span class="ident">target</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">adjustment</span>::<span class="ident">Adjustment</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">kind</span>,
+        <span class="ident">target</span>,
     }
 }
 
@@ -2295,16 +2425,10 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">GenericPredicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">GenericPredicates</span> {
-            <span class="ident">parent</span>: <span class="self">self</span>.<span class="ident">parent</span>,
-            <span class="ident">predicates</span>: <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
 
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">GenericPredicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">parent</span>, <span class="ident">predicates</span>
     }
 }
 
@@ -2362,55 +2486,27 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ProjectionPredicate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">ProjectionPredicate</span> {
-            <span class="ident">projection_ty</span>: <span class="self">self</span>.<span class="ident">projection_ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">projection_ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span> <span class="self">self</span>.<span class="ident">ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ProjectionPredicate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">projection_ty</span>, <span class="ident">ty</span>
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ExistentialProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">ExistentialProjection</span> {
-            <span class="ident">ty</span>: <span class="self">self</span>.<span class="ident">ty</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">substs</span>: <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">item_def_id</span>: <span class="self">self</span>.<span class="ident">item_def_id</span>,
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>) <span class="op">||</span> <span class="self">self</span>.<span class="ident">ty</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ExistentialProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">ty</span>, <span class="ident">substs</span>, <span class="ident">item_def_id</span>
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ProjectionTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">ProjectionTy</span> {
-            <span class="ident">substs</span>: <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-            <span class="ident">item_def_id</span>: <span class="self">self</span>.<span class="ident">item_def_id</span>,
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">substs</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">ProjectionTy</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">substs</span>, <span class="ident">item_def_id</span>
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">InstantiatedPredicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">super_fold_with</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>: <span class="lifetime">&#39;tcx</span>, <span class="ident">F</span>: <span class="ident">TypeFolder</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">folder</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">ty</span>::<span class="ident">InstantiatedPredicates</span> {
-            <span class="ident">predicates</span>: <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">fold_with</span>(<span class="ident">folder</span>),
-        }
-    }
-
-    <span class="kw">fn</span> <span class="ident">super_visit_with</span><span class="op">&lt;</span><span class="ident">V</span>: <span class="ident">TypeVisitor</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">visitor</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">predicates</span>.<span class="ident">visit_with</span>(<span class="ident">visitor</span>)
+<span class="macro">BraceStructTypeFoldableImpl</span><span class="macro">!</span> {
+    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">TypeFoldable</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">InstantiatedPredicates</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="ident">predicates</span>
     }
 }
 

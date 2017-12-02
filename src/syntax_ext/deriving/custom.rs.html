@@ -154,6 +154,12 @@
 <span id="109">109</span>
 <span id="110">110</span>
 <span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -253,12 +259,18 @@
             }
         };
 
+        <span class="kw">let</span> <span class="ident">error_count_before</span> <span class="op">=</span> <span class="ident">ecx</span>.<span class="ident">parse_sess</span>.<span class="ident">span_diagnostic</span>.<span class="ident">err_count</span>();
         <span class="ident">__internal</span>::<span class="ident">set_sess</span>(<span class="ident">ecx</span>, <span class="op">||</span> {
+            <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="string">&quot;proc-macro derive produced unparseable tokens&quot;</span>;
             <span class="kw">match</span> <span class="ident">__internal</span>::<span class="ident">token_stream_parse_items</span>(<span class="ident">stream</span>) {
+                <span class="comment">// fail if there have been errors emitted</span>
+                <span class="prelude-val">Ok</span>(_) <span class="kw">if</span> <span class="ident">ecx</span>.<span class="ident">parse_sess</span>.<span class="ident">span_diagnostic</span>.<span class="ident">err_count</span>() <span class="op">&gt;</span> <span class="ident">error_count_before</span> <span class="op">=&gt;</span> {
+                    <span class="ident">ecx</span>.<span class="ident">struct_span_fatal</span>(<span class="ident">span</span>, <span class="ident">msg</span>).<span class="ident">emit</span>();
+                    <span class="macro">panic</span><span class="macro">!</span>(<span class="ident">FatalError</span>);
+                }
                 <span class="prelude-val">Ok</span>(<span class="ident">new_items</span>) <span class="op">=&gt;</span> <span class="ident">new_items</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="ident">Annotatable</span>::<span class="ident">Item</span>).<span class="ident">collect</span>(),
                 <span class="prelude-val">Err</span>(_) <span class="op">=&gt;</span> {
                     <span class="comment">// FIXME: handle this better</span>
-                    <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="string">&quot;proc-macro derive produced unparseable tokens&quot;</span>;
                     <span class="ident">ecx</span>.<span class="ident">struct_span_fatal</span>(<span class="ident">span</span>, <span class="ident">msg</span>).<span class="ident">emit</span>();
                     <span class="macro">panic</span><span class="macro">!</span>(<span class="ident">FatalError</span>);
                 }

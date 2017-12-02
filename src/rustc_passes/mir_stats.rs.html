@@ -327,6 +327,7 @@
 <span id="282">282</span>
 <span id="283">283</span>
 <span id="284">284</span>
+<span id="285">285</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -345,7 +346,7 @@
 <span class="kw">use</span> <span class="ident">rustc_const_math</span>::{<span class="ident">ConstUsize</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">AggregateKind</span>, <span class="ident">AssertMessage</span>, <span class="ident">BasicBlock</span>, <span class="ident">BasicBlockData</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Constant</span>, <span class="ident">Literal</span>, <span class="ident">Location</span>, <span class="ident">Local</span>, <span class="ident">LocalDecl</span>};
-<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Lvalue</span>, <span class="ident">LvalueElem</span>, <span class="ident">LvalueProjection</span>};
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Place</span>, <span class="ident">PlaceElem</span>, <span class="ident">PlaceProjection</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Mir</span>, <span class="ident">Operand</span>, <span class="ident">ProjectionElem</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Rvalue</span>, <span class="ident">SourceInfo</span>, <span class="ident">Statement</span>, <span class="ident">StatementKind</span>};
 <span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">mir</span>::{<span class="ident">Terminator</span>, <span class="ident">TerminatorKind</span>, <span class="ident">VisibilityScope</span>, <span class="ident">VisibilityScopeData</span>};
@@ -511,47 +512,48 @@
                      <span class="ident">location</span>: <span class="ident">Location</span>) {
         <span class="self">self</span>.<span class="ident">record</span>(<span class="string">&quot;Operand&quot;</span>, <span class="ident">operand</span>);
         <span class="self">self</span>.<span class="ident">record</span>(<span class="kw">match</span> <span class="kw-2">*</span><span class="ident">operand</span> {
-            <span class="ident">Operand</span>::<span class="ident">Consume</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Operand::Consume&quot;</span>,
+            <span class="ident">Operand</span>::<span class="ident">Copy</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Operand::Copy&quot;</span>,
+            <span class="ident">Operand</span>::<span class="ident">Move</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Operand::Move&quot;</span>,
             <span class="ident">Operand</span>::<span class="ident">Constant</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Operand::Constant&quot;</span>,
         }, <span class="ident">operand</span>);
         <span class="self">self</span>.<span class="ident">super_operand</span>(<span class="ident">operand</span>, <span class="ident">location</span>);
     }
 
-    <span class="kw">fn</span> <span class="ident">visit_lvalue</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                    <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">Lvalue</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                    <span class="ident">context</span>: <span class="ident">mir_visit</span>::<span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+    <span class="kw">fn</span> <span class="ident">visit_place</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                    <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                    <span class="ident">context</span>: <span class="ident">mir_visit</span>::<span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                     <span class="ident">location</span>: <span class="ident">Location</span>) {
-        <span class="self">self</span>.<span class="ident">record</span>(<span class="string">&quot;Lvalue&quot;</span>, <span class="ident">lvalue</span>);
-        <span class="self">self</span>.<span class="ident">record</span>(<span class="kw">match</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-            <span class="ident">Lvalue</span>::<span class="ident">Local</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Lvalue::Local&quot;</span>,
-            <span class="ident">Lvalue</span>::<span class="ident">Static</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Lvalue::Static&quot;</span>,
-            <span class="ident">Lvalue</span>::<span class="ident">Projection</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Lvalue::Projection&quot;</span>,
-        }, <span class="ident">lvalue</span>);
-        <span class="self">self</span>.<span class="ident">super_lvalue</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+        <span class="self">self</span>.<span class="ident">record</span>(<span class="string">&quot;Place&quot;</span>, <span class="ident">place</span>);
+        <span class="self">self</span>.<span class="ident">record</span>(<span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+            <span class="ident">Place</span>::<span class="ident">Local</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Place::Local&quot;</span>,
+            <span class="ident">Place</span>::<span class="ident">Static</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Place::Static&quot;</span>,
+            <span class="ident">Place</span>::<span class="ident">Projection</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;Place::Projection&quot;</span>,
+        }, <span class="ident">place</span>);
+        <span class="self">self</span>.<span class="ident">super_place</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">visit_projection</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                        <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">LvalueProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                        <span class="ident">context</span>: <span class="ident">mir_visit</span>::<span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                        <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">PlaceProjection</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                        <span class="ident">context</span>: <span class="ident">mir_visit</span>::<span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                         <span class="ident">location</span>: <span class="ident">Location</span>) {
-        <span class="self">self</span>.<span class="ident">record</span>(<span class="string">&quot;LvalueProjection&quot;</span>, <span class="ident">lvalue</span>);
-        <span class="self">self</span>.<span class="ident">super_projection</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+        <span class="self">self</span>.<span class="ident">record</span>(<span class="string">&quot;PlaceProjection&quot;</span>, <span class="ident">place</span>);
+        <span class="self">self</span>.<span class="ident">super_projection</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">visit_projection_elem</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                             <span class="ident">lvalue</span>: <span class="kw-2">&amp;</span><span class="ident">LvalueElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                             <span class="ident">context</span>: <span class="ident">mir_visit</span>::<span class="ident">LvalueContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                             <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">PlaceElem</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                             <span class="ident">context</span>: <span class="ident">mir_visit</span>::<span class="ident">PlaceContext</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                              <span class="ident">location</span>: <span class="ident">Location</span>) {
-        <span class="self">self</span>.<span class="ident">record</span>(<span class="string">&quot;LvalueElem&quot;</span>, <span class="ident">lvalue</span>);
-        <span class="self">self</span>.<span class="ident">record</span>(<span class="kw">match</span> <span class="kw-2">*</span><span class="ident">lvalue</span> {
-            <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> <span class="string">&quot;LvalueElem::Deref&quot;</span>,
-            <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;LvalueElem::Subslice&quot;</span>,
-            <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;LvalueElem::Field&quot;</span>,
-            <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;LvalueElem::Index&quot;</span>,
-            <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;LvalueElem::ConstantIndex&quot;</span>,
-            <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;LvalueElem::Downcast&quot;</span>,
-        }, <span class="ident">lvalue</span>);
-        <span class="self">self</span>.<span class="ident">super_projection_elem</span>(<span class="ident">lvalue</span>, <span class="ident">context</span>, <span class="ident">location</span>);
+        <span class="self">self</span>.<span class="ident">record</span>(<span class="string">&quot;PlaceElem&quot;</span>, <span class="ident">place</span>);
+        <span class="self">self</span>.<span class="ident">record</span>(<span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+            <span class="ident">ProjectionElem</span>::<span class="ident">Deref</span> <span class="op">=&gt;</span> <span class="string">&quot;PlaceElem::Deref&quot;</span>,
+            <span class="ident">ProjectionElem</span>::<span class="ident">Subslice</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;PlaceElem::Subslice&quot;</span>,
+            <span class="ident">ProjectionElem</span>::<span class="ident">Field</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;PlaceElem::Field&quot;</span>,
+            <span class="ident">ProjectionElem</span>::<span class="ident">Index</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;PlaceElem::Index&quot;</span>,
+            <span class="ident">ProjectionElem</span>::<span class="ident">ConstantIndex</span> { .. } <span class="op">=&gt;</span> <span class="string">&quot;PlaceElem::ConstantIndex&quot;</span>,
+            <span class="ident">ProjectionElem</span>::<span class="ident">Downcast</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;PlaceElem::Downcast&quot;</span>,
+        }, <span class="ident">place</span>);
+        <span class="self">self</span>.<span class="ident">super_projection_elem</span>(<span class="ident">place</span>, <span class="ident">context</span>, <span class="ident">location</span>);
     }
 
     <span class="kw">fn</span> <span class="ident">visit_constant</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,

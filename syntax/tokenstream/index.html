@@ -92,7 +92,11 @@ We must use <code>ThinTokenStream</code> in <code>TokenTree::Delimited</code> to
                            <td><a class="struct" href="struct.TokenStream.html"
                                   title='struct syntax::tokenstream::TokenStream'>TokenStream</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] 
+                               [<div class='stab unstable'>Experimental</div>] <h1 id='token-streams-1' class='section-header'><a href='#token-streams-1'>Token Streams</a></h1>
+<p>A <code>TokenStream</code> is an abstract sequence of tokens, organized into <code>TokenTree</code>s.
+The goal is for procedural macros to work with <code>TokenStream</code>s and <code>TokenTree</code>s
+instead of a representation of the abstract syntax tree.
+Today&#39;s <code>TokenTree</code>s can still contain AST via <code>Token::Interpolated</code> for back-compat.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>

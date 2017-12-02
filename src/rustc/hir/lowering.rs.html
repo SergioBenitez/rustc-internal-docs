@@ -3569,6 +3569,60 @@
 <span id="3524">3524</span>
 <span id="3525">3525</span>
 <span id="3526">3526</span>
+<span id="3527">3527</span>
+<span id="3528">3528</span>
+<span id="3529">3529</span>
+<span id="3530">3530</span>
+<span id="3531">3531</span>
+<span id="3532">3532</span>
+<span id="3533">3533</span>
+<span id="3534">3534</span>
+<span id="3535">3535</span>
+<span id="3536">3536</span>
+<span id="3537">3537</span>
+<span id="3538">3538</span>
+<span id="3539">3539</span>
+<span id="3540">3540</span>
+<span id="3541">3541</span>
+<span id="3542">3542</span>
+<span id="3543">3543</span>
+<span id="3544">3544</span>
+<span id="3545">3545</span>
+<span id="3546">3546</span>
+<span id="3547">3547</span>
+<span id="3548">3548</span>
+<span id="3549">3549</span>
+<span id="3550">3550</span>
+<span id="3551">3551</span>
+<span id="3552">3552</span>
+<span id="3553">3553</span>
+<span id="3554">3554</span>
+<span id="3555">3555</span>
+<span id="3556">3556</span>
+<span id="3557">3557</span>
+<span id="3558">3558</span>
+<span id="3559">3559</span>
+<span id="3560">3560</span>
+<span id="3561">3561</span>
+<span id="3562">3562</span>
+<span id="3563">3563</span>
+<span id="3564">3564</span>
+<span id="3565">3565</span>
+<span id="3566">3566</span>
+<span id="3567">3567</span>
+<span id="3568">3568</span>
+<span id="3569">3569</span>
+<span id="3570">3570</span>
+<span id="3571">3571</span>
+<span id="3572">3572</span>
+<span id="3573">3573</span>
+<span id="3574">3574</span>
+<span id="3575">3575</span>
+<span id="3576">3576</span>
+<span id="3577">3577</span>
+<span id="3578">3578</span>
+<span id="3579">3579</span>
+<span id="3580">3580</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -5340,80 +5394,14 @@
                        <span class="op">-&gt;</span> <span class="ident">hir</span>::<span class="ident">Item_</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">i</span> {
             <span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(<span class="ident">string</span>) <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">ItemExternCrate</span>(<span class="ident">string</span>),
-            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">view_path</span>) <span class="op">=&gt;</span> {
-                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">view_path</span>.<span class="ident">node</span> {
-                    <span class="ident">ViewPathSimple</span>(_, <span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">=&gt;</span> <span class="ident">path</span>,
-                    <span class="ident">ViewPathGlob</span>(<span class="kw-2">ref</span> <span class="ident">path</span>) <span class="op">=&gt;</span> <span class="ident">path</span>,
-                    <span class="ident">ViewPathList</span>(<span class="kw-2">ref</span> <span class="ident">path</span>, <span class="kw-2">ref</span> <span class="ident">path_list_idents</span>) <span class="op">=&gt;</span> {
-                        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">Spanned</span> { <span class="ident">node</span>: <span class="kw-2">ref</span> <span class="ident">import</span>, <span class="ident">span</span> } <span class="kw">in</span> <span class="ident">path_list_idents</span> {
-                            <span class="comment">// `use a::{self as x, b as y};` lowers to</span>
-                            <span class="comment">// `use a as x; use a::b as y;`</span>
-                            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ident</span> <span class="op">=</span> <span class="ident">import</span>.<span class="ident">name</span>;
-                            <span class="kw">let</span> <span class="ident">suffix</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">ident</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">SelfValue</span>.<span class="ident">name</span>() {
-                                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">last</span>) <span class="op">=</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">last</span>() {
-                                    <span class="ident">ident</span> <span class="op">=</span> <span class="ident">last</span>.<span class="ident">identifier</span>;
-                                }
-                                <span class="prelude-val">None</span>
-                            } <span class="kw">else</span> {
-                                <span class="prelude-val">Some</span>(<span class="ident">ident</span>.<span class="ident">name</span>)
-                            };
-
-                            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lower_path_extra</span>(<span class="ident">import</span>.<span class="ident">id</span>, <span class="ident">path</span>, <span class="ident">suffix</span>,
-                                                                 <span class="ident">ParamMode</span>::<span class="ident">Explicit</span>, <span class="bool-val">true</span>);
-                            <span class="ident">path</span>.<span class="ident">span</span> <span class="op">=</span> <span class="ident">span</span>;
-
-                            <span class="self">self</span>.<span class="ident">allocate_hir_id_counter</span>(<span class="ident">import</span>.<span class="ident">id</span>, <span class="ident">import</span>);
-                            <span class="kw">let</span> <span class="ident">LoweredNodeId</span> {
-                                <span class="ident">node_id</span>: <span class="ident">import_node_id</span>,
-                                <span class="ident">hir_id</span>: <span class="ident">import_hir_id</span>,
-                            } <span class="op">=</span> <span class="self">self</span>.<span class="ident">lower_node_id</span>(<span class="ident">import</span>.<span class="ident">id</span>);
-
-                            <span class="self">self</span>.<span class="ident">with_hir_id_owner</span>(<span class="ident">import_node_id</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
-                                <span class="kw">let</span> <span class="ident">vis</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">vis</span> {
-                                    <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span> <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span>,
-                                    <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Crate</span> <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Crate</span>,
-                                    <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Inherited</span> <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Inherited</span>,
-                                    <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Restricted</span> { <span class="kw-2">ref</span> <span class="ident">path</span>, <span class="ident">id</span>: _ } <span class="op">=&gt;</span> {
-                                        <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Restricted</span> {
-                                            <span class="ident">path</span>: <span class="ident">path</span>.<span class="ident">clone</span>(),
-                                            <span class="comment">// We are allocating a new NodeId here</span>
-                                            <span class="ident">id</span>: <span class="ident">this</span>.<span class="ident">next_id</span>().<span class="ident">node_id</span>,
-                                        }
-                                    }
-                                };
-
-                                <span class="ident">this</span>.<span class="ident">items</span>.<span class="ident">insert</span>(<span class="ident">import_node_id</span>, <span class="ident">hir</span>::<span class="ident">Item</span> {
-                                    <span class="ident">id</span>: <span class="ident">import_node_id</span>,
-                                    <span class="ident">hir_id</span>: <span class="ident">import_hir_id</span>,
-                                    <span class="ident">name</span>: <span class="ident">import</span>.<span class="ident">rename</span>.<span class="ident">unwrap_or</span>(<span class="ident">ident</span>).<span class="ident">name</span>,
-                                    <span class="ident">attrs</span>: <span class="ident">attrs</span>.<span class="ident">clone</span>(),
-                                    <span class="ident">node</span>: <span class="ident">hir</span>::<span class="ident">ItemUse</span>(<span class="ident">P</span>(<span class="ident">path</span>), <span class="ident">hir</span>::<span class="ident">UseKind</span>::<span class="ident">Single</span>),
-                                    <span class="ident">vis</span>,
-                                    <span class="ident">span</span>,
-                                });
-                            });
-                        }
-                        <span class="ident">path</span>
-                    }
+            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">use_tree</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// Start with an empty prefix</span>
+                <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="ident">Path</span> {
+                    <span class="ident">segments</span>: <span class="macro">vec</span><span class="macro">!</span>[],
+                    <span class="ident">span</span>: <span class="ident">use_tree</span>.<span class="ident">span</span>,
                 };
-                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">P</span>(<span class="self">self</span>.<span class="ident">lower_path</span>(<span class="ident">id</span>, <span class="ident">path</span>, <span class="ident">ParamMode</span>::<span class="ident">Explicit</span>, <span class="bool-val">true</span>));
-                <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">view_path</span>.<span class="ident">node</span> {
-                    <span class="ident">ViewPathSimple</span>(<span class="ident">ident</span>, _) <span class="op">=&gt;</span> {
-                        <span class="kw-2">*</span><span class="ident">name</span> <span class="op">=</span> <span class="ident">ident</span>.<span class="ident">name</span>;
-                        <span class="ident">hir</span>::<span class="ident">UseKind</span>::<span class="ident">Single</span>
-                    }
-                    <span class="ident">ViewPathGlob</span>(_) <span class="op">=&gt;</span> {
-                        <span class="ident">hir</span>::<span class="ident">UseKind</span>::<span class="ident">Glob</span>
-                    }
-                    <span class="ident">ViewPathList</span>(..) <span class="op">=&gt;</span> {
-                        <span class="comment">// Privatize the degenerate import base, used only to check</span>
-                        <span class="comment">// the stability of `use a::{};`, to avoid it showing up as</span>
-                        <span class="comment">// a reexport by accident when `pub`, e.g. in documentation.</span>
-                        <span class="kw-2">*</span><span class="ident">vis</span> <span class="op">=</span> <span class="ident">hir</span>::<span class="ident">Inherited</span>;
-                        <span class="ident">hir</span>::<span class="ident">UseKind</span>::<span class="ident">ListStem</span>
-                    }
-                };
-                <span class="ident">hir</span>::<span class="ident">ItemUse</span>(<span class="ident">path</span>, <span class="ident">kind</span>)
+
+                <span class="self">self</span>.<span class="ident">lower_use_tree</span>(<span class="ident">use_tree</span>, <span class="kw-2">&amp;</span><span class="ident">prefix</span>, <span class="ident">id</span>, <span class="ident">vis</span>, <span class="ident">name</span>, <span class="ident">attrs</span>)
             }
             <span class="ident">ItemKind</span>::<span class="ident">Static</span>(<span class="kw-2">ref</span> <span class="ident">t</span>, <span class="ident">m</span>, <span class="kw-2">ref</span> <span class="ident">e</span>) <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">value</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lower_body</span>(<span class="prelude-val">None</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">this</span>.<span class="ident">lower_expr</span>(<span class="ident">e</span>));
@@ -5528,11 +5516,119 @@
                                <span class="ident">bounds</span>,
                                <span class="ident">items</span>)
             }
-            <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(..) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Shouldn&#39;t still be around&quot;</span>),
+            <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(..) <span class="op">=&gt;</span> {
+                <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Shouldn&#39;t still be around&quot;</span>)
+            }
         }
 
         <span class="comment">// [1] `defaultness.has_value()` is never called for an `impl`, always `true` in order to</span>
         <span class="comment">//     not cause an assertion failure inside the `lower_defaultness` function</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">lower_use_tree</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                       <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="ident">UseTree</span>,
+                       <span class="ident">prefix</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>,
+                       <span class="ident">id</span>: <span class="ident">NodeId</span>,
+                       <span class="ident">vis</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hir</span>::<span class="ident">Visibility</span>,
+                       <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Name</span>,
+                       <span class="ident">attrs</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">Attribute</span><span class="op">&gt;</span>)
+                       <span class="op">-&gt;</span> <span class="ident">hir</span>::<span class="ident">Item_</span> {
+        <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">prefix</span>;
+
+        <span class="kw">match</span> <span class="ident">tree</span>.<span class="ident">kind</span> {
+            <span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(<span class="ident">ident</span>) <span class="op">=&gt;</span> {
+                <span class="kw-2">*</span><span class="ident">name</span> <span class="op">=</span> <span class="ident">ident</span>.<span class="ident">name</span>;
+
+                <span class="comment">// First apply the prefix to the path</span>
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">Path</span> {
+                    <span class="ident">segments</span>: <span class="ident">prefix</span>.<span class="ident">segments</span>
+                        .<span class="ident">iter</span>()
+                        .<span class="ident">chain</span>(<span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">iter</span>())
+                        .<span class="ident">cloned</span>()
+                        .<span class="ident">collect</span>(),
+                    <span class="ident">span</span>: <span class="ident">path</span>.<span class="ident">span</span>.<span class="ident">to</span>(<span class="ident">prefix</span>.<span class="ident">span</span>),
+                };
+
+                <span class="comment">// Correctly resolve `self` imports</span>
+                <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">SelfValue</span>.<span class="ident">name</span>() {
+                    <span class="kw">let</span> _ <span class="op">=</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">pop</span>();
+                    <span class="kw">if</span> <span class="ident">ident</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">SelfValue</span>.<span class="ident">name</span>() {
+                        <span class="kw-2">*</span><span class="ident">name</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">last</span>().<span class="ident">unwrap</span>().<span class="ident">identifier</span>.<span class="ident">name</span>;
+                    }
+                }
+
+                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">P</span>(<span class="self">self</span>.<span class="ident">lower_path</span>(<span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="ident">path</span>, <span class="ident">ParamMode</span>::<span class="ident">Explicit</span>, <span class="bool-val">true</span>));
+                <span class="ident">hir</span>::<span class="ident">ItemUse</span>(<span class="ident">path</span>, <span class="ident">hir</span>::<span class="ident">UseKind</span>::<span class="ident">Single</span>)
+            }
+            <span class="ident">UseTreeKind</span>::<span class="ident">Glob</span> <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">P</span>(<span class="self">self</span>.<span class="ident">lower_path</span>(<span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="ident">Path</span> {
+                    <span class="ident">segments</span>: <span class="ident">prefix</span>.<span class="ident">segments</span>
+                        .<span class="ident">iter</span>()
+                        .<span class="ident">chain</span>(<span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">iter</span>())
+                        .<span class="ident">cloned</span>()
+                        .<span class="ident">collect</span>(),
+                    <span class="ident">span</span>: <span class="ident">path</span>.<span class="ident">span</span>,
+                }, <span class="ident">ParamMode</span>::<span class="ident">Explicit</span>, <span class="bool-val">true</span>));
+                <span class="ident">hir</span>::<span class="ident">ItemUse</span>(<span class="ident">path</span>, <span class="ident">hir</span>::<span class="ident">UseKind</span>::<span class="ident">Glob</span>)
+            }
+            <span class="ident">UseTreeKind</span>::<span class="ident">Nested</span>(<span class="kw-2">ref</span> <span class="ident">trees</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">prefix</span> <span class="op">=</span> <span class="ident">Path</span> {
+                    <span class="ident">segments</span>: <span class="ident">prefix</span>.<span class="ident">segments</span>
+                        .<span class="ident">iter</span>()
+                        .<span class="ident">chain</span>(<span class="ident">path</span>.<span class="ident">segments</span>.<span class="ident">iter</span>())
+                        .<span class="ident">cloned</span>()
+                        .<span class="ident">collect</span>(),
+                    <span class="ident">span</span>: <span class="ident">prefix</span>.<span class="ident">span</span>.<span class="ident">to</span>(<span class="ident">path</span>.<span class="ident">span</span>),
+                };
+
+                <span class="comment">// Add all the nested PathListItems in the HIR</span>
+                <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">use_tree</span>, <span class="ident">id</span>) <span class="kw">in</span> <span class="ident">trees</span> {
+                    <span class="self">self</span>.<span class="ident">allocate_hir_id_counter</span>(<span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="ident">use_tree</span>);
+                    <span class="kw">let</span> <span class="ident">LoweredNodeId</span> {
+                        <span class="ident">node_id</span>: <span class="ident">new_id</span>,
+                        <span class="ident">hir_id</span>: <span class="ident">new_hir_id</span>,
+                    } <span class="op">=</span> <span class="self">self</span>.<span class="ident">lower_node_id</span>(<span class="ident">id</span>);
+
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vis</span> <span class="op">=</span> <span class="ident">vis</span>.<span class="ident">clone</span>();
+                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">clone</span>();
+                    <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lower_use_tree</span>(
+                        <span class="ident">use_tree</span>, <span class="kw-2">&amp;</span><span class="ident">prefix</span>, <span class="ident">new_id</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">vis</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">name</span>, <span class="kw-2">&amp;</span><span class="ident">attrs</span>,
+                    );
+
+                    <span class="self">self</span>.<span class="ident">with_hir_id_owner</span>(<span class="ident">new_id</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
+                        <span class="kw">let</span> <span class="ident">vis</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">vis</span> {
+                            <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span> <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Public</span>,
+                            <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Crate</span> <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Crate</span>,
+                            <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Inherited</span> <span class="op">=&gt;</span> <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Inherited</span>,
+                            <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Restricted</span> { <span class="kw-2">ref</span> <span class="ident">path</span>, <span class="ident">id</span>: _  } <span class="op">=&gt;</span> {
+                                <span class="ident">hir</span>::<span class="ident">Visibility</span>::<span class="ident">Restricted</span> {
+                                    <span class="ident">path</span>: <span class="ident">path</span>.<span class="ident">clone</span>(),
+                                    <span class="comment">// We are allocating a new NodeId here</span>
+                                    <span class="ident">id</span>: <span class="ident">this</span>.<span class="ident">next_id</span>().<span class="ident">node_id</span>,
+                                }
+                            }
+                        };
+
+                        <span class="ident">this</span>.<span class="ident">items</span>.<span class="ident">insert</span>(<span class="ident">new_id</span>, <span class="ident">hir</span>::<span class="ident">Item</span> {
+                            <span class="ident">id</span>: <span class="ident">new_id</span>,
+                            <span class="ident">hir_id</span>: <span class="ident">new_hir_id</span>,
+                            <span class="ident">name</span>: <span class="ident">name</span>,
+                            <span class="ident">attrs</span>: <span class="ident">attrs</span>.<span class="ident">clone</span>(),
+                            <span class="ident">node</span>: <span class="ident">item</span>,
+                            <span class="ident">vis</span>,
+                            <span class="ident">span</span>: <span class="ident">use_tree</span>.<span class="ident">span</span>,
+                        });
+                    });
+                }
+
+                <span class="comment">// Privatize the degenerate import base, used only to check</span>
+                <span class="comment">// the stability of `use a::{};`, to avoid it showing up as</span>
+                <span class="comment">// a reexport by accident when `pub`, e.g. in documentation.</span>
+                <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">P</span>(<span class="self">self</span>.<span class="ident">lower_path</span>(<span class="ident">id</span>, <span class="kw-2">&amp;</span><span class="ident">prefix</span>, <span class="ident">ParamMode</span>::<span class="ident">Explicit</span>, <span class="bool-val">true</span>));
+                <span class="kw-2">*</span><span class="ident">vis</span> <span class="op">=</span> <span class="ident">hir</span>::<span class="ident">Inherited</span>;
+                <span class="ident">hir</span>::<span class="ident">ItemUse</span>(<span class="ident">path</span>, <span class="ident">hir</span>::<span class="ident">UseKind</span>::<span class="ident">ListStem</span>)
+            }
+        }
     }
 
     <span class="kw">fn</span> <span class="ident">lower_trait_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">TraitItem</span>) <span class="op">-&gt;</span> <span class="ident">hir</span>::<span class="ident">TraitItem</span> {
@@ -5701,16 +5797,28 @@
 
     <span class="kw">fn</span> <span class="ident">lower_item_id</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="ident">SmallVector</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">ItemId</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="ident">i</span>.<span class="ident">node</span> {
-            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">view_path</span>) <span class="op">=&gt;</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ViewPathList</span>(_, <span class="kw-2">ref</span> <span class="ident">imports</span>) <span class="op">=</span> <span class="ident">view_path</span>.<span class="ident">node</span> {
-                    <span class="kw">return</span> <span class="ident">iter</span>::<span class="ident">once</span>(<span class="ident">i</span>.<span class="ident">id</span>).<span class="ident">chain</span>(<span class="ident">imports</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">import</span><span class="op">|</span> <span class="ident">import</span>.<span class="ident">node</span>.<span class="ident">id</span>))
-                        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="ident">hir</span>::<span class="ident">ItemId</span> { <span class="ident">id</span>: <span class="ident">id</span> }).<span class="ident">collect</span>();
-                }
+            <span class="ident">ItemKind</span>::<span class="ident">Use</span>(<span class="kw-2">ref</span> <span class="ident">use_tree</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">SmallVector</span>::<span class="ident">one</span>(<span class="ident">hir</span>::<span class="ident">ItemId</span> { <span class="ident">id</span>: <span class="ident">i</span>.<span class="ident">id</span> });
+                <span class="self">self</span>.<span class="ident">lower_item_id_use_tree</span>(<span class="ident">use_tree</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">vec</span>);
+                <span class="kw">return</span> <span class="ident">vec</span>;
             }
             <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(..) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">SmallVector</span>::<span class="ident">new</span>(),
             _ <span class="op">=&gt;</span> {}
         }
         <span class="ident">SmallVector</span>::<span class="ident">one</span>(<span class="ident">hir</span>::<span class="ident">ItemId</span> { <span class="ident">id</span>: <span class="ident">i</span>.<span class="ident">id</span> })
+    }
+
+    <span class="kw">fn</span> <span class="ident">lower_item_id_use_tree</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">tree</span>: <span class="kw-2">&amp;</span><span class="ident">UseTree</span>, <span class="ident">vec</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SmallVector</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">ItemId</span><span class="op">&gt;</span>) {
+        <span class="kw">match</span> <span class="ident">tree</span>.<span class="ident">kind</span> {
+            <span class="ident">UseTreeKind</span>::<span class="ident">Nested</span>(<span class="kw-2">ref</span> <span class="ident">nested_vec</span>) <span class="op">=&gt;</span> {
+                <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">nested</span>, <span class="ident">id</span>) <span class="kw">in</span> <span class="ident">nested_vec</span> {
+                    <span class="ident">vec</span>.<span class="ident">push</span>(<span class="ident">hir</span>::<span class="ident">ItemId</span> { <span class="ident">id</span>, });
+                    <span class="self">self</span>.<span class="ident">lower_item_id_use_tree</span>(<span class="ident">nested</span>, <span class="ident">vec</span>);
+                }
+            }
+            <span class="ident">UseTreeKind</span>::<span class="ident">Glob</span> <span class="op">=&gt;</span> {}
+            <span class="ident">UseTreeKind</span>::<span class="ident">Simple</span>(..) <span class="op">=&gt;</span> {}
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lower_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">i</span>: <span class="kw-2">&amp;</span><span class="ident">Item</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">hir</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
