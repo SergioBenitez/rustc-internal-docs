@@ -2073,7 +2073,7 @@
 
     <span class="ident">check_for_rustc_errors_attr</span>(<span class="ident">tcx</span>);
 
-    <span class="kw">if</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">thinlto</span> {
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="bool-val">true</span>) <span class="op">=</span> <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">thinlto</span> {
         <span class="kw">if</span> <span class="kw">unsafe</span> { <span class="op">!</span><span class="ident">llvm</span>::<span class="ident">LLVMRustThinLTOAvailable</span>() } {
             <span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">fatal</span>(<span class="string">&quot;this compiler&#39;s LLVM does not support ThinLTO&quot;</span>);
         }

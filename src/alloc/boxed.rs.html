@@ -975,14 +975,6 @@
 <span id="930">930</span>
 <span id="931">931</span>
 <span id="932">932</span>
-<span id="933">933</span>
-<span id="934">934</span>
-<span id="935">935</span>
-<span id="936">936</span>
-<span id="937">937</span>
-<span id="938">938</span>
-<span id="939">939</span>
-<span id="940">940</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1286,10 +1278,7 @@
                <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_unique</span>(<span class="ident">u</span>: <span class="ident">Unique</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">stage0</span>)]</span>
-        <span class="kw">return</span> <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">u</span>);
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
-        <span class="kw">return</span> <span class="ident">Box</span>(<span class="ident">u</span>);
+        <span class="ident">Box</span>(<span class="ident">u</span>)
     }
 
     <span class="doccomment">/// Consumes the `Box`, returning the wrapped raw pointer.</span>
@@ -1351,14 +1340,9 @@
                <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_unique</span>(<span class="ident">b</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Unique</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">stage0</span>)]</span>
-        <span class="kw">return</span> <span class="kw">unsafe</span> { <span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">b</span>) };
-        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
-        <span class="kw">return</span> {
-            <span class="kw">let</span> <span class="ident">unique</span> <span class="op">=</span> <span class="ident">b</span>.<span class="number">0</span>;
-            <span class="ident">mem</span>::<span class="ident">forget</span>(<span class="ident">b</span>);
-            <span class="ident">unique</span>
-        };
+        <span class="kw">let</span> <span class="ident">unique</span> <span class="op">=</span> <span class="ident">b</span>.<span class="number">0</span>;
+        <span class="ident">mem</span>::<span class="ident">forget</span>(<span class="ident">b</span>);
+        <span class="ident">unique</span>
     }
 
     <span class="doccomment">/// Consumes and leaks the `Box`, returning a mutable reference,</span>

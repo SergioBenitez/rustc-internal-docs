@@ -1377,7 +1377,7 @@
     }
 
     <span class="comment">// If the relevant filemap is empty, we don&#39;t return a line number.</span>
-    <span class="kw">fn</span> <span class="ident">lookup_line</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">BytePos</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileMapAndLine</span>, <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lookup_line</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">BytePos</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FileMapAndLine</span>, <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">idx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lookup_filemap_idx</span>(<span class="ident">pos</span>);
 
         <span class="kw">let</span> <span class="ident">files</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">files</span>.<span class="ident">borrow</span>();

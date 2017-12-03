@@ -2258,11 +2258,6 @@
 <span id="2213">2213</span>
 <span id="2214">2214</span>
 <span id="2215">2215</span>
-<span id="2216">2216</span>
-<span id="2217">2217</span>
-<span id="2218">2218</span>
-<span id="2219">2219</span>
-<span id="2220">2220</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -4376,7 +4371,6 @@
     <span class="doccomment">/// [`to_uppercase`]: #method.to_uppercase</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_ascii_uppercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_bytes</span>().<span class="ident">to_vec</span>();
         <span class="ident">bytes</span>.<span class="ident">make_ascii_uppercase</span>();
@@ -4407,7 +4401,6 @@
     <span class="doccomment">/// [`to_lowercase`]: #method.to_lowercase</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_ascii_lowercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">as_bytes</span>().<span class="ident">to_vec</span>();
         <span class="ident">bytes</span>.<span class="ident">make_ascii_lowercase</span>();
@@ -4429,7 +4422,6 @@
     <span class="doccomment">/// ```</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eq_ignore_ascii_case</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">as_bytes</span>().<span class="ident">eq_ignore_ascii_case</span>(<span class="ident">other</span>.<span class="ident">as_bytes</span>())
     }
@@ -4444,7 +4436,6 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`to_ascii_uppercase`]: #method.to_ascii_uppercase</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_ascii_uppercase</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">let</span> <span class="ident">me</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">as_bytes_mut</span>() };
         <span class="ident">me</span>.<span class="ident">make_ascii_uppercase</span>()
@@ -4460,7 +4451,6 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`to_ascii_lowercase`]: #method.to_ascii_lowercase</span>
     <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">stage0</span>))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_ascii_lowercase</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">let</span> <span class="ident">me</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="self">self</span>.<span class="ident">as_bytes_mut</span>() };
         <span class="ident">me</span>.<span class="ident">make_ascii_lowercase</span>()

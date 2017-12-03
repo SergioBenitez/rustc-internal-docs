@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../../src/rustc/session/config.rs.html#719-721' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../../src/rustc/session/config.rs.html#725-727' title='goto source code'>[src]</a></span></h1>
 <pre class='rust const'>pub const DB_OPTIONS: <a class="primitive" href="../../../std/primitive.slice.html">&amp;'static [</a><a class="primitive" href="../../../std/primitive.tuple.html">(</a>&amp;'static <a class="primitive" href="../../../std/primitive.str.html">str</a>, <a class="type" href="../../../rustc/session/config/type.DebuggingSetter.html" title="type rustc::session::config::DebuggingSetter">DebuggingSetter</a>, <a class="enum" href="../../../core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;'static <a class="primitive" href="../../../std/primitive.str.html">str</a>&gt;, &amp;'static <a class="primitive" href="../../../std/primitive.str.html">str</a><a class="primitive" href="../../../std/primitive.tuple.html">)</a><a class="primitive" href="../../../std/primitive.slice.html">]</a><code> = </code><code>&amp;[(&quot;verbose&quot;, dbsetters::verbose, db_type_desc::parse_bool,
    &quot;in general, enable more debug printouts&quot;),
   (&quot;span_free_formats&quot;, dbsetters::span_free_formats,
@@ -228,7 +228,7 @@
    &quot;run the non-lexical lifetimes MIR pass&quot;),
   (&quot;trans_time_graph&quot;, dbsetters::trans_time_graph, db_type_desc::parse_bool,
    &quot;generate a graphical HTML report of time spent in trans and LLVM&quot;),
-  (&quot;thinlto&quot;, dbsetters::thinlto, db_type_desc::parse_bool,
+  (&quot;thinlto&quot;, dbsetters::thinlto, db_type_desc::parse_opt_bool,
    &quot;enable ThinLTO when possible&quot;),
   (&quot;inline_in_all_cgus&quot;, dbsetters::inline_in_all_cgus,
    db_type_desc::parse_opt_bool,

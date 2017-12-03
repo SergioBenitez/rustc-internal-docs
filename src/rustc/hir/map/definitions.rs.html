@@ -787,6 +787,7 @@
 <span id="742">742</span>
 <span id="743">743</span>
 <span id="744">744</span>
+<span id="745">745</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1365,7 +1366,8 @@
             <span class="self">self</span>.<span class="ident">node_to_def_index</span>.<span class="ident">insert</span>(<span class="ident">node_id</span>, <span class="ident">index</span>);
         }
 
-        <span class="kw">if</span> <span class="ident">expansion</span>.<span class="ident">is_modern</span>() {
+        <span class="kw">let</span> <span class="ident">expansion</span> <span class="op">=</span> <span class="ident">expansion</span>.<span class="ident">modern</span>();
+        <span class="kw">if</span> <span class="ident">expansion</span> <span class="op">!=</span> <span class="ident">Mark</span>::<span class="ident">root</span>() {
             <span class="self">self</span>.<span class="ident">expansions</span>.<span class="ident">insert</span>(<span class="ident">index</span>, <span class="ident">expansion</span>);
         }
 
