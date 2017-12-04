@@ -939,6 +939,9 @@
 <span id="894">894</span>
 <span id="895">895</span>
 <span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1221,6 +1224,9 @@
     }
     <span class="kw">fn</span> <span class="ident">downcast_subpath</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_path</span>: <span class="self">Self</span>::<span class="ident">Path</span>, <span class="ident">_variant</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Path</span><span class="op">&gt;</span> {
         <span class="prelude-val">Some</span>(())
+    }
+    <span class="kw">fn</span> <span class="ident">array_subpath</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_path</span>: <span class="self">Self</span>::<span class="ident">Path</span>, <span class="ident">_index</span>: <span class="ident">u32</span>, <span class="ident">_size</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Path</span><span class="op">&gt;</span> {
+        <span class="prelude-val">None</span>
     }
 }
 

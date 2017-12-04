@@ -244,8 +244,8 @@ swapped.</p>
 } <span class="kw">else</span> {
     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">n</span>.<span class="ident">to_le</span>(), <span class="ident">n</span>.<span class="ident">swap_bytes</span>())
 }<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Alet%20n%20%3D%200x0123456789ABCDEFi64%3B%0A%0Aif%20cfg!(target_endian%20%3D%20%22little%22)%20%7B%0A%20%20%20%20assert_eq!(n.to_le()%2C%20n)%0A%7D%20else%20%7B%0A%20%20%20%20assert_eq!(n.to_le()%2C%20n.swap_bytes())%0A%7D%0A%7D">Run</a></pre>
-</div><h4 id='method.checked_add' class="method"><span id='checked_add.v' class='invisible'><code>pub fn <a href='#method.checked_add' class='fnname'>checked_add</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#396-399' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Checked integer addition. Computes <code>self + other</code>, returning <code>None</code>
+</div><h4 id='method.checked_add' class="method"><span id='checked_add.v' class='invisible'><code>pub fn <a href='#method.checked_add' class='fnname'>checked_add</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#396-399' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checked integer addition. Computes <code>self + rhs</code>, returning <code>None</code>
 if overflow occurred.</p>
 
 <h1 id='examples-14' class='section-header'><a href='#examples-14'>Examples</a></h1>
@@ -254,8 +254,8 @@ if overflow occurred.</p>
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">7i16</span>.<span class="ident">checked_add</span>(<span class="number">32760</span>), <span class="prelude-val">Some</span>(<span class="number">32767</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">8i16</span>.<span class="ident">checked_add</span>(<span class="number">32760</span>), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(7i16.checked_add(32760)%2C%20Some(32767))%3B%0Aassert_eq!(8i16.checked_add(32760)%2C%20None)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.checked_sub' class="method"><span id='checked_sub.v' class='invisible'><code>pub fn <a href='#method.checked_sub' class='fnname'>checked_sub</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#414-417' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Checked integer subtraction. Computes <code>self - other</code>, returning
+</div><h4 id='method.checked_sub' class="method"><span id='checked_sub.v' class='invisible'><code>pub fn <a href='#method.checked_sub' class='fnname'>checked_sub</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#414-417' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checked integer subtraction. Computes <code>self - rhs</code>, returning
 <code>None</code> if underflow occurred.</p>
 
 <h1 id='examples-15' class='section-header'><a href='#examples-15'>Examples</a></h1>
@@ -264,8 +264,8 @@ if overflow occurred.</p>
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">127i8</span>).<span class="ident">checked_sub</span>(<span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="op">-</span><span class="number">128</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">128i8</span>).<span class="ident">checked_sub</span>(<span class="number">1</span>), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!((-127i8).checked_sub(1)%2C%20Some(-128))%3B%0Aassert_eq!((-128i8).checked_sub(1)%2C%20None)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.checked_mul' class="method"><span id='checked_mul.v' class='invisible'><code>pub fn <a href='#method.checked_mul' class='fnname'>checked_mul</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#432-435' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Checked integer multiplication. Computes <code>self * other</code>, returning
+</div><h4 id='method.checked_mul' class="method"><span id='checked_mul.v' class='invisible'><code>pub fn <a href='#method.checked_mul' class='fnname'>checked_mul</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#432-435' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checked integer multiplication. Computes <code>self * rhs</code>, returning
 <code>None</code> if underflow or overflow occurred.</p>
 
 <h1 id='examples-16' class='section-header'><a href='#examples-16'>Examples</a></h1>
@@ -274,9 +274,9 @@ if overflow occurred.</p>
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">6i8</span>.<span class="ident">checked_mul</span>(<span class="number">21</span>), <span class="prelude-val">Some</span>(<span class="number">126</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">6i8</span>.<span class="ident">checked_mul</span>(<span class="number">22</span>), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(6i8.checked_mul(21)%2C%20Some(126))%3B%0Aassert_eq!(6i8.checked_mul(22)%2C%20None)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.checked_div' class="method"><span id='checked_div.v' class='invisible'><code>pub fn <a href='#method.checked_div' class='fnname'>checked_div</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#451-457' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Checked integer division. Computes <code>self / other</code>, returning <code>None</code>
-if <code>other == 0</code> or the operation results in underflow or overflow.</p>
+</div><h4 id='method.checked_div' class="method"><span id='checked_div.v' class='invisible'><code>pub fn <a href='#method.checked_div' class='fnname'>checked_div</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#451-457' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checked integer division. Computes <code>self / rhs</code>, returning <code>None</code>
+if <code>rhs == 0</code> or the operation results in underflow or overflow.</p>
 
 <h1 id='examples-17' class='section-header'><a href='#examples-17'>Examples</a></h1>
 <p>Basic usage:</p>
@@ -285,9 +285,9 @@ if <code>other == 0</code> or the operation results in underflow or overflow.</p
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">127i8</span>).<span class="ident">checked_div</span>(<span class="op">-</span><span class="number">1</span>), <span class="prelude-val">Some</span>(<span class="number">127</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">128i8</span>).<span class="ident">checked_div</span>(<span class="op">-</span><span class="number">1</span>), <span class="prelude-val">None</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="number">1i8</span>).<span class="ident">checked_div</span>(<span class="number">0</span>), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!((-127i8).checked_div(-1)%2C%20Some(127))%3B%0Aassert_eq!((-128i8).checked_div(-1)%2C%20None)%3B%0Aassert_eq!((1i8).checked_div(0)%2C%20None)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.checked_rem' class="method"><span id='checked_rem.v' class='invisible'><code>pub fn <a href='#method.checked_rem' class='fnname'>checked_rem</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.7.0'>1.7.0</div><a class='srclink' href='../src/core/num/mod.rs.html#475-481' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Checked integer remainder. Computes <code>self % other</code>, returning <code>None</code>
-if <code>other == 0</code> or the operation results in underflow or overflow.</p>
+</div><h4 id='method.checked_rem' class="method"><span id='checked_rem.v' class='invisible'><code>pub fn <a href='#method.checked_rem' class='fnname'>checked_rem</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="enum" href="../std/option/enum.Option.html" title="enum std::option::Option">Option</a>&lt;<a class="primitive" href="primitive.i32.html">i32</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.7.0'>1.7.0</div><a class='srclink' href='../src/core/num/mod.rs.html#475-481' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Checked integer remainder. Computes <code>self % rhs</code>, returning <code>None</code>
+if <code>rhs == 0</code> or the operation results in underflow or overflow.</p>
 
 <h1 id='examples-18' class='section-header'><a href='#examples-18'>Examples</a></h1>
 <p>Basic usage:</p>
@@ -341,8 +341,8 @@ if <code>rhs</code> is larger than or equal to the number of bits in <code>self<
 
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">5i32</span>).<span class="ident">checked_abs</span>(), <span class="prelude-val">Some</span>(<span class="number">5</span>));
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i32</span>::<span class="ident">MIN</span>.<span class="ident">checked_abs</span>(), <span class="prelude-val">None</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Ai32%3B%0A%0Aassert_eq!((-5i32).checked_abs()%2C%20Some(5))%3B%0Aassert_eq!(i32%3A%3AMIN.checked_abs()%2C%20None)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.saturating_add' class="method"><span id='saturating_add.v' class='invisible'><code>pub fn <a href='#method.saturating_add' class='fnname'>saturating_add</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#575-581' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Saturating integer addition. Computes <code>self + other</code>, saturating at
+</div><h4 id='method.saturating_add' class="method"><span id='saturating_add.v' class='invisible'><code>pub fn <a href='#method.saturating_add' class='fnname'>saturating_add</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#575-581' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Saturating integer addition. Computes <code>self + rhs</code>, saturating at
 the numeric bounds instead of overflowing.</p>
 
 <h1 id='examples-23' class='section-header'><a href='#examples-23'>Examples</a></h1>
@@ -351,8 +351,8 @@ the numeric bounds instead of overflowing.</p>
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">100i8</span>.<span class="ident">saturating_add</span>(<span class="number">1</span>), <span class="number">101</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">100i8</span>.<span class="ident">saturating_add</span>(<span class="number">127</span>), <span class="number">127</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(100i8.saturating_add(1)%2C%20101)%3B%0Aassert_eq!(100i8.saturating_add(127)%2C%20127)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.saturating_sub' class="method"><span id='saturating_sub.v' class='invisible'><code>pub fn <a href='#method.saturating_sub' class='fnname'>saturating_sub</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#596-602' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Saturating integer subtraction. Computes <code>self - other</code>, saturating
+</div><h4 id='method.saturating_sub' class="method"><span id='saturating_sub.v' class='invisible'><code>pub fn <a href='#method.saturating_sub' class='fnname'>saturating_sub</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#596-602' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Saturating integer subtraction. Computes <code>self - rhs</code>, saturating
 at the numeric bounds instead of overflowing.</p>
 
 <h1 id='examples-24' class='section-header'><a href='#examples-24'>Examples</a></h1>
@@ -361,8 +361,8 @@ at the numeric bounds instead of overflowing.</p>
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">100i8</span>.<span class="ident">saturating_sub</span>(<span class="number">127</span>), <span class="op">-</span><span class="number">27</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">100i8</span>).<span class="ident">saturating_sub</span>(<span class="number">127</span>), <span class="op">-</span><span class="number">128</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(100i8.saturating_sub(127)%2C%20-27)%3B%0Aassert_eq!((-100i8).saturating_sub(127)%2C%20-128)%3B%0A%7D">Run</a></pre>
-</div><h4 id='method.saturating_mul' class="method"><span id='saturating_mul.v' class='invisible'><code>pub fn <a href='#method.saturating_mul' class='fnname'>saturating_mul</a>(self, other: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.7.0'>1.7.0</div><a class='srclink' href='../src/core/num/mod.rs.html#620-628' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Saturating integer multiplication. Computes <code>self * other</code>,
+</div><h4 id='method.saturating_mul' class="method"><span id='saturating_mul.v' class='invisible'><code>pub fn <a href='#method.saturating_mul' class='fnname'>saturating_mul</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.7.0'>1.7.0</div><a class='srclink' href='../src/core/num/mod.rs.html#620-628' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Saturating integer multiplication. Computes <code>self * rhs</code>,
 saturating at the numeric bounds instead of overflowing.</p>
 
 <h1 id='examples-25' class='section-header'><a href='#examples-25'>Examples</a></h1>
@@ -375,7 +375,7 @@ saturating at the numeric bounds instead of overflowing.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="number">1i32</span> <span class="op">&lt;&lt;</span> <span class="number">23</span>).<span class="ident">saturating_mul</span>(<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">23</span>), <span class="ident">i32</span>::<span class="ident">MAX</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">1i32</span> <span class="op">&lt;&lt;</span> <span class="number">23</span>).<span class="ident">saturating_mul</span>(<span class="number">1</span> <span class="op">&lt;&lt;</span> <span class="number">23</span>), <span class="ident">i32</span>::<span class="ident">MIN</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Ai32%3B%0A%0Aassert_eq!(100i32.saturating_mul(127)%2C%2012700)%3B%0Aassert_eq!((1i32%20%3C%3C%2023).saturating_mul(1%20%3C%3C%2023)%2C%20i32%3A%3AMAX)%3B%0Aassert_eq!((-1i32%20%3C%3C%2023).saturating_mul(1%20%3C%3C%2023)%2C%20i32%3A%3AMIN)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.wrapping_add' class="method"><span id='wrapping_add.v' class='invisible'><code>pub fn <a href='#method.wrapping_add' class='fnname'>wrapping_add</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#643-647' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Wrapping (modular) addition. Computes <code>self + other</code>,
+<div class='docblock'><p>Wrapping (modular) addition. Computes <code>self + rhs</code>,
 wrapping around at the boundary of the type.</p>
 
 <h1 id='examples-26' class='section-header'><a href='#examples-26'>Examples</a></h1>
@@ -385,7 +385,7 @@ wrapping around at the boundary of the type.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">100i8</span>.<span class="ident">wrapping_add</span>(<span class="number">27</span>), <span class="number">127</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">100i8</span>.<span class="ident">wrapping_add</span>(<span class="number">127</span>), <span class="op">-</span><span class="number">29</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(100i8.wrapping_add(27)%2C%20127)%3B%0Aassert_eq!(100i8.wrapping_add(127)%2C%20-29)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.wrapping_sub' class="method"><span id='wrapping_sub.v' class='invisible'><code>pub fn <a href='#method.wrapping_sub' class='fnname'>wrapping_sub</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#662-666' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Wrapping (modular) subtraction. Computes <code>self - other</code>,
+<div class='docblock'><p>Wrapping (modular) subtraction. Computes <code>self - rhs</code>,
 wrapping around at the boundary of the type.</p>
 
 <h1 id='examples-27' class='section-header'><a href='#examples-27'>Examples</a></h1>
@@ -395,7 +395,7 @@ wrapping around at the boundary of the type.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">0i8</span>.<span class="ident">wrapping_sub</span>(<span class="number">127</span>), <span class="op">-</span><span class="number">127</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">2i8</span>).<span class="ident">wrapping_sub</span>(<span class="number">127</span>), <span class="number">127</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(0i8.wrapping_sub(127)%2C%20-127)%3B%0Aassert_eq!((-2i8).wrapping_sub(127)%2C%20127)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.wrapping_mul' class="method"><span id='wrapping_mul.v' class='invisible'><code>pub fn <a href='#method.wrapping_mul' class='fnname'>wrapping_mul</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/core/num/mod.rs.html#681-685' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Wrapping (modular) multiplication. Computes <code>self * other</code>, wrapping around at the boundary of the type.</p>
+<div class='docblock'><p>Wrapping (modular) multiplication. Computes <code>self * rhs</code>, wrapping around at the boundary of the type.</p>
 
 <h1 id='examples-28' class='section-header'><a href='#examples-28'>Examples</a></h1>
 <p>Basic usage:</p>
@@ -404,7 +404,7 @@ wrapping around at the boundary of the type.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">10i8</span>.<span class="ident">wrapping_mul</span>(<span class="number">12</span>), <span class="number">120</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">11i8</span>.<span class="ident">wrapping_mul</span>(<span class="number">12</span>), <span class="op">-</span><span class="number">124</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(10i8.wrapping_mul(12)%2C%20120)%3B%0Aassert_eq!(11i8.wrapping_mul(12)%2C%20-124)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.wrapping_div' class="method"><span id='wrapping_div.v' class='invisible'><code>pub fn <a href='#method.wrapping_div' class='fnname'>wrapping_div</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.2.0'>1.2.0</div><a class='srclink' href='../src/core/num/mod.rs.html#711-713' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Wrapping (modular) division. Computes <code>self / other</code>,
+<div class='docblock'><p>Wrapping (modular) division. Computes <code>self / rhs</code>,
 wrapping around at the boundary of the type.</p>
 
 <p>The only case where such wrapping can occur is when one
@@ -424,7 +424,7 @@ itself.</p>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">100u8</span>.<span class="ident">wrapping_div</span>(<span class="number">10</span>), <span class="number">10</span>);
 <span class="macro">assert_eq</span><span class="macro">!</span>((<span class="op">-</span><span class="number">128i8</span>).<span class="ident">wrapping_div</span>(<span class="op">-</span><span class="number">1</span>), <span class="op">-</span><span class="number">128</span>);<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Aassert_eq!(100u8.wrapping_div(10)%2C%2010)%3B%0Aassert_eq!((-128i8).wrapping_div(-1)%2C%20-128)%3B%0A%7D">Run</a></pre>
 </div><h4 id='method.wrapping_rem' class="method"><span id='wrapping_rem.v' class='invisible'><code>pub fn <a href='#method.wrapping_rem' class='fnname'>wrapping_rem</a>(self, rhs: <a class="primitive" href="primitive.i32.html">i32</a>) -&gt; <a class="primitive" href="primitive.i32.html">i32</a></code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.2.0'>1.2.0</div><a class='srclink' href='../src/core/num/mod.rs.html#737-739' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Wrapping (modular) remainder. Computes <code>self % other</code>,
+<div class='docblock'><p>Wrapping (modular) remainder. Computes <code>self % rhs</code>,
 wrapping around at the boundary of the type.</p>
 
 <p>Such wrap-around never actually occurs mathematically;

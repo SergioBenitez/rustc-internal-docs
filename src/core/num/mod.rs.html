@@ -4014,7 +4014,7 @@
             <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;little&quot;</span>) { <span class="self">self</span> } <span class="kw">else</span> { <span class="self">self</span>.<span class="ident">swap_bytes</span>() }
         }
 
-        <span class="doccomment">/// Checked integer addition. Computes `self + other`, returning `None`</span>
+        <span class="doccomment">/// Checked integer addition. Computes `self + rhs`, returning `None`</span>
         <span class="doccomment">/// if overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4027,12 +4027,12 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_add</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_add</span>(<span class="ident">other</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_add</span>(<span class="ident">rhs</span>);
             <span class="kw">if</span> <span class="ident">b</span> {<span class="prelude-val">None</span>} <span class="kw">else</span> {<span class="prelude-val">Some</span>(<span class="ident">a</span>)}
         }
 
-        <span class="doccomment">/// Checked integer subtraction. Computes `self - other`, returning</span>
+        <span class="doccomment">/// Checked integer subtraction. Computes `self - rhs`, returning</span>
         <span class="doccomment">/// `None` if underflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4045,12 +4045,12 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_sub</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_sub</span>(<span class="ident">other</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_sub</span>(<span class="ident">rhs</span>);
             <span class="kw">if</span> <span class="ident">b</span> {<span class="prelude-val">None</span>} <span class="kw">else</span> {<span class="prelude-val">Some</span>(<span class="ident">a</span>)}
         }
 
-        <span class="doccomment">/// Checked integer multiplication. Computes `self * other`, returning</span>
+        <span class="doccomment">/// Checked integer multiplication. Computes `self * rhs`, returning</span>
         <span class="doccomment">/// `None` if underflow or overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4063,13 +4063,13 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_mul</span>(<span class="ident">other</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_mul</span>(<span class="ident">rhs</span>);
             <span class="kw">if</span> <span class="ident">b</span> {<span class="prelude-val">None</span>} <span class="kw">else</span> {<span class="prelude-val">Some</span>(<span class="ident">a</span>)}
         }
 
-        <span class="doccomment">/// Checked integer division. Computes `self / other`, returning `None`</span>
-        <span class="doccomment">/// if `other == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// Checked integer division. Computes `self / rhs`, returning `None`</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -4082,16 +4082,16 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_div</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="ident">other</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> (<span class="self">self</span> <span class="op">==</span> <span class="self">Self</span>::<span class="ident">min_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">other</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">if</span> <span class="ident">rhs</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> (<span class="self">self</span> <span class="op">==</span> <span class="self">Self</span>::<span class="ident">min_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">rhs</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span>) {
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
-                <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_div</span>(<span class="self">self</span>, <span class="ident">other</span>) })
+                <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>) })
             }
         }
 
-        <span class="doccomment">/// Checked integer remainder. Computes `self % other`, returning `None`</span>
-        <span class="doccomment">/// if `other == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// Checked integer remainder. Computes `self % rhs`, returning `None`</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -4106,11 +4106,11 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_rem</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="ident">other</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> (<span class="self">self</span> <span class="op">==</span> <span class="self">Self</span>::<span class="ident">min_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">other</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">if</span> <span class="ident">rhs</span> <span class="op">==</span> <span class="number">0</span> <span class="op">||</span> (<span class="self">self</span> <span class="op">==</span> <span class="self">Self</span>::<span class="ident">min_value</span>() <span class="op">&amp;&amp;</span> <span class="ident">rhs</span> <span class="op">==</span> <span class="op">-</span><span class="number">1</span>) {
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
-                <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_rem</span>(<span class="self">self</span>, <span class="ident">other</span>) })
+                <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>) })
             }
         }
 
@@ -4193,7 +4193,7 @@
             }
         }
 
-        <span class="doccomment">/// Saturating integer addition. Computes `self + other`, saturating at</span>
+        <span class="doccomment">/// Saturating integer addition. Computes `self + rhs`, saturating at</span>
         <span class="doccomment">/// the numeric bounds instead of overflowing.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4206,15 +4206,15 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_add</span>(<span class="ident">other</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_add</span>(<span class="ident">rhs</span>) {
                 <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
-                <span class="prelude-val">None</span> <span class="kw">if</span> <span class="ident">other</span> <span class="op">&gt;=</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">max_value</span>(),
+                <span class="prelude-val">None</span> <span class="kw">if</span> <span class="ident">rhs</span> <span class="op">&gt;=</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">max_value</span>(),
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">min_value</span>(),
             }
         }
 
-        <span class="doccomment">/// Saturating integer subtraction. Computes `self - other`, saturating</span>
+        <span class="doccomment">/// Saturating integer subtraction. Computes `self - rhs`, saturating</span>
         <span class="doccomment">/// at the numeric bounds instead of overflowing.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4227,15 +4227,15 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_sub</span>(<span class="ident">other</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_sub</span>(<span class="ident">rhs</span>) {
                 <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
-                <span class="prelude-val">None</span> <span class="kw">if</span> <span class="ident">other</span> <span class="op">&gt;=</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">min_value</span>(),
+                <span class="prelude-val">None</span> <span class="kw">if</span> <span class="ident">rhs</span> <span class="op">&gt;=</span> <span class="number">0</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">min_value</span>(),
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">max_value</span>(),
             }
         }
 
-        <span class="doccomment">/// Saturating integer multiplication. Computes `self * other`,</span>
+        <span class="doccomment">/// Saturating integer multiplication. Computes `self * rhs`,</span>
         <span class="doccomment">/// saturating at the numeric bounds instead of overflowing.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4251,9 +4251,9 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-            <span class="self">self</span>.<span class="ident">checked_mul</span>(<span class="ident">other</span>).<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
-                <span class="kw">if</span> (<span class="self">self</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">other</span> <span class="op">&lt;</span> <span class="number">0</span>) <span class="op">||</span> (<span class="self">self</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">other</span> <span class="op">&gt;</span> <span class="number">0</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="self">self</span>.<span class="ident">checked_mul</span>(<span class="ident">rhs</span>).<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
+                <span class="kw">if</span> (<span class="self">self</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">rhs</span> <span class="op">&lt;</span> <span class="number">0</span>) <span class="op">||</span> (<span class="self">self</span> <span class="op">&gt;</span> <span class="number">0</span> <span class="op">&amp;&amp;</span> <span class="ident">rhs</span> <span class="op">&gt;</span> <span class="number">0</span>) {
                     <span class="self">Self</span>::<span class="ident">max_value</span>()
                 } <span class="kw">else</span> {
                     <span class="self">Self</span>::<span class="ident">min_value</span>()
@@ -4261,7 +4261,7 @@
             })
         }
 
-        <span class="doccomment">/// Wrapping (modular) addition. Computes `self + other`,</span>
+        <span class="doccomment">/// Wrapping (modular) addition. Computes `self + rhs`,</span>
         <span class="doccomment">/// wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4280,7 +4280,7 @@
             }
         }
 
-        <span class="doccomment">/// Wrapping (modular) subtraction. Computes `self - other`,</span>
+        <span class="doccomment">/// Wrapping (modular) subtraction. Computes `self - rhs`,</span>
         <span class="doccomment">/// wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4300,7 +4300,7 @@
         }
 
         <span class="doccomment">/// Wrapping (modular) multiplication. Computes `self *</span>
-        <span class="doccomment">/// other`, wrapping around at the boundary of the type.</span>
+        <span class="doccomment">/// rhs`, wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -4318,7 +4318,7 @@
             }
         }
 
-        <span class="doccomment">/// Wrapping (modular) division. Computes `self / other`,</span>
+        <span class="doccomment">/// Wrapping (modular) division. Computes `self / rhs`,</span>
         <span class="doccomment">/// wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// The only case where such wrapping can occur is when one</span>
@@ -4346,7 +4346,7 @@
             <span class="self">self</span>.<span class="ident">overflowing_div</span>(<span class="ident">rhs</span>).<span class="number">0</span>
         }
 
-        <span class="doccomment">/// Wrapping (modular) remainder. Computes `self % other`,</span>
+        <span class="doccomment">/// Wrapping (modular) remainder. Computes `self % rhs`,</span>
         <span class="doccomment">/// wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// Such wrap-around never actually occurs mathematically;</span>
@@ -5207,7 +5207,7 @@
             <span class="kw">if</span> <span class="macro">cfg</span><span class="macro">!</span>(<span class="ident">target_endian</span> <span class="op">=</span> <span class="string">&quot;little&quot;</span>) { <span class="self">self</span> } <span class="kw">else</span> { <span class="self">self</span>.<span class="ident">swap_bytes</span>() }
         }
 
-        <span class="doccomment">/// Checked integer addition. Computes `self + other`, returning `None`</span>
+        <span class="doccomment">/// Checked integer addition. Computes `self + rhs`, returning `None`</span>
         <span class="doccomment">/// if overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5220,12 +5220,12 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_add</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_add</span>(<span class="ident">other</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_add</span>(<span class="ident">rhs</span>);
             <span class="kw">if</span> <span class="ident">b</span> {<span class="prelude-val">None</span>} <span class="kw">else</span> {<span class="prelude-val">Some</span>(<span class="ident">a</span>)}
         }
 
-        <span class="doccomment">/// Checked integer subtraction. Computes `self - other`, returning</span>
+        <span class="doccomment">/// Checked integer subtraction. Computes `self - rhs`, returning</span>
         <span class="doccomment">/// `None` if underflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5238,12 +5238,12 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_sub</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_sub</span>(<span class="ident">other</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_sub</span>(<span class="ident">rhs</span>);
             <span class="kw">if</span> <span class="ident">b</span> {<span class="prelude-val">None</span>} <span class="kw">else</span> {<span class="prelude-val">Some</span>(<span class="ident">a</span>)}
         }
 
-        <span class="doccomment">/// Checked integer multiplication. Computes `self * other`, returning</span>
+        <span class="doccomment">/// Checked integer multiplication. Computes `self * rhs`, returning</span>
         <span class="doccomment">/// `None` if underflow or overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5256,13 +5256,13 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_mul</span>(<span class="ident">other</span>);
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflowing_mul</span>(<span class="ident">rhs</span>);
             <span class="kw">if</span> <span class="ident">b</span> {<span class="prelude-val">None</span>} <span class="kw">else</span> {<span class="prelude-val">Some</span>(<span class="ident">a</span>)}
         }
 
-        <span class="doccomment">/// Checked integer division. Computes `self / other`, returning `None`</span>
-        <span class="doccomment">/// if `other == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// Checked integer division. Computes `self / rhs`, returning `None`</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -5274,15 +5274,15 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_div</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">match</span> <span class="ident">other</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">match</span> <span class="ident">rhs</span> {
                 <span class="number">0</span> <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-                <span class="ident">other</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_div</span>(<span class="self">self</span>, <span class="ident">other</span>) }),
+                <span class="ident">rhs</span> <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_div</span>(<span class="self">self</span>, <span class="ident">rhs</span>) }),
             }
         }
 
-        <span class="doccomment">/// Checked integer remainder. Computes `self % other`, returning `None`</span>
-        <span class="doccomment">/// if `other == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// Checked integer remainder. Computes `self % rhs`, returning `None`</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -5294,11 +5294,11 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_rem</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="ident">other</span> <span class="op">==</span> <span class="number">0</span> {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">checked_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
+            <span class="kw">if</span> <span class="ident">rhs</span> <span class="op">==</span> <span class="number">0</span> {
                 <span class="prelude-val">None</span>
             } <span class="kw">else</span> {
-                <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_rem</span>(<span class="self">self</span>, <span class="ident">other</span>) })
+                <span class="prelude-val">Some</span>(<span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">unchecked_rem</span>(<span class="self">self</span>, <span class="ident">rhs</span>) })
             }
         }
 
@@ -5358,7 +5358,7 @@
             <span class="kw">if</span> <span class="ident">b</span> {<span class="prelude-val">None</span>} <span class="kw">else</span> {<span class="prelude-val">Some</span>(<span class="ident">a</span>)}
         }
 
-        <span class="doccomment">/// Saturating integer addition. Computes `self + other`, saturating at</span>
+        <span class="doccomment">/// Saturating integer addition. Computes `self + rhs`, saturating at</span>
         <span class="doccomment">/// the numeric bounds instead of overflowing.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5371,14 +5371,14 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_add</span>(<span class="ident">other</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_add</span>(<span class="ident">rhs</span>) {
                 <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">max_value</span>(),
             }
         }
 
-        <span class="doccomment">/// Saturating integer subtraction. Computes `self - other`, saturating</span>
+        <span class="doccomment">/// Saturating integer subtraction. Computes `self - rhs`, saturating</span>
         <span class="doccomment">/// at the numeric bounds instead of overflowing.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5391,14 +5391,14 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_sub</span>(<span class="ident">other</span>) {
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">checked_sub</span>(<span class="ident">rhs</span>) {
                 <span class="prelude-val">Some</span>(<span class="ident">x</span>) <span class="op">=&gt;</span> <span class="ident">x</span>,
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">min_value</span>(),
             }
         }
 
-        <span class="doccomment">/// Saturating integer multiplication. Computes `self * other`,</span>
+        <span class="doccomment">/// Saturating integer multiplication. Computes `self * rhs`,</span>
         <span class="doccomment">/// saturating at the numeric bounds instead of overflowing.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5413,11 +5413,11 @@
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-            <span class="self">self</span>.<span class="ident">checked_mul</span>(<span class="ident">other</span>).<span class="ident">unwrap_or</span>(<span class="self">Self</span>::<span class="ident">max_value</span>())
+        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">saturating_mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="self">self</span>.<span class="ident">checked_mul</span>(<span class="ident">rhs</span>).<span class="ident">unwrap_or</span>(<span class="self">Self</span>::<span class="ident">max_value</span>())
         }
 
-        <span class="doccomment">/// Wrapping (modular) addition. Computes `self + other`,</span>
+        <span class="doccomment">/// Wrapping (modular) addition. Computes `self + rhs`,</span>
         <span class="doccomment">/// wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5436,7 +5436,7 @@
             }
         }
 
-        <span class="doccomment">/// Wrapping (modular) subtraction. Computes `self - other`,</span>
+        <span class="doccomment">/// Wrapping (modular) subtraction. Computes `self - rhs`,</span>
         <span class="doccomment">/// wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -5456,7 +5456,7 @@
         }
 
         <span class="doccomment">/// Wrapping (modular) multiplication. Computes `self *</span>
-        <span class="doccomment">/// other`, wrapping around at the boundary of the type.</span>
+        <span class="doccomment">/// rhs`, wrapping around at the boundary of the type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -5474,7 +5474,7 @@
             }
         }
 
-        <span class="doccomment">/// Wrapping (modular) division. Computes `self / other`.</span>
+        <span class="doccomment">/// Wrapping (modular) division. Computes `self / rhs`.</span>
         <span class="doccomment">/// Wrapped division on unsigned types is just normal division.</span>
         <span class="doccomment">/// There&#39;s no way wrapping could ever happen.</span>
         <span class="doccomment">/// This function exists, so that all operations</span>
@@ -5493,7 +5493,7 @@
             <span class="self">self</span> <span class="op">/</span> <span class="ident">rhs</span>
         }
 
-        <span class="doccomment">/// Wrapping (modular) remainder. Computes `self % other`.</span>
+        <span class="doccomment">/// Wrapping (modular) remainder. Computes `self % rhs`.</span>
         <span class="doccomment">/// Wrapped remainder calculation on unsigned types is</span>
         <span class="doccomment">/// just the regular remainder calculation.</span>
         <span class="doccomment">/// There&#39;s no way wrapping could ever happen.</span>
