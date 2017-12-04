@@ -314,6 +314,15 @@
 <span id="269">269</span>
 <span id="270">270</span>
 <span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">int</span>::{<span class="ident">Int</span>, <span class="ident">LargeInt</span>};
 
@@ -585,6 +594,15 @@
                                    <span class="ident">rem</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">u128</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">u128</span> {
         <span class="macro">udivmod_inner</span><span class="macro">!</span>(<span class="ident">n</span>, <span class="ident">d</span>, <span class="ident">rem</span>, <span class="ident">u128</span>)
     }
+}
+
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;u128_div&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rust_u128_div</span>(<span class="ident">a</span>: <span class="ident">u128</span>, <span class="ident">b</span>: <span class="ident">u128</span>) <span class="op">-&gt;</span> <span class="ident">u128</span> {
+    <span class="ident">__udivti3</span>(<span class="ident">a</span>, <span class="ident">b</span>)
+}
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">stage0</span>), <span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;u128_rem&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rust_u128_rem</span>(<span class="ident">a</span>: <span class="ident">u128</span>, <span class="ident">b</span>: <span class="ident">u128</span>) <span class="op">-&gt;</span> <span class="ident">u128</span> {
+    <span class="ident">__umodti3</span>(<span class="ident">a</span>, <span class="ident">b</span>)
 }
 </pre>
 </section>

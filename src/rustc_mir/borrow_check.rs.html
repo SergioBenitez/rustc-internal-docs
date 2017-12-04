@@ -2208,6 +2208,48 @@
 <span id="2163">2163</span>
 <span id="2164">2164</span>
 <span id="2165">2165</span>
+<span id="2166">2166</span>
+<span id="2167">2167</span>
+<span id="2168">2168</span>
+<span id="2169">2169</span>
+<span id="2170">2170</span>
+<span id="2171">2171</span>
+<span id="2172">2172</span>
+<span id="2173">2173</span>
+<span id="2174">2174</span>
+<span id="2175">2175</span>
+<span id="2176">2176</span>
+<span id="2177">2177</span>
+<span id="2178">2178</span>
+<span id="2179">2179</span>
+<span id="2180">2180</span>
+<span id="2181">2181</span>
+<span id="2182">2182</span>
+<span id="2183">2183</span>
+<span id="2184">2184</span>
+<span id="2185">2185</span>
+<span id="2186">2186</span>
+<span id="2187">2187</span>
+<span id="2188">2188</span>
+<span id="2189">2189</span>
+<span id="2190">2190</span>
+<span id="2191">2191</span>
+<span id="2192">2192</span>
+<span id="2193">2193</span>
+<span id="2194">2194</span>
+<span id="2195">2195</span>
+<span id="2196">2196</span>
+<span id="2197">2197</span>
+<span id="2198">2198</span>
+<span id="2199">2199</span>
+<span id="2200">2200</span>
+<span id="2201">2201</span>
+<span id="2202">2202</span>
+<span id="2203">2203</span>
+<span id="2204">2204</span>
+<span id="2205">2205</span>
+<span id="2206">2206</span>
+<span id="2207">2207</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2595,33 +2637,23 @@
                 <span class="comment">// StorageDead, but we don&#39;t always emit those (notably on unwind paths),</span>
                 <span class="comment">// so this &quot;extra check&quot; serves as a kind of backup.</span>
                 <span class="kw">let</span> <span class="ident">domain</span> <span class="op">=</span> <span class="ident">flow_state</span>.<span class="ident">borrows</span>.<span class="ident">base_results</span>.<span class="ident">operator</span>();
-                <span class="kw">for</span> <span class="ident">borrow</span> <span class="kw">in</span> <span class="ident">domain</span>.<span class="ident">borrows</span>() {
-                    <span class="kw">let</span> <span class="ident">root_place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prefixes</span>(
-                        <span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">place</span>,
-                        <span class="ident">PrefixSet</span>::<span class="ident">All</span>
-                    ).<span class="ident">last</span>().<span class="ident">unwrap</span>();
-                    <span class="kw">match</span> <span class="ident">root_place</span> {
-                        <span class="ident">Place</span>::<span class="ident">Static</span>(_) <span class="op">=&gt;</span> {
-                            <span class="self">self</span>.<span class="ident">access_place</span>(
-                                <span class="ident">ContextKind</span>::<span class="ident">StorageDead</span>.<span class="ident">new</span>(<span class="ident">loc</span>),
-                                (<span class="kw-2">&amp;</span><span class="ident">root_place</span>, <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">source_info</span>(<span class="ident">borrow</span>.<span class="ident">location</span>).<span class="ident">span</span>),
-                                (<span class="ident">Deep</span>, <span class="ident">Write</span>(<span class="ident">WriteKind</span>::<span class="ident">StorageDeadOrDrop</span>)),
-                                <span class="ident">LocalMutationIsAllowed</span>::<span class="ident">Yes</span>,
-                                <span class="ident">flow_state</span>
-                            );
-                        }
-                        <span class="ident">Place</span>::<span class="ident">Local</span>(_) <span class="op">=&gt;</span> {
-                            <span class="self">self</span>.<span class="ident">access_place</span>(
-                                <span class="ident">ContextKind</span>::<span class="ident">StorageDead</span>.<span class="ident">new</span>(<span class="ident">loc</span>),
-                                (<span class="kw-2">&amp;</span><span class="ident">root_place</span>, <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">source_info</span>(<span class="ident">borrow</span>.<span class="ident">location</span>).<span class="ident">span</span>),
-                                (<span class="ident">Shallow</span>(<span class="prelude-val">None</span>), <span class="ident">Write</span>(<span class="ident">WriteKind</span>::<span class="ident">StorageDeadOrDrop</span>)),
-                                <span class="ident">LocalMutationIsAllowed</span>::<span class="ident">Yes</span>,
-                                <span class="ident">flow_state</span>
-                            );
-                        }
-                        <span class="ident">Place</span>::<span class="ident">Projection</span>(_) <span class="op">=&gt;</span> ()
+                <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="ident">domain</span>.<span class="ident">borrows</span>();
+                <span class="ident">flow_state</span>.<span class="ident">borrows</span>.<span class="ident">with_elems_outgoing</span>(<span class="op">|</span><span class="ident">borrows</span><span class="op">|</span> <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">borrows</span> {
+                    <span class="kw">let</span> <span class="ident">borrow</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">data</span>[<span class="ident">i</span>];
+
+                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">place_is_invalidated_at_exit</span>(<span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">place</span>) {
+                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;borrow conflicts at exit {:?}&quot;</span>, <span class="ident">borrow</span>);
+                        <span class="kw">let</span> <span class="ident">borrow_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">source_info</span>(<span class="ident">borrow</span>.<span class="ident">location</span>).<span class="ident">span</span>;
+                        <span class="comment">// FIXME: should be talking about the region lifetime instead</span>
+                        <span class="comment">// of just a span here.</span>
+                        <span class="kw">let</span> <span class="ident">end_span</span> <span class="op">=</span> <span class="ident">domain</span>.<span class="ident">opt_region_end_span</span>(<span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">region</span>);
+
+                        <span class="self">self</span>.<span class="ident">report_borrowed_value_does_not_live_long_enough</span>(
+                            <span class="ident">ContextKind</span>::<span class="ident">StorageDead</span>.<span class="ident">new</span>(<span class="ident">loc</span>),
+                            (<span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">place</span>, <span class="ident">borrow_span</span>),
+                            <span class="ident">end_span</span>)
                     }
-                }
+                });
             }
             <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: _ } <span class="op">|</span>
             <span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
@@ -2805,7 +2837,7 @@
                                     <span class="ident">context</span>, <span class="ident">common_prefix</span>, <span class="ident">place_span</span>, <span class="ident">bk</span>,
                                     <span class="kw-2">&amp;</span><span class="ident">borrow</span>, <span class="ident">end_issued_loan_span</span>)
                             }
-                             <span class="ident">WriteKind</span>::<span class="ident">StorageDeadOrDrop</span> <span class="op">=&gt;</span> {
+                            <span class="ident">WriteKind</span>::<span class="ident">StorageDeadOrDrop</span> <span class="op">=&gt;</span> {
                                 <span class="kw">let</span> <span class="ident">end_span</span> <span class="op">=</span>
                                     <span class="ident">flow_state</span>.<span class="ident">borrows</span>.<span class="ident">base_results</span>.<span class="ident">operator</span>().<span class="ident">opt_region_end_span</span>(
                                         <span class="kw-2">&amp;</span><span class="ident">borrow</span>.<span class="ident">region</span>);
@@ -2961,6 +2993,50 @@
             }
             <span class="ident">Operand</span>::<span class="ident">Constant</span>(_) <span class="op">=&gt;</span> {}
         }
+    }
+
+    <span class="doccomment">/// Returns whether a borrow of this place is invalidated when the function</span>
+    <span class="doccomment">/// exits</span>
+    <span class="kw">fn</span> <span class="ident">place_is_invalidated_at_exit</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">place</span>: <span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;place_is_invalidated_at_exit({:?})&quot;</span>, <span class="ident">place</span>);
+        <span class="kw">let</span> <span class="ident">root_place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prefixes</span>(<span class="ident">place</span>, <span class="ident">PrefixSet</span>::<span class="ident">All</span>).<span class="ident">last</span>().<span class="ident">unwrap</span>();
+
+        <span class="comment">// FIXME(nll-rfc#40): do more precise destructor tracking here. For now</span>
+        <span class="comment">// we just know that all locals are dropped at function exit (otherwise</span>
+        <span class="comment">// we&#39;ll have a memory leak) and assume that all statics have a destructor.</span>
+        <span class="kw">let</span> (<span class="ident">might_be_alive</span>, <span class="ident">will_be_dropped</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">root_place</span> {
+            <span class="ident">Place</span>::<span class="ident">Static</span>(<span class="ident">statik</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// Thread-locals might be dropped after the function exits, but</span>
+                <span class="comment">// &quot;true&quot; statics will never be.</span>
+                <span class="kw">let</span> <span class="ident">is_thread_local</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">get_attrs</span>(<span class="ident">statik</span>.<span class="ident">def_id</span>).<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">attr</span><span class="op">|</span> {
+                    <span class="ident">attr</span>.<span class="ident">check_name</span>(<span class="string">&quot;thread_local&quot;</span>)
+                });
+
+                (<span class="bool-val">true</span>, <span class="ident">is_thread_local</span>)
+            }
+            <span class="ident">Place</span>::<span class="ident">Local</span>(_) <span class="op">=&gt;</span> {
+                <span class="comment">// Locals are always dropped at function exit, and if they</span>
+                <span class="comment">// have a destructor it would&#39;ve been called already.</span>
+                (<span class="bool-val">false</span>, <span class="bool-val">true</span>)
+            }
+            <span class="ident">Place</span>::<span class="ident">Projection</span>(..) <span class="op">=&gt;</span> <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;root of {:?} is a projection ({:?})?&quot;</span>,
+                                           <span class="ident">place</span>, <span class="ident">root_place</span>)
+        };
+
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">will_be_dropped</span> {
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;place_is_invalidated_at_exit({:?}) - won&#39;t be dropped&quot;</span>, <span class="ident">place</span>);
+            <span class="kw">return</span> <span class="bool-val">false</span>;
+        }
+
+        <span class="comment">// FIXME: replace this with a proper borrow_conflicts_with_place when</span>
+        <span class="comment">// that is merged.</span>
+        <span class="kw">let</span> <span class="ident">prefix_set</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">might_be_alive</span> {
+            <span class="ident">PrefixSet</span>::<span class="ident">Supporting</span>
+        } <span class="kw">else</span> {
+            <span class="ident">PrefixSet</span>::<span class="ident">Shallow</span>
+        };
+
+        <span class="self">self</span>.<span class="ident">prefixes</span>(<span class="ident">place</span>, <span class="ident">prefix_set</span>).<span class="ident">any</span>(<span class="op">|</span><span class="ident">prefix</span><span class="op">|</span> <span class="ident">prefix</span> <span class="op">==</span> <span class="ident">root_place</span>)
     }
 }
 
@@ -3878,13 +3954,13 @@
 
     <span class="kw">fn</span> <span class="ident">report_borrowed_value_does_not_live_long_enough</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                                                        _: <span class="ident">Context</span>,
-                                                       (<span class="ident">place</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Place</span>, <span class="ident">Span</span>),
+                                                       (<span class="ident">place</span>, <span class="ident">span</span>): (<span class="kw-2">&amp;</span><span class="ident">Place</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">Span</span>),
                                                        <span class="ident">end_span</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">proper_span</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">place</span> {
+        <span class="kw">let</span> <span class="ident">root_place</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">prefixes</span>(<span class="ident">place</span>, <span class="ident">PrefixSet</span>::<span class="ident">All</span>).<span class="ident">last</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">proper_span</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">root_place</span> {
             <span class="ident">Place</span>::<span class="ident">Local</span>(<span class="ident">local</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">mir</span>.<span class="ident">local_decls</span>[<span class="ident">local</span>].<span class="ident">source_info</span>.<span class="ident">span</span>,
             _ <span class="op">=&gt;</span> <span class="ident">span</span>
         };
-
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">path_does_not_live_long_enough</span>(<span class="ident">span</span>, <span class="string">&quot;borrowed value&quot;</span>, <span class="ident">Origin</span>::<span class="ident">Mir</span>);
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">proper_span</span>, <span class="string">&quot;temporary value created here&quot;</span>);
         <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="string">&quot;temporary value dropped here while still borrowed&quot;</span>);
@@ -4372,6 +4448,14 @@
     <span class="kw">fn</span> <span class="ident">elems_incoming</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">indexed_set</span>::<span class="ident">Elems</span><span class="op">&lt;</span><span class="ident">BD</span>::<span class="ident">Idx</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">univ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">base_results</span>.<span class="ident">sets</span>().<span class="ident">bits_per_block</span>();
         <span class="self">self</span>.<span class="ident">curr_state</span>.<span class="ident">elems</span>(<span class="ident">univ</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">with_elems_outgoing</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="ident">indexed_set</span>::<span class="ident">Elems</span><span class="op">&lt;</span><span class="ident">BD</span>::<span class="ident">Idx</span><span class="op">&gt;</span>) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">curr_state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">curr_state</span>.<span class="ident">clone</span>();
+        <span class="ident">curr_state</span>.<span class="ident">union</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">stmt_gen</span>);
+        <span class="ident">curr_state</span>.<span class="ident">subtract</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">stmt_kill</span>);
+        <span class="kw">let</span> <span class="ident">univ</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">base_results</span>.<span class="ident">sets</span>().<span class="ident">bits_per_block</span>();
+        <span class="ident">f</span>(<span class="ident">curr_state</span>.<span class="ident">elems</span>(<span class="ident">univ</span>));
     }
 }
 </pre>

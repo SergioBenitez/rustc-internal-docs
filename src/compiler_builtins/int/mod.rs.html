@@ -339,6 +339,12 @@
 <span id="294">294</span>
 <span id="295">295</span>
 <span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ops</span>;
 
@@ -354,6 +360,7 @@
     }
 }
 
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">addsub</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">mul</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sdiv</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">shift</span>;
@@ -414,6 +421,7 @@
     <span class="kw">fn</span> <span class="ident">wrapping_mul</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">wrapping_sub</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">wrapping_shl</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
+    <span class="kw">fn</span> <span class="ident">overflowing_add</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>);
     <span class="kw">fn</span> <span class="ident">aborting_div</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">aborting_rem</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
     <span class="kw">fn</span> <span class="ident">leading_zeros</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span>;
@@ -459,6 +467,10 @@
 
             <span class="kw">fn</span> <span class="ident">wrapping_shl</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
                 <span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>::<span class="ident">wrapping_shl</span>(<span class="self">self</span>, <span class="ident">other</span>)
+            }
+
+            <span class="kw">fn</span> <span class="ident">overflowing_add</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>) {
+                <span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>::<span class="ident">overflowing_add</span>(<span class="self">self</span>, <span class="ident">other</span>)
             }
 
             <span class="kw">fn</span> <span class="ident">aborting_div</span>(<span class="self">self</span>, <span class="ident">other</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {

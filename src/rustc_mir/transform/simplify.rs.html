@@ -392,40 +392,6 @@
 <span id="347">347</span>
 <span id="348">348</span>
 <span id="349">349</span>
-<span id="350">350</span>
-<span id="351">351</span>
-<span id="352">352</span>
-<span id="353">353</span>
-<span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
-<span id="358">358</span>
-<span id="359">359</span>
-<span id="360">360</span>
-<span id="361">361</span>
-<span id="362">362</span>
-<span id="363">363</span>
-<span id="364">364</span>
-<span id="365">365</span>
-<span id="366">366</span>
-<span id="367">367</span>
-<span id="368">368</span>
-<span id="369">369</span>
-<span id="370">370</span>
-<span id="371">371</span>
-<span id="372">372</span>
-<span id="373">373</span>
-<span id="374">374</span>
-<span id="375">375</span>
-<span id="376">376</span>
-<span id="377">377</span>
-<span id="378">378</span>
-<span id="379">379</span>
-<span id="380">380</span>
-<span id="381">381</span>
-<span id="382">382</span>
-<span id="383">383</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -553,8 +519,6 @@
                     <span class="self">self</span>.<span class="ident">collapse_goto_chain</span>(<span class="ident">successor</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">changed</span>);
                 }
 
-                <span class="ident">changed</span> <span class="op">|=</span> <span class="self">self</span>.<span class="ident">simplify_unwind</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">terminator</span>);
-
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_stmts</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inner_changed</span> <span class="op">=</span> <span class="bool-val">true</span>;
                 <span class="kw">while</span> <span class="ident">inner_changed</span> {
@@ -665,38 +629,6 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;simplifying branch {:?}&quot;</span>, <span class="ident">terminator</span>);
         <span class="ident">terminator</span>.<span class="ident">kind</span> <span class="op">=</span> <span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { <span class="ident">target</span>: <span class="ident">first_succ</span> };
         <span class="bool-val">true</span>
-    }
-
-    <span class="comment">// turn an unwind branch to a resume block into a None</span>
-    <span class="kw">fn</span> <span class="ident">simplify_unwind</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">terminator</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Terminator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="kw">let</span> <span class="ident">unwind</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">terminator</span>.<span class="ident">kind</span> {
-            <span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">unwind</span>, .. } <span class="op">|</span>
-            <span class="ident">TerminatorKind</span>::<span class="ident">DropAndReplace</span> { <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">unwind</span>, .. } <span class="op">|</span>
-            <span class="ident">TerminatorKind</span>::<span class="ident">Call</span> { <span class="ident">cleanup</span>: <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">unwind</span>, .. } <span class="op">|</span>
-            <span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> { <span class="ident">cleanup</span>: <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">unwind</span>, .. } <span class="op">=&gt;</span>
-                <span class="ident">unwind</span>,
-            _ <span class="op">=&gt;</span> <span class="kw">return</span> <span class="bool-val">false</span>
-        };
-
-        <span class="kw">if</span> <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="prelude-val">Some</span>(<span class="ident">unwind_block</span>) <span class="op">=</span> <span class="ident">unwind</span> {
-            <span class="kw">let</span> <span class="ident">is_resume_block</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">basic_blocks</span>[<span class="ident">unwind_block</span>] {
-                <span class="ident">BasicBlockData</span> {
-                    <span class="kw-2">ref</span> <span class="ident">statements</span>,
-                    <span class="ident">terminator</span>: <span class="prelude-val">Some</span>(<span class="ident">Terminator</span> {
-                        <span class="ident">kind</span>: <span class="ident">TerminatorKind</span>::<span class="ident">Resume</span>, ..
-                    }), ..
-                } <span class="kw">if</span> <span class="ident">statements</span>.<span class="ident">is_empty</span>() <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-                _ <span class="op">=&gt;</span> <span class="bool-val">false</span>
-            };
-            <span class="kw">if</span> <span class="ident">is_resume_block</span> {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;simplifying unwind to {:?} from {:?}&quot;</span>,
-                       <span class="ident">unwind_block</span>, <span class="ident">terminator</span>.<span class="ident">source_info</span>);
-                <span class="kw-2">*</span><span class="ident">unwind</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-            }
-            <span class="kw">return</span> <span class="ident">is_resume_block</span>;
-        }
-
-        <span class="bool-val">false</span>
     }
 
     <span class="kw">fn</span> <span class="ident">strip_nops</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
