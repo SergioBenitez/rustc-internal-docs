@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -439,10 +440,6 @@
 <span id="394">394</span>
 <span id="395">395</span>
 <span id="396">396</span>
-<span id="397">397</span>
-<span id="398">398</span>
-<span id="399">399</span>
-<span id="400">400</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -616,11 +613,7 @@
                 <span class="kw">return</span> <span class="prelude-val">None</span>;
             }
 
-            <span class="kw">let</span> <span class="ident">octet</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_number</span>(<span class="number">10</span>, <span class="number">3</span>, <span class="number">0x100</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="kw">as</span> <span class="ident">u8</span>);
-            <span class="kw">match</span> <span class="ident">octet</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">d</span>) <span class="op">=&gt;</span> <span class="ident">bs</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">d</span>,
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-            };
+            <span class="ident">bs</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">read_number</span>(<span class="number">10</span>, <span class="number">3</span>, <span class="number">0x100</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">n</span><span class="op">|</span> <span class="ident">n</span> <span class="kw">as</span> <span class="ident">u8</span>)<span class="question-mark">?</span>;
             <span class="ident">i</span> <span class="op">+=</span> <span class="number">1</span>;
         }
         <span class="prelude-val">Some</span>(<span class="ident">Ipv4Addr</span>::<span class="ident">new</span>(<span class="ident">bs</span>[<span class="number">0</span>], <span class="ident">bs</span>[<span class="number">1</span>], <span class="ident">bs</span>[<span class="number">2</span>], <span class="ident">bs</span>[<span class="number">3</span>]))

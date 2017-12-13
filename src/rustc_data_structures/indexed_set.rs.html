@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../rustc_data_structures/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -341,8 +342,6 @@
 <span id="296">296</span>
 <span id="297">297</span>
 <span id="298">298</span>
-<span id="299">299</span>
-<span id="300">300</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -637,10 +636,8 @@
                 }
             }
 
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">next</span>() {
-                <span class="prelude-val">Some</span>((<span class="ident">i</span>, <span class="ident">word</span>)) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">cur</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="kw-2">*</span><span class="ident">word</span>, <span class="ident">word_bits</span> <span class="op">*</span> <span class="ident">i</span>)),
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-            }
+            <span class="kw">let</span> (<span class="ident">i</span>, <span class="ident">word</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">iter</span>.<span class="ident">next</span>()<span class="question-mark">?</span>;
+            <span class="self">self</span>.<span class="ident">cur</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="kw-2">*</span><span class="ident">word</span>, <span class="ident">word_bits</span> <span class="op">*</span> <span class="ident">i</span>));
         }
     }
 }

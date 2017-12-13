@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../syntax_pos/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1198,6 +1199,15 @@
 <span id="1153">1153</span>
 <span id="1154">1154</span>
 <span id="1155">1155</span>
+<span id="1156">1156</span>
+<span id="1157">1157</span>
+<span id="1158">1158</span>
+<span id="1159">1159</span>
+<span id="1160">1160</span>
+<span id="1161">1161</span>
+<span id="1162">1162</span>
+<span id="1163">1163</span>
+<span id="1164">1164</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1704,6 +1714,8 @@
     <span class="ident">ZeroWidth</span>(<span class="ident">BytePos</span>),
     <span class="doccomment">/// Represents a wide (fullwidth) character</span>
     <span class="ident">Wide</span>(<span class="ident">BytePos</span>),
+    <span class="doccomment">/// Represents a tab character, represented visually with a width of 4 characters</span>
+    <span class="ident">Tab</span>(<span class="ident">BytePos</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">NonNarrowChar</span> {
@@ -1711,6 +1723,7 @@
         <span class="kw">match</span> <span class="ident">width</span> {
             <span class="number">0</span> <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span>),
             <span class="number">2</span> <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span>),
+            <span class="number">4</span> <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Tab</span>(<span class="ident">pos</span>),
             _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;width {} given for non-narrow character&quot;</span>, <span class="ident">width</span>),
         }
     }
@@ -1719,7 +1732,8 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">pos</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">BytePos</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">p</span>) <span class="op">|</span>
-            <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="ident">p</span>,
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">p</span>) <span class="op">|</span>
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Tab</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="ident">p</span>,
         }
     }
 
@@ -1728,6 +1742,7 @@
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
             <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(_) <span class="op">=&gt;</span> <span class="number">0</span>,
             <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(_) <span class="op">=&gt;</span> <span class="number">2</span>,
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Tab</span>(_) <span class="op">=&gt;</span> <span class="number">4</span>,
         }
     }
 }
@@ -1739,6 +1754,7 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="ident">rhs</span>),
             <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="ident">rhs</span>),
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Tab</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Tab</span>(<span class="ident">pos</span> <span class="op">+</span> <span class="ident">rhs</span>),
         }
     }
 }
@@ -1750,6 +1766,7 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">ZeroWidth</span>(<span class="ident">pos</span> <span class="op">-</span> <span class="ident">rhs</span>),
             <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Wide</span>(<span class="ident">pos</span> <span class="op">-</span> <span class="ident">rhs</span>),
+            <span class="ident">NonNarrowChar</span>::<span class="ident">Tab</span>(<span class="ident">pos</span>) <span class="op">=&gt;</span> <span class="ident">NonNarrowChar</span>::<span class="ident">Tab</span>(<span class="ident">pos</span> <span class="op">-</span> <span class="ident">rhs</span>),
         }
     }
 }
@@ -2069,8 +2086,10 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">record_width</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">BytePos</span>, <span class="ident">ch</span>: <span class="ident">char</span>) {
         <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">ch</span> {
-            <span class="string">&#39;\t&#39;</span> <span class="op">|</span> <span class="string">&#39;\n&#39;</span> <span class="op">=&gt;</span>
-                <span class="comment">// Tabs will consume one column.</span>
+            <span class="string">&#39;\t&#39;</span> <span class="op">=&gt;</span>
+                <span class="comment">// Tabs will consume 4 columns.</span>
+                <span class="number">4</span>,
+            <span class="string">&#39;\n&#39;</span> <span class="op">=&gt;</span>
                 <span class="comment">// Make newlines take one column so that displayed spans can point them.</span>
                 <span class="number">1</span>,
             <span class="ident">ch</span> <span class="op">=&gt;</span>

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../syntax/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -12744,7 +12745,7 @@
         <span class="kw">match</span> <span class="ident">any_disr</span> {
             <span class="prelude-val">Some</span>(<span class="ident">disr_span</span>) <span class="kw">if</span> <span class="op">!</span><span class="ident">all_nullary</span> <span class="op">=&gt;</span>
                 <span class="self">self</span>.<span class="ident">span_err</span>(<span class="ident">disr_span</span>,
-                    <span class="string">&quot;discriminator values can only be used with a c-like enum&quot;</span>),
+                    <span class="string">&quot;discriminator values can only be used with a field-less enum&quot;</span>),
             _ <span class="op">=&gt;</span> ()
         }
 

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1265,6 +1266,35 @@
 <span id="1220">1220</span>
 <span id="1221">1221</span>
 <span id="1222">1222</span>
+<span id="1223">1223</span>
+<span id="1224">1224</span>
+<span id="1225">1225</span>
+<span id="1226">1226</span>
+<span id="1227">1227</span>
+<span id="1228">1228</span>
+<span id="1229">1229</span>
+<span id="1230">1230</span>
+<span id="1231">1231</span>
+<span id="1232">1232</span>
+<span id="1233">1233</span>
+<span id="1234">1234</span>
+<span id="1235">1235</span>
+<span id="1236">1236</span>
+<span id="1237">1237</span>
+<span id="1238">1238</span>
+<span id="1239">1239</span>
+<span id="1240">1240</span>
+<span id="1241">1241</span>
+<span id="1242">1242</span>
+<span id="1243">1243</span>
+<span id="1244">1244</span>
+<span id="1245">1245</span>
+<span id="1246">1246</span>
+<span id="1247">1247</span>
+<span id="1248">1248</span>
+<span id="1249">1249</span>
+<span id="1250">1250</span>
+<span id="1251">1251</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1707,12 +1737,7 @@
             }
         });
 
-        <span class="kw">let</span> <span class="ident">dtor_did</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">dtor_did</span> {
-            <span class="prelude-val">Some</span>(<span class="ident">dtor</span>) <span class="op">=&gt;</span> <span class="ident">dtor</span>,
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-        };
-
-        <span class="prelude-val">Some</span>(<span class="ident">ty</span>::<span class="ident">Destructor</span> { <span class="ident">did</span>: <span class="ident">dtor_did</span> })
+        <span class="prelude-val">Some</span>(<span class="ident">ty</span>::<span class="ident">Destructor</span> { <span class="ident">did</span>: <span class="ident">dtor_did</span><span class="question-mark">?</span> })
     }
 
     <span class="doccomment">/// Return the set of types that are required to be alive in</span>
@@ -1892,6 +1917,13 @@
         <span class="self">self</span>.<span class="ident">def_key</span>(<span class="ident">def_id</span>).<span class="ident">disambiguated_data</span>.<span class="ident">data</span> <span class="op">==</span> <span class="ident">DefPathData</span>::<span class="ident">ClosureExpr</span>
     }
 
+    <span class="doccomment">/// Given the `DefId` of a fn or closure, returns the `DefId` of</span>
+    <span class="doccomment">/// the innermost fn item that the closure is contained within.</span>
+    <span class="doccomment">/// This is a significant def-id because, when we do</span>
+    <span class="doccomment">/// type-checking, we type-check this fn item and all of its</span>
+    <span class="doccomment">/// (transitive) closures together.  Therefore, when we fetch the</span>
+    <span class="doccomment">/// `typeck_tables_of` the closure, for example, we really wind up</span>
+    <span class="doccomment">/// fetching the `typeck_tables_of` the enclosing fn item.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_base_def_id</span>(<span class="self">self</span>, <span class="ident">def_id</span>: <span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">DefId</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">def_id</span> <span class="op">=</span> <span class="ident">def_id</span>;
         <span class="kw">while</span> <span class="self">self</span>.<span class="ident">is_closure</span>(<span class="ident">def_id</span>) {
@@ -1900,6 +1932,33 @@
             });
         }
         <span class="ident">def_id</span>
+    }
+
+    <span class="doccomment">/// Given the def-id and substs a closure, creates the type of</span>
+    <span class="doccomment">/// `self` argument that the closure expects. For example, for a</span>
+    <span class="doccomment">/// `Fn` closure, this would return a reference type `&amp;T` where</span>
+    <span class="doccomment">/// `T=closure_ty`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `None` if this closure&#39;s kind has not yet been inferred.</span>
+    <span class="doccomment">/// This should only be possible during type checking.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note that the return value is a late-bound region and hence</span>
+    <span class="doccomment">/// wrapped in a binder.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">closure_env_ty</span>(<span class="self">self</span>,
+                          <span class="ident">closure_def_id</span>: <span class="ident">DefId</span>,
+                          <span class="ident">closure_substs</span>: <span class="ident">ty</span>::<span class="ident">ClosureSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                          <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ty</span>::<span class="ident">Binder</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>
+    {
+        <span class="kw">let</span> <span class="ident">closure_ty</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mk_closure</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>);
+        <span class="kw">let</span> <span class="ident">env_region</span> <span class="op">=</span> <span class="ident">ty</span>::<span class="ident">ReLateBound</span>(<span class="ident">ty</span>::<span class="ident">DebruijnIndex</span>::<span class="ident">new</span>(<span class="number">1</span>), <span class="ident">ty</span>::<span class="ident">BrEnv</span>);
+        <span class="kw">let</span> <span class="ident">closure_kind_ty</span> <span class="op">=</span> <span class="ident">closure_substs</span>.<span class="ident">closure_kind_ty</span>(<span class="ident">closure_def_id</span>, <span class="self">self</span>);
+        <span class="kw">let</span> <span class="ident">closure_kind</span> <span class="op">=</span> <span class="ident">closure_kind_ty</span>.<span class="ident">to_opt_closure_kind</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">env_ty</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">closure_kind</span> {
+            <span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">Fn</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">mk_imm_ref</span>(<span class="self">self</span>.<span class="ident">mk_region</span>(<span class="ident">env_region</span>), <span class="ident">closure_ty</span>),
+            <span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">FnMut</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">mk_mut_ref</span>(<span class="self">self</span>.<span class="ident">mk_region</span>(<span class="ident">env_region</span>), <span class="ident">closure_ty</span>),
+            <span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">FnOnce</span> <span class="op">=&gt;</span> <span class="ident">closure_ty</span>,
+        };
+        <span class="prelude-val">Some</span>(<span class="ident">ty</span>::<span class="ident">Binder</span>(<span class="ident">env_ty</span>))
     }
 
     <span class="doccomment">/// Given the def-id of some item that has no type parameters, make</span>

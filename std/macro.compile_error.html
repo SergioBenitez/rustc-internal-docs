@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         <p class='location'><a href='index.html'>std</a></p><script>window.sidebarCurrent = {name: 'compile_error', ty: 'macro', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
@@ -48,14 +49,38 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/std/macros.rs.html#290' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/std/macros.rs.html#315' title='goto source code'>[src]</a></span></h1>
 <pre class="rust macro">
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">compile_error</span> {
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">msg</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> { ... };
 }</pre>
 <div class='docblock'><p>Unconditionally causes compilation to fail with the given error message when encountered.</p>
 
-<p>For more information, see the <a href="https://github.com/rust-lang/rfcs/blob/master/text/1695-add-error-macro.md">RFC</a>.</p>
+<p>This macro should be used when a crate uses a conditional compilation strategy to provide
+better error messages for errornous conditions.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<p>Two such examples are macros and <code>#[cfg]</code> environments.</p>
+
+<p>Emit better compiler error if a macro is passed invalid values.</p>
+
+<div class='information'><div class='tooltip compile_fail'>ⓘ<span class='tooltiptext'>This example deliberately fails to compile</span></div></div><pre class="rust rust-example-rendered compile_fail">
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">give_me_foo_or_bar</span> {
+    (<span class="ident">foo</span>) <span class="op">=&gt;</span> {};
+    (<span class="ident">bar</span>) <span class="op">=&gt;</span> {};
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">x</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> {
+        <span class="macro">compile_error</span><span class="macro">!</span>(<span class="string">&quot;This macro only accepts `foo` or `bar`&quot;</span>);
+    }
+}
+
+<span class="macro">give_me_foo_or_bar</span><span class="macro">!</span>(<span class="ident">neither</span>);
+<span class="comment">// ^ will fail at compile time with message &quot;This macro only accepts `foo` or `bar`&quot;</span><a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Amacro_rules!%20give_me_foo_or_bar%20%7B%0A%20%20%20%20(foo)%20%3D%3E%20%7B%7D%3B%0A%20%20%20%20(bar)%20%3D%3E%20%7B%7D%3B%0A%20%20%20%20(%24x%3Aident)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20compile_error!(%22This%20macro%20only%20accepts%20%60foo%60%20or%20%60bar%60%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Agive_me_foo_or_bar!(neither)%3B%0A%2F%2F%20%5E%20will%20fail%20at%20compile%20time%20with%20message%20%22This%20macro%20only%20accepts%20%60foo%60%20or%20%60bar%60%22%0A%7D">Run</a></pre>
+
+<p>Emit compiler error if one of a number of features isn&#39;t available.</p>
+
+<div class='information'><div class='tooltip compile_fail'>ⓘ<span class='tooltiptext'>This example deliberately fails to compile</span></div></div><pre class="rust rust-example-rendered compile_fail">
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;foo&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;bar&quot;</span>)))]</span>
+<span class="macro">compile_error</span><span class="macro">!</span>(<span class="string">&quot;Either feature \&quot;foo\&quot; or \&quot;bar\&quot; must be enabled for this crate.&quot;</span>)<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0A%23%5Bcfg(not(any(feature%20%3D%20%22foo%22%2C%20feature%20%3D%20%22bar%22)))%5D%0Acompile_error!(%22Either%20feature%20%5C%22foo%5C%22%20or%20%5C%22bar%5C%22%20must%20be%20enabled%20for%20this%20crate.%22)%0A%7D">Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 

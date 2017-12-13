@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -916,6 +917,17 @@
 <span id="871">871</span>
 <span id="872">872</span>
 <span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -936,9 +948,9 @@
 
 <span class="kw">use</span> <span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::<span class="ident">DefId</span>;
+<span class="kw">use</span> <span class="ident">infer</span>::<span class="ident">outlives</span>::<span class="ident">env</span>::<span class="ident">OutlivesEnvironment</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">const_val</span>::<span class="ident">ConstEvalErr</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
-<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">free_region</span>::<span class="ident">FreeRegionMap</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Substs</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">AdtKind</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>, <span class="ident">TypeFoldable</span>, <span class="ident">ToPredicate</span>};
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">error</span>::{<span class="ident">ExpectedFound</span>, <span class="ident">TypeError</span>};
@@ -978,6 +990,13 @@
 <span class="kw">mod</span> <span class="ident">structural_impls</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trans</span>;
 <span class="kw">mod</span> <span class="ident">util</span>;
+
+<span class="comment">// Whether to enable bug compatibility with issue #43355</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">IntercrateMode</span> {
+    <span class="ident">Issue43355</span>,
+    <span class="ident">Fixed</span>
+}
 
 <span class="doccomment">/// An `Obligation` represents some trait reference (e.g. `int:Eq`) for</span>
 <span class="doccomment">/// which the vtable must be found.  The process of finding a vtable is</span>
@@ -1473,9 +1492,13 @@
             <span class="ident">predicates</span>);
 
         <span class="kw">let</span> <span class="ident">region_scope_tree</span> <span class="op">=</span> <span class="ident">region</span>::<span class="ident">ScopeTree</span>::<span class="ident">default</span>();
-        <span class="kw">let</span> <span class="ident">free_regions</span> <span class="op">=</span> <span class="ident">FreeRegionMap</span>::<span class="ident">new</span>();
 
-        <span class="ident">infcx</span>.<span class="ident">resolve_regions_and_report_errors</span>(<span class="ident">region_context</span>, <span class="kw-2">&amp;</span><span class="ident">region_scope_tree</span>, <span class="kw-2">&amp;</span><span class="ident">free_regions</span>);
+        <span class="comment">// We can use the `elaborated_env` here; the region code only</span>
+        <span class="comment">// cares about declarations like `&#39;a: &#39;b`.</span>
+        <span class="kw">let</span> <span class="ident">outlives_env</span> <span class="op">=</span> <span class="ident">OutlivesEnvironment</span>::<span class="ident">new</span>(<span class="ident">elaborated_env</span>);
+
+        <span class="ident">infcx</span>.<span class="ident">resolve_regions_and_report_errors</span>(<span class="ident">region_context</span>, <span class="kw-2">&amp;</span><span class="ident">region_scope_tree</span>, <span class="kw-2">&amp;</span><span class="ident">outlives_env</span>);
+
         <span class="kw">let</span> <span class="ident">predicates</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">infcx</span>.<span class="ident">fully_resolve</span>(<span class="kw-2">&amp;</span><span class="ident">predicates</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">predicates</span>) <span class="op">=&gt;</span> <span class="ident">predicates</span>,
             <span class="prelude-val">Err</span>(<span class="ident">fixup_err</span>) <span class="op">=&gt;</span> {

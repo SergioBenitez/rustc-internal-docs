@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -828,6 +829,7 @@
 <span id="783">783</span>
 <span id="784">784</span>
 <span id="785">785</span>
+<span id="786">786</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1419,9 +1421,10 @@
     [] <span class="ident">NativeLibraryKind</span>(<span class="ident">DefId</span>),
     [<span class="ident">input</span>] <span class="ident">LinkArgs</span>,
 
-    [<span class="ident">input</span>] <span class="ident">NamedRegion</span>(<span class="ident">DefIndex</span>),
-    [<span class="ident">input</span>] <span class="ident">IsLateBound</span>(<span class="ident">DefIndex</span>),
-    [<span class="ident">input</span>] <span class="ident">ObjectLifetimeDefaults</span>(<span class="ident">DefIndex</span>),
+    [] <span class="ident">ResolveLifetimes</span>(<span class="ident">CrateNum</span>),
+    [] <span class="ident">NamedRegion</span>(<span class="ident">DefIndex</span>),
+    [] <span class="ident">IsLateBound</span>(<span class="ident">DefIndex</span>),
+    [] <span class="ident">ObjectLifetimeDefaults</span>(<span class="ident">DefIndex</span>),
 
     [] <span class="ident">Visibility</span>(<span class="ident">DefId</span>),
     [] <span class="ident">DepKind</span>(<span class="ident">CrateNum</span>),

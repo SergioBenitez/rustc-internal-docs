@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Module result</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li></ul></div><p class='location'><a href='../index.html'>std</a></p><script>window.sidebarCurrent = {name: 'result', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module result</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li></ul></div><p class='location'><a href='../index.html'>std</a></p><script>window.sidebarCurrent = {name: 'result', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -176,11 +177,11 @@ write fails, providing a marginally useful message indicating why:</p>
     <span class="prelude-val">Ok</span>(())
 }<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0Ause%20std%3A%3Aio%3A%3Aprelude%3A%3A*%3B%0Ause%20std%3A%3Aio%3B%0A%23%5Ballow(dead_code)%5D%0Afn%20write_message()%20-%3E%20io%3A%3AResult%3C()%3E%20%7B%0A%20%20%20%20let%20mut%20file%20%3D%20File%3A%3Acreate(%22valuable_data.txt%22)%3F%3B%0A%20%20%20%20file.write_all(b%22important%20message%22)%3F%3B%0A%20%20%20%20Ok(())%0A%7D%0A%7D">Run</a></pre>
 
-<h1 id='the--syntax' class='section-header'><a href='#the--syntax'>The <code>?</code> syntax</a></h1>
+<h1 id='the-question-mark-operator-' class='section-header'><a href='#the-question-mark-operator-'>The question mark operator, <code>?</code></a></h1>
 <p>When writing code that calls many functions that return the
-<a href="enum.Result.html"><code>Result</code></a> type, the error handling can be tedious. The <a href="../../std/macro.try.html"><code>?</code></a>
-syntax hides some of the boilerplate of propagating errors up the
-call stack.</p>
+<a href="enum.Result.html"><code>Result</code></a> type, the error handling can be tedious. The question mark
+operator, <a href="../../std/macro.try.html"><code>?</code></a>, hides some of the boilerplate of propagating errors
+up the call stack.</p>
 
 <p>It replaces this:</p>
 

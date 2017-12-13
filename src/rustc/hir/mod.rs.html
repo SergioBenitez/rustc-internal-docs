@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -2087,6 +2088,16 @@
 <span id="2042">2042</span>
 <span id="2043">2043</span>
 <span id="2044">2044</span>
+<span id="2045">2045</span>
+<span id="2046">2046</span>
+<span id="2047">2047</span>
+<span id="2048">2048</span>
+<span id="2049">2049</span>
+<span id="2050">2050</span>
+<span id="2051">2051</span>
+<span id="2052">2052</span>
+<span id="2053">2053</span>
+<span id="2054">2054</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2118,7 +2129,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">Visibility</span>::{<span class="ident">Public</span>, <span class="ident">Inherited</span>};
 
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def</span>::<span class="ident">Def</span>;
-<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">DefIndex</span>, <span class="ident">CRATE_DEF_INDEX</span>};
+<span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">DefIndex</span>, <span class="ident">LocalDefId</span>, <span class="ident">CRATE_DEF_INDEX</span>};
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">NodeMap</span>, <span class="ident">FxHashSet</span>};
 
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
@@ -2180,6 +2191,16 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">HirId</span> {
     <span class="kw">pub</span> <span class="ident">owner</span>: <span class="ident">DefIndex</span>,
     <span class="kw">pub</span> <span class="ident">local_id</span>: <span class="ident">ItemLocalId</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">HirId</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">owner_def_id</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">DefId</span> {
+        <span class="ident">DefId</span>::<span class="ident">local</span>(<span class="self">self</span>.<span class="ident">owner</span>)
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">owner_local_def_id</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LocalDefId</span> {
+        <span class="ident">LocalDefId</span>::<span class="ident">from_def_id</span>(<span class="ident">DefId</span>::<span class="ident">local</span>(<span class="self">self</span>.<span class="ident">owner</span>))
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">serialize</span>::<span class="ident">UseSpecializedEncodable</span> <span class="kw">for</span> <span class="ident">HirId</span> {

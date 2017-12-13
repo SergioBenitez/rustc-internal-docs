@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -3402,6 +3403,26 @@
 <span id="3357">3357</span>
 <span id="3358">3358</span>
 <span id="3359">3359</span>
+<span id="3360">3360</span>
+<span id="3361">3361</span>
+<span id="3362">3362</span>
+<span id="3363">3363</span>
+<span id="3364">3364</span>
+<span id="3365">3365</span>
+<span id="3366">3366</span>
+<span id="3367">3367</span>
+<span id="3368">3368</span>
+<span id="3369">3369</span>
+<span id="3370">3370</span>
+<span id="3371">3371</span>
+<span id="3372">3372</span>
+<span id="3373">3373</span>
+<span id="3374">3374</span>
+<span id="3375">3375</span>
+<span id="3376">3376</span>
+<span id="3377">3377</span>
+<span id="3378">3378</span>
+<span id="3379">3379</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3418,8 +3439,9 @@
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">SelectionCandidate</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="self">self</span>::<span class="ident">EvaluationResult</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">coherence</span>;
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">coherence</span>::{<span class="self">self</span>, <span class="ident">Conflict</span>};
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">DerivedObligationCause</span>;
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">IntercrateMode</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">project</span>;
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">project</span>::{<span class="ident">normalize_with_depth</span>, <span class="ident">Normalized</span>, <span class="ident">ProjectionCacheKey</span>};
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">PredicateObligation</span>, <span class="ident">TraitObligation</span>, <span class="ident">ObligationCause</span>};
@@ -3492,7 +3514,7 @@
     <span class="doccomment">/// other words, we consider `$0 : Bar` to be unimplemented if</span>
     <span class="doccomment">/// there is no type that the user could *actually name* that</span>
     <span class="doccomment">/// would satisfy it. This avoids crippling inference, basically.</span>
-    <span class="ident">intercrate</span>: <span class="ident">bool</span>,
+    <span class="ident">intercrate</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IntercrateMode</span><span class="op">&gt;</span>,
 
     <span class="ident">inferred_obligations</span>: <span class="ident">SnapshotVec</span><span class="op">&lt;</span><span class="ident">InferredObligationsSnapshotVecDelegate</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 
@@ -3516,21 +3538,24 @@
     <span class="doccomment">/// See #23980 for details.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_intercrate_ambiguity_hint</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                                    <span class="ident">err</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> ::<span class="ident">errors</span>::<span class="ident">DiagnosticBuilder</span>) {
+        <span class="ident">err</span>.<span class="ident">note</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">intercrate_ambiguity_hint</span>());
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intercrate_ambiguity_hint</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="kw-2">&amp;</span><span class="ident">IntercrateAmbiguityCause</span>::<span class="ident">DownstreamCrate</span> { <span class="kw-2">ref</span> <span class="ident">trait_desc</span>, <span class="kw-2">ref</span> <span class="ident">self_desc</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">self_desc</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">ty</span>) <span class="op">=</span> <span class="ident">self_desc</span> {
                     <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot; for type `{}`&quot;</span>, <span class="ident">ty</span>)
                 } <span class="kw">else</span> { <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>() };
-                <span class="ident">err</span>.<span class="ident">note</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;downstream crates may implement trait `{}`{}&quot;</span>,
-                                  <span class="ident">trait_desc</span>, <span class="ident">self_desc</span>));
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;downstream crates may implement trait `{}`{}&quot;</span>, <span class="ident">trait_desc</span>, <span class="ident">self_desc</span>)
             }
             <span class="kw-2">&amp;</span><span class="ident">IntercrateAmbiguityCause</span>::<span class="ident">UpstreamCrateUpdate</span> { <span class="kw-2">ref</span> <span class="ident">trait_desc</span>, <span class="kw-2">ref</span> <span class="ident">self_desc</span> } <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="ident">self_desc</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="kw-2">&amp;</span><span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">ty</span>) <span class="op">=</span> <span class="ident">self_desc</span> {
                     <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot; for type `{}`&quot;</span>, <span class="ident">ty</span>)
                 } <span class="kw">else</span> { <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>() };
-                <span class="ident">err</span>.<span class="ident">note</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;upstream crates may add new impl of trait `{}`{} \
-                                  in future versions&quot;</span>,
-                                  <span class="ident">trait_desc</span>, <span class="ident">self_desc</span>));
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;upstream crates may add new impl of trait `{}`{} \
+                         in future versions&quot;</span>,
+                        <span class="ident">trait_desc</span>, <span class="ident">self_desc</span>)
             }
         }
     }
@@ -3822,17 +3847,19 @@
         <span class="ident">SelectionContext</span> {
             <span class="ident">infcx</span>,
             <span class="ident">freshener</span>: <span class="ident">infcx</span>.<span class="ident">freshener</span>(),
-            <span class="ident">intercrate</span>: <span class="bool-val">false</span>,
+            <span class="ident">intercrate</span>: <span class="prelude-val">None</span>,
             <span class="ident">inferred_obligations</span>: <span class="ident">SnapshotVec</span>::<span class="ident">new</span>(),
             <span class="ident">intercrate_ambiguity_causes</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intercrate</span>(<span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;cx</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">SelectionContext</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">intercrate</span>(<span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;cx</span> <span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
+                      <span class="ident">mode</span>: <span class="ident">IntercrateMode</span>) <span class="op">-&gt;</span> <span class="ident">SelectionContext</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;intercrate({:?})&quot;</span>, <span class="ident">mode</span>);
         <span class="ident">SelectionContext</span> {
             <span class="ident">infcx</span>,
             <span class="ident">freshener</span>: <span class="ident">infcx</span>.<span class="ident">freshener</span>(),
-            <span class="ident">intercrate</span>: <span class="bool-val">true</span>,
+            <span class="ident">intercrate</span>: <span class="prelude-val">Some</span>(<span class="ident">mode</span>),
             <span class="ident">inferred_obligations</span>: <span class="ident">SnapshotVec</span>::<span class="ident">new</span>(),
             <span class="ident">intercrate_ambiguity_causes</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
         }
@@ -4163,7 +4190,7 @@
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;evaluate_trait_predicate_recursively({:?})&quot;</span>,
                <span class="ident">obligation</span>);
 
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">intercrate</span> <span class="op">&amp;&amp;</span> <span class="ident">obligation</span>.<span class="ident">is_global</span>() {
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">intercrate</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">obligation</span>.<span class="ident">is_global</span>() {
             <span class="comment">// If a param env is consistent, global obligations do not depend on its particular</span>
             <span class="comment">// value in order to work, so we can clear out the param env and get better</span>
             <span class="comment">// caching. (If the current param env is inconsistent, we don&#39;t care what happens).</span>
@@ -4219,7 +4246,11 @@
         <span class="comment">// terms of `Fn` etc, but we could probably make this more</span>
         <span class="comment">// precise still.</span>
         <span class="kw">let</span> <span class="ident">unbound_input_types</span> <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">fresh_trait_ref</span>.<span class="ident">input_types</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">ty</span><span class="op">|</span> <span class="ident">ty</span>.<span class="ident">is_fresh</span>());
-        <span class="kw">if</span> <span class="ident">unbound_input_types</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">intercrate</span> {
+        <span class="comment">// this check was an imperfect workaround for a bug n the old</span>
+        <span class="comment">// intercrate mode, it should be removed when that goes away.</span>
+        <span class="kw">if</span> <span class="ident">unbound_input_types</span> <span class="op">&amp;&amp;</span>
+            <span class="self">self</span>.<span class="ident">intercrate</span> <span class="op">==</span> <span class="prelude-val">Some</span>(<span class="ident">IntercrateMode</span>::<span class="ident">Issue43355</span>)
+        {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;evaluate_stack({:?}) --&gt; unbound argument, intercrate --&gt;  ambiguous&quot;</span>,
                    <span class="ident">stack</span>.<span class="ident">fresh_trait_ref</span>);
             <span class="comment">// Heuristics: show the diagnostics when there are no candidates in crate.</span>
@@ -4482,28 +4513,32 @@
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
         }
 
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">is_knowable</span>(<span class="ident">stack</span>) {
-            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;coherence stage: not knowable&quot;</span>);
-            <span class="comment">// Heuristics: show the diagnostics when there are no candidates in crate.</span>
-            <span class="kw">let</span> <span class="ident">candidate_set</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">assemble_candidates</span>(<span class="ident">stack</span>)<span class="question-mark">?</span>;
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">candidate_set</span>.<span class="ident">ambiguous</span> <span class="op">&amp;&amp;</span> <span class="ident">candidate_set</span>.<span class="ident">vec</span>.<span class="ident">is_empty</span>() {
-                <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">skip_binder</span>().<span class="ident">trait_ref</span>;
-                <span class="kw">let</span> <span class="ident">self_ty</span> <span class="op">=</span> <span class="ident">trait_ref</span>.<span class="ident">self_ty</span>();
-                <span class="kw">let</span> <span class="ident">trait_desc</span> <span class="op">=</span> <span class="ident">trait_ref</span>.<span class="ident">to_string</span>();
-                <span class="kw">let</span> <span class="ident">self_desc</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">self_ty</span>.<span class="ident">has_concrete_skeleton</span>() {
-                    <span class="prelude-val">Some</span>(<span class="ident">self_ty</span>.<span class="ident">to_string</span>())
-                } <span class="kw">else</span> {
-                    <span class="prelude-val">None</span>
-                };
-                <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">coherence</span>::<span class="ident">trait_ref_is_local_or_fundamental</span>(<span class="self">self</span>.<span class="ident">tcx</span>(),
-                                                                             <span class="ident">trait_ref</span>) {
-                    <span class="ident">IntercrateAmbiguityCause</span>::<span class="ident">UpstreamCrateUpdate</span> { <span class="ident">trait_desc</span>, <span class="ident">self_desc</span> }
-                } <span class="kw">else</span> {
-                    <span class="ident">IntercrateAmbiguityCause</span>::<span class="ident">DownstreamCrate</span> { <span class="ident">trait_desc</span>, <span class="ident">self_desc</span> }
-                };
-                <span class="self">self</span>.<span class="ident">intercrate_ambiguity_causes</span>.<span class="ident">push</span>(<span class="ident">cause</span>);
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">is_knowable</span>(<span class="ident">stack</span>) {
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> {}
+            <span class="prelude-val">Some</span>(<span class="ident">conflict</span>) <span class="op">=&gt;</span> {
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;coherence stage: not knowable&quot;</span>);
+                <span class="comment">// Heuristics: show the diagnostics when there are no candidates in crate.</span>
+                <span class="kw">let</span> <span class="ident">candidate_set</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">assemble_candidates</span>(<span class="ident">stack</span>)<span class="question-mark">?</span>;
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">candidate_set</span>.<span class="ident">ambiguous</span> <span class="op">&amp;&amp;</span> <span class="ident">candidate_set</span>.<span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">all</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> {
+                    <span class="op">!</span><span class="self">self</span>.<span class="ident">evaluate_candidate</span>(<span class="ident">stack</span>, <span class="kw-2">&amp;</span><span class="ident">c</span>).<span class="ident">may_apply</span>()
+                }) {
+                    <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="ident">stack</span>.<span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">skip_binder</span>().<span class="ident">trait_ref</span>;
+                    <span class="kw">let</span> <span class="ident">self_ty</span> <span class="op">=</span> <span class="ident">trait_ref</span>.<span class="ident">self_ty</span>();
+                    <span class="kw">let</span> <span class="ident">trait_desc</span> <span class="op">=</span> <span class="ident">trait_ref</span>.<span class="ident">to_string</span>();
+                    <span class="kw">let</span> <span class="ident">self_desc</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">self_ty</span>.<span class="ident">has_concrete_skeleton</span>() {
+                        <span class="prelude-val">Some</span>(<span class="ident">self_ty</span>.<span class="ident">to_string</span>())
+                    } <span class="kw">else</span> {
+                        <span class="prelude-val">None</span>
+                    };
+                    <span class="kw">let</span> <span class="ident">cause</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="ident">Conflict</span>::<span class="ident">Upstream</span> <span class="op">=</span> <span class="ident">conflict</span> {
+                        <span class="ident">IntercrateAmbiguityCause</span>::<span class="ident">UpstreamCrateUpdate</span> { <span class="ident">trait_desc</span>, <span class="ident">self_desc</span> }
+                    } <span class="kw">else</span> {
+                        <span class="ident">IntercrateAmbiguityCause</span>::<span class="ident">DownstreamCrate</span> { <span class="ident">trait_desc</span>, <span class="ident">self_desc</span> }
+                    };
+                    <span class="self">self</span>.<span class="ident">intercrate_ambiguity_causes</span>.<span class="ident">push</span>(<span class="ident">cause</span>);
+                }
+                <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
             }
-            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
         }
 
         <span class="kw">let</span> <span class="ident">candidate_set</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">assemble_candidates</span>(<span class="ident">stack</span>)<span class="question-mark">?</span>;
@@ -4610,12 +4645,12 @@
 
     <span class="kw">fn</span> <span class="ident">is_knowable</span><span class="op">&lt;</span><span class="lifetime">&#39;o</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                        <span class="ident">stack</span>: <span class="kw-2">&amp;</span><span class="ident">TraitObligationStack</span><span class="op">&lt;</span><span class="lifetime">&#39;o</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
-                       <span class="op">-&gt;</span> <span class="ident">bool</span>
+                       <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Conflict</span><span class="op">&gt;</span>
     {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;is_knowable(intercrate={})&quot;</span>, <span class="self">self</span>.<span class="ident">intercrate</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;is_knowable(intercrate={:?})&quot;</span>, <span class="self">self</span>.<span class="ident">intercrate</span>);
 
-        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">intercrate</span> {
-            <span class="kw">return</span> <span class="bool-val">true</span>;
+        <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">intercrate</span>.<span class="ident">is_some</span>() {
+            <span class="kw">return</span> <span class="prelude-val">None</span>;
         }
 
         <span class="kw">let</span> <span class="ident">obligation</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">stack</span>.<span class="ident">obligation</span>;
@@ -4626,7 +4661,14 @@
         <span class="comment">// bound regions</span>
         <span class="kw">let</span> <span class="ident">trait_ref</span> <span class="op">=</span> <span class="ident">predicate</span>.<span class="ident">skip_binder</span>().<span class="ident">trait_ref</span>;
 
-        <span class="ident">coherence</span>::<span class="ident">trait_ref_is_knowable</span>(<span class="self">self</span>.<span class="ident">tcx</span>(), <span class="ident">trait_ref</span>)
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">coherence</span>::<span class="ident">trait_ref_is_knowable</span>(<span class="self">self</span>.<span class="ident">tcx</span>(), <span class="ident">trait_ref</span>);
+        <span class="kw">if</span> <span class="kw">let</span> (<span class="prelude-val">Some</span>(<span class="ident">Conflict</span>::<span class="ident">Downstream</span> { <span class="ident">used_to_be_broken</span>: <span class="bool-val">true</span> }),
+                <span class="prelude-val">Some</span>(<span class="ident">IntercrateMode</span>::<span class="ident">Issue43355</span>)) <span class="op">=</span> (<span class="ident">result</span>, <span class="self">self</span>.<span class="ident">intercrate</span>) {
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;is_knowable: IGNORING conflict to be bug-compatible with #43355&quot;</span>);
+            <span class="prelude-val">None</span>
+        } <span class="kw">else</span> {
+            <span class="ident">result</span>
+        }
     }
 
     <span class="doccomment">/// Returns true if the global caches can be used.</span>
@@ -4651,7 +4693,7 @@
         <span class="comment">// the master cache. Since coherence executes pretty quickly,</span>
         <span class="comment">// it&#39;s not worth going to more trouble to increase the</span>
         <span class="comment">// hit-rate I don&#39;t think.</span>
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">intercrate</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">intercrate</span>.<span class="ident">is_some</span>() {
             <span class="kw">return</span> <span class="bool-val">false</span>;
         }
 
@@ -5239,7 +5281,7 @@
         <span class="comment">//     T: Trait</span>
         <span class="comment">// so it seems ok if we (conservatively) fail to accept that `Unsize`</span>
         <span class="comment">// obligation above. Should be possible to extend this in the future.</span>
-        <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">no_late_bound_regions</span>(<span class="kw-2">&amp;</span><span class="ident">obligation</span>.<span class="ident">self_ty</span>()) {
+        <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">obligation</span>.<span class="ident">self_ty</span>().<span class="ident">no_late_bound_regions</span>() {
             <span class="prelude-val">Some</span>(<span class="ident">t</span>) <span class="op">=&gt;</span> <span class="ident">t</span>,
             <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
                 <span class="comment">// Don&#39;t add any candidates if there are bound regions.</span>
@@ -6189,7 +6231,7 @@
         <span class="comment">// assemble_candidates_for_unsizing should ensure there are no late bound</span>
         <span class="comment">// regions here. See the comment there for more details.</span>
         <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">shallow_resolve</span>(
-            <span class="ident">tcx</span>.<span class="ident">no_late_bound_regions</span>(<span class="kw-2">&amp;</span><span class="ident">obligation</span>.<span class="ident">self_ty</span>()).<span class="ident">unwrap</span>());
+            <span class="ident">obligation</span>.<span class="ident">self_ty</span>().<span class="ident">no_late_bound_regions</span>().<span class="ident">unwrap</span>());
         <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">skip_binder</span>().<span class="ident">trait_ref</span>.<span class="ident">substs</span>.<span class="ident">type_at</span>(<span class="number">1</span>);
         <span class="kw">let</span> <span class="ident">target</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">shallow_resolve</span>(<span class="ident">target</span>);
 
@@ -6567,8 +6609,7 @@
                                       <span class="ident">substs</span>: <span class="ident">ty</span>::<span class="ident">ClosureSubsts</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
                                       <span class="op">-&gt;</span> <span class="ident">ty</span>::<span class="ident">PolyTraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
-        <span class="kw">let</span> <span class="ident">closure_type</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">fn_sig</span>(<span class="ident">closure_def_id</span>)
-            .<span class="ident">subst</span>(<span class="self">self</span>.<span class="ident">tcx</span>(), <span class="ident">substs</span>.<span class="ident">substs</span>);
+        <span class="kw">let</span> <span class="ident">closure_type</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">infcx</span>.<span class="ident">closure_sig</span>(<span class="ident">closure_def_id</span>, <span class="ident">substs</span>);
         <span class="kw">let</span> <span class="ident">ty</span>::<span class="ident">Binder</span>((<span class="ident">trait_ref</span>, _)) <span class="op">=</span>
             <span class="self">self</span>.<span class="ident">tcx</span>().<span class="ident">closure_trait_ref_and_return_type</span>(<span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="ident">def_id</span>(),
                                                          <span class="ident">obligation</span>.<span class="ident">predicate</span>.<span class="number">0</span>.<span class="ident">self_ty</span>(), <span class="comment">// (1)</span>

@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Module ty</p><div class="block items"><ul><li><a href="#reexports">Reexports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../index.html'>rustc</a></p><script>window.sidebarCurrent = {name: 'ty', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'>Module ty</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#reexports">Reexports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'><a href='../index.html'>rustc</a></p><script>window.sidebarCurrent = {name: 'ty', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -48,7 +49,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/rustc/ty/mod.rs.html#11-2724' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/rustc/ty/mod.rs.html#11-2730' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
 <table><tr><td><code>pub use self::<a class="enum" href="../../rustc/ty/enum.Variance.html" title="enum rustc::ty::Variance">Variance</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="enum" href="../../rustc/ty/enum.AssociatedItemContainer.html" title="enum rustc::ty::AssociatedItemContainer">AssociatedItemContainer</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="enum" href="../../rustc/ty/enum.BorrowKind.html" title="enum rustc::ty::BorrowKind">BorrowKind</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="enum" href="../../rustc/ty/enum.IntVarValue.html" title="enum rustc::ty::IntVarValue">IntVarValue</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="enum" href="../../rustc/ty/enum.LvaluePreference.html" title="enum rustc::ty::LvaluePreference">LvaluePreference</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./fold/index.html">fold</a>::<a class="trait" href="../../rustc/ty/fold/trait.TypeFoldable.html" title="trait rustc::ty::fold::TypeFoldable">TypeFoldable</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sty/index.html">sty</a>::<a class="enum" href="../../rustc/ty/enum.BoundRegion.html" title="enum rustc::ty::BoundRegion">BoundRegion</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sty/index.html">sty</a>::<a class="enum" href="../../rustc/ty/enum.InferTy.html" title="enum rustc::ty::InferTy">InferTy</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sty/index.html">sty</a>::<a class="enum" href="../../rustc/ty/enum.RegionKind.html" title="enum rustc::ty::RegionKind">RegionKind</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./sty/index.html">sty</a>::<a class="enum" href="../../rustc/ty/enum.TypeVariants.html" title="enum rustc::ty::TypeVariants">TypeVariants</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./binding/index.html">binding</a>::<a class="enum" href="../../rustc/ty/binding/enum.BindingMode.html" title="enum rustc::ty::binding::BindingMode">BindingMode</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./binding/index.html">binding</a>::<a class="enum" href="../../rustc/ty/binding/enum.BindingMode.html" title="enum rustc::ty::binding::BindingMode">BindingMode</a>::*;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./trait_def/index.html">trait_def</a>::<a class="struct" href="../../rustc/ty/trait_def/struct.TraitDef.html" title="struct rustc::ty::trait_def::TraitDef">TraitDef</a>;</code></td></tr><tr><td><code>pub use self::<a class="mod" href="./maps/index.html">maps</a>::<a class="mod" href="../../rustc/ty/maps/queries/index.html" title="mod rustc::ty::maps::queries">queries</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
@@ -713,7 +714,9 @@ by the upvar) and the id of the closure expression.</p>
                            <td><a class="enum" href="enum.ClosureKind.html"
                                   title='enum rustc::ty::ClosureKind'>ClosureKind</a></td>
                            <td class='docblock-short'>
-                               [<div class='stab unstable'>Experimental</div>] 
+                               [<div class='stab unstable'>Experimental</div>] <p>Represents the various closure traits in the Rust language. This
+will determine the type of the environment (<code>self</code>, in the
+desuaring) argument that the closure expects.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>

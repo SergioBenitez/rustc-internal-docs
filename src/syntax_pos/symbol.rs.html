@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../syntax_pos/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -474,6 +475,25 @@
 <span id="429">429</span>
 <span id="430">430</span>
 <span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -510,6 +530,10 @@
     <span class="doccomment">/// Maps a string to an identifier with an empty syntax context.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Ident</span> {
         <span class="ident">Ident</span>::<span class="ident">with_empty_ctxt</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="ident">string</span>))
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">without_first_quote</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Ident</span> {
+        <span class="ident">Ident</span> { <span class="ident">name</span>: <span class="ident">Symbol</span>::<span class="ident">from</span>(<span class="self">self</span>.<span class="ident">name</span>.<span class="ident">as_str</span>().<span class="ident">trim_left_matches</span>(<span class="string">&#39;\&#39;&#39;</span>)), <span class="ident">ctxt</span>: <span class="self">self</span>.<span class="ident">ctxt</span> }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">modern</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Ident</span> {
@@ -600,7 +624,12 @@
 
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Symbol</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}({})&quot;</span>, <span class="self">self</span>, <span class="self">self</span>.<span class="number">0</span>)
+        <span class="kw">let</span> <span class="ident">is_gensymed</span> <span class="op">=</span> <span class="ident">with_interner</span>(<span class="op">|</span><span class="ident">interner</span><span class="op">|</span> <span class="ident">interner</span>.<span class="ident">is_gensymed</span>(<span class="kw-2">*</span><span class="self">self</span>));
+        <span class="kw">if</span> <span class="ident">is_gensymed</span> {
+            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}({})&quot;</span>, <span class="self">self</span>, <span class="self">self</span>.<span class="number">0</span>)
+        } <span class="kw">else</span> {
+            <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>)
+        }
     }
 }
 
@@ -676,6 +705,10 @@
     <span class="kw">fn</span> <span class="ident">gensymed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">Symbol</span>) <span class="op">-&gt;</span> <span class="ident">Symbol</span> {
         <span class="self">self</span>.<span class="ident">gensyms</span>.<span class="ident">push</span>(<span class="ident">symbol</span>);
         <span class="ident">Symbol</span>(<span class="op">!</span><span class="number">0</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">gensyms</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span> <span class="op">+</span> <span class="number">1</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">is_gensymed</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">Symbol</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="ident">symbol</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">&gt;=</span> <span class="self">self</span>.<span class="ident">strings</span>.<span class="ident">len</span>()
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">symbol</span>: <span class="ident">Symbol</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
@@ -904,6 +937,12 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">gensym</span>(<span class="string">&quot;zebra&quot;</span>), <span class="ident">Symbol</span>(<span class="number">4294967294</span>));
         <span class="comment">// gensym of *existing* string gets new number:</span>
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">gensym</span>(<span class="string">&quot;dog&quot;</span>), <span class="ident">Symbol</span>(<span class="number">4294967293</span>));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">without_first_quote_test</span>() {
+        <span class="kw">let</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">Ident</span>::<span class="ident">from_str</span>(<span class="string">&quot;&#39;break&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>.<span class="ident">without_first_quote</span>().<span class="ident">name</span>, <span class="ident">keywords</span>::<span class="ident">Break</span>.<span class="ident">name</span>());
     }
 }
 </pre>

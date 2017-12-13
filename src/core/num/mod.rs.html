@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -5920,7 +5921,7 @@
     <span class="doccomment">/// assert!(ascii.is_ascii());</span>
     <span class="doccomment">/// assert!(!non_ascii.is_ascii());</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.23.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_ascii</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw-2">*</span><span class="self">self</span> <span class="op">&amp;</span> <span class="number">128</span> <span class="op">==</span> <span class="number">0</span>
@@ -5942,7 +5943,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`make_ascii_uppercase`]: #method.make_ascii_uppercase</span>
-    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.23.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_ascii_uppercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> {
         <span class="ident">ASCII_UPPERCASE_MAP</span>[<span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">usize</span>]
@@ -5964,7 +5965,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`make_ascii_lowercase`]: #method.make_ascii_lowercase</span>
-    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.23.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_ascii_lowercase</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u8</span> {
         <span class="ident">ASCII_LOWERCASE_MAP</span>[<span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">usize</span>]
@@ -5982,7 +5983,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// assert!(lowercase_a.eq_ignore_ascii_case(&amp;uppercase_a));</span>
     <span class="doccomment">/// ```</span>
-    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.23.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">eq_ignore_ascii_case</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">to_ascii_lowercase</span>() <span class="op">==</span> <span class="ident">other</span>.<span class="ident">to_ascii_lowercase</span>()
@@ -6007,7 +6008,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`to_ascii_uppercase`]: #method.to_ascii_uppercase</span>
-    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.23.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_ascii_uppercase</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_ascii_uppercase</span>();
@@ -6032,7 +6033,7 @@
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// [`to_ascii_lowercase`]: #method.to_ascii_lowercase</span>
-    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.21.0&quot;</span>)]</span>
+    <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;ascii_methods_on_intrinsics&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.23.0&quot;</span>)]</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">make_ascii_lowercase</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw-2">*</span><span class="self">self</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_ascii_lowercase</span>();

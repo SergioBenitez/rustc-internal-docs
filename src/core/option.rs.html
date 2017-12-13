@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1229,6 +1230,23 @@
 <span id="1184">1184</span>
 <span id="1185">1185</span>
 <span id="1186">1186</span>
+<span id="1187">1187</span>
+<span id="1188">1188</span>
+<span id="1189">1189</span>
+<span id="1190">1190</span>
+<span id="1191">1191</span>
+<span id="1192">1192</span>
+<span id="1193">1193</span>
+<span id="1194">1194</span>
+<span id="1195">1195</span>
+<span id="1196">1196</span>
+<span id="1197">1197</span>
+<span id="1198">1198</span>
+<span id="1199">1199</span>
+<span id="1200">1200</span>
+<span id="1201">1201</span>
+<span id="1202">1202</span>
+<span id="1203">1203</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1570,6 +1588,12 @@
 
     <span class="doccomment">/// Returns the contained value or a default.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Arguments passed to `unwrap_or` are eagerly evaluated; if you are passing</span>
+    <span class="doccomment">/// the result of a function call, it is recommended to use [`unwrap_or_else`],</span>
+    <span class="doccomment">/// which is lazily evaluated.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`unwrap_or_else`]: #method.unwrap_or_else</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
@@ -1683,11 +1707,16 @@
     <span class="doccomment">/// Transforms the `Option&lt;T&gt;` into a [`Result&lt;T, E&gt;`], mapping [`Some(v)`] to</span>
     <span class="doccomment">/// [`Ok(v)`] and [`None`] to [`Err(err)`].</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Arguments passed to `ok_or` are eagerly evaluated; if you are passing the</span>
+    <span class="doccomment">/// result of a function call, it is recommended to use [`ok_or_else`], which is</span>
+    <span class="doccomment">/// lazily evaluated.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// [`Result&lt;T, E&gt;`]: ../../std/result/enum.Result.html</span>
     <span class="doccomment">/// [`Ok(v)`]: ../../std/result/enum.Result.html#variant.Ok</span>
     <span class="doccomment">/// [`Err(err)`]: ../../std/result/enum.Result.html#variant.Err</span>
     <span class="doccomment">/// [`None`]: #variant.None</span>
     <span class="doccomment">/// [`Some(v)`]: #variant.Some</span>
+    <span class="doccomment">/// [`ok_or_else`]: #method.ok_or_else</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
@@ -1875,6 +1904,12 @@
     }
 
     <span class="doccomment">/// Returns the option if it contains a value, otherwise returns `optb`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Arguments passed to `or` are eagerly evaluated; if you are passing the</span>
+    <span class="doccomment">/// result of a function call, it is recommended to use [`or_else`], which is</span>
+    <span class="doccomment">/// lazily evaluated.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// [`or_else`]: #method.or_else</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -592,31 +593,6 @@
 <span id="547">547</span>
 <span id="548">548</span>
 <span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -675,48 +651,11 @@
         }
     }
 }
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span>
-<span class="kw">for</span> <span class="ident">mir</span>::<span class="ident">Terminator</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
-                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
-                                          <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
-        <span class="kw">let</span> <span class="ident">mir</span>::<span class="ident">Terminator</span> {
-            <span class="kw-2">ref</span> <span class="ident">kind</span>,
-            <span class="kw-2">ref</span> <span class="ident">source_info</span>,
-        } <span class="op">=</span> <span class="kw-2">*</span><span class="self">self</span>;
 
-        <span class="kw">let</span> <span class="ident">hash_spans_unconditionally</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">kind</span> {
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Assert</span> { .. } <span class="op">=&gt;</span> {
-                <span class="comment">// Assert terminators generate a panic message that contains the</span>
-                <span class="comment">// source location, so we always have to feed its span into the</span>
-                <span class="comment">// ICH.</span>
-                <span class="bool-val">true</span>
-            }
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Goto</span> { .. } <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">SwitchInt</span> { .. } <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Resume</span> <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Return</span> <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">GeneratorDrop</span> <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Unreachable</span> <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Drop</span> { .. } <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">DropAndReplace</span> { .. } <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Yield</span> { .. } <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">Call</span> { .. } <span class="op">|</span>
-            <span class="ident">mir</span>::<span class="ident">TerminatorKind</span>::<span class="ident">FalseEdges</span> { .. } <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-        };
-
-        <span class="kw">if</span> <span class="ident">hash_spans_unconditionally</span> {
-            <span class="ident">hcx</span>.<span class="ident">while_hashing_spans</span>(<span class="bool-val">true</span>, <span class="op">|</span><span class="ident">hcx</span><span class="op">|</span> {
-                <span class="ident">source_info</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-            })
-        } <span class="kw">else</span> {
-            <span class="ident">source_info</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-        }
-
-        <span class="ident">kind</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-    }
-}
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">mir</span>::<span class="ident">Terminator</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="ident">kind</span>,
+    <span class="ident">source_info</span>
+});
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">mir</span>::<span class="ident">ClearCrossCrate</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
     <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span>
@@ -1192,6 +1131,18 @@
 }
 
 <span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">mir</span>::<span class="ident">Location</span> { <span class="ident">block</span>, <span class="ident">statement_index</span> });
+
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">mir</span>::<span class="ident">ClosureRegionRequirements</span> {
+    <span class="ident">num_external_vids</span>,
+    <span class="ident">outlives_requirements</span>
+});
+
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">struct</span> <span class="ident">mir</span>::<span class="ident">ClosureOutlivesRequirement</span> {
+    <span class="ident">free_region</span>,
+    <span class="ident">outlived_free_region</span>,
+    <span class="ident">blame_span</span>
+});
+
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

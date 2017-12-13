@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -443,65 +444,6 @@
 <span id="398">398</span>
 <span id="399">399</span>
 <span id="400">400</span>
-<span id="401">401</span>
-<span id="402">402</span>
-<span id="403">403</span>
-<span id="404">404</span>
-<span id="405">405</span>
-<span id="406">406</span>
-<span id="407">407</span>
-<span id="408">408</span>
-<span id="409">409</span>
-<span id="410">410</span>
-<span id="411">411</span>
-<span id="412">412</span>
-<span id="413">413</span>
-<span id="414">414</span>
-<span id="415">415</span>
-<span id="416">416</span>
-<span id="417">417</span>
-<span id="418">418</span>
-<span id="419">419</span>
-<span id="420">420</span>
-<span id="421">421</span>
-<span id="422">422</span>
-<span id="423">423</span>
-<span id="424">424</span>
-<span id="425">425</span>
-<span id="426">426</span>
-<span id="427">427</span>
-<span id="428">428</span>
-<span id="429">429</span>
-<span id="430">430</span>
-<span id="431">431</span>
-<span id="432">432</span>
-<span id="433">433</span>
-<span id="434">434</span>
-<span id="435">435</span>
-<span id="436">436</span>
-<span id="437">437</span>
-<span id="438">438</span>
-<span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
-<span id="445">445</span>
-<span id="446">446</span>
-<span id="447">447</span>
-<span id="448">448</span>
-<span id="449">449</span>
-<span id="450">450</span>
-<span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -519,7 +461,6 @@
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">definitions</span>::<span class="ident">Definitions</span>;
 <span class="kw">use</span> <span class="ident">ich</span>::{<span class="self">self</span>, <span class="ident">CachingCodemapView</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">cstore</span>::<span class="ident">CrateStore</span>;
-<span class="kw">use</span> <span class="ident">session</span>::<span class="ident">config</span>::<span class="ident">DebugInfoLevel</span>::<span class="ident">NoDebugInfo</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">TyCtxt</span>, <span class="ident">fast_reject</span>};
 <span class="kw">use</span> <span class="ident">session</span>::<span class="ident">Session</span>;
 
@@ -529,7 +470,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>;
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">attr</span>;
+
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">codemap</span>::<span class="ident">CodeMap</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ext</span>::<span class="ident">hygiene</span>::<span class="ident">SyntaxContext</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
@@ -556,7 +497,6 @@
     <span class="ident">body_resolver</span>: <span class="ident">BodyResolver</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
     <span class="ident">hash_spans</span>: <span class="ident">bool</span>,
     <span class="ident">hash_bodies</span>: <span class="ident">bool</span>,
-    <span class="ident">overflow_checks_enabled</span>: <span class="ident">bool</span>,
     <span class="ident">node_id_hashing_mode</span>: <span class="ident">NodeIdHashingMode</span>,
 
     <span class="comment">// Very often, we are hashing something that does not need the</span>
@@ -594,8 +534,7 @@
                <span class="ident">definitions</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">Definitions</span>,
                <span class="ident">cstore</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">CrateStore</span>)
                <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">hash_spans_initial</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debuginfo</span> <span class="op">!=</span> <span class="ident">NoDebugInfo</span>;
-        <span class="kw">let</span> <span class="ident">check_overflow_initial</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">overflow_checks</span>();
+        <span class="kw">let</span> <span class="ident">hash_spans_initial</span> <span class="op">=</span> <span class="op">!</span><span class="ident">sess</span>.<span class="ident">opts</span>.<span class="ident">debugging_opts</span>.<span class="ident">incremental_ignore_spans</span>;
 
         <span class="macro">debug_assert</span><span class="macro">!</span>(<span class="ident">ich</span>::<span class="ident">IGNORED_ATTRIBUTES</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>);
         <span class="ident">IGNORED_ATTR_NAMES</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">names</span><span class="op">|</span> {
@@ -615,7 +554,6 @@
             <span class="ident">raw_codemap</span>: <span class="ident">sess</span>.<span class="ident">codemap</span>(),
             <span class="ident">hash_spans</span>: <span class="ident">hash_spans_initial</span>,
             <span class="ident">hash_bodies</span>: <span class="bool-val">true</span>,
-            <span class="ident">overflow_checks_enabled</span>: <span class="ident">check_overflow_initial</span>,
             <span class="ident">node_id_hashing_mode</span>: <span class="ident">NodeIdHashingMode</span>::<span class="ident">HashDefPath</span>,
         }
     }
@@ -623,11 +561,6 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sess</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;gcx</span> <span class="ident">Session</span> {
         <span class="self">self</span>.<span class="ident">sess</span>
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">force_span_hashing</span>(<span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="self">self</span>.<span class="ident">hash_spans</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="self">self</span>
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -680,11 +613,6 @@
     }
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hash_spans</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">hash_spans</span>
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hash_bodies</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">hash_bodies</span>
     }
@@ -709,58 +637,13 @@
         })
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hash_hir_item_like</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>)<span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                                                    <span class="ident">item_attrs</span>: <span class="kw-2">&amp;</span>[<span class="ident">ast</span>::<span class="ident">Attribute</span>],
-                                                    <span class="ident">is_const</span>: <span class="ident">bool</span>,
-                                                    <span class="ident">f</span>: <span class="ident">F</span>) {
-        <span class="kw">let</span> <span class="ident">prev_overflow_checks</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">overflow_checks_enabled</span>;
-        <span class="kw">if</span> <span class="ident">is_const</span> <span class="op">||</span> <span class="ident">attr</span>::<span class="ident">contains_name</span>(<span class="ident">item_attrs</span>, <span class="string">&quot;rustc_inherit_overflow_checks&quot;</span>) {
-            <span class="self">self</span>.<span class="ident">overflow_checks_enabled</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hash_hir_item_like</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>)<span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">f</span>: <span class="ident">F</span>) {
         <span class="kw">let</span> <span class="ident">prev_hash_node_ids</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">node_id_hashing_mode</span>;
         <span class="self">self</span>.<span class="ident">node_id_hashing_mode</span> <span class="op">=</span> <span class="ident">NodeIdHashingMode</span>::<span class="ident">Ignore</span>;
 
         <span class="ident">f</span>(<span class="self">self</span>);
 
         <span class="self">self</span>.<span class="ident">node_id_hashing_mode</span> <span class="op">=</span> <span class="ident">prev_hash_node_ids</span>;
-        <span class="self">self</span>.<span class="ident">overflow_checks_enabled</span> <span class="op">=</span> <span class="ident">prev_overflow_checks</span>;
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">binop_can_panic_at_runtime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">binop</span>: <span class="ident">hir</span>::<span class="ident">BinOp_</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
-    {
-        <span class="kw">match</span> <span class="ident">binop</span> {
-            <span class="ident">hir</span>::<span class="ident">BiAdd</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiSub</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiShl</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiShr</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiMul</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">overflow_checks_enabled</span>,
-
-            <span class="ident">hir</span>::<span class="ident">BiDiv</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiRem</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
-
-            <span class="ident">hir</span>::<span class="ident">BiAnd</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiOr</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiBitXor</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiBitAnd</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiBitOr</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiEq</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiLt</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiLe</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiNe</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiGe</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">BiGt</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unop_can_panic_at_runtime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">unop</span>: <span class="ident">hir</span>::<span class="ident">UnOp</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
-    {
-        <span class="kw">match</span> <span class="ident">unop</span> {
-            <span class="ident">hir</span>::<span class="ident">UnDeref</span> <span class="op">|</span>
-            <span class="ident">hir</span>::<span class="ident">UnNot</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
-            <span class="ident">hir</span>::<span class="ident">UnNeg</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">overflow_checks_enabled</span>,
-        }
     }
 }
 

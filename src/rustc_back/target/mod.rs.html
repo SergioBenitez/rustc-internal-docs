@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc_back/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1028,6 +1029,11 @@
 <span id="983">983</span>
 <span id="984">984</span>
 <span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1484,6 +1490,10 @@
     <span class="doccomment">/// Whether library functions call lowering/optimization is disabled in LLVM</span>
     <span class="doccomment">/// for this target unconditionally.</span>
     <span class="kw">pub</span> <span class="ident">no_builtins</span>: <span class="ident">bool</span>,
+
+    <span class="doccomment">/// Whether to lower 128-bit operations to compiler_builtins calls.  Use if</span>
+    <span class="doccomment">/// your backend only supports 64-bit and smaller math.</span>
+    <span class="kw">pub</span> <span class="ident">i128_lowering</span>: <span class="ident">bool</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">TargetOptions</span> {
@@ -1552,6 +1562,7 @@
             <span class="ident">requires_lto</span>: <span class="bool-val">false</span>,
             <span class="ident">singlethread</span>: <span class="bool-val">false</span>,
             <span class="ident">no_builtins</span>: <span class="bool-val">false</span>,
+            <span class="ident">i128_lowering</span>: <span class="bool-val">false</span>,
         }
     }
 }

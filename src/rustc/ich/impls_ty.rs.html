@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1022,6 +1023,16 @@
 <span id="977">977</span>
 <span id="978">978</span>
 <span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1106,6 +1117,16 @@
                 <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;TypeIdHasher: unexpected region {:?}&quot;</span>, <span class="kw-2">*</span><span class="self">self</span>)
             }
         }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">ty</span>::<span class="ident">RegionVid</span> {
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                          <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
+                                          <span class="ident">hasher</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHasher</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>) {
+        <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">indexed_vec</span>::<span class="ident">Idx</span>;
+        <span class="self">self</span>.<span class="ident">index</span>().<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
     }
 }
 

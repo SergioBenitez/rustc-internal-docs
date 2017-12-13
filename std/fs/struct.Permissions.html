@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
-        <p class='location'>Struct Permissions</p><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.readonly">readonly</a><a href="#method.set_readonly">set_readonly</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Clone">Clone</a><a href="#impl-PartialEq">PartialEq</a><a href="#impl-Eq">Eq</a><a href="#impl-Debug">Debug</a><a href="#impl-PermissionsExt">PermissionsExt</a></div></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>fs</a></p><script>window.sidebarCurrent = {name: 'Permissions', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct Permissions</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.readonly">readonly</a><a href="#method.set_readonly">set_readonly</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Clone">Clone</a><a href="#impl-PartialEq">PartialEq</a><a href="#impl-Eq">Eq</a><a href="#impl-Debug">Debug</a><a href="#impl-PermissionsExt">PermissionsExt</a></div></div><p class='location'><a href='../index.html'>std</a>::<wbr><a href='index.html'>fs</a></p><script>window.sidebarCurrent = {name: 'Permissions', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -59,8 +60,8 @@ functionality, such as mode bits, is available through the
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
-                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../std/fs/struct.Permissions.html" title="struct std::fs::Permissions">Permissions</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/fs.rs.html#936-988' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.readonly' class="method"><span id='readonly.v' class='invisible'><code>pub fn <a href='#method.readonly' class='fnname'>readonly</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/fs.rs.html#953' title='goto source code'>[src]</a></span></h4>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl <a class="struct" href="../../std/fs/struct.Permissions.html" title="struct std::fs::Permissions">Permissions</a></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/fs.rs.html#1045-1097' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.readonly' class="method"><span id='readonly.v' class='invisible'><code>pub fn <a href='#method.readonly' class='fnname'>readonly</a>(&amp;self) -&gt; <a class="primitive" href="../primitive.bool.html">bool</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/fs.rs.html#1062' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Returns whether these permissions describe a readonly (unwritable) file.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
@@ -71,7 +72,7 @@ functionality, such as mode bits, is available through the
 <span class="kw">let</span> <span class="ident">metadata</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">metadata</span>()<span class="question-mark">?</span>;
 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="bool-val">false</span>, <span class="ident">metadata</span>.<span class="ident">permissions</span>().<span class="ident">readonly</span>());<a class="test-arrow" target="_blank" href="https://play.rust-lang.org/?code=%23!%5Ballow(unused)%5D%0Afn%20main()%20%7B%0Ause%20std%3A%3Afs%3A%3AFile%3B%0A%0Afn%20foo()%20-%3E%20std%3A%3Aio%3A%3AResult%3C()%3E%20%7B%0Alet%20mut%20f%20%3D%20File%3A%3Acreate(%22foo.txt%22)%3F%3B%0Alet%20metadata%20%3D%20f.metadata()%3F%3B%0A%0Aassert_eq!(false%2C%20metadata.permissions().readonly())%3B%0AOk(())%0A%7D%0A%7D">Run</a></pre>
-</div><h4 id='method.set_readonly' class="method"><span id='set_readonly.v' class='invisible'><code>pub fn <a href='#method.set_readonly' class='fnname'>set_readonly</a>(&amp;mut self, readonly: <a class="primitive" href="../primitive.bool.html">bool</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/fs.rs.html#985-987' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.set_readonly' class="method"><span id='set_readonly.v' class='invisible'><code>pub fn <a href='#method.set_readonly' class='fnname'>set_readonly</a>(&amp;mut self, readonly: <a class="primitive" href="../primitive.bool.html">bool</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/std/fs.rs.html#1094-1096' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Modifies the readonly flag for this set of permissions. If the
 <code>readonly</code> argument is <code>true</code>, using the resulting <code>Permission</code> will
 update file permissions to forbid writing. Conversely, if it&#39;s <code>false</code>,

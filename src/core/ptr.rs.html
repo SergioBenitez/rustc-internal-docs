@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -2604,6 +2605,44 @@
 <span id="2559">2559</span>
 <span id="2560">2560</span>
 <span id="2561">2561</span>
+<span id="2562">2562</span>
+<span id="2563">2563</span>
+<span id="2564">2564</span>
+<span id="2565">2565</span>
+<span id="2566">2566</span>
+<span id="2567">2567</span>
+<span id="2568">2568</span>
+<span id="2569">2569</span>
+<span id="2570">2570</span>
+<span id="2571">2571</span>
+<span id="2572">2572</span>
+<span id="2573">2573</span>
+<span id="2574">2574</span>
+<span id="2575">2575</span>
+<span id="2576">2576</span>
+<span id="2577">2577</span>
+<span id="2578">2578</span>
+<span id="2579">2579</span>
+<span id="2580">2580</span>
+<span id="2581">2581</span>
+<span id="2582">2582</span>
+<span id="2583">2583</span>
+<span id="2584">2584</span>
+<span id="2585">2585</span>
+<span id="2586">2586</span>
+<span id="2587">2587</span>
+<span id="2588">2588</span>
+<span id="2589">2589</span>
+<span id="2590">2590</span>
+<span id="2591">2591</span>
+<span id="2592">2592</span>
+<span id="2593">2593</span>
+<span id="2594">2594</span>
+<span id="2595">2595</span>
+<span id="2596">2596</span>
+<span id="2597">2597</span>
+<span id="2598">2598</span>
+<span id="2599">2599</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2698,8 +2737,12 @@
 <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">fn</span> <span class="ident">null_mut</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-&gt;</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> { <span class="number">0</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span> }
 
 <span class="doccomment">/// Swaps the values at two mutable locations of the same type, without</span>
-<span class="doccomment">/// deinitializing either. They may overlap, unlike `mem::swap` which is</span>
-<span class="doccomment">/// otherwise equivalent.</span>
+<span class="doccomment">/// deinitializing either.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The values pointed at by `x` and `y` may overlap, unlike `mem::swap` which</span>
+<span class="doccomment">/// is otherwise equivalent. If the values do overlap, then the overlapping</span>
+<span class="doccomment">/// region of memory from `x` will be used. This is demonstrated in the</span>
+<span class="doccomment">/// examples section below.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Safety</span>
 <span class="doccomment">///</span>
@@ -2707,6 +2750,40 @@
 <span class="doccomment">/// as arguments.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Ensure that these pointers are valid before calling `swap`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Swapping two non-overlapping regions:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use std::ptr;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let mut array = [0, 1, 2, 3];</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let x = array[0..].as_mut_ptr() as *mut [u32; 2];</span>
+<span class="doccomment">/// let y = array[2..].as_mut_ptr() as *mut [u32; 2];</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// unsafe {</span>
+<span class="doccomment">///     ptr::swap(x, y);</span>
+<span class="doccomment">///     assert_eq!([2, 3, 0, 1], array);</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Swapping two overlapping regions:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use std::ptr;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let mut array = [0, 1, 2, 3];</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// let x = array[0..].as_mut_ptr() as *mut [u32; 3];</span>
+<span class="doccomment">/// let y = array[1..].as_mut_ptr() as *mut [u32; 3];</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// unsafe {</span>
+<span class="doccomment">///     ptr::swap(x, y);</span>
+<span class="doccomment">///     assert_eq!([1, 0, 1, 2], array);</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">swap</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">y</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>) {

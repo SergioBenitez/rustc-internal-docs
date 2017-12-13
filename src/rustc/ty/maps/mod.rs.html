@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -545,6 +546,10 @@
 <span id="500">500</span>
 <span id="501">501</span>
 <span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -571,7 +576,7 @@
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">privacy</span>::<span class="ident">AccessLevels</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">reachable</span>::<span class="ident">ReachableSet</span>;
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
-<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">resolve_lifetime</span>::{<span class="ident">Region</span>, <span class="ident">ObjectLifetimeDefault</span>};
+<span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">resolve_lifetime</span>::{<span class="ident">ResolveLifetimes</span>, <span class="ident">Region</span>, <span class="ident">ObjectLifetimeDefault</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">stability</span>::{<span class="self">self</span>, <span class="ident">DeprecationEntry</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">lang_items</span>::{<span class="ident">LanguageItems</span>, <span class="ident">LangItem</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">exported_symbols</span>::<span class="ident">SymbolExportLevel</span>;
@@ -738,8 +743,10 @@
     [] <span class="kw">fn</span> <span class="ident">coherent_trait</span>: <span class="ident">coherent_trait_dep_node</span>((<span class="ident">CrateNum</span>, <span class="ident">DefId</span>)) <span class="op">-&gt;</span> (),
 
     [] <span class="kw">fn</span> <span class="ident">borrowck</span>: <span class="ident">BorrowCheck</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">BorrowCheckResult</span><span class="op">&gt;</span>,
-    <span class="comment">// FIXME: shouldn&#39;t this return a `Result&lt;(), BorrowckErrors&gt;` instead?</span>
-    [] <span class="kw">fn</span> <span class="ident">mir_borrowck</span>: <span class="ident">MirBorrowCheck</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> (),
+
+    <span class="doccomment">/// Borrow checks the function body. If this is a closure, returns</span>
+    <span class="doccomment">/// additional requirements that the closure&#39;s creator must verify.</span>
+    [] <span class="kw">fn</span> <span class="ident">mir_borrowck</span>: <span class="ident">MirBorrowCheck</span>(<span class="ident">DefId</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">mir</span>::<span class="ident">ClosureRegionRequirements</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// Gets a complete map from all types to their inherent impls.</span>
     <span class="doccomment">/// Not meant to be used directly outside of coherence.</span>
@@ -852,6 +859,8 @@
         <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">NativeLibraryKind</span><span class="op">&gt;</span>,
     [] <span class="kw">fn</span> <span class="ident">link_args</span>: <span class="ident">link_args_node</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;&gt;</span>,
 
+    <span class="comment">// Lifetime resolution. See `middle::resolve_lifetimes`.</span>
+    [] <span class="kw">fn</span> <span class="ident">resolve_lifetimes</span>: <span class="ident">ResolveLifetimes</span>(<span class="ident">CrateNum</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">ResolveLifetimes</span><span class="op">&gt;</span>,
     [] <span class="kw">fn</span> <span class="ident">named_region_map</span>: <span class="ident">NamedRegion</span>(<span class="ident">DefIndex</span>) <span class="op">-&gt;</span>
         <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">ItemLocalId</span>, <span class="ident">Region</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
     [] <span class="kw">fn</span> <span class="ident">is_late_bound_map</span>: <span class="ident">IsLateBound</span>(<span class="ident">DefIndex</span>) <span class="op">-&gt;</span>

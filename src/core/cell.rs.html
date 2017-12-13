@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1334,6 +1335,8 @@
 <span id="1289">1289</span>
 <span id="1290">1290</span>
 <span id="1291">1291</span>
+<span id="1292">1292</span>
+<span id="1293">1293</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2421,9 +2424,11 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="question-mark">?</span><span class="ident">Sized</span>, <span class="ident">F</span><span class="op">&gt;</span>(<span class="ident">orig</span>: <span class="ident">RefMut</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="ident">RefMut</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>, <span class="ident">U</span><span class="op">&gt;</span>
         <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">U</span>
     {
+        <span class="comment">// FIXME(nll-rfc#40): fix borrow-check</span>
+        <span class="kw">let</span> <span class="ident">RefMut</span> { <span class="ident">value</span>, <span class="ident">borrow</span> } <span class="op">=</span> <span class="ident">orig</span>;
         <span class="ident">RefMut</span> {
-            <span class="ident">value</span>: <span class="ident">f</span>(<span class="ident">orig</span>.<span class="ident">value</span>),
-            <span class="ident">borrow</span>: <span class="ident">orig</span>.<span class="ident">borrow</span>,
+            <span class="ident">value</span>: <span class="ident">f</span>(<span class="ident">value</span>),
+            <span class="ident">borrow</span>: <span class="ident">borrow</span>,
         }
     }
 }

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         <p class='location'><a href='index.html'>core</a></p><script>window.sidebarCurrent = {name: 'cfg', ty: 'macro', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
@@ -53,7 +54,7 @@
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">cfg</span> {
     ($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">cfg</span>:<span class="ident">tt</span>)<span class="kw-2">*</span>) <span class="op">=&gt;</span> { ... };
 }</pre>
-<div class='docblock'><p>Boolean evaluation of configuration flags.</p>
+<div class='docblock'><p>Boolean evaluation of configuration flags, at compile-time.</p>
 
 <p>For more information, see the documentation for <a href="../std/macro.cfg.html"><code>std::cfg!</code></a>.</p>
 </div></section>

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -2814,6 +2815,9 @@
 <span id="2769">2769</span>
 <span id="2770">2770</span>
 <span id="2771">2771</span>
+<span id="2772">2772</span>
+<span id="2773">2773</span>
+<span id="2774">2774</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3901,6 +3905,8 @@
         <span class="string">&quot;dump hash information in textual format to stdout&quot;</span>),
     <span class="ident">incremental_verify_ich</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;verify incr. comp. hashes of green query instances&quot;</span>),
+    <span class="ident">incremental_ignore_spans</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
+        <span class="string">&quot;ignore spans during ICH computation -- used for testing&quot;</span>),
     <span class="ident">dump_dep_graph</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
           <span class="string">&quot;dump the dependency graph to $RUST_DEP_GRAPH (default: /tmp/dep_graph.gv)&quot;</span>),
     <span class="ident">query_dep_graph</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
@@ -3993,9 +3999,10 @@
     <span class="ident">saturating_float_casts</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
         <span class="string">&quot;make float-&gt;int casts UB-free: numbers outside the integer type&#39;s range are clipped to \
          the max/min integer respectively, and NaN is mapped to 0&quot;</span>),
-    <span class="ident">lower_128bit_ops</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
+    <span class="ident">lower_128bit_ops</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_bool</span>, [<span class="ident">TRACKED</span>],
         <span class="string">&quot;rewrite operators on i128 and u128 into lang item calls (typically provided \
-         by compiler-builtins) so translation doesn&#39;t need to support them&quot;</span>),
+         by compiler-builtins) so translation doesn&#39;t need to support them,
+         overriding the default for the current target&quot;</span>),
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">default_lib_output</span>() <span class="op">-&gt;</span> <span class="ident">CrateType</span> {

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../core/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1215,6 +1216,16 @@
 <span id="1170">1170</span>
 <span id="1171">1171</span>
 <span id="1172">1172</span>
+<span id="1173">1173</span>
+<span id="1174">1174</span>
+<span id="1175">1175</span>
+<span id="1176">1176</span>
+<span id="1177">1177</span>
+<span id="1178">1178</span>
+<span id="1179">1179</span>
+<span id="1180">1180</span>
+<span id="1181">1181</span>
+<span id="1182">1182</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1371,12 +1382,12 @@
 <span class="doccomment">//! }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! # The `?` syntax</span>
+<span class="doccomment">//! # The question mark operator, `?`</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! When writing code that calls many functions that return the</span>
-<span class="doccomment">//! [`Result`] type, the error handling can be tedious. The [`?`]</span>
-<span class="doccomment">//! syntax hides some of the boilerplate of propagating errors up the</span>
-<span class="doccomment">//! call stack.</span>
+<span class="doccomment">//! [`Result`] type, the error handling can be tedious. The question mark</span>
+<span class="doccomment">//! operator, [`?`], hides some of the boilerplate of propagating errors</span>
+<span class="doccomment">//! up the call stack.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! It replaces this:</span>
 <span class="doccomment">//!</span>
@@ -1843,8 +1854,13 @@
 
     <span class="doccomment">/// Returns `res` if the result is [`Err`], otherwise returns the [`Ok`] value of `self`.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Arguments passed to `or` are eagerly evaluated; if you are passing the</span>
+    <span class="doccomment">/// result of a function call, it is recommended to use [`or_else`], which is</span>
+    <span class="doccomment">/// lazily evaluated.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// [`Ok`]: enum.Result.html#variant.Ok</span>
     <span class="doccomment">/// [`Err`]: enum.Result.html#variant.Err</span>
+    <span class="doccomment">/// [`or_else`]: #method.or_else</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>
@@ -1908,8 +1924,13 @@
     <span class="doccomment">/// Unwraps a result, yielding the content of an [`Ok`].</span>
     <span class="doccomment">/// Else, it returns `optb`.</span>
     <span class="doccomment">///</span>
+    <span class="doccomment">/// Arguments passed to `unwrap_or` are eagerly evaluated; if you are passing</span>
+    <span class="doccomment">/// the result of a function call, it is recommended to use [`unwrap_or_else`],</span>
+    <span class="doccomment">/// which is lazily evaluated.</span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// [`Ok`]: enum.Result.html#variant.Ok</span>
     <span class="doccomment">/// [`Err`]: enum.Result.html#variant.Err</span>
+    <span class="doccomment">/// [`unwrap_or_else`]: #method.unwrap_or_else</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Examples</span>
     <span class="doccomment">///</span>

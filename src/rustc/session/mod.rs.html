@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1095,6 +1096,30 @@
 <span id="1050">1050</span>
 <span id="1051">1051</span>
 <span id="1052">1052</span>
+<span id="1053">1053</span>
+<span id="1054">1054</span>
+<span id="1055">1055</span>
+<span id="1056">1056</span>
+<span id="1057">1057</span>
+<span id="1058">1058</span>
+<span id="1059">1059</span>
+<span id="1060">1060</span>
+<span id="1061">1061</span>
+<span id="1062">1062</span>
+<span id="1063">1063</span>
+<span id="1064">1064</span>
+<span id="1065">1065</span>
+<span id="1066">1066</span>
+<span id="1067">1067</span>
+<span id="1068">1068</span>
+<span id="1069">1069</span>
+<span id="1070">1070</span>
+<span id="1071">1071</span>
+<span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1259,6 +1284,7 @@
 <span class="kw">enum</span> <span class="ident">DiagnosticBuilderMethod</span> {
     <span class="ident">Note</span>,
     <span class="ident">SpanNote</span>,
+    <span class="ident">SpanSuggestion</span>(<span class="ident">String</span>), <span class="comment">// suggestion</span>
     <span class="comment">// add more variants as needed to support one-time diagnostics</span>
 }
 
@@ -1269,6 +1295,12 @@
     <span class="ident">ErrorId</span>(<span class="ident">u16</span>), <span class="comment">// EXXXX error code as integer</span>
     <span class="ident">LintId</span>(<span class="ident">lint</span>::<span class="ident">LintId</span>),
     <span class="ident">StabilityId</span>(<span class="ident">u32</span>) <span class="comment">// issue number</span>
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">lint</span>::<span class="ident">Lint</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DiagnosticMessageId</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">lint</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">lint</span>::<span class="ident">Lint</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">DiagnosticMessageId</span>::<span class="ident">LintId</span>(<span class="ident">lint</span>::<span class="ident">LintId</span>::<span class="ident">of</span>(<span class="ident">lint</span>))
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">Session</span> {
@@ -1456,10 +1488,11 @@
     <span class="kw">fn</span> <span class="ident">diag_once</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
                          <span class="ident">diag_builder</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="kw-2">mut</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
                          <span class="ident">method</span>: <span class="ident">DiagnosticBuilderMethod</span>,
-                         <span class="ident">lint</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">lint</span>::<span class="ident">Lint</span>, <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">span</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span>) {
+                         <span class="ident">msg_id</span>: <span class="ident">DiagnosticMessageId</span>,
+                         <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+                         <span class="ident">span_maybe</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Span</span><span class="op">&gt;</span>) {
 
-        <span class="kw">let</span> <span class="ident">lint_id</span> <span class="op">=</span> <span class="ident">DiagnosticMessageId</span>::<span class="ident">LintId</span>(<span class="ident">lint</span>::<span class="ident">LintId</span>::<span class="ident">of</span>(<span class="ident">lint</span>));
-        <span class="kw">let</span> <span class="ident">id_span_message</span> <span class="op">=</span> (<span class="ident">lint_id</span>, <span class="ident">span</span>, <span class="ident">message</span>.<span class="ident">to_owned</span>());
+        <span class="kw">let</span> <span class="ident">id_span_message</span> <span class="op">=</span> (<span class="ident">msg_id</span>, <span class="ident">span_maybe</span>, <span class="ident">message</span>.<span class="ident">to_owned</span>());
         <span class="kw">let</span> <span class="ident">fresh</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">one_time_diagnostics</span>.<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">id_span_message</span>);
         <span class="kw">if</span> <span class="ident">fresh</span> {
             <span class="kw">match</span> <span class="ident">method</span> {
@@ -1467,7 +1500,12 @@
                     <span class="ident">diag_builder</span>.<span class="ident">note</span>(<span class="ident">message</span>);
                 },
                 <span class="ident">DiagnosticBuilderMethod</span>::<span class="ident">SpanNote</span> <span class="op">=&gt;</span> {
-                    <span class="ident">diag_builder</span>.<span class="ident">span_note</span>(<span class="ident">span</span>.<span class="ident">expect</span>(<span class="string">&quot;span_note expects a span&quot;</span>), <span class="ident">message</span>);
+                    <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">span_maybe</span>.<span class="ident">expect</span>(<span class="string">&quot;span_note needs a span&quot;</span>);
+                    <span class="ident">diag_builder</span>.<span class="ident">span_note</span>(<span class="ident">span</span>, <span class="ident">message</span>);
+                },
+                <span class="ident">DiagnosticBuilderMethod</span>::<span class="ident">SpanSuggestion</span>(<span class="ident">suggestion</span>) <span class="op">=&gt;</span> {
+                    <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">span_maybe</span>.<span class="ident">expect</span>(<span class="string">&quot;span_suggestion needs a span&quot;</span>);
+                    <span class="ident">diag_builder</span>.<span class="ident">span_suggestion</span>(<span class="ident">span</span>, <span class="ident">message</span>, <span class="ident">suggestion</span>);
                 }
             }
         }
@@ -1475,14 +1513,25 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diag_span_note_once</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
                                        <span class="ident">diag_builder</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="kw-2">mut</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
-                                       <span class="ident">lint</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">lint</span>::<span class="ident">Lint</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-        <span class="self">self</span>.<span class="ident">diag_once</span>(<span class="ident">diag_builder</span>, <span class="ident">DiagnosticBuilderMethod</span>::<span class="ident">SpanNote</span>, <span class="ident">lint</span>, <span class="ident">message</span>, <span class="prelude-val">Some</span>(<span class="ident">span</span>));
+                                       <span class="ident">msg_id</span>: <span class="ident">DiagnosticMessageId</span>, <span class="ident">span</span>: <span class="ident">Span</span>, <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+        <span class="self">self</span>.<span class="ident">diag_once</span>(<span class="ident">diag_builder</span>, <span class="ident">DiagnosticBuilderMethod</span>::<span class="ident">SpanNote</span>,
+                       <span class="ident">msg_id</span>, <span class="ident">message</span>, <span class="prelude-val">Some</span>(<span class="ident">span</span>));
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diag_note_once</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
                                   <span class="ident">diag_builder</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="kw-2">mut</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
-                                  <span class="ident">lint</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">lint</span>::<span class="ident">Lint</span>, <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-        <span class="self">self</span>.<span class="ident">diag_once</span>(<span class="ident">diag_builder</span>, <span class="ident">DiagnosticBuilderMethod</span>::<span class="ident">Note</span>, <span class="ident">lint</span>, <span class="ident">message</span>, <span class="prelude-val">None</span>);
+                                  <span class="ident">msg_id</span>: <span class="ident">DiagnosticMessageId</span>, <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
+        <span class="self">self</span>.<span class="ident">diag_once</span>(<span class="ident">diag_builder</span>, <span class="ident">DiagnosticBuilderMethod</span>::<span class="ident">Note</span>, <span class="ident">msg_id</span>, <span class="ident">message</span>, <span class="prelude-val">None</span>);
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diag_span_suggestion_once</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;b</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
+                                             <span class="ident">diag_builder</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="kw-2">mut</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
+                                             <span class="ident">msg_id</span>: <span class="ident">DiagnosticMessageId</span>,
+                                             <span class="ident">span</span>: <span class="ident">Span</span>,
+                                             <span class="ident">message</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+                                             <span class="ident">suggestion</span>: <span class="ident">String</span>) {
+        <span class="self">self</span>.<span class="ident">diag_once</span>(<span class="ident">diag_builder</span>, <span class="ident">DiagnosticBuilderMethod</span>::<span class="ident">SpanSuggestion</span>(<span class="ident">suggestion</span>),
+                       <span class="ident">msg_id</span>, <span class="ident">message</span>, <span class="prelude-val">Some</span>(<span class="ident">span</span>));
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">codemap</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">codemap</span>::<span class="ident">CodeMap</span> {

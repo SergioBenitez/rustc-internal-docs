@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -1020,6 +1021,10 @@
 <span id="975">975</span>
 <span id="976">976</span>
 <span id="977">977</span>
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1898,6 +1903,7 @@
         <span class="ident">DepKind</span>::<span class="ident">NativeLibraryKind</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">native_library_kind</span>, <span class="macro">def_id</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">LinkArgs</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">link_args</span>, <span class="ident">LOCAL_CRATE</span>); }
 
+        <span class="ident">DepKind</span>::<span class="ident">ResolveLifetimes</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">resolve_lifetimes</span>, <span class="macro">krate</span><span class="macro">!</span>()); }
         <span class="ident">DepKind</span>::<span class="ident">NamedRegion</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">named_region_map</span>, <span class="macro">def_id</span><span class="macro">!</span>().<span class="ident">index</span>); }
         <span class="ident">DepKind</span>::<span class="ident">IsLateBound</span> <span class="op">=&gt;</span> { <span class="macro">force</span><span class="macro">!</span>(<span class="ident">is_late_bound_map</span>, <span class="macro">def_id</span><span class="macro">!</span>().<span class="ident">index</span>); }
         <span class="ident">DepKind</span>::<span class="ident">ObjectLifetimeDefaults</span> <span class="op">=&gt;</span> {
@@ -1997,6 +2003,9 @@
     <span class="ident">BorrowCheck</span> <span class="op">=&gt;</span> <span class="ident">borrowck</span>,
     <span class="ident">MirBorrowCheck</span> <span class="op">=&gt;</span> <span class="ident">mir_borrowck</span>,
     <span class="ident">MirConstQualif</span> <span class="op">=&gt;</span> <span class="ident">mir_const_qualif</span>,
+    <span class="ident">SymbolName</span> <span class="op">=&gt;</span> <span class="ident">def_symbol_name</span>,
+    <span class="ident">ConstIsRvaluePromotableToStatic</span> <span class="op">=&gt;</span> <span class="ident">const_is_rvalue_promotable_to_static</span>,
+    <span class="ident">ContainsExternIndicator</span> <span class="op">=&gt;</span> <span class="ident">contains_extern_indicator</span>,
 );
 </pre>
 </section>

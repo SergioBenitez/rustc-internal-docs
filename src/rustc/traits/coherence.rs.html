@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../rustc/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -366,6 +367,141 @@
 <span id="321">321</span>
 <span id="322">322</span>
 <span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -382,14 +518,27 @@
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">LOCAL_CRATE</span>};
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span>;
 <span class="kw">use</span> <span class="ident">traits</span>::{<span class="self">self</span>, <span class="ident">Normalized</span>, <span class="ident">SelectionContext</span>, <span class="ident">Obligation</span>, <span class="ident">ObligationCause</span>, <span class="ident">Reveal</span>};
+<span class="kw">use</span> <span class="ident">traits</span>::<span class="ident">IntercrateMode</span>;
 <span class="kw">use</span> <span class="ident">traits</span>::<span class="ident">select</span>::<span class="ident">IntercrateAmbiguityCause</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="self">self</span>, <span class="ident">Ty</span>, <span class="ident">TyCtxt</span>};
+<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">fold</span>::<span class="ident">TypeFoldable</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">subst</span>::<span class="ident">Subst</span>;
 
 <span class="kw">use</span> <span class="ident">infer</span>::{<span class="ident">InferCtxt</span>, <span class="ident">InferOk</span>};
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">struct</span> <span class="ident">InferIsLocal</span>(<span class="ident">bool</span>);
+<span class="doccomment">/// Whether we do the orphan check relative to this crate or</span>
+<span class="doccomment">/// to some remote crate.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">enum</span> <span class="ident">InCrate</span> {
+    <span class="ident">Local</span>,
+    <span class="ident">Remote</span>
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Conflict</span> {
+    <span class="ident">Upstream</span>,
+    <span class="ident">Downstream</span> { <span class="ident">used_to_be_broken</span>: <span class="ident">bool</span> }
+}
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OverlapResult</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="ident">impl_header</span>: <span class="ident">ty</span>::<span class="ident">ImplHeader</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -400,16 +549,19 @@
 <span class="doccomment">/// `ImplHeader` with those types substituted</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">overlapping_impls</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">infcx</span>: <span class="kw-2">&amp;</span><span class="ident">InferCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;cx</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
                                           <span class="ident">impl1_def_id</span>: <span class="ident">DefId</span>,
-                                          <span class="ident">impl2_def_id</span>: <span class="ident">DefId</span>)
+                                          <span class="ident">impl2_def_id</span>: <span class="ident">DefId</span>,
+                                          <span class="ident">intercrate_mode</span>: <span class="ident">IntercrateMode</span>)
                                           <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">OverlapResult</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
 {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;impl_can_satisfy(\
            impl1_def_id={:?}, \
-           impl2_def_id={:?})&quot;</span>,
+           impl2_def_id={:?},
+           intercrate_mode={:?})&quot;</span>,
            <span class="ident">impl1_def_id</span>,
-           <span class="ident">impl2_def_id</span>);
+           <span class="ident">impl2_def_id</span>,
+           <span class="ident">intercrate_mode</span>);
 
-    <span class="kw">let</span> <span class="ident">selcx</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SelectionContext</span>::<span class="ident">intercrate</span>(<span class="ident">infcx</span>);
+    <span class="kw">let</span> <span class="ident">selcx</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">SelectionContext</span>::<span class="ident">intercrate</span>(<span class="ident">infcx</span>, <span class="ident">intercrate_mode</span>);
     <span class="ident">overlap</span>(<span class="ident">selcx</span>, <span class="ident">impl1_def_id</span>, <span class="ident">impl2_def_id</span>)
 }
 
@@ -495,32 +647,49 @@
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trait_ref_is_knowable</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                             <span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">TraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
+                                             <span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">TraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>)
+                                             <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Conflict</span><span class="op">&gt;</span>
 {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trait_ref_is_knowable(trait_ref={:?})&quot;</span>, <span class="ident">trait_ref</span>);
+    <span class="kw">if</span> <span class="ident">orphan_check_trait_ref</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="ident">InCrate</span>::<span class="ident">Remote</span>).<span class="ident">is_ok</span>() {
+        <span class="comment">// A downstream or cousin crate is allowed to implement some</span>
+        <span class="comment">// substitution of this trait-ref.</span>
 
-    <span class="comment">// if the orphan rules pass, that means that no ancestor crate can</span>
-    <span class="comment">// impl this, so it&#39;s up to us.</span>
-    <span class="kw">if</span> <span class="ident">orphan_check_trait_ref</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="ident">InferIsLocal</span>(<span class="bool-val">false</span>)).<span class="ident">is_ok</span>() {
+        <span class="comment">// A trait can be implementable for a trait ref by both the current</span>
+        <span class="comment">// crate and crates downstream of it. Older versions of rustc</span>
+        <span class="comment">// were not aware of this, causing incoherence (issue #43355).</span>
+        <span class="kw">let</span> <span class="ident">used_to_be_broken</span> <span class="op">=</span>
+            <span class="ident">orphan_check_trait_ref</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="ident">InCrate</span>::<span class="ident">Local</span>).<span class="ident">is_ok</span>();
+        <span class="kw">if</span> <span class="ident">used_to_be_broken</span> {
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trait_ref_is_knowable({:?}) - USED TO BE BROKEN&quot;</span>, <span class="ident">trait_ref</span>);
+        }
+        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">Conflict</span>::<span class="ident">Downstream</span> { <span class="ident">used_to_be_broken</span> });
+    }
+
+    <span class="kw">if</span> <span class="ident">trait_ref_is_local_or_fundamental</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>) {
+        <span class="comment">// This is a local or fundamental trait, so future-compatibility</span>
+        <span class="comment">// is no concern. We know that downstream/cousin crates are not</span>
+        <span class="comment">// allowed to implement a substitution of this trait ref, which</span>
+        <span class="comment">// means impls could only come from dependencies of this crate,</span>
+        <span class="comment">// which we already know about.</span>
+        <span class="kw">return</span> <span class="prelude-val">None</span>;
+    }
+
+    <span class="comment">// This is a remote non-fundamental trait, so if another crate</span>
+    <span class="comment">// can be the &quot;final owner&quot; of a substitution of this trait-ref,</span>
+    <span class="comment">// they are allowed to implement it future-compatibly.</span>
+    <span class="comment">//</span>
+    <span class="comment">// However, if we are a final owner, then nobody else can be,</span>
+    <span class="comment">// and if we are an intermediate owner, then we don&#39;t care</span>
+    <span class="comment">// about future-compatibility, which means that we&#39;re OK if</span>
+    <span class="comment">// we are an owner.</span>
+    <span class="kw">if</span> <span class="ident">orphan_check_trait_ref</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="ident">InCrate</span>::<span class="ident">Local</span>).<span class="ident">is_ok</span>() {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trait_ref_is_knowable: orphan check passed&quot;</span>);
-        <span class="kw">return</span> <span class="bool-val">true</span>;
+        <span class="kw">return</span> <span class="prelude-val">None</span>;
+    } <span class="kw">else</span> {
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trait_ref_is_knowable: nonlocal, nonfundamental, unowned&quot;</span>);
+        <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">Conflict</span>::<span class="ident">Upstream</span>);
     }
-
-    <span class="comment">// if the trait is not marked fundamental, then it&#39;s always possible that</span>
-    <span class="comment">// an ancestor crate will impl this in the future, if they haven&#39;t</span>
-    <span class="comment">// already</span>
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">trait_ref_is_local_or_fundamental</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>) {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;trait_ref_is_knowable: trait is neither local nor fundamental&quot;</span>);
-        <span class="kw">return</span> <span class="bool-val">false</span>;
-    }
-
-    <span class="comment">// find out when some downstream (or cousin) crate could impl this</span>
-    <span class="comment">// trait-ref, presuming that all the parameters were instantiated</span>
-    <span class="comment">// with downstream types. If not, then it could only be</span>
-    <span class="comment">// implemented by an upstream crate, which means that the impl</span>
-    <span class="comment">// must be visible to us, and -- since the trait is fundamental</span>
-    <span class="comment">// -- we can test.</span>
-    <span class="ident">orphan_check_trait_ref</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="ident">InferIsLocal</span>(<span class="bool-val">true</span>)).<span class="ident">is_err</span>()
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">trait_ref_is_local_or_fundamental</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;gcx</span>, <span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
@@ -558,30 +727,123 @@
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
     }
 
-    <span class="ident">orphan_check_trait_ref</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="ident">InferIsLocal</span>(<span class="bool-val">false</span>))
+    <span class="ident">orphan_check_trait_ref</span>(<span class="ident">tcx</span>, <span class="ident">trait_ref</span>, <span class="ident">InCrate</span>::<span class="ident">Local</span>)
 }
 
+<span class="doccomment">/// Check whether a trait-ref is potentially implementable by a crate.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The current rule is that a trait-ref orphan checks in a crate C:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 1. Order the parameters in the trait-ref in subst order - Self first,</span>
+<span class="doccomment">///    others linearly (e.g. `&lt;U as Foo&lt;V, W&gt;&gt;` is U &lt; V &lt; W).</span>
+<span class="doccomment">/// 2. Of these type parameters, there is at least one type parameter</span>
+<span class="doccomment">///    in which, walking the type as a tree, you can reach a type local</span>
+<span class="doccomment">///    to C where all types in-between are fundamental types. Call the</span>
+<span class="doccomment">///    first such parameter the &quot;local key parameter&quot;.</span>
+<span class="doccomment">///     - e.g. `Box&lt;LocalType&gt;` is OK, because you can visit LocalType</span>
+<span class="doccomment">///       going through `Box`, which is fundamental.</span>
+<span class="doccomment">///     - similarly, `FundamentalPair&lt;Vec&lt;()&gt;, Box&lt;LocalType&gt;&gt;` is OK for</span>
+<span class="doccomment">///       the same reason.</span>
+<span class="doccomment">///     - but (knowing that `Vec&lt;T&gt;` is non-fundamental, and assuming it&#39;s</span>
+<span class="doccomment">///       not local), `Vec&lt;LocalType&gt;` is bad, because `Vec&lt;-&gt;` is between</span>
+<span class="doccomment">///       the local type and the type parameter.</span>
+<span class="doccomment">/// 3. Every type parameter before the local key parameter is fully known in C.</span>
+<span class="doccomment">///     - e.g. `impl&lt;T&gt; T: Trait&lt;LocalType&gt;` is bad, because `T` might be</span>
+<span class="doccomment">///       an unknown type.</span>
+<span class="doccomment">///     - but `impl&lt;T&gt; LocalType: Trait&lt;T&gt;` is OK, because `LocalType`</span>
+<span class="doccomment">///       occurs before `T`.</span>
+<span class="doccomment">/// 4. Every type in the local key parameter not known in C, going</span>
+<span class="doccomment">///    through the parameter&#39;s type tree, must appear only as a subtree of</span>
+<span class="doccomment">///    a type local to C, with only fundamental types between the type</span>
+<span class="doccomment">///    local to C and the local key parameter.</span>
+<span class="doccomment">///     - e.g. `Vec&lt;LocalType&lt;T&gt;&gt;&gt;` (or equivalently `Box&lt;Vec&lt;LocalType&lt;T&gt;&gt;&gt;`)</span>
+<span class="doccomment">///     is bad, because the only local type with `T` as a subtree is</span>
+<span class="doccomment">///     `LocalType&lt;T&gt;`, and `Vec&lt;-&gt;` is between it and the type parameter.</span>
+<span class="doccomment">///     - similarly, `FundamentalPair&lt;LocalType&lt;T&gt;, T&gt;` is bad, because</span>
+<span class="doccomment">///     the second occurence of `T` is not a subtree of *any* local type.</span>
+<span class="doccomment">///     - however, `LocalType&lt;Vec&lt;T&gt;&gt;` is OK, because `T` is a subtree of</span>
+<span class="doccomment">///     `LocalType&lt;Vec&lt;T&gt;&gt;`, which is local and has no types between it and</span>
+<span class="doccomment">///     the type parameter.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The orphan rules actually serve several different purposes:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 1. They enable link-safety - i.e. 2 mutually-unknowing crates (where</span>
+<span class="doccomment">///    every type local to one crate is unknown in the other) can&#39;t implement</span>
+<span class="doccomment">///    the same trait-ref. This follows because it can be seen that no such</span>
+<span class="doccomment">///    type can orphan-check in 2 such crates.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///    To check that a local impl follows the orphan rules, we check it in</span>
+<span class="doccomment">///    InCrate::Local mode, using type parameters for the &quot;generic&quot; types.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 2. They ground negative reasoning for coherence. If a user wants to</span>
+<span class="doccomment">///    write both a conditional blanket impl and a specific impl, we need to</span>
+<span class="doccomment">///    make sure they do not overlap. For example, if we write</span>
+<span class="doccomment">///    ```</span>
+<span class="doccomment">///    impl&lt;T&gt; IntoIterator for Vec&lt;T&gt;</span>
+<span class="doccomment">///    impl&lt;T: Iterator&gt; IntoIterator for T</span>
+<span class="doccomment">///    ```</span>
+<span class="doccomment">///    We need to be able to prove that `Vec&lt;$0&gt;: !Iterator` for every type $0.</span>
+<span class="doccomment">///    We can observe that this holds in the current crate, but we need to make</span>
+<span class="doccomment">///    sure this will also hold in all unknown crates (both &quot;independent&quot; crates,</span>
+<span class="doccomment">///    which we need for link-safety, and also child crates, because we don&#39;t want</span>
+<span class="doccomment">///    child crates to get error for impl conflicts in a *dependency*).</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///    For that, we only allow negative reasoning if, for every assignment to the</span>
+<span class="doccomment">///    inference variables, every unknown crate would get an orphan error if they</span>
+<span class="doccomment">///    try to implement this trait-ref. To check for this, we use InCrate::Remote</span>
+<span class="doccomment">///    mode. That is sound because we already know all the impls from known crates.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// 3. For non-#[fundamental] traits, they guarantee that parent crates can</span>
+<span class="doccomment">///    add &quot;non-blanket&quot; impls without breaking negative reasoning in dependent</span>
+<span class="doccomment">///    crates. This is the &quot;rebalancing coherence&quot; (RFC 1023) restriction.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///    For that, we only a allow crate to perform negative reasoning on</span>
+<span class="doccomment">///    non-local-non-#[fundamental] only if there&#39;s a local key parameter as per (2).</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///    Because we never perform negative reasoning generically (coherence does</span>
+<span class="doccomment">///    not involve type parameters), this can be interpreted as doing the full</span>
+<span class="doccomment">///    orphan check (using InCrate::Local mode), substituting non-local known</span>
+<span class="doccomment">///    types for all inference variables.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///    This allows for crates to future-compatibly add impls as long as they</span>
+<span class="doccomment">///    can&#39;t apply to types with a key parameter in a child crate - applying</span>
+<span class="doccomment">///    the rules, this basically means that every type parameter in the impl</span>
+<span class="doccomment">///    must appear behind a non-fundamental type (because this is not a</span>
+<span class="doccomment">///    type-system requirement, crate owners might also go for &quot;semantic</span>
+<span class="doccomment">///    future-compatibility&quot; involving things such as sealed traits, but</span>
+<span class="doccomment">///    the above requirement is sufficient, and is necessary in &quot;open world&quot;</span>
+<span class="doccomment">///    cases).</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Note that this function is never called for types that have both type</span>
+<span class="doccomment">/// parameters and inference variables.</span>
 <span class="kw">fn</span> <span class="ident">orphan_check_trait_ref</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>,
                                 <span class="ident">trait_ref</span>: <span class="ident">ty</span>::<span class="ident">TraitRef</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-                                <span class="ident">infer_is_local</span>: <span class="ident">InferIsLocal</span>)
+                                <span class="ident">in_crate</span>: <span class="ident">InCrate</span>)
                                 <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">OrphanCheckErr</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>
 {
-    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;orphan_check_trait_ref(trait_ref={:?}, infer_is_local={})&quot;</span>,
-           <span class="ident">trait_ref</span>, <span class="ident">infer_is_local</span>.<span class="number">0</span>);
+    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;orphan_check_trait_ref(trait_ref={:?}, in_crate={:?})&quot;</span>,
+           <span class="ident">trait_ref</span>, <span class="ident">in_crate</span>);
+
+    <span class="kw">if</span> <span class="ident">trait_ref</span>.<span class="ident">needs_infer</span>() <span class="op">&amp;&amp;</span> <span class="ident">trait_ref</span>.<span class="ident">needs_subst</span>() {
+        <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;can&#39;t orphan check a trait ref with both params and inference variables {:?}&quot;</span>,
+             <span class="ident">trait_ref</span>);
+    }
 
     <span class="comment">// First, create an ordered iterator over all the type parameters to the trait, with the self</span>
     <span class="comment">// type appearing first.</span>
     <span class="comment">// Find the first input type that either references a type parameter OR</span>
     <span class="comment">// some local type.</span>
     <span class="kw">for</span> <span class="ident">input_ty</span> <span class="kw">in</span> <span class="ident">trait_ref</span>.<span class="ident">input_types</span>() {
-        <span class="kw">if</span> <span class="ident">ty_is_local</span>(<span class="ident">tcx</span>, <span class="ident">input_ty</span>, <span class="ident">infer_is_local</span>) {
+        <span class="kw">if</span> <span class="ident">ty_is_local</span>(<span class="ident">tcx</span>, <span class="ident">input_ty</span>, <span class="ident">in_crate</span>) {
             <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;orphan_check_trait_ref: ty_is_local `{:?}`&quot;</span>, <span class="ident">input_ty</span>);
 
             <span class="comment">// First local input type. Check that there are no</span>
             <span class="comment">// uncovered type parameters.</span>
-            <span class="kw">let</span> <span class="ident">uncovered_tys</span> <span class="op">=</span> <span class="ident">uncovered_tys</span>(<span class="ident">tcx</span>, <span class="ident">input_ty</span>, <span class="ident">infer_is_local</span>);
+            <span class="kw">let</span> <span class="ident">uncovered_tys</span> <span class="op">=</span> <span class="ident">uncovered_tys</span>(<span class="ident">tcx</span>, <span class="ident">input_ty</span>, <span class="ident">in_crate</span>);
             <span class="kw">for</span> <span class="ident">uncovered_ty</span> <span class="kw">in</span> <span class="ident">uncovered_tys</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">param</span>) <span class="op">=</span> <span class="ident">uncovered_ty</span>.<span class="ident">walk</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">is_type_parameter</span>(<span class="ident">t</span>)) {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">param</span>) <span class="op">=</span> <span class="ident">uncovered_ty</span>.<span class="ident">walk</span>()
+                    .<span class="ident">find</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">is_possibly_remote_type</span>(<span class="ident">t</span>, <span class="ident">in_crate</span>))
+                {
                     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;orphan_check_trait_ref: uncovered type `{:?}`&quot;</span>, <span class="ident">param</span>);
                     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">OrphanCheckErr</span>::<span class="ident">UncoveredTy</span>(<span class="ident">param</span>));
                 }
@@ -593,11 +855,11 @@
 
         <span class="comment">// Otherwise, enforce invariant that there are no type</span>
         <span class="comment">// parameters reachable.</span>
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">infer_is_local</span>.<span class="number">0</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">param</span>) <span class="op">=</span> <span class="ident">input_ty</span>.<span class="ident">walk</span>().<span class="ident">find</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">is_type_parameter</span>(<span class="ident">t</span>)) {
-                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;orphan_check_trait_ref: uncovered type `{:?}`&quot;</span>, <span class="ident">param</span>);
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">OrphanCheckErr</span>::<span class="ident">UncoveredTy</span>(<span class="ident">param</span>));
-            }
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">param</span>) <span class="op">=</span> <span class="ident">input_ty</span>.<span class="ident">walk</span>()
+            .<span class="ident">find</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">is_possibly_remote_type</span>(<span class="ident">t</span>, <span class="ident">in_crate</span>))
+        {
+            <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;orphan_check_trait_ref: uncovered type `{:?}`&quot;</span>, <span class="ident">param</span>);
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">OrphanCheckErr</span>::<span class="ident">UncoveredTy</span>(<span class="ident">param</span>));
         }
     }
 
@@ -606,29 +868,29 @@
     <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">OrphanCheckErr</span>::<span class="ident">NoLocalInputType</span>);
 }
 
-<span class="kw">fn</span> <span class="ident">uncovered_tys</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">infer_is_local</span>: <span class="ident">InferIsLocal</span>)
+<span class="kw">fn</span> <span class="ident">uncovered_tys</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">ty</span>: <span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">in_crate</span>: <span class="ident">InCrate</span>)
                        <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span> {
-    <span class="kw">if</span> <span class="ident">ty_is_local_constructor</span>(<span class="ident">ty</span>, <span class="ident">infer_is_local</span>) {
+    <span class="kw">if</span> <span class="ident">ty_is_local_constructor</span>(<span class="ident">ty</span>, <span class="ident">in_crate</span>) {
         <span class="macro">vec</span><span class="macro">!</span>[]
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">fundamental_ty</span>(<span class="ident">tcx</span>, <span class="ident">ty</span>) {
         <span class="ident">ty</span>.<span class="ident">walk_shallow</span>()
-          .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">uncovered_tys</span>(<span class="ident">tcx</span>, <span class="ident">t</span>, <span class="ident">infer_is_local</span>))
+          .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">uncovered_tys</span>(<span class="ident">tcx</span>, <span class="ident">t</span>, <span class="ident">in_crate</span>))
           .<span class="ident">collect</span>()
     } <span class="kw">else</span> {
         <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">ty</span>]
     }
 }
 
-<span class="kw">fn</span> <span class="ident">is_type_parameter</span>(<span class="ident">ty</span>: <span class="ident">Ty</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">is_possibly_remote_type</span>(<span class="ident">ty</span>: <span class="ident">Ty</span>, <span class="ident">_in_crate</span>: <span class="ident">InCrate</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
         <span class="ident">ty</span>::<span class="ident">TyProjection</span>(..) <span class="op">|</span> <span class="ident">ty</span>::<span class="ident">TyParam</span>(..) <span class="op">=&gt;</span> <span class="bool-val">true</span>,
         _ <span class="op">=&gt;</span> <span class="bool-val">false</span>,
     }
 }
 
-<span class="kw">fn</span> <span class="ident">ty_is_local</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">ty</span>: <span class="ident">Ty</span>, <span class="ident">infer_is_local</span>: <span class="ident">InferIsLocal</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="ident">ty_is_local_constructor</span>(<span class="ident">ty</span>, <span class="ident">infer_is_local</span>) <span class="op">||</span>
-        <span class="ident">fundamental_ty</span>(<span class="ident">tcx</span>, <span class="ident">ty</span>) <span class="op">&amp;&amp;</span> <span class="ident">ty</span>.<span class="ident">walk_shallow</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">ty_is_local</span>(<span class="ident">tcx</span>, <span class="ident">t</span>, <span class="ident">infer_is_local</span>))
+<span class="kw">fn</span> <span class="ident">ty_is_local</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">ty</span>: <span class="ident">Ty</span>, <span class="ident">in_crate</span>: <span class="ident">InCrate</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="ident">ty_is_local_constructor</span>(<span class="ident">ty</span>, <span class="ident">in_crate</span>) <span class="op">||</span>
+        <span class="ident">fundamental_ty</span>(<span class="ident">tcx</span>, <span class="ident">ty</span>) <span class="op">&amp;&amp;</span> <span class="ident">ty</span>.<span class="ident">walk_shallow</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">ty_is_local</span>(<span class="ident">tcx</span>, <span class="ident">t</span>, <span class="ident">in_crate</span>))
 }
 
 <span class="kw">fn</span> <span class="ident">fundamental_ty</span>(<span class="ident">tcx</span>: <span class="ident">TyCtxt</span>, <span class="ident">ty</span>: <span class="ident">Ty</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -642,7 +904,16 @@
     }
 }
 
-<span class="kw">fn</span> <span class="ident">ty_is_local_constructor</span>(<span class="ident">ty</span>: <span class="ident">Ty</span>, <span class="ident">infer_is_local</span>: <span class="ident">InferIsLocal</span>)<span class="op">-&gt;</span> <span class="ident">bool</span> {
+<span class="kw">fn</span> <span class="ident">def_id_is_local</span>(<span class="ident">def_id</span>: <span class="ident">DefId</span>, <span class="ident">in_crate</span>: <span class="ident">InCrate</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">match</span> <span class="ident">in_crate</span> {
+        <span class="comment">// The type is local to *this* crate - it will not be</span>
+        <span class="comment">// local in any other crate.</span>
+        <span class="ident">InCrate</span>::<span class="ident">Remote</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+        <span class="ident">InCrate</span>::<span class="ident">Local</span> <span class="op">=&gt;</span> <span class="ident">def_id</span>.<span class="ident">is_local</span>()
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">ty_is_local_constructor</span>(<span class="ident">ty</span>: <span class="ident">Ty</span>, <span class="ident">in_crate</span>: <span class="ident">InCrate</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;ty_is_local_constructor({:?})&quot;</span>, <span class="ident">ty</span>);
 
     <span class="kw">match</span> <span class="ident">ty</span>.<span class="ident">sty</span> {
@@ -665,20 +936,20 @@
             <span class="bool-val">false</span>
         }
 
-        <span class="ident">ty</span>::<span class="ident">TyInfer</span>(..) <span class="op">=&gt;</span> {
-            <span class="ident">infer_is_local</span>.<span class="number">0</span>
-        }
+        <span class="ident">ty</span>::<span class="ident">TyInfer</span>(..) <span class="op">=&gt;</span> <span class="kw">match</span> <span class="ident">in_crate</span> {
+            <span class="ident">InCrate</span>::<span class="ident">Local</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            <span class="comment">// The inference variable might be unified with a local</span>
+            <span class="comment">// type in that remote crate.</span>
+            <span class="ident">InCrate</span>::<span class="ident">Remote</span> <span class="op">=&gt;</span> <span class="bool-val">true</span>,
+        },
 
-        <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">def</span>, _) <span class="op">=&gt;</span> {
-            <span class="ident">def</span>.<span class="ident">did</span>.<span class="ident">is_local</span>()
-        }
-
-        <span class="ident">ty</span>::<span class="ident">TyForeign</span>(<span class="ident">did</span>) <span class="op">=&gt;</span> {
-            <span class="ident">did</span>.<span class="ident">is_local</span>()
-        }
+        <span class="ident">ty</span>::<span class="ident">TyAdt</span>(<span class="ident">def</span>, _) <span class="op">=&gt;</span> <span class="ident">def_id_is_local</span>(<span class="ident">def</span>.<span class="ident">did</span>, <span class="ident">in_crate</span>),
+        <span class="ident">ty</span>::<span class="ident">TyForeign</span>(<span class="ident">did</span>) <span class="op">=&gt;</span> <span class="ident">def_id_is_local</span>(<span class="ident">did</span>, <span class="ident">in_crate</span>),
 
         <span class="ident">ty</span>::<span class="ident">TyDynamic</span>(<span class="kw-2">ref</span> <span class="ident">tt</span>, ..) <span class="op">=&gt;</span> {
-            <span class="ident">tt</span>.<span class="ident">principal</span>().<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">def_id</span>().<span class="ident">is_local</span>())
+            <span class="ident">tt</span>.<span class="ident">principal</span>().<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">p</span><span class="op">|</span> {
+                <span class="ident">def_id_is_local</span>(<span class="ident">p</span>.<span class="ident">def_id</span>(), <span class="ident">in_crate</span>)
+            })
         }
 
         <span class="ident">ty</span>::<span class="ident">TyError</span> <span class="op">=&gt;</span> {

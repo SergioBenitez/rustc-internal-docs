@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         <a href='../../../std/index.html'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a>
         
     </nav>
@@ -689,9 +690,6 @@
 <span id="644">644</span>
 <span id="645">645</span>
 <span id="646">646</span>
-<span id="647">647</span>
-<span id="648">648</span>
-<span id="649">649</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -831,10 +829,7 @@
     <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SocketAddr</span><span class="op">&gt;</span> {
         <span class="kw">loop</span> {
             <span class="kw">unsafe</span> {
-                <span class="kw">let</span> <span class="ident">cur</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">cur</span>.<span class="ident">as_ref</span>() {
-                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">None</span>,
-                    <span class="prelude-val">Some</span>(<span class="ident">c</span>) <span class="op">=&gt;</span> <span class="ident">c</span>,
-                };
+                <span class="kw">let</span> <span class="ident">cur</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">cur</span>.<span class="ident">as_ref</span>()<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">cur</span> <span class="op">=</span> <span class="ident">cur</span>.<span class="ident">ai_next</span>;
                 <span class="kw">match</span> <span class="ident">sockaddr_to_addr</span>(<span class="ident">mem</span>::<span class="ident">transmute</span>(<span class="ident">cur</span>.<span class="ident">ai_addr</span>),
                                        <span class="ident">cur</span>.<span class="ident">ai_addrlen</span> <span class="kw">as</span> <span class="ident">usize</span>)
