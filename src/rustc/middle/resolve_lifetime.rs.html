@@ -2260,6 +2260,53 @@
 <span id="2214">2214</span>
 <span id="2215">2215</span>
 <span id="2216">2216</span>
+<span id="2217">2217</span>
+<span id="2218">2218</span>
+<span id="2219">2219</span>
+<span id="2220">2220</span>
+<span id="2221">2221</span>
+<span id="2222">2222</span>
+<span id="2223">2223</span>
+<span id="2224">2224</span>
+<span id="2225">2225</span>
+<span id="2226">2226</span>
+<span id="2227">2227</span>
+<span id="2228">2228</span>
+<span id="2229">2229</span>
+<span id="2230">2230</span>
+<span id="2231">2231</span>
+<span id="2232">2232</span>
+<span id="2233">2233</span>
+<span id="2234">2234</span>
+<span id="2235">2235</span>
+<span id="2236">2236</span>
+<span id="2237">2237</span>
+<span id="2238">2238</span>
+<span id="2239">2239</span>
+<span id="2240">2240</span>
+<span id="2241">2241</span>
+<span id="2242">2242</span>
+<span id="2243">2243</span>
+<span id="2244">2244</span>
+<span id="2245">2245</span>
+<span id="2246">2246</span>
+<span id="2247">2247</span>
+<span id="2248">2248</span>
+<span id="2249">2249</span>
+<span id="2250">2250</span>
+<span id="2251">2251</span>
+<span id="2252">2252</span>
+<span id="2253">2253</span>
+<span id="2254">2254</span>
+<span id="2255">2255</span>
+<span id="2256">2256</span>
+<span id="2257">2257</span>
+<span id="2258">2258</span>
+<span id="2259">2259</span>
+<span id="2260">2260</span>
+<span id="2261">2261</span>
+<span id="2262">2262</span>
+<span id="2263">2263</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2909,30 +2956,77 @@
     }
 
     <span class="kw">fn</span> <span class="ident">visit_trait_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">trait_item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">TraitItem</span>) {
-        <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">TraitItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=</span> <span class="ident">trait_item</span>.<span class="ident">node</span> {
-            <span class="self">self</span>.<span class="ident">visit_early_late</span>(
-                <span class="prelude-val">Some</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_parent</span>(<span class="ident">trait_item</span>.<span class="ident">id</span>)),
-                <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>,
-                <span class="kw-2">&amp;</span><span class="ident">trait_item</span>.<span class="ident">generics</span>,
-                <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">intravisit</span>::<span class="ident">walk_trait_item</span>(<span class="ident">this</span>, <span class="ident">trait_item</span>),
-            )
-        } <span class="kw">else</span> {
-            <span class="ident">intravisit</span>::<span class="ident">walk_trait_item</span>(<span class="self">self</span>, <span class="ident">trait_item</span>);
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">hir</span>::<span class="ident">TraitItemKind</span>::<span class="kw-2">*</span>;
+        <span class="kw">match</span> <span class="ident">trait_item</span>.<span class="ident">node</span> {
+            <span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
+                <span class="self">self</span>.<span class="ident">visit_early_late</span>(
+                    <span class="prelude-val">Some</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_parent</span>(<span class="ident">trait_item</span>.<span class="ident">id</span>)),
+                    <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>,
+                    <span class="kw-2">&amp;</span><span class="ident">trait_item</span>.<span class="ident">generics</span>,
+                    <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">intravisit</span>::<span class="ident">walk_trait_item</span>(<span class="ident">this</span>, <span class="ident">trait_item</span>),
+                );
+            },
+            <span class="ident">Type</span>(<span class="kw-2">ref</span> <span class="ident">bounds</span>, <span class="kw-2">ref</span> <span class="ident">ty</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">generics</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">trait_item</span>.<span class="ident">generics</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_early_index</span>();
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;visit_ty: index = {}&quot;</span>, <span class="ident">index</span>);
+                <span class="kw">let</span> <span class="ident">lifetimes</span> <span class="op">=</span> <span class="ident">generics</span>.<span class="ident">lifetimes</span>.<span class="ident">iter</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">lt_def</span><span class="op">|</span> <span class="ident">Region</span>::<span class="ident">early</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">index</span>, <span class="ident">lt_def</span>))
+                    .<span class="ident">collect</span>();
+
+                <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">+</span> <span class="ident">generics</span>.<span class="ident">ty_params</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+                <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="ident">lifetimes</span>, <span class="ident">next_early_index</span>, <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span> };
+                <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span><span class="ident">_old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
+                    <span class="ident">this</span>.<span class="ident">visit_generics</span>(<span class="ident">generics</span>);
+                    <span class="kw">for</span> <span class="ident">bound</span> <span class="kw">in</span> <span class="ident">bounds</span> {
+                        <span class="ident">this</span>.<span class="ident">visit_ty_param_bound</span>(<span class="ident">bound</span>);
+                    }
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">ty</span>) <span class="op">=</span> <span class="ident">ty</span> {
+                        <span class="ident">this</span>.<span class="ident">visit_ty</span>(<span class="ident">ty</span>);
+                    }
+                });
+            },
+            <span class="ident">Const</span>(_, _) <span class="op">=&gt;</span> {
+                <span class="comment">// Only methods and types support generics.</span>
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">trait_item</span>.<span class="ident">generics</span>.<span class="ident">is_parameterized</span>());
+                <span class="ident">intravisit</span>::<span class="ident">walk_trait_item</span>(<span class="self">self</span>, <span class="ident">trait_item</span>);
+            },
         }
     }
 
     <span class="kw">fn</span> <span class="ident">visit_impl_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">impl_item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">ImplItem</span>) {
-        <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
-        <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">ImplItemKind</span>::<span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=</span> <span class="ident">impl_item</span>.<span class="ident">node</span> {
-            <span class="self">self</span>.<span class="ident">visit_early_late</span>(
-                <span class="prelude-val">Some</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_parent</span>(<span class="ident">impl_item</span>.<span class="ident">id</span>)),
-                <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>,
-                <span class="kw-2">&amp;</span><span class="ident">impl_item</span>.<span class="ident">generics</span>,
-                <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">intravisit</span>::<span class="ident">walk_impl_item</span>(<span class="ident">this</span>, <span class="ident">impl_item</span>),
-            )
-        } <span class="kw">else</span> {
-            <span class="ident">intravisit</span>::<span class="ident">walk_impl_item</span>(<span class="self">self</span>, <span class="ident">impl_item</span>);
+        <span class="kw">use</span> <span class="self">self</span>::<span class="ident">hir</span>::<span class="ident">ImplItemKind</span>::<span class="kw-2">*</span>;
+        <span class="kw">match</span> <span class="ident">impl_item</span>.<span class="ident">node</span> {
+            <span class="ident">Method</span>(<span class="kw-2">ref</span> <span class="ident">sig</span>, _) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">tcx</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>;
+                <span class="self">self</span>.<span class="ident">visit_early_late</span>(
+                    <span class="prelude-val">Some</span>(<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get_parent</span>(<span class="ident">impl_item</span>.<span class="ident">id</span>)),
+                    <span class="kw-2">&amp;</span><span class="ident">sig</span>.<span class="ident">decl</span>,
+                    <span class="kw-2">&amp;</span><span class="ident">impl_item</span>.<span class="ident">generics</span>,
+                    <span class="op">|</span><span class="ident">this</span><span class="op">|</span> <span class="ident">intravisit</span>::<span class="ident">walk_impl_item</span>(<span class="ident">this</span>, <span class="ident">impl_item</span>),
+                )
+            },
+            <span class="ident">Type</span>(<span class="kw-2">ref</span> <span class="ident">ty</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">generics</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">impl_item</span>.<span class="ident">generics</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_early_index</span>();
+                <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;visit_ty: index = {}&quot;</span>, <span class="ident">index</span>);
+                <span class="kw">let</span> <span class="ident">lifetimes</span> <span class="op">=</span> <span class="ident">generics</span>.<span class="ident">lifetimes</span>.<span class="ident">iter</span>()
+                    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">lt_def</span><span class="op">|</span> <span class="ident">Region</span>::<span class="ident">early</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">index</span>, <span class="ident">lt_def</span>))
+                    .<span class="ident">collect</span>();
+
+                <span class="kw">let</span> <span class="ident">next_early_index</span> <span class="op">=</span> <span class="ident">index</span> <span class="op">+</span> <span class="ident">generics</span>.<span class="ident">ty_params</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
+                <span class="kw">let</span> <span class="ident">scope</span> <span class="op">=</span> <span class="ident">Scope</span>::<span class="ident">Binder</span> { <span class="ident">lifetimes</span>, <span class="ident">next_early_index</span>, <span class="ident">s</span>: <span class="self">self</span>.<span class="ident">scope</span> };
+                <span class="self">self</span>.<span class="ident">with</span>(<span class="ident">scope</span>, <span class="op">|</span><span class="ident">_old_scope</span>, <span class="ident">this</span><span class="op">|</span> {
+                    <span class="ident">this</span>.<span class="ident">visit_generics</span>(<span class="ident">generics</span>);
+                    <span class="ident">this</span>.<span class="ident">visit_ty</span>(<span class="ident">ty</span>);
+                });
+            },
+            <span class="ident">Const</span>(_, _) <span class="op">=&gt;</span> {
+                <span class="comment">// Only methods and types support generics.</span>
+                <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">impl_item</span>.<span class="ident">generics</span>.<span class="ident">is_parameterized</span>());
+                <span class="ident">intravisit</span>::<span class="ident">walk_impl_item</span>(<span class="self">self</span>, <span class="ident">impl_item</span>);
+            },
         }
     }
 

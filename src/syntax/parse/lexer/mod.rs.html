@@ -1974,6 +1974,32 @@
 <span id="1928">1928</span>
 <span id="1929">1929</span>
 <span id="1930">1930</span>
+<span id="1931">1931</span>
+<span id="1932">1932</span>
+<span id="1933">1933</span>
+<span id="1934">1934</span>
+<span id="1935">1935</span>
+<span id="1936">1936</span>
+<span id="1937">1937</span>
+<span id="1938">1938</span>
+<span id="1939">1939</span>
+<span id="1940">1940</span>
+<span id="1941">1941</span>
+<span id="1942">1942</span>
+<span id="1943">1943</span>
+<span id="1944">1944</span>
+<span id="1945">1945</span>
+<span id="1946">1946</span>
+<span id="1947">1947</span>
+<span id="1948">1948</span>
+<span id="1949">1949</span>
+<span id="1950">1950</span>
+<span id="1951">1951</span>
+<span id="1952">1952</span>
+<span id="1953">1953</span>
+<span id="1954">1954</span>
+<span id="1955">1955</span>
+<span id="1956">1956</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3283,8 +3309,34 @@
                                                    <span class="string">&#39;\&#39;&#39;</span>);
 
                 <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">ch_is</span>(<span class="string">&#39;\&#39;&#39;</span>) {
+                    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pos</span>;
+                    <span class="kw">loop</span> {
+                        <span class="self">self</span>.<span class="ident">bump</span>();
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ch_is</span>(<span class="string">&#39;\&#39;&#39;</span>) {
+                            <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">byte_offset</span>(<span class="ident">start</span>).<span class="ident">to_usize</span>();
+                            <span class="kw">let</span> <span class="ident">end</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">byte_offset</span>(<span class="self">self</span>.<span class="ident">pos</span>).<span class="ident">to_usize</span>();
+                            <span class="self">self</span>.<span class="ident">bump</span>();
+                            <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">mk_sp</span>(<span class="ident">start_with_quote</span>, <span class="self">self</span>.<span class="ident">pos</span>);
+                            <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">span_diagnostic</span>
+                                .<span class="ident">struct_span_err</span>(<span class="ident">span</span>,
+                                                 <span class="string">&quot;character literal may only contain one codepoint&quot;</span>)
+                                .<span class="ident">span_suggestion</span>(<span class="ident">span</span>,
+                                                 <span class="string">&quot;if you meant to write a `str` literal, \
+                                                  use double quotes&quot;</span>,
+                                                 <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;\&quot;{}\&quot;&quot;</span>,
+                                                         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">source_text</span>[<span class="ident">start</span>..<span class="ident">end</span>]))
+                                .<span class="ident">emit</span>();
+                            <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">token</span>::<span class="ident">Literal</span>(<span class="ident">token</span>::<span class="ident">Str_</span>(<span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="string">&quot;??&quot;</span>)), <span class="prelude-val">None</span>))
+                        }
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">ch_is</span>(<span class="string">&#39;\n&#39;</span>) <span class="op">||</span> <span class="self">self</span>.<span class="ident">is_eof</span>() <span class="op">||</span> <span class="self">self</span>.<span class="ident">ch_is</span>(<span class="string">&#39;/&#39;</span>) {
+                            <span class="comment">// Only attempt to infer single line string literals. If we encounter</span>
+                            <span class="comment">// a slash, bail out in order to avoid nonsensical suggestion when</span>
+                            <span class="comment">// involving comments.</span>
+                            <span class="kw">break</span>;
+                        }
+                    }
                     <span class="macro">panic</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">fatal_span_verbose</span>(
-                           <span class="ident">start_with_quote</span>, <span class="self">self</span>.<span class="ident">pos</span>,
+                           <span class="ident">start_with_quote</span>, <span class="ident">pos</span>,
                            <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;character literal may only contain one codepoint&quot;</span>)));
                 }
 

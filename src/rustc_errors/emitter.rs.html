@@ -1581,6 +1581,10 @@
 <span id="1535">1535</span>
 <span id="1536">1536</span>
 <span id="1537">1537</span>
+<span id="1538">1538</span>
+<span id="1539">1539</span>
+<span id="1540">1540</span>
+<span id="1541">1541</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1607,6 +1611,7 @@
 <span class="kw">use</span> <span class="ident">term</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">min</span>;
+<span class="kw">use</span> <span class="ident">unicode_width</span>;
 
 <span class="doccomment">/// Emitter trait for emitting errors.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Emitter</span> {
@@ -2766,7 +2771,10 @@
                 <span class="kw">if</span> <span class="ident">show_underline</span> {
                     <span class="ident">draw_col_separator</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buffer</span>, <span class="ident">row_num</span>, <span class="ident">max_line_num_len</span> <span class="op">+</span> <span class="number">1</span>);
                     <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">parts</span>[<span class="number">0</span>].<span class="ident">snippet</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">parts</span>[<span class="number">0</span>].<span class="ident">snippet</span>.<span class="ident">trim_left</span>().<span class="ident">len</span>();
-                    <span class="kw">let</span> <span class="ident">sub_len</span> <span class="op">=</span> <span class="ident">parts</span>[<span class="number">0</span>].<span class="ident">snippet</span>.<span class="ident">trim</span>().<span class="ident">len</span>();
+                    <span class="comment">// account for substitutions containing unicode characters</span>
+                    <span class="kw">let</span> <span class="ident">sub_len</span> <span class="op">=</span> <span class="ident">parts</span>[<span class="number">0</span>].<span class="ident">snippet</span>.<span class="ident">trim</span>().<span class="ident">chars</span>().<span class="ident">fold</span>(<span class="number">0</span>, <span class="op">|</span><span class="ident">acc</span>, <span class="ident">ch</span><span class="op">|</span> {
+                        <span class="ident">acc</span> <span class="op">+</span> <span class="ident">unicode_width</span>::<span class="ident">UnicodeWidthChar</span>::<span class="ident">width</span>(<span class="ident">ch</span>).<span class="ident">unwrap_or</span>(<span class="number">0</span>)
+                    });
                     <span class="kw">let</span> <span class="ident">underline_start</span> <span class="op">=</span> <span class="ident">span_start_pos</span>.<span class="ident">col</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">start</span>;
                     <span class="kw">let</span> <span class="ident">underline_end</span> <span class="op">=</span> <span class="ident">span_start_pos</span>.<span class="ident">col</span>.<span class="number">0</span> <span class="op">+</span> <span class="ident">start</span> <span class="op">+</span> <span class="ident">sub_len</span>;
                     <span class="kw">for</span> <span class="ident">p</span> <span class="kw">in</span> <span class="ident">underline_start</span>..<span class="ident">underline_end</span> {
