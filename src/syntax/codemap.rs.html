@@ -1007,16 +1007,6 @@
 <span id="961">961</span>
 <span id="962">962</span>
 <span id="963">963</span>
-<span id="964">964</span>
-<span id="965">965</span>
-<span id="966">966</span>
-<span id="967">967</span>
-<span id="968">968</span>
-<span id="969">969</span>
-<span id="970">970</span>
-<span id="971">971</span>
-<span id="972">972</span>
-<span id="973">973</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1043,9 +1033,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">ExpnFormat</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::<span class="ident">FxHashMap</span>;
-<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">stable_hasher</span>::<span class="ident">StableHasher</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::{<span class="ident">RefCell</span>, <span class="ident">Ref</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">hash</span>::<span class="ident">Hash</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::<span class="ident">Rc</span>;
 
@@ -1122,24 +1110,6 @@
     }
 }
 
-<span class="comment">// This is a FileMap identifier that is used to correlate FileMaps between</span>
-<span class="comment">// subsequent compilation sessions (which is something we need to do during</span>
-<span class="comment">// incremental compilation).</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StableFilemapId</span>(<span class="ident">u128</span>);
-
-<span class="kw">impl</span> <span class="ident">StableFilemapId</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">filemap</span>: <span class="kw-2">&amp;</span><span class="ident">FileMap</span>) <span class="op">-&gt;</span> <span class="ident">StableFilemapId</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">StableHasher</span>::<span class="ident">new</span>();
-
-        <span class="ident">filemap</span>.<span class="ident">name</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hasher</span>);
-        <span class="ident">filemap</span>.<span class="ident">name_was_remapped</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hasher</span>);
-        <span class="ident">filemap</span>.<span class="ident">unmapped_path</span>.<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hasher</span>);
-
-        <span class="ident">StableFilemapId</span>(<span class="ident">hasher</span>.<span class="ident">finish</span>())
-    }
-}
-
 <span class="comment">// _____________________________________________________________________________</span>
 <span class="comment">// CodeMap</span>
 <span class="comment">//</span>
@@ -1184,7 +1154,7 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_file</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">file_loader</span>.<span class="ident">read_file</span>(<span class="ident">path</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">new_filemap</span>(<span class="ident">path</span>.<span class="ident">to_str</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>(), <span class="ident">src</span>))
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">new_filemap</span>(<span class="ident">path</span>.<span class="ident">to_owned</span>().<span class="ident">into</span>(), <span class="ident">src</span>))
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">files</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Ref</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span> {
@@ -1216,9 +1186,15 @@
         <span class="comment">// Note that filename may not be a valid path, eg it may be `&lt;anon&gt;` etc,</span>
         <span class="comment">// but this is okay because the directory determined by `path.pop()` will</span>
         <span class="comment">// be empty, so the working directory will be used.</span>
-        <span class="kw">let</span> <span class="ident">unmapped_path</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">filename</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="ident">unmapped_path</span> <span class="op">=</span> <span class="ident">filename</span>.<span class="ident">clone</span>();
 
-        <span class="kw">let</span> (<span class="ident">filename</span>, <span class="ident">was_remapped</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">path_mapping</span>.<span class="ident">map_prefix</span>(<span class="ident">filename</span>);
+        <span class="kw">let</span> (<span class="ident">filename</span>, <span class="ident">was_remapped</span>) <span class="op">=</span> <span class="kw">match</span> <span class="ident">filename</span> {
+            <span class="ident">FileName</span>::<span class="ident">Real</span>(<span class="ident">filename</span>) <span class="op">=&gt;</span> {
+                <span class="kw">let</span> (<span class="ident">filename</span>, <span class="ident">was_remapped</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">path_mapping</span>.<span class="ident">map_prefix</span>(<span class="ident">filename</span>);
+                (<span class="ident">FileName</span>::<span class="ident">Real</span>(<span class="ident">filename</span>), <span class="ident">was_remapped</span>)
+            },
+            <span class="ident">other</span> <span class="op">=&gt;</span> (<span class="ident">other</span>, <span class="bool-val">false</span>),
+        };
         <span class="kw">let</span> <span class="ident">filemap</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">FileMap</span>::<span class="ident">new</span>(
             <span class="ident">filename</span>,
             <span class="ident">was_remapped</span>,
@@ -1231,14 +1207,14 @@
 
         <span class="self">self</span>.<span class="ident">stable_id_to_filemap</span>
             .<span class="ident">borrow_mut</span>()
-            .<span class="ident">insert</span>(<span class="ident">StableFilemapId</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">filemap</span>), <span class="ident">filemap</span>.<span class="ident">clone</span>());
+            .<span class="ident">insert</span>(<span class="ident">filemap</span>.<span class="ident">stable_id</span>, <span class="ident">filemap</span>.<span class="ident">clone</span>());
 
         <span class="ident">filemap</span>
     }
 
     <span class="doccomment">/// Creates a new filemap and sets its line information.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_filemap_and_lines</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">src</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">fm</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">new_filemap</span>(<span class="ident">filename</span>.<span class="ident">to_string</span>(), <span class="ident">src</span>.<span class="ident">to_owned</span>());
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_filemap_and_lines</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>, <span class="ident">src</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">fm</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">new_filemap</span>(<span class="ident">filename</span>.<span class="ident">to_owned</span>().<span class="ident">into</span>(), <span class="ident">src</span>.<span class="ident">to_owned</span>());
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">byte_pos</span>: <span class="ident">u32</span> <span class="op">=</span> <span class="ident">fm</span>.<span class="ident">start_pos</span>.<span class="number">0</span>;
         <span class="kw">for</span> <span class="ident">line</span> <span class="kw">in</span> <span class="ident">src</span>.<span class="ident">lines</span>() {
             <span class="comment">// register the start of this line</span>
@@ -1260,6 +1236,7 @@
                                 <span class="ident">name_was_remapped</span>: <span class="ident">bool</span>,
                                 <span class="ident">crate_of_origin</span>: <span class="ident">u32</span>,
                                 <span class="ident">src_hash</span>: <span class="ident">u128</span>,
+                                <span class="ident">stable_id</span>: <span class="ident">StableFilemapId</span>,
                                 <span class="ident">source_len</span>: <span class="ident">usize</span>,
                                 <span class="kw-2">mut</span> <span class="ident">file_local_lines</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">BytePos</span><span class="op">&gt;</span>,
                                 <span class="kw-2">mut</span> <span class="ident">file_local_multibyte_chars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MultiByteChar</span><span class="op">&gt;</span>,
@@ -1290,6 +1267,7 @@
             <span class="ident">crate_of_origin</span>,
             <span class="ident">src</span>: <span class="prelude-val">None</span>,
             <span class="ident">src_hash</span>,
+            <span class="ident">stable_id</span>,
             <span class="ident">external_src</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">ExternalSource</span>::<span class="ident">AbsentOk</span>),
             <span class="ident">start_pos</span>,
             <span class="ident">end_pos</span>,
@@ -1302,7 +1280,7 @@
 
         <span class="self">self</span>.<span class="ident">stable_id_to_filemap</span>
             .<span class="ident">borrow_mut</span>()
-            .<span class="ident">insert</span>(<span class="ident">StableFilemapId</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">filemap</span>), <span class="ident">filemap</span>.<span class="ident">clone</span>());
+            .<span class="ident">insert</span>(<span class="ident">stable_id</span>, <span class="ident">filemap</span>.<span class="ident">clone</span>());
 
         <span class="ident">filemap</span>
     }
@@ -1393,7 +1371,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lookup_char_pos_adj</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">BytePos</span>) <span class="op">-&gt;</span> <span class="ident">LocWithOpt</span> {
         <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">lookup_char_pos</span>(<span class="ident">pos</span>);
         <span class="ident">LocWithOpt</span> {
-            <span class="ident">filename</span>: <span class="ident">loc</span>.<span class="ident">file</span>.<span class="ident">name</span>.<span class="ident">to_string</span>(),
+            <span class="ident">filename</span>: <span class="ident">loc</span>.<span class="ident">file</span>.<span class="ident">name</span>.<span class="ident">clone</span>(),
             <span class="ident">line</span>: <span class="ident">loc</span>.<span class="ident">line</span>,
             <span class="ident">col</span>: <span class="ident">loc</span>.<span class="ident">col</span>,
             <span class="ident">file</span>: <span class="prelude-val">Some</span>(<span class="ident">loc</span>.<span class="ident">file</span>)
@@ -1453,7 +1431,7 @@
         <span class="self">self</span>.<span class="ident">lookup_char_pos</span>(<span class="ident">sp</span>.<span class="ident">lo</span>()).<span class="ident">file</span>.<span class="ident">name</span>.<span class="ident">clone</span>()
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">span_to_unmapped_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">span_to_unmapped_path</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">FileName</span> {
         <span class="self">self</span>.<span class="ident">lookup_char_pos</span>(<span class="ident">sp</span>.<span class="ident">lo</span>()).<span class="ident">file</span>.<span class="ident">unmapped_path</span>.<span class="ident">clone</span>()
             .<span class="ident">expect</span>(<span class="string">&quot;CodeMap::span_to_unmapped_path called for imported FileMap?&quot;</span>)
     }
@@ -1581,9 +1559,9 @@
         <span class="self">self</span>.<span class="ident">span_until_char</span>(<span class="ident">sp</span>, <span class="string">&#39;{&#39;</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_filemap</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_filemap</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filename</span>: <span class="kw-2">&amp;</span><span class="ident">FileName</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;&gt;</span> {
         <span class="kw">for</span> <span class="ident">fm</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">files</span>.<span class="ident">borrow</span>().<span class="ident">iter</span>() {
-            <span class="kw">if</span> <span class="ident">filename</span> <span class="op">==</span> <span class="ident">fm</span>.<span class="ident">name</span> {
+            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">filename</span> <span class="op">==</span> <span class="ident">fm</span>.<span class="ident">name</span> {
                 <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">fm</span>.<span class="ident">clone</span>());
             }
         }
@@ -1670,7 +1648,7 @@
         <span class="self">self</span>.<span class="ident">merge_spans</span>(<span class="ident">sp_lhs</span>, <span class="ident">sp_rhs</span>)
     }
     <span class="kw">fn</span> <span class="ident">call_span_if_macro</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sp</span>: <span class="ident">Span</span>) <span class="op">-&gt;</span> <span class="ident">Span</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">span_to_filename</span>(<span class="ident">sp</span>.<span class="ident">clone</span>()).<span class="ident">contains</span>(<span class="string">&quot;macros&gt;&quot;</span>) {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">span_to_filename</span>(<span class="ident">sp</span>.<span class="ident">clone</span>()).<span class="ident">is_macros</span>() {
             <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">sp</span>.<span class="ident">macro_backtrace</span>();
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">use_site</span>) <span class="op">=</span> <span class="ident">v</span>.<span class="ident">last</span>() {
                 <span class="kw">return</span> <span class="ident">use_site</span>.<span class="ident">call_site</span>;
@@ -1680,14 +1658,17 @@
     }
     <span class="kw">fn</span> <span class="ident">ensure_filemap_source_present</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">file_map</span>: <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">FileMap</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="ident">file_map</span>.<span class="ident">add_external_src</span>(
-            <span class="op">||</span> <span class="self">self</span>.<span class="ident">file_loader</span>.<span class="ident">read_file</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">file_map</span>.<span class="ident">name</span>)).<span class="ident">ok</span>()
+            <span class="op">||</span> <span class="kw">match</span> <span class="ident">file_map</span>.<span class="ident">name</span> {
+                <span class="ident">FileName</span>::<span class="ident">Real</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">file_loader</span>.<span class="ident">read_file</span>(<span class="ident">name</span>).<span class="ident">ok</span>(),
+                _ <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
+            }
         )
     }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FilePathMapping</span> {
-    <span class="ident">mapping</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">String</span>)<span class="op">&gt;</span>,
+    <span class="ident">mapping</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">PathBuf</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">FilePathMapping</span> {
@@ -1697,7 +1678,7 @@
         }
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">mapping</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">String</span>)<span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">FilePathMapping</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">mapping</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">PathBuf</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">FilePathMapping</span> {
         <span class="ident">FilePathMapping</span> {
             <span class="ident">mapping</span>,
         }
@@ -1706,14 +1687,13 @@
     <span class="doccomment">/// Applies any path prefix substitution as defined by the mapping.</span>
     <span class="doccomment">/// The return value is the remapped path and a boolean indicating whether</span>
     <span class="doccomment">/// the path was affected by the mapping.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map_prefix</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> (<span class="ident">String</span>, <span class="ident">bool</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">map_prefix</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="ident">PathBuf</span>) <span class="op">-&gt;</span> (<span class="ident">PathBuf</span>, <span class="ident">bool</span>) {
         <span class="comment">// NOTE: We are iterating over the mapping entries from last to first</span>
         <span class="comment">//       because entries specified later on the command line should</span>
         <span class="comment">//       take precedence.</span>
         <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">from</span>, <span class="kw-2">ref</span> <span class="ident">to</span>) <span class="kw">in</span> <span class="self">self</span>.<span class="ident">mapping</span>.<span class="ident">iter</span>().<span class="ident">rev</span>() {
-            <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">starts_with</span>(<span class="ident">from</span>) {
-                <span class="kw">let</span> <span class="ident">mapped</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">replacen</span>(<span class="ident">from</span>, <span class="ident">to</span>, <span class="number">1</span>);
-                <span class="kw">return</span> (<span class="ident">mapped</span>, <span class="bool-val">true</span>);
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">rest</span>) <span class="op">=</span> <span class="ident">path</span>.<span class="ident">strip_prefix</span>(<span class="ident">from</span>) {
+                <span class="kw">return</span> (<span class="ident">to</span>.<span class="ident">join</span>(<span class="ident">rest</span>), <span class="bool-val">true</span>);
             }
         }
 
@@ -1734,7 +1714,7 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">t1</span> () {
         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="ident">CodeMap</span>::<span class="ident">new</span>(<span class="ident">FilePathMapping</span>::<span class="ident">empty</span>());
-        <span class="kw">let</span> <span class="ident">fm</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="string">&quot;blork.rs&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">let</span> <span class="ident">fm</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork.rs&quot;</span>).<span class="ident">into</span>(),
                                 <span class="string">&quot;first line.\nsecond line&quot;</span>.<span class="ident">to_string</span>());
         <span class="ident">fm</span>.<span class="ident">next_line</span>(<span class="ident">BytePos</span>(<span class="number">0</span>));
         <span class="comment">// Test we can get lines with partial line info.</span>
@@ -1750,7 +1730,7 @@
     <span class="attribute">#[<span class="ident">should_panic</span>]</span>
     <span class="kw">fn</span> <span class="ident">t2</span> () {
         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="ident">CodeMap</span>::<span class="ident">new</span>(<span class="ident">FilePathMapping</span>::<span class="ident">empty</span>());
-        <span class="kw">let</span> <span class="ident">fm</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="string">&quot;blork.rs&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">let</span> <span class="ident">fm</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork.rs&quot;</span>).<span class="ident">into</span>(),
                                 <span class="string">&quot;first line.\nsecond line&quot;</span>.<span class="ident">to_string</span>());
         <span class="comment">// TESTING *REALLY* BROKEN BEHAVIOR:</span>
         <span class="ident">fm</span>.<span class="ident">next_line</span>(<span class="ident">BytePos</span>(<span class="number">0</span>));
@@ -1760,11 +1740,11 @@
 
     <span class="kw">fn</span> <span class="ident">init_code_map</span>() <span class="op">-&gt;</span> <span class="ident">CodeMap</span> {
         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="ident">CodeMap</span>::<span class="ident">new</span>(<span class="ident">FilePathMapping</span>::<span class="ident">empty</span>());
-        <span class="kw">let</span> <span class="ident">fm1</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="string">&quot;blork.rs&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">let</span> <span class="ident">fm1</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork.rs&quot;</span>).<span class="ident">into</span>(),
                                  <span class="string">&quot;first line.\nsecond line&quot;</span>.<span class="ident">to_string</span>());
-        <span class="kw">let</span> <span class="ident">fm2</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="string">&quot;empty.rs&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">let</span> <span class="ident">fm2</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;empty.rs&quot;</span>).<span class="ident">into</span>(),
                                  <span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>());
-        <span class="kw">let</span> <span class="ident">fm3</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="string">&quot;blork2.rs&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">let</span> <span class="ident">fm3</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork2.rs&quot;</span>).<span class="ident">into</span>(),
                                  <span class="string">&quot;first line.\nsecond line&quot;</span>.<span class="ident">to_string</span>());
 
         <span class="ident">fm1</span>.<span class="ident">next_line</span>(<span class="ident">BytePos</span>(<span class="number">0</span>));
@@ -1782,15 +1762,15 @@
         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="ident">init_code_map</span>();
 
         <span class="kw">let</span> <span class="ident">fmabp1</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_byte_offset</span>(<span class="ident">BytePos</span>(<span class="number">23</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp1</span>.<span class="ident">fm</span>.<span class="ident">name</span>, <span class="string">&quot;blork.rs&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp1</span>.<span class="ident">fm</span>.<span class="ident">name</span>, <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork.rs&quot;</span>).<span class="ident">into</span>());
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp1</span>.<span class="ident">pos</span>, <span class="ident">BytePos</span>(<span class="number">23</span>));
 
         <span class="kw">let</span> <span class="ident">fmabp1</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_byte_offset</span>(<span class="ident">BytePos</span>(<span class="number">24</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp1</span>.<span class="ident">fm</span>.<span class="ident">name</span>, <span class="string">&quot;empty.rs&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp1</span>.<span class="ident">fm</span>.<span class="ident">name</span>, <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;empty.rs&quot;</span>).<span class="ident">into</span>());
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp1</span>.<span class="ident">pos</span>, <span class="ident">BytePos</span>(<span class="number">0</span>));
 
         <span class="kw">let</span> <span class="ident">fmabp2</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_byte_offset</span>(<span class="ident">BytePos</span>(<span class="number">25</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp2</span>.<span class="ident">fm</span>.<span class="ident">name</span>, <span class="string">&quot;blork2.rs&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp2</span>.<span class="ident">fm</span>.<span class="ident">name</span>, <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork2.rs&quot;</span>).<span class="ident">into</span>());
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">fmabp2</span>.<span class="ident">pos</span>, <span class="ident">BytePos</span>(<span class="number">0</span>));
     }
 
@@ -1812,12 +1792,12 @@
         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="ident">init_code_map</span>();
 
         <span class="kw">let</span> <span class="ident">loc1</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_char_pos</span>(<span class="ident">BytePos</span>(<span class="number">22</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc1</span>.<span class="ident">file</span>.<span class="ident">name</span>, <span class="string">&quot;blork.rs&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc1</span>.<span class="ident">file</span>.<span class="ident">name</span>, <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork.rs&quot;</span>).<span class="ident">into</span>());
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc1</span>.<span class="ident">line</span>, <span class="number">2</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc1</span>.<span class="ident">col</span>, <span class="ident">CharPos</span>(<span class="number">10</span>));
 
         <span class="kw">let</span> <span class="ident">loc2</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">lookup_char_pos</span>(<span class="ident">BytePos</span>(<span class="number">25</span>));
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc2</span>.<span class="ident">file</span>.<span class="ident">name</span>, <span class="string">&quot;blork2.rs&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc2</span>.<span class="ident">file</span>.<span class="ident">name</span>, <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork2.rs&quot;</span>).<span class="ident">into</span>());
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc2</span>.<span class="ident">line</span>, <span class="number">1</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">loc2</span>.<span class="ident">col</span>, <span class="ident">CharPos</span>(<span class="number">0</span>));
     }
@@ -1826,9 +1806,9 @@
         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="ident">CodeMap</span>::<span class="ident">new</span>(<span class="ident">FilePathMapping</span>::<span class="ident">empty</span>());
         <span class="comment">// € is a three byte utf8 char.</span>
         <span class="kw">let</span> <span class="ident">fm1</span> <span class="op">=</span>
-            <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="string">&quot;blork.rs&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork.rs&quot;</span>).<span class="ident">into</span>(),
                            <span class="string">&quot;fir€st €€€€ line.\nsecond line&quot;</span>.<span class="ident">to_string</span>());
-        <span class="kw">let</span> <span class="ident">fm2</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="string">&quot;blork2.rs&quot;</span>.<span class="ident">to_string</span>(),
+        <span class="kw">let</span> <span class="ident">fm2</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">new_filemap</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork2.rs&quot;</span>).<span class="ident">into</span>(),
                                  <span class="string">&quot;first line€€.\n€ second line&quot;</span>.<span class="ident">to_string</span>());
 
         <span class="ident">fm1</span>.<span class="ident">next_line</span>(<span class="ident">BytePos</span>(<span class="number">0</span>));
@@ -1873,7 +1853,7 @@
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">Span</span>::<span class="ident">new</span>(<span class="ident">BytePos</span>(<span class="number">12</span>), <span class="ident">BytePos</span>(<span class="number">23</span>), <span class="ident">NO_EXPANSION</span>);
         <span class="kw">let</span> <span class="ident">file_lines</span> <span class="op">=</span> <span class="ident">cm</span>.<span class="ident">span_to_lines</span>(<span class="ident">span</span>).<span class="ident">unwrap</span>();
 
-        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">file_lines</span>.<span class="ident">file</span>.<span class="ident">name</span>, <span class="string">&quot;blork.rs&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">file_lines</span>.<span class="ident">file</span>.<span class="ident">name</span>, <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;blork.rs&quot;</span>).<span class="ident">into</span>());
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">file_lines</span>.<span class="ident">lines</span>.<span class="ident">len</span>(), <span class="number">1</span>);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">file_lines</span>.<span class="ident">lines</span>[<span class="number">0</span>].<span class="ident">line_index</span>, <span class="number">1</span>);
     }
@@ -1896,7 +1876,7 @@
         <span class="kw">let</span> <span class="ident">cm</span> <span class="op">=</span> <span class="ident">CodeMap</span>::<span class="ident">new</span>(<span class="ident">FilePathMapping</span>::<span class="ident">empty</span>());
         <span class="kw">let</span> <span class="ident">inputtext</span> <span class="op">=</span> <span class="string">&quot;aaaaa\nbbbbBB\nCCC\nDDDDDddddd\neee\n&quot;</span>;
         <span class="kw">let</span> <span class="ident">selection</span> <span class="op">=</span> <span class="string">&quot;     \n    ~~\n~~~\n~~~~~     \n   \n&quot;</span>;
-        <span class="ident">cm</span>.<span class="ident">new_filemap_and_lines</span>(<span class="string">&quot;blork.rs&quot;</span>, <span class="ident">inputtext</span>);
+        <span class="ident">cm</span>.<span class="ident">new_filemap_and_lines</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;blork.rs&quot;</span>), <span class="ident">inputtext</span>);
         <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">span_from_selection</span>(<span class="ident">inputtext</span>, <span class="ident">selection</span>);
 
         <span class="comment">// check that we are extracting the text we thought we were extracting</span>
@@ -1939,7 +1919,7 @@
         <span class="kw">let</span> <span class="ident">inputtext</span>  <span class="op">=</span> <span class="string">&quot;bbbb BB\ncc CCC\n&quot;</span>;
         <span class="kw">let</span> <span class="ident">selection1</span> <span class="op">=</span> <span class="string">&quot;     ~~\n      \n&quot;</span>;
         <span class="kw">let</span> <span class="ident">selection2</span> <span class="op">=</span> <span class="string">&quot;       \n   ~~~\n&quot;</span>;
-        <span class="ident">cm</span>.<span class="ident">new_filemap_and_lines</span>(<span class="string">&quot;blork.rs&quot;</span>, <span class="ident">inputtext</span>);
+        <span class="ident">cm</span>.<span class="ident">new_filemap_and_lines</span>(<span class="ident">Path</span>::<span class="ident">new</span>(<span class="string">&quot;blork.rs&quot;</span>), <span class="ident">inputtext</span>);
         <span class="kw">let</span> <span class="ident">span1</span> <span class="op">=</span> <span class="ident">span_from_selection</span>(<span class="ident">inputtext</span>, <span class="ident">selection1</span>);
         <span class="kw">let</span> <span class="ident">span2</span> <span class="op">=</span> <span class="ident">span_from_selection</span>(<span class="ident">inputtext</span>, <span class="ident">selection2</span>);
 

@@ -656,6 +656,20 @@
 <span id="610">610</span>
 <span id="611">611</span>
 <span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+<span id="624">624</span>
+<span id="625">625</span>
+<span id="626">626</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -747,7 +761,12 @@
         <span class="ident">body_id</span>: <span class="ident">ast</span>::<span class="ident">NodeId</span>,
         <span class="ident">obligation</span>: <span class="ident">RegionObligation</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
     ) {
-        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;register_region_obligation({:?}, {:?})&quot;</span>, <span class="ident">body_id</span>, <span class="ident">obligation</span>);
+        <span class="macro">debug</span><span class="macro">!</span>(
+            <span class="string">&quot;register_region_obligation(body_id={:?}, obligation={:?})&quot;</span>,
+            <span class="ident">body_id</span>,
+            <span class="ident">obligation</span>
+        );
+
         <span class="self">self</span>.<span class="ident">region_obligations</span>
             .<span class="ident">borrow_mut</span>()
             .<span class="ident">push</span>((<span class="ident">body_id</span>, <span class="ident">obligation</span>));
@@ -798,6 +817,8 @@
             <span class="string">&quot;cannot process registered region obligations in a snapshot&quot;</span>
         );
 
+        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;process_registered_region_obligations()&quot;</span>);
+
         <span class="comment">// pull out the region obligations with the given `body_id` (leaving the rest)</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">my_region_obligations</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="self">self</span>.<span class="ident">region_obligations</span>.<span class="ident">borrow</span>().<span class="ident">len</span>());
         {
@@ -816,6 +837,13 @@
             <span class="ident">cause</span>,
         } <span class="kw">in</span> <span class="ident">my_region_obligations</span>
         {
+            <span class="macro">debug</span><span class="macro">!</span>(
+                <span class="string">&quot;process_registered_region_obligations: sup_type={:?} sub_region={:?} cause={:?}&quot;</span>,
+                <span class="ident">sup_type</span>,
+                <span class="ident">sub_region</span>,
+                <span class="ident">cause</span>
+            );
+
             <span class="kw">let</span> <span class="ident">origin</span> <span class="op">=</span> <span class="ident">SubregionOrigin</span>::<span class="ident">from_obligation_cause</span>(
                 <span class="kw-2">&amp;</span><span class="ident">cause</span>,
                 <span class="op">||</span> <span class="ident">infer</span>::<span class="ident">RelateParamBound</span>(<span class="ident">cause</span>.<span class="ident">span</span>, <span class="ident">sup_type</span>),

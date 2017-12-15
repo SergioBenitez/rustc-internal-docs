@@ -2818,6 +2818,29 @@
 <span id="2772">2772</span>
 <span id="2773">2773</span>
 <span id="2774">2774</span>
+<span id="2775">2775</span>
+<span id="2776">2776</span>
+<span id="2777">2777</span>
+<span id="2778">2778</span>
+<span id="2779">2779</span>
+<span id="2780">2780</span>
+<span id="2781">2781</span>
+<span id="2782">2782</span>
+<span id="2783">2783</span>
+<span id="2784">2784</span>
+<span id="2785">2785</span>
+<span id="2786">2786</span>
+<span id="2787">2787</span>
+<span id="2788">2788</span>
+<span id="2789">2789</span>
+<span id="2790">2790</span>
+<span id="2791">2791</span>
+<span id="2792">2792</span>
+<span id="2793">2793</span>
+<span id="2794">2794</span>
+<span id="2795">2795</span>
+<span id="2796">2796</span>
+<span id="2797">2797</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2848,7 +2871,7 @@
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">cstore</span>;
 
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::{<span class="self">self</span>, <span class="ident">IntTy</span>, <span class="ident">UintTy</span>};
-<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">codemap</span>::<span class="ident">FilePathMapping</span>;
+<span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">codemap</span>::{<span class="ident">FilePathMapping</span>, <span class="ident">FileName</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>::<span class="ident">token</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
@@ -3261,7 +3284,7 @@
     <span class="ident">File</span>(<span class="ident">PathBuf</span>),
     <span class="ident">Str</span> {
         <span class="doccomment">/// String that is shown in place of a filename</span>
-        <span class="ident">name</span>: <span class="ident">String</span>,
+        <span class="ident">name</span>: <span class="ident">FileName</span>,
         <span class="doccomment">/// Anonymous source string</span>
         <span class="ident">input</span>: <span class="ident">String</span>,
     },
@@ -3554,7 +3577,9 @@
             <span class="prelude-val">Some</span>(<span class="string">&quot;one of: `y`, `yes`, `on`, `n`, `no`, or `off`&quot;</span>);
         <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_string</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a string&quot;</span>);
         <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_string_push</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a string&quot;</span>);
+        <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_pathbuf_push</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a path&quot;</span>);
         <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_opt_string</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a string&quot;</span>);
+        <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_opt_pathbuf</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a path&quot;</span>);
         <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_list</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a space-separated list of strings&quot;</span>);
         <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_opt_list</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a space-separated list of strings&quot;</span>);
         <span class="kw">pub</span> <span class="kw">const</span> <span class="ident">parse_uint</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">&quot;a number&quot;</span>);
@@ -3578,6 +3603,7 @@
     <span class="kw">mod</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mod_set</span> {
         <span class="kw">use</span> <span class="kw">super</span>::{<span class="macro-nonterminal">$</span><span class="macro-nonterminal">struct_name</span>, <span class="ident">Passes</span>, <span class="ident">SomePasses</span>, <span class="ident">AllPasses</span>, <span class="ident">Sanitizer</span>};
         <span class="kw">use</span> <span class="ident">rustc_back</span>::{<span class="ident">LinkerFlavor</span>, <span class="ident">PanicStrategy</span>, <span class="ident">RelroLevel</span>};
+        <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">PathBuf</span>;
 
         $(
             <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">opt</span>(<span class="ident">cg</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">struct_name</span>, <span class="ident">v</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -3618,6 +3644,13 @@
             }
         }
 
+        <span class="kw">fn</span> <span class="ident">parse_opt_pathbuf</span>(<span class="ident">slot</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>, <span class="ident">v</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+            <span class="kw">match</span> <span class="ident">v</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> { <span class="kw-2">*</span><span class="ident">slot</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">s</span>)); <span class="bool-val">true</span> },
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            }
+        }
+
         <span class="kw">fn</span> <span class="ident">parse_string</span>(<span class="ident">slot</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">String</span>, <span class="ident">v</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
             <span class="kw">match</span> <span class="ident">v</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> { <span class="kw-2">*</span><span class="ident">slot</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">to_string</span>(); <span class="bool-val">true</span> },
@@ -3628,6 +3661,13 @@
         <span class="kw">fn</span> <span class="ident">parse_string_push</span>(<span class="ident">slot</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>, <span class="ident">v</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
             <span class="kw">match</span> <span class="ident">v</span> {
                 <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> { <span class="ident">slot</span>.<span class="ident">push</span>(<span class="ident">s</span>.<span class="ident">to_string</span>()); <span class="bool-val">true</span> },
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
+            }
+        }
+
+        <span class="kw">fn</span> <span class="ident">parse_pathbuf_push</span>(<span class="ident">slot</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span>, <span class="ident">v</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+            <span class="kw">match</span> <span class="ident">v</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">s</span>) <span class="op">=&gt;</span> { <span class="ident">slot</span>.<span class="ident">push</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">s</span>)); <span class="bool-val">true</span> },
                 <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="bool-val">false</span>,
             }
         }
@@ -3752,7 +3792,7 @@
          <span class="ident">CG_OPTIONS</span>, <span class="ident">cg_type_desc</span>, <span class="ident">cgsetters</span>,
     <span class="ident">ar</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;this option is deprecated and does nothing&quot;</span>),
-    <span class="ident">linker</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
+    <span class="ident">linker</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_pathbuf</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;system linker to link outputs with&quot;</span>),
     <span class="ident">link_arg</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">parse_string_push</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;a single extra argument to append to the linker invocation (can be used several times)&quot;</span>),
@@ -3832,6 +3872,8 @@
         <span class="string">&quot;emit EndRegion as part of MIR; enable transforms that solely process EndRegion&quot;</span>),
     <span class="ident">borrowck</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;select which borrowck is used (`ast`, `mir`, or `compare`)&quot;</span>),
+    <span class="ident">two_phase_borrows</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
+        <span class="string">&quot;use two-phase reserved/active distinction for `&amp;mut` borrows in MIR borrowck&quot;</span>),
     <span class="ident">time_passes</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">UNTRACKED</span>],
         <span class="string">&quot;measure time of each rustc pass&quot;</span>),
     <span class="ident">count_llvm_insns</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>,
@@ -3962,6 +4004,8 @@
           <span class="string">&quot;print some statistics about MIR&quot;</span>),
     <span class="ident">always_encode_mir</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
           <span class="string">&quot;encode MIR of all functions into the crate metadata&quot;</span>),
+    <span class="ident">miri</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
+          <span class="string">&quot;check the miri const evaluator against the old ctfe&quot;</span>),
     <span class="ident">osx_rpath_install_name</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
           <span class="string">&quot;pass `-install_name @rpath/...` to the macOS linker&quot;</span>),
     <span class="ident">sanitizer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Sanitizer</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_sanitizer</span>, [<span class="ident">TRACKED</span>],
@@ -3972,9 +4016,9 @@
         <span class="string">&quot;set the optimization fuel quota for a crate&quot;</span>),
     <span class="ident">print_fuel</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="prelude-val">None</span>, <span class="ident">parse_opt_string</span>, [<span class="ident">TRACKED</span>],
         <span class="string">&quot;make Rustc print the total optimization fuel used by a crate&quot;</span>),
-    <span class="ident">remap_path_prefix_from</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">parse_string_push</span>, [<span class="ident">TRACKED</span>],
+    <span class="ident">remap_path_prefix_from</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">parse_pathbuf_push</span>, [<span class="ident">TRACKED</span>],
         <span class="string">&quot;add a source pattern to the file path remapping config&quot;</span>),
-    <span class="ident">remap_path_prefix_to</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">parse_string_push</span>, [<span class="ident">TRACKED</span>],
+    <span class="ident">remap_path_prefix_to</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PathBuf</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="macro">vec</span><span class="macro">!</span>[], <span class="ident">parse_pathbuf_push</span>, [<span class="ident">TRACKED</span>],
         <span class="string">&quot;add a mapping target to the file path remapping config&quot;</span>),
     <span class="ident">force_unstable_if_unmarked</span>: <span class="ident">bool</span> <span class="op">=</span> (<span class="bool-val">false</span>, <span class="ident">parse_bool</span>, [<span class="ident">TRACKED</span>],
         <span class="string">&quot;force all crates to be `rustc_private` unstable&quot;</span>),
@@ -4293,7 +4337,7 @@
     <span class="ident">cfgspecs</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> {
         <span class="kw">let</span> <span class="ident">sess</span> <span class="op">=</span> <span class="ident">parse</span>::<span class="ident">ParseSess</span>::<span class="ident">new</span>(<span class="ident">FilePathMapping</span>::<span class="ident">empty</span>());
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parser</span> <span class="op">=</span>
-            <span class="ident">parse</span>::<span class="ident">new_parser_from_source_str</span>(<span class="kw-2">&amp;</span><span class="ident">sess</span>, <span class="string">&quot;cfgspec&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">s</span>.<span class="ident">to_string</span>());
+            <span class="ident">parse</span>::<span class="ident">new_parser_from_source_str</span>(<span class="kw-2">&amp;</span><span class="ident">sess</span>, <span class="ident">FileName</span>::<span class="ident">CfgSpec</span>, <span class="ident">s</span>.<span class="ident">to_string</span>());
 
         <span class="kw">let</span> <span class="ident">meta_item</span> <span class="op">=</span> <span class="macro">panictry</span><span class="macro">!</span>(<span class="ident">parser</span>.<span class="ident">parse_meta_item</span>());
 
@@ -4415,13 +4459,13 @@
         <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">debugging_opts</span>.<span class="ident">remap_path_prefix_from</span>[<span class="ident">remap_path_prefix_targets</span>..] {
             <span class="ident">early_error</span>(<span class="ident">error_format</span>,
                 <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;option `-Zremap-path-prefix-from=&#39;{}&#39;` does not have \
-                         a corresponding `-Zremap-path-prefix-to`&quot;</span>, <span class="ident">source</span>))
+                         a corresponding `-Zremap-path-prefix-to`&quot;</span>, <span class="ident">source</span>.<span class="ident">display</span>()))
         }
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">remap_path_prefix_targets</span> <span class="op">&gt;</span> <span class="ident">remap_path_prefix_sources</span> {
         <span class="kw">for</span> <span class="ident">target</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">debugging_opts</span>.<span class="ident">remap_path_prefix_to</span>[<span class="ident">remap_path_prefix_sources</span>..] {
             <span class="ident">early_error</span>(<span class="ident">error_format</span>,
                 <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;option `-Zremap-path-prefix-to=&#39;{}&#39;` does not have \
-                          a corresponding `-Zremap-path-prefix-from`&quot;</span>, <span class="ident">target</span>))
+                          a corresponding `-Zremap-path-prefix-from`&quot;</span>, <span class="ident">target</span>.<span class="ident">display</span>()))
         }
     }
 
@@ -4822,6 +4866,7 @@
     <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="ident">usize</span>);
     <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="ident">u64</span>);
     <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="ident">String</span>);
+    <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="ident">PathBuf</span>);
     <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="ident">lint</span>::<span class="ident">Level</span>);
     <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>);
     <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>);
@@ -4846,6 +4891,7 @@
     <span class="macro">impl_dep_tracking_hash_via_hash</span><span class="macro">!</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Sanitizer</span><span class="op">&gt;</span>);
 
     <span class="macro">impl_dep_tracking_hash_for_sortable_vec_of</span><span class="macro">!</span>(<span class="ident">String</span>);
+    <span class="macro">impl_dep_tracking_hash_for_sortable_vec_of</span><span class="macro">!</span>(<span class="ident">PathBuf</span>);
     <span class="macro">impl_dep_tracking_hash_for_sortable_vec_of</span><span class="macro">!</span>(<span class="ident">CrateType</span>);
     <span class="macro">impl_dep_tracking_hash_for_sortable_vec_of</span><span class="macro">!</span>((<span class="ident">String</span>, <span class="ident">lint</span>::<span class="ident">Level</span>));
     <span class="macro">impl_dep_tracking_hash_for_sortable_vec_of</span><span class="macro">!</span>((<span class="ident">String</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
@@ -5354,7 +5400,7 @@
         <span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">ar</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;abc&quot;</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">reference</span>.<span class="ident">dep_tracking_hash</span>(), <span class="ident">opts</span>.<span class="ident">dep_tracking_hash</span>());
 
-        <span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">linker</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;linker&quot;</span>));
+        <span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">linker</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="string">&quot;linker&quot;</span>));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">reference</span>.<span class="ident">dep_tracking_hash</span>(), <span class="ident">opts</span>.<span class="ident">dep_tracking_hash</span>());
 
         <span class="ident">opts</span>.<span class="ident">cg</span>.<span class="ident">link_args</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;abc&quot;</span>), <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;def&quot;</span>)]);

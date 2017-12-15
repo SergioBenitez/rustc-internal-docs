@@ -494,6 +494,19 @@
 <span id="448">448</span>
 <span id="449">449</span>
 <span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -868,6 +881,17 @@
     <span class="ident">QuestionMark</span>
 });
 
+<span class="macro">impl_stable_hash_for</span><span class="macro">!</span>(<span class="kw">enum</span> ::<span class="ident">syntax_pos</span>::<span class="ident">FileName</span> {
+    <span class="ident">Real</span>(<span class="ident">pb</span>),
+    <span class="ident">Macros</span>(<span class="ident">s</span>),
+    <span class="ident">QuoteExpansion</span>,
+    <span class="ident">Anon</span>,
+    <span class="ident">MacroExpansion</span>,
+    <span class="ident">ProcMacroSourceCode</span>,
+    <span class="ident">CfgSpec</span>,
+    <span class="ident">Custom</span>(<span class="ident">s</span>)
+});
+
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span> <span class="ident">HashStable</span><span class="op">&lt;</span><span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">FileMap</span> {
     <span class="kw">fn</span> <span class="ident">hash_stable</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">StableHasherResult</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
                                           <span class="ident">hcx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">StableHashingContext</span><span class="op">&lt;</span><span class="lifetime">&#39;gcx</span><span class="op">&gt;</span>,
@@ -880,6 +904,8 @@
             <span class="comment">// Do not hash the source as it is not encoded</span>
             <span class="ident">src</span>: _,
             <span class="ident">src_hash</span>,
+            <span class="comment">// The stable id is just a hash of other fields</span>
+            <span class="ident">stable_id</span>: _,
             <span class="ident">external_src</span>: _,
             <span class="ident">start_pos</span>,
             <span class="ident">end_pos</span>: _,

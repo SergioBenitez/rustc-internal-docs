@@ -461,6 +461,29 @@
 <span id="415">415</span>
 <span id="416">416</span>
 <span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -491,7 +514,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Default</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SyntaxContext</span>(<span class="kw">pub</span>(<span class="kw">super</span>) <span class="ident">u32</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SyntaxContextData</span> {
     <span class="kw">pub</span> <span class="ident">outer_mark</span>: <span class="ident">Mark</span>,
     <span class="kw">pub</span> <span class="ident">prev_ctxt</span>: <span class="ident">SyntaxContext</span>,
@@ -499,41 +522,52 @@
 }
 
 <span class="doccomment">/// A mark is a unique id associated with a macro expansion.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>, <span class="ident">Default</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">Debug</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Mark</span>(<span class="ident">u32</span>);
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
 <span class="kw">struct</span> <span class="ident">MarkData</span> {
     <span class="ident">parent</span>: <span class="ident">Mark</span>,
-    <span class="ident">modern</span>: <span class="ident">bool</span>,
+    <span class="ident">kind</span>: <span class="ident">MarkKind</span>,
     <span class="ident">expn_info</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExpnInfo</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MarkKind</span> {
+    <span class="ident">Modern</span>,
+    <span class="ident">Builtin</span>,
+    <span class="ident">Legacy</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Mark</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fresh</span>(<span class="ident">parent</span>: <span class="ident">Mark</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
-            <span class="ident">data</span>.<span class="ident">marks</span>.<span class="ident">push</span>(<span class="ident">MarkData</span> { <span class="ident">parent</span>: <span class="ident">parent</span>, <span class="ident">modern</span>: <span class="bool-val">false</span>, <span class="ident">expn_info</span>: <span class="prelude-val">None</span> });
+            <span class="ident">data</span>.<span class="ident">marks</span>.<span class="ident">push</span>(<span class="ident">MarkData</span> { <span class="ident">parent</span>: <span class="ident">parent</span>, <span class="ident">kind</span>: <span class="ident">MarkKind</span>::<span class="ident">Legacy</span>, <span class="ident">expn_info</span>: <span class="prelude-val">None</span> });
             <span class="ident">Mark</span>(<span class="ident">data</span>.<span class="ident">marks</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span> <span class="op">-</span> <span class="number">1</span>)
         })
     }
 
     <span class="doccomment">/// The mark of the theoretical expansion that generates freshly parsed, unexpanded AST.</span>
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">root</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">Mark</span>(<span class="number">0</span>)
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_u32</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
         <span class="self">self</span>.<span class="number">0</span>
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_u32</span>(<span class="ident">raw</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">Mark</span> {
         <span class="ident">Mark</span>(<span class="ident">raw</span>)
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expn_info</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ExpnInfo</span><span class="op">&gt;</span> {
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">expn_info</span>.<span class="ident">clone</span>())
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_expn_info</span>(<span class="self">self</span>, <span class="ident">info</span>: <span class="ident">ExpnInfo</span>) {
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">expn_info</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">info</span>))
     }
@@ -541,7 +575,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">modern</span>(<span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Mark</span> {
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
             <span class="kw">loop</span> {
-                <span class="kw">if</span> <span class="self">self</span> <span class="op">==</span> <span class="ident">Mark</span>::<span class="ident">root</span>() <span class="op">||</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">modern</span> {
+                <span class="kw">if</span> <span class="self">self</span> <span class="op">==</span> <span class="ident">Mark</span>::<span class="ident">root</span>() <span class="op">||</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">kind</span> <span class="op">==</span> <span class="ident">MarkKind</span>::<span class="ident">Modern</span> {
                     <span class="kw">return</span> <span class="self">self</span>;
                 }
                 <span class="self">self</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">parent</span>;
@@ -549,12 +583,14 @@
         })
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_modern</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-        <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">modern</span>)
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">kind</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">MarkKind</span> {
+        <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">kind</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_modern</span>(<span class="self">self</span>) {
-        <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">modern</span> <span class="op">=</span> <span class="bool-val">true</span>)
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_kind</span>(<span class="self">self</span>, <span class="ident">kind</span>: <span class="ident">MarkKind</span>) {
+        <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">kind</span> <span class="op">=</span> <span class="ident">kind</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_descendant_of</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">ancestor</span>: <span class="ident">Mark</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
@@ -580,8 +616,16 @@
 <span class="kw">impl</span> <span class="ident">HygieneData</span> {
     <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="self">Self</span> {
         <span class="ident">HygieneData</span> {
-            <span class="ident">marks</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">MarkData</span>::<span class="ident">default</span>()],
-            <span class="ident">syntax_contexts</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SyntaxContextData</span>::<span class="ident">default</span>()],
+            <span class="ident">marks</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">MarkData</span> {
+                <span class="ident">parent</span>: <span class="ident">Mark</span>::<span class="ident">root</span>(),
+                <span class="ident">kind</span>: <span class="ident">MarkKind</span>::<span class="ident">Builtin</span>,
+                <span class="ident">expn_info</span>: <span class="prelude-val">None</span>,
+            }],
+            <span class="ident">syntax_contexts</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">SyntaxContextData</span> {
+                <span class="ident">outer_mark</span>: <span class="ident">Mark</span>::<span class="ident">root</span>(),
+                <span class="ident">prev_ctxt</span>: <span class="ident">SyntaxContext</span>(<span class="number">0</span>),
+                <span class="ident">modern</span>: <span class="ident">SyntaxContext</span>(<span class="number">0</span>),
+            }],
             <span class="ident">markings</span>: <span class="ident">HashMap</span>::<span class="ident">new</span>(),
             <span class="ident">gensym_to_ctxt</span>: <span class="ident">HashMap</span>::<span class="ident">new</span>(),
         }
@@ -614,7 +658,7 @@
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
             <span class="ident">data</span>.<span class="ident">marks</span>.<span class="ident">push</span>(<span class="ident">MarkData</span> {
                 <span class="ident">parent</span>: <span class="ident">Mark</span>::<span class="ident">root</span>(),
-                <span class="ident">modern</span>: <span class="bool-val">false</span>,
+                <span class="ident">kind</span>: <span class="ident">MarkKind</span>::<span class="ident">Legacy</span>,
                 <span class="ident">expn_info</span>: <span class="prelude-val">Some</span>(<span class="ident">expansion_info</span>)
             });
 
@@ -634,7 +678,7 @@
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> {
             <span class="kw">let</span> <span class="ident">syntax_contexts</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">data</span>.<span class="ident">syntax_contexts</span>;
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">modern</span> <span class="op">=</span> <span class="ident">syntax_contexts</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">modern</span>;
-            <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="ident">mark</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">modern</span> {
+            <span class="kw">if</span> <span class="ident">data</span>.<span class="ident">marks</span>[<span class="ident">mark</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">kind</span> <span class="op">==</span> <span class="ident">MarkKind</span>::<span class="ident">Modern</span> {
                 <span class="ident">modern</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">data</span>.<span class="ident">markings</span>.<span class="ident">entry</span>((<span class="ident">modern</span>, <span class="ident">mark</span>)).<span class="ident">or_insert_with</span>(<span class="op">||</span> {
                     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">syntax_contexts</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u32</span>;
                     <span class="ident">syntax_contexts</span>.<span class="ident">push</span>(<span class="ident">SyntaxContextData</span> {
@@ -759,10 +803,12 @@
         <span class="prelude-val">Some</span>(<span class="ident">scope</span>)
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">modern</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">SyntaxContext</span> {
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">syntax_contexts</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">modern</span>)
     }
 
+    <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">outer</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Mark</span> {
         <span class="ident">HygieneData</span>::<span class="ident">with</span>(<span class="op">|</span><span class="ident">data</span><span class="op">|</span> <span class="ident">data</span>.<span class="ident">syntax_contexts</span>[<span class="self">self</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">usize</span>].<span class="ident">outer_mark</span>)
     }

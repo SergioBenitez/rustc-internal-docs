@@ -682,7 +682,6 @@
 <span id="636">636</span>
 <span id="637">637</span>
 <span id="638">638</span>
-<span id="639">639</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -707,7 +706,7 @@
 <span class="kw">use</span> <span class="ident">serialize</span>::{<span class="ident">Decodable</span>, <span class="ident">Decoder</span>, <span class="ident">Encodable</span>, <span class="ident">Encoder</span>};
 <span class="kw">use</span> <span class="ident">symbol</span>::<span class="ident">keywords</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">parse</span>::<span class="ident">parse_stream_from_source_str</span>;
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">Span</span>};
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">Span</span>, <span class="ident">FileName</span>};
 <span class="kw">use</span> <span class="ident">tokenstream</span>::{<span class="ident">TokenStream</span>, <span class="ident">TokenTree</span>};
 <span class="kw">use</span> <span class="ident">tokenstream</span>;
 
@@ -1181,9 +1180,8 @@
         <span class="ident">tokens</span>.<span class="ident">unwrap_or_else</span>(<span class="op">||</span> {
             <span class="ident">nt</span>.<span class="number">1</span>.<span class="ident">force</span>(<span class="op">||</span> {
                 <span class="comment">// FIXME(jseyfried): Avoid this pretty-print + reparse hack</span>
-                <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;&lt;macro expansion&gt;&quot;</span>.<span class="ident">to_owned</span>();
                 <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="ident">pprust</span>::<span class="ident">token_to_string</span>(<span class="self">self</span>);
-                <span class="ident">parse_stream_from_source_str</span>(<span class="ident">name</span>, <span class="ident">source</span>, <span class="ident">sess</span>, <span class="prelude-val">Some</span>(<span class="ident">span</span>))
+                <span class="ident">parse_stream_from_source_str</span>(<span class="ident">FileName</span>::<span class="ident">MacroExpansion</span>, <span class="ident">source</span>, <span class="ident">sess</span>, <span class="prelude-val">Some</span>(<span class="ident">span</span>))
             })
         })
     }
@@ -1315,7 +1313,7 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">attr</span>.<span class="ident">style</span>, <span class="ident">ast</span>::<span class="ident">AttrStyle</span>::<span class="ident">Outer</span>,
                    <span class="string">&quot;inner attributes should prevent cached tokens from existing&quot;</span>);
         <span class="comment">// FIXME: Avoid this pretty-print + reparse hack as bove</span>
-        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;&lt;macro expansion&gt;&quot;</span>.<span class="ident">to_owned</span>();
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">FileName</span>::<span class="ident">MacroExpansion</span>;
         <span class="kw">let</span> <span class="ident">source</span> <span class="op">=</span> <span class="ident">pprust</span>::<span class="ident">attr_to_string</span>(<span class="ident">attr</span>);
         <span class="kw">let</span> <span class="ident">stream</span> <span class="op">=</span> <span class="ident">parse_stream_from_source_str</span>(<span class="ident">name</span>, <span class="ident">source</span>, <span class="ident">sess</span>, <span class="prelude-val">Some</span>(<span class="ident">span</span>));
         <span class="ident">builder</span>.<span class="ident">push</span>(<span class="ident">stream</span>);

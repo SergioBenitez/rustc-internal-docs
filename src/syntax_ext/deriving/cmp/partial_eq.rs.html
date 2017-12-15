@@ -149,6 +149,7 @@
 <span id="103">103</span>
 <span id="104">104</span>
 <span id="105">105</span>
+<span id="106">106</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -160,6 +161,7 @@
 <span class="comment">// option. This file may not be copied, modified, or distributed</span>
 <span class="comment">// except according to those terms.</span>
 
+<span class="kw">use</span> <span class="ident">deriving</span>::{<span class="ident">path_local</span>, <span class="ident">path_std</span>};
 <span class="kw">use</span> <span class="ident">deriving</span>::<span class="ident">generic</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">deriving</span>::<span class="ident">generic</span>::<span class="ident">ty</span>::<span class="kw-2">*</span>;
 
@@ -245,7 +247,7 @@
     <span class="kw">let</span> <span class="ident">trait_def</span> <span class="op">=</span> <span class="ident">TraitDef</span> {
         <span class="ident">span</span>,
         <span class="ident">attributes</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-        <span class="ident">path</span>: <span class="macro">path_std</span><span class="macro">!</span>(<span class="ident">cx</span>, <span class="ident">core</span>::<span class="ident">cmp</span>::<span class="ident">PartialEq</span>),
+        <span class="ident">path</span>: <span class="macro">path_std</span><span class="macro">!</span>(<span class="ident">cx</span>, <span class="ident">cmp</span>::<span class="ident">PartialEq</span>),
         <span class="ident">additional_bounds</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
         <span class="ident">generics</span>: <span class="ident">LifetimeBounds</span>::<span class="ident">empty</span>(),
         <span class="ident">is_unsafe</span>: <span class="bool-val">false</span>,

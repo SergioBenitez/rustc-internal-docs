@@ -1471,6 +1471,9 @@
 <span id="1425">1425</span>
 <span id="1426">1426</span>
 <span id="1427">1427</span>
+<span id="1428">1428</span>
+<span id="1429">1429</span>
+<span id="1430">1430</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2395,6 +2398,9 @@
             <span class="ident">folder</span>.<span class="ident">fold_bounds</span>(<span class="ident">bounds</span>),
             <span class="ident">items</span>.<span class="ident">move_flat_map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">folder</span>.<span class="ident">fold_trait_item</span>(<span class="ident">item</span>)),
         ),
+        <span class="ident">ItemKind</span>::<span class="ident">TraitAlias</span>(<span class="ident">generics</span>, <span class="ident">bounds</span>) <span class="op">=&gt;</span> <span class="ident">ItemKind</span>::<span class="ident">TraitAlias</span>(
+            <span class="ident">folder</span>.<span class="ident">fold_generics</span>(<span class="ident">generics</span>),
+            <span class="ident">folder</span>.<span class="ident">fold_bounds</span>(<span class="ident">bounds</span>)),
         <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(<span class="ident">m</span>) <span class="op">=&gt;</span> <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(<span class="ident">folder</span>.<span class="ident">fold_mac</span>(<span class="ident">m</span>)),
         <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(<span class="ident">def</span>) <span class="op">=&gt;</span> <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(<span class="ident">folder</span>.<span class="ident">fold_macro_def</span>(<span class="ident">def</span>)),
     }

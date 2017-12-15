@@ -6747,6 +6747,21 @@
 <span id="6701">6701</span>
 <span id="6702">6702</span>
 <span id="6703">6703</span>
+<span id="6704">6704</span>
+<span id="6705">6705</span>
+<span id="6706">6706</span>
+<span id="6707">6707</span>
+<span id="6708">6708</span>
+<span id="6709">6709</span>
+<span id="6710">6710</span>
+<span id="6711">6711</span>
+<span id="6712">6712</span>
+<span id="6713">6713</span>
+<span id="6714">6714</span>
+<span id="6715">6715</span>
+<span id="6716">6716</span>
+<span id="6717">6717</span>
+<span id="6718">6718</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -6791,7 +6806,7 @@
 <span class="kw">use</span> <span class="ident">ast</span>::{<span class="ident">RangeEnd</span>, <span class="ident">RangeSyntax</span>};
 <span class="kw">use</span> {<span class="ident">ast</span>, <span class="ident">attr</span>};
 <span class="kw">use</span> <span class="ident">codemap</span>::{<span class="self">self</span>, <span class="ident">CodeMap</span>, <span class="ident">Spanned</span>, <span class="ident">respan</span>};
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">Span</span>, <span class="ident">BytePos</span>};
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">Span</span>, <span class="ident">BytePos</span>, <span class="ident">FileName</span>, <span class="ident">DUMMY_SP</span>};
 <span class="kw">use</span> <span class="ident">errors</span>::{<span class="self">self</span>, <span class="ident">DiagnosticBuilder</span>};
 <span class="kw">use</span> <span class="ident">parse</span>::{<span class="self">self</span>, <span class="ident">classify</span>, <span class="ident">token</span>};
 <span class="kw">use</span> <span class="ident">parse</span>::<span class="ident">common</span>::<span class="ident">SeqSep</span>;
@@ -7277,9 +7292,11 @@
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">directory</span>) <span class="op">=</span> <span class="ident">directory</span> {
             <span class="ident">parser</span>.<span class="ident">directory</span> <span class="op">=</span> <span class="ident">directory</span>;
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">parser</span>.<span class="ident">span</span> <span class="op">!=</span> <span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span> {
-            <span class="ident">parser</span>.<span class="ident">directory</span>.<span class="ident">path</span> <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_unmapped_path</span>(<span class="ident">parser</span>.<span class="ident">span</span>);
-            <span class="ident">parser</span>.<span class="ident">directory</span>.<span class="ident">path</span>.<span class="ident">pop</span>();
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">parser</span>.<span class="ident">span</span>.<span class="ident">source_equal</span>(<span class="kw-2">&amp;</span><span class="ident">DUMMY_SP</span>) {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">FileName</span>::<span class="ident">Real</span>(<span class="ident">path</span>) <span class="op">=</span> <span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_unmapped_path</span>(<span class="ident">parser</span>.<span class="ident">span</span>) {
+                <span class="ident">parser</span>.<span class="ident">directory</span>.<span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>;
+                <span class="ident">parser</span>.<span class="ident">directory</span>.<span class="ident">path</span>.<span class="ident">pop</span>();
+            }
         }
 
         <span class="ident">parser</span>.<span class="ident">process_potential_macro_variable</span>();
@@ -11930,7 +11947,7 @@
         }
     }
 
-    <span class="doccomment">/// Parse trait Foo { ... }</span>
+    <span class="doccomment">/// Parse `trait Foo { ... }` or `trait Foo = Bar;`</span>
     <span class="kw">fn</span> <span class="ident">parse_item_trait</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">is_auto</span>: <span class="ident">IsAuto</span>, <span class="ident">unsafety</span>: <span class="ident">Unsafety</span>) <span class="op">-&gt;</span> <span class="ident">PResult</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">ItemInfo</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">ident</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ident</span>()<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tps</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_generics</span>()<span class="question-mark">?</span>;
@@ -11942,23 +11959,34 @@
             <span class="ident">Vec</span>::<span class="ident">new</span>()
         };
 
-        <span class="ident">tps</span>.<span class="ident">where_clause</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_where_clause</span>()<span class="question-mark">?</span>;
-
-        <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>))<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">trait_items</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
-        <span class="kw">while</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>)) {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">at_end</span> <span class="op">=</span> <span class="bool-val">false</span>;
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">parse_trait_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">at_end</span>) {
-                <span class="prelude-val">Ok</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> <span class="ident">trait_items</span>.<span class="ident">push</span>(<span class="ident">item</span>),
-                <span class="prelude-val">Err</span>(<span class="kw-2">mut</span> <span class="ident">e</span>) <span class="op">=&gt;</span> {
-                    <span class="ident">e</span>.<span class="ident">emit</span>();
-                    <span class="kw">if</span> <span class="op">!</span><span class="ident">at_end</span> {
-                        <span class="self">self</span>.<span class="ident">recover_stmt_</span>(<span class="ident">SemiColonMode</span>::<span class="ident">Break</span>, <span class="ident">BlockMode</span>::<span class="ident">Break</span>);
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Eq</span>) {
+            <span class="comment">// it&#39;s a trait alias</span>
+            <span class="kw">let</span> <span class="ident">bounds</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_ty_param_bounds</span>()<span class="question-mark">?</span>;
+            <span class="ident">tps</span>.<span class="ident">where_clause</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_where_clause</span>()<span class="question-mark">?</span>;
+            <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">Semi</span>)<span class="question-mark">?</span>;
+            <span class="kw">if</span> <span class="ident">unsafety</span> <span class="op">!=</span> <span class="ident">Unsafety</span>::<span class="ident">Normal</span> {
+                <span class="self">self</span>.<span class="ident">span_err</span>(<span class="self">self</span>.<span class="ident">prev_span</span>, <span class="string">&quot;trait aliases cannot be unsafe&quot;</span>);
+            }
+            <span class="prelude-val">Ok</span>((<span class="ident">ident</span>, <span class="ident">ItemKind</span>::<span class="ident">TraitAlias</span>(<span class="ident">tps</span>, <span class="ident">bounds</span>), <span class="prelude-val">None</span>))
+        } <span class="kw">else</span> {
+            <span class="comment">// it&#39;s a normal trait</span>
+            <span class="ident">tps</span>.<span class="ident">where_clause</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parse_where_clause</span>()<span class="question-mark">?</span>;
+            <span class="self">self</span>.<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">OpenDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>))<span class="question-mark">?</span>;
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">trait_items</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+            <span class="kw">while</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">eat</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>::<span class="ident">CloseDelim</span>(<span class="ident">token</span>::<span class="ident">Brace</span>)) {
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">at_end</span> <span class="op">=</span> <span class="bool-val">false</span>;
+                <span class="kw">match</span> <span class="self">self</span>.<span class="ident">parse_trait_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">at_end</span>) {
+                    <span class="prelude-val">Ok</span>(<span class="ident">item</span>) <span class="op">=&gt;</span> <span class="ident">trait_items</span>.<span class="ident">push</span>(<span class="ident">item</span>),
+                    <span class="prelude-val">Err</span>(<span class="kw-2">mut</span> <span class="ident">e</span>) <span class="op">=&gt;</span> {
+                        <span class="ident">e</span>.<span class="ident">emit</span>();
+                        <span class="kw">if</span> <span class="op">!</span><span class="ident">at_end</span> {
+                            <span class="self">self</span>.<span class="ident">recover_stmt_</span>(<span class="ident">SemiColonMode</span>::<span class="ident">Break</span>, <span class="ident">BlockMode</span>::<span class="ident">Break</span>);
+                        }
                     }
                 }
             }
+            <span class="prelude-val">Ok</span>((<span class="ident">ident</span>, <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(<span class="ident">is_auto</span>, <span class="ident">unsafety</span>, <span class="ident">tps</span>, <span class="ident">bounds</span>, <span class="ident">trait_items</span>), <span class="prelude-val">None</span>))
         }
-        <span class="prelude-val">Ok</span>((<span class="ident">ident</span>, <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(<span class="ident">is_auto</span>, <span class="ident">unsafety</span>, <span class="ident">tps</span>, <span class="ident">bounds</span>, <span class="ident">trait_items</span>), <span class="prelude-val">None</span>))
     }
 
     <span class="doccomment">/// Parses items implementations variants</span>
@@ -12514,15 +12542,17 @@
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">diagnostic</span>().<span class="ident">struct_span_err</span>(<span class="ident">id_sp</span>,
                 <span class="string">&quot;cannot declare a new module at this location&quot;</span>);
             <span class="kw">if</span> <span class="ident">id_sp</span> <span class="op">!=</span> <span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span> {
-                <span class="kw">let</span> <span class="ident">src_path</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_filename</span>(<span class="ident">id_sp</span>));
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">stem</span>) <span class="op">=</span> <span class="ident">src_path</span>.<span class="ident">file_stem</span>() {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest_path</span> <span class="op">=</span> <span class="ident">src_path</span>.<span class="ident">clone</span>();
-                    <span class="ident">dest_path</span>.<span class="ident">set_file_name</span>(<span class="ident">stem</span>);
-                    <span class="ident">dest_path</span>.<span class="ident">push</span>(<span class="string">&quot;mod.rs&quot;</span>);
-                    <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="ident">id_sp</span>,
-                                  <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;maybe move this module `{}` to its own \
-                                            directory via `{}`&quot;</span>, <span class="ident">src_path</span>.<span class="ident">to_string_lossy</span>(),
-                                           <span class="ident">dest_path</span>.<span class="ident">to_string_lossy</span>()));
+                <span class="kw">let</span> <span class="ident">src_path</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_filename</span>(<span class="ident">id_sp</span>);
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">FileName</span>::<span class="ident">Real</span>(<span class="ident">src_path</span>) <span class="op">=</span> <span class="ident">src_path</span> {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">stem</span>) <span class="op">=</span> <span class="ident">src_path</span>.<span class="ident">file_stem</span>() {
+                        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dest_path</span> <span class="op">=</span> <span class="ident">src_path</span>.<span class="ident">clone</span>();
+                        <span class="ident">dest_path</span>.<span class="ident">set_file_name</span>(<span class="ident">stem</span>);
+                        <span class="ident">dest_path</span>.<span class="ident">push</span>(<span class="string">&quot;mod.rs&quot;</span>);
+                        <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="ident">id_sp</span>,
+                                    <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;maybe move this module `{}` to its own \
+                                                directory via `{}`&quot;</span>, <span class="ident">src_path</span>.<span class="ident">display</span>(),
+                                            <span class="ident">dest_path</span>.<span class="ident">display</span>()));
+                    }
                 }
             }
             <span class="kw">if</span> <span class="ident">paths</span>.<span class="ident">path_exists</span> {

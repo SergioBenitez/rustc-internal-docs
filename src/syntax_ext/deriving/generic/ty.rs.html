@@ -336,6 +336,24 @@
 <span id="290">290</span>
 <span id="291">291</span>
 <span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -360,6 +378,8 @@
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">codemap</span>::<span class="ident">respan</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ptr</span>::<span class="ident">P</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">Span</span>;
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">hygiene</span>::<span class="ident">SyntaxContext</span>;
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">symbol</span>::<span class="ident">keywords</span>;
 
 <span class="doccomment">/// The types of pointers</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
@@ -375,29 +395,36 @@
 <span class="doccomment">/// for type parameters and a lifetime.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">lifetime</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">params</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">global</span>: <span class="ident">bool</span>,
+    <span class="ident">path</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>,
+    <span class="ident">lifetime</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span><span class="op">&gt;</span>,
+    <span class="ident">params</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">kind</span>: <span class="ident">PathKind</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">PathKind</span> {
+    <span class="ident">Local</span>,
+    <span class="ident">Global</span>,
+    <span class="ident">Std</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">str</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
-        <span class="ident">Path</span>::<span class="ident">new_</span>(<span class="ident">path</span>, <span class="prelude-val">None</span>, <span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="bool-val">true</span>)
+        <span class="ident">Path</span>::<span class="ident">new_</span>(<span class="ident">path</span>, <span class="prelude-val">None</span>, <span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="ident">PathKind</span>::<span class="ident">Std</span>)
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_local</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
-        <span class="ident">Path</span>::<span class="ident">new_</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">path</span>], <span class="prelude-val">None</span>, <span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="bool-val">false</span>)
+        <span class="ident">Path</span>::<span class="ident">new_</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="ident">path</span>], <span class="prelude-val">None</span>, <span class="ident">Vec</span>::<span class="ident">new</span>(), <span class="ident">PathKind</span>::<span class="ident">Local</span>)
     }
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span>(<span class="ident">path</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">str</span><span class="op">&gt;</span>,
                     <span class="ident">lifetime</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;r</span> <span class="ident">str</span><span class="op">&gt;</span>,
                     <span class="ident">params</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Ty</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
-                    <span class="ident">global</span>: <span class="ident">bool</span>)
+                    <span class="ident">kind</span>: <span class="ident">PathKind</span>)
                     <span class="op">-&gt;</span> <span class="ident">Path</span><span class="op">&lt;</span><span class="lifetime">&#39;r</span><span class="op">&gt;</span> {
         <span class="ident">Path</span> {
             <span class="ident">path</span>,
             <span class="ident">lifetime</span>,
             <span class="ident">params</span>,
-            <span class="ident">global</span>,
+            <span class="ident">kind</span>,
         }
     }
 
@@ -415,11 +442,20 @@
                    <span class="ident">self_ty</span>: <span class="ident">Ident</span>,
                    <span class="ident">self_generics</span>: <span class="kw-2">&amp;</span><span class="ident">Generics</span>)
                    <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">Path</span> {
-        <span class="kw">let</span> <span class="ident">idents</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">path</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">cx</span>.<span class="ident">ident_of</span>(<span class="kw-2">*</span><span class="ident">s</span>)).<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">idents</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">path</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">cx</span>.<span class="ident">ident_of</span>(<span class="kw-2">*</span><span class="ident">s</span>)).<span class="ident">collect</span>();
         <span class="kw">let</span> <span class="ident">lt</span> <span class="op">=</span> <span class="ident">mk_lifetimes</span>(<span class="ident">cx</span>, <span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">lifetime</span>);
         <span class="kw">let</span> <span class="ident">tys</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">params</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">t</span><span class="op">|</span> <span class="ident">t</span>.<span class="ident">to_ty</span>(<span class="ident">cx</span>, <span class="ident">span</span>, <span class="ident">self_ty</span>, <span class="ident">self_generics</span>)).<span class="ident">collect</span>();
 
-        <span class="ident">cx</span>.<span class="ident">path_all</span>(<span class="ident">span</span>, <span class="self">self</span>.<span class="ident">global</span>, <span class="ident">idents</span>, <span class="ident">lt</span>, <span class="ident">tys</span>, <span class="ident">Vec</span>::<span class="ident">new</span>())
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">kind</span> {
+            <span class="ident">PathKind</span>::<span class="ident">Global</span> <span class="op">=&gt;</span> <span class="ident">cx</span>.<span class="ident">path_all</span>(<span class="ident">span</span>, <span class="bool-val">true</span>, <span class="ident">idents</span>, <span class="ident">lt</span>, <span class="ident">tys</span>, <span class="ident">Vec</span>::<span class="ident">new</span>()),
+            <span class="ident">PathKind</span>::<span class="ident">Local</span> <span class="op">=&gt;</span> <span class="ident">cx</span>.<span class="ident">path_all</span>(<span class="ident">span</span>, <span class="bool-val">false</span>, <span class="ident">idents</span>, <span class="ident">lt</span>, <span class="ident">tys</span>, <span class="ident">Vec</span>::<span class="ident">new</span>()),
+            <span class="ident">PathKind</span>::<span class="ident">Std</span> <span class="op">=&gt;</span> {
+                <span class="kw">let</span> <span class="ident">def_site</span> <span class="op">=</span> <span class="ident">SyntaxContext</span>::<span class="ident">empty</span>().<span class="ident">apply_mark</span>(<span class="ident">cx</span>.<span class="ident">current_expansion</span>.<span class="ident">mark</span>);
+                <span class="ident">idents</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="ident">Ident</span> { <span class="ident">ctxt</span>: <span class="ident">def_site</span>, ..<span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">ident</span>() });
+                <span class="ident">cx</span>.<span class="ident">path_all</span>(<span class="ident">span</span>, <span class="bool-val">false</span>, <span class="ident">idents</span>, <span class="ident">lt</span>, <span class="ident">tys</span>, <span class="ident">Vec</span>::<span class="ident">new</span>())
+            }
+        }
+
     }
 }
 

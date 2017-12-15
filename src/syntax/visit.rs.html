@@ -883,6 +883,10 @@
 <span id="837">837</span>
 <span id="838">838</span>
 <span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1176,6 +1180,10 @@
             <span class="ident">visitor</span>.<span class="ident">visit_generics</span>(<span class="ident">generics</span>);
             <span class="macro">walk_list</span><span class="macro">!</span>(<span class="ident">visitor</span>, <span class="ident">visit_ty_param_bound</span>, <span class="ident">bounds</span>);
             <span class="macro">walk_list</span><span class="macro">!</span>(<span class="ident">visitor</span>, <span class="ident">visit_trait_item</span>, <span class="ident">methods</span>);
+        }
+        <span class="ident">ItemKind</span>::<span class="ident">TraitAlias</span>(<span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>) <span class="op">=&gt;</span> {
+            <span class="ident">visitor</span>.<span class="ident">visit_generics</span>(<span class="ident">generics</span>);
+            <span class="macro">walk_list</span><span class="macro">!</span>(<span class="ident">visitor</span>, <span class="ident">visit_ty_param_bound</span>, <span class="ident">bounds</span>);
         }
         <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(<span class="kw-2">ref</span> <span class="ident">mac</span>) <span class="op">=&gt;</span> <span class="ident">visitor</span>.<span class="ident">visit_mac</span>(<span class="ident">mac</span>),
         <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(<span class="kw-2">ref</span> <span class="ident">ts</span>) <span class="op">=&gt;</span> <span class="ident">visitor</span>.<span class="ident">visit_mac_def</span>(<span class="ident">ts</span>, <span class="ident">item</span>.<span class="ident">id</span>),

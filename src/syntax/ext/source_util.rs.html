@@ -251,6 +251,8 @@
 <span id="205">205</span>
 <span id="206">206</span>
 <span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -263,7 +265,7 @@
 <span class="comment">// except according to those terms.</span>
 
 <span class="kw">use</span> <span class="ident">ast</span>;
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">Pos</span>, <span class="ident">Span</span>};
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">Pos</span>, <span class="ident">Span</span>, <span class="ident">FileName</span>};
 <span class="kw">use</span> <span class="ident">ext</span>::<span class="ident">base</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">ext</span>::<span class="ident">base</span>;
 <span class="kw">use</span> <span class="ident">ext</span>::<span class="ident">build</span>::<span class="ident">AstBuilder</span>;
@@ -277,7 +279,7 @@
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">PathBuf</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::<span class="ident">Rc</span>;
 
 <span class="comment">// These macros all relate to the file system; they either return</span>
@@ -325,7 +327,7 @@
 
     <span class="kw">let</span> <span class="ident">topmost</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">expansion_cause</span>().<span class="ident">unwrap_or</span>(<span class="ident">sp</span>);
     <span class="kw">let</span> <span class="ident">loc</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">codemap</span>().<span class="ident">lookup_char_pos</span>(<span class="ident">topmost</span>.<span class="ident">lo</span>());
-    <span class="ident">base</span>::<span class="ident">MacEager</span>::<span class="ident">expr</span>(<span class="ident">cx</span>.<span class="ident">expr_str</span>(<span class="ident">topmost</span>, <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="ident">loc</span>.<span class="ident">file</span>.<span class="ident">name</span>)))
+    <span class="ident">base</span>::<span class="ident">MacEager</span>::<span class="ident">expr</span>(<span class="ident">cx</span>.<span class="ident">expr_str</span>(<span class="ident">topmost</span>, <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="ident">loc</span>.<span class="ident">file</span>.<span class="ident">name</span>.<span class="ident">to_string</span>())))
 }
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expand_stringify</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>, <span class="ident">sp</span>: <span class="ident">Span</span>, <span class="ident">tts</span>: <span class="kw-2">&amp;</span>[<span class="ident">tokenstream</span>::<span class="ident">TokenTree</span>])
@@ -353,7 +355,7 @@
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">DummyResult</span>::<span class="ident">expr</span>(<span class="ident">sp</span>),
     };
     <span class="comment">// The file will be added to the code map by the parser</span>
-    <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>, <span class="ident">sp</span>, <span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>));
+    <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>, <span class="ident">sp</span>, <span class="ident">file</span>);
     <span class="kw">let</span> <span class="ident">directory_ownership</span> <span class="op">=</span> <span class="ident">DirectoryOwnership</span>::<span class="ident">Owned</span>;
     <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="ident">parse</span>::<span class="ident">new_sub_parser_from_file</span>(<span class="ident">cx</span>.<span class="ident">parse_sess</span>(), <span class="kw-2">&amp;</span><span class="ident">path</span>, <span class="ident">directory_ownership</span>, <span class="prelude-val">None</span>, <span class="ident">sp</span>);
 
@@ -389,7 +391,7 @@
         <span class="prelude-val">Some</span>(<span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>,
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">DummyResult</span>::<span class="ident">expr</span>(<span class="ident">sp</span>)
     };
-    <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>, <span class="ident">sp</span>, <span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>));
+    <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>, <span class="ident">sp</span>, <span class="ident">file</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
     <span class="kw">match</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">f</span><span class="op">|</span> <span class="ident">f</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bytes</span>)) {
         <span class="prelude-val">Ok</span>(..) <span class="op">=&gt;</span> {}
@@ -405,8 +407,7 @@
         <span class="prelude-val">Ok</span>(<span class="ident">src</span>) <span class="op">=&gt;</span> {
             <span class="comment">// Add this input file to the code map to make it available as</span>
             <span class="comment">// dependency information</span>
-            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">file</span>.<span class="ident">display</span>());
-            <span class="ident">cx</span>.<span class="ident">codemap</span>().<span class="ident">new_filemap_and_lines</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>, <span class="kw-2">&amp;</span><span class="ident">src</span>);
+            <span class="ident">cx</span>.<span class="ident">codemap</span>().<span class="ident">new_filemap_and_lines</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>, <span class="kw-2">&amp;</span><span class="ident">src</span>);
 
             <span class="ident">base</span>::<span class="ident">MacEager</span>::<span class="ident">expr</span>(<span class="ident">cx</span>.<span class="ident">expr_str</span>(<span class="ident">sp</span>, <span class="ident">Symbol</span>::<span class="ident">intern</span>(<span class="kw-2">&amp;</span><span class="ident">src</span>)))
         }
@@ -425,7 +426,7 @@
         <span class="prelude-val">Some</span>(<span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>,
         <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="ident">DummyResult</span>::<span class="ident">expr</span>(<span class="ident">sp</span>)
     };
-    <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>, <span class="ident">sp</span>, <span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>));
+    <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>, <span class="ident">sp</span>, <span class="ident">file</span>);
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
     <span class="kw">match</span> <span class="ident">File</span>::<span class="ident">open</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="kw-2">mut</span> <span class="ident">f</span><span class="op">|</span> <span class="ident">f</span>.<span class="ident">read_to_end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">bytes</span>)) {
         <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
@@ -436,8 +437,7 @@
         <span class="prelude-val">Ok</span>(..) <span class="op">=&gt;</span> {
             <span class="comment">// Add this input file to the code map to make it available as</span>
             <span class="comment">// dependency information, but don&#39;t enter it&#39;s contents</span>
-            <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">file</span>.<span class="ident">display</span>());
-            <span class="ident">cx</span>.<span class="ident">codemap</span>().<span class="ident">new_filemap_and_lines</span>(<span class="kw-2">&amp;</span><span class="ident">filename</span>, <span class="string">&quot;&quot;</span>);
+            <span class="ident">cx</span>.<span class="ident">codemap</span>().<span class="ident">new_filemap_and_lines</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>, <span class="string">&quot;&quot;</span>);
 
             <span class="ident">base</span>::<span class="ident">MacEager</span>::<span class="ident">expr</span>(<span class="ident">cx</span>.<span class="ident">expr_lit</span>(<span class="ident">sp</span>, <span class="ident">ast</span>::<span class="ident">LitKind</span>::<span class="ident">ByteStr</span>(<span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">bytes</span>))))
         }
@@ -446,17 +446,21 @@
 
 <span class="comment">// resolve a file-system path to an absolute file-system path (if it</span>
 <span class="comment">// isn&#39;t already)</span>
-<span class="kw">fn</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>, <span class="ident">sp</span>: <span class="ident">syntax_pos</span>::<span class="ident">Span</span>, <span class="ident">arg</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="ident">PathBuf</span> {
+<span class="kw">fn</span> <span class="ident">res_rel_file</span>(<span class="ident">cx</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ExtCtxt</span>, <span class="ident">sp</span>: <span class="ident">syntax_pos</span>::<span class="ident">Span</span>, <span class="ident">arg</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">PathBuf</span> {
+    <span class="kw">let</span> <span class="ident">arg</span> <span class="op">=</span> <span class="ident">PathBuf</span>::<span class="ident">from</span>(<span class="ident">arg</span>);
     <span class="comment">// Relative paths are resolved relative to the file in which they are found</span>
     <span class="comment">// after macro expansion (that is, they are unhygienic).</span>
     <span class="kw">if</span> <span class="op">!</span><span class="ident">arg</span>.<span class="ident">is_absolute</span>() {
         <span class="kw">let</span> <span class="ident">callsite</span> <span class="op">=</span> <span class="ident">sp</span>.<span class="ident">source_callsite</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">cx</span>.<span class="ident">codemap</span>().<span class="ident">span_to_unmapped_path</span>(<span class="ident">callsite</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">path</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">cx</span>.<span class="ident">codemap</span>().<span class="ident">span_to_unmapped_path</span>(<span class="ident">callsite</span>) {
+            <span class="ident">FileName</span>::<span class="ident">Real</span>(<span class="ident">path</span>) <span class="op">=&gt;</span> <span class="ident">path</span>,
+            <span class="ident">other</span> <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;cannot resolve relative path in non-file source `{}`&quot;</span>, <span class="ident">other</span>),
+        };
         <span class="ident">path</span>.<span class="ident">pop</span>();
         <span class="ident">path</span>.<span class="ident">push</span>(<span class="ident">arg</span>);
         <span class="ident">path</span>
     } <span class="kw">else</span> {
-        <span class="ident">arg</span>.<span class="ident">to_path_buf</span>()
+        <span class="ident">arg</span>
     }
 }
 </pre>

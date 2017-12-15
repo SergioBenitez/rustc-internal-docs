@@ -2098,6 +2098,9 @@
 <span id="2052">2052</span>
 <span id="2053">2053</span>
 <span id="2054">2054</span>
+<span id="2055">2055</span>
+<span id="2056">2056</span>
+<span id="2057">2057</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3989,6 +3992,8 @@
     <span class="ident">ItemUnion</span>(<span class="ident">VariantData</span>, <span class="ident">Generics</span>),
     <span class="doccomment">/// Represents a Trait Declaration</span>
     <span class="ident">ItemTrait</span>(<span class="ident">IsAuto</span>, <span class="ident">Unsafety</span>, <span class="ident">Generics</span>, <span class="ident">TyParamBounds</span>, <span class="ident">HirVec</span><span class="op">&lt;</span><span class="ident">TraitItemRef</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// Represents a Trait Alias Declaration</span>
+    <span class="ident">ItemTraitAlias</span>(<span class="ident">Generics</span>, <span class="ident">TyParamBounds</span>),
 
     <span class="doccomment">/// Auto trait implementations</span>
     <span class="doccomment">///</span>
@@ -4020,6 +4025,7 @@
             <span class="ident">ItemStruct</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;struct&quot;</span>,
             <span class="ident">ItemUnion</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;union&quot;</span>,
             <span class="ident">ItemTrait</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;trait&quot;</span>,
+            <span class="ident">ItemTraitAlias</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;trait alias&quot;</span>,
             <span class="ident">ItemImpl</span>(..) <span class="op">|</span>
             <span class="ident">ItemAutoImpl</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;item&quot;</span>,
         }

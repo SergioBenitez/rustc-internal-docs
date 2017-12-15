@@ -1226,7 +1226,7 @@
                 <span class="kw">let</span> <span class="ident">index</span> <span class="op">=</span> <span class="ident">FileMapIndex</span>(<span class="ident">index</span> <span class="kw">as</span> <span class="ident">u32</span>);
                 <span class="kw">let</span> <span class="ident">file_ptr</span>: <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">FileMap</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">file</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> _;
                 <span class="ident">file_to_file_index</span>.<span class="ident">insert</span>(<span class="ident">file_ptr</span>, <span class="ident">index</span>);
-                <span class="ident">file_index_to_stable_id</span>.<span class="ident">insert</span>(<span class="ident">index</span>, <span class="ident">StableFilemapId</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">file</span>));
+                <span class="ident">file_index_to_stable_id</span>.<span class="ident">insert</span>(<span class="ident">index</span>, <span class="ident">file</span>.<span class="ident">stable_id</span>);
             }
 
             (<span class="ident">file_to_file_index</span>, <span class="ident">file_index_to_stable_id</span>)

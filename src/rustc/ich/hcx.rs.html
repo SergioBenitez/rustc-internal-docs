@@ -444,6 +444,34 @@
 <span id="398">398</span>
 <span id="399">399</span>
 <span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -459,7 +487,7 @@
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">def_id</span>::{<span class="ident">DefId</span>, <span class="ident">DefIndex</span>};
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">DefPathHash</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">definitions</span>::<span class="ident">Definitions</span>;
-<span class="kw">use</span> <span class="ident">ich</span>::{<span class="self">self</span>, <span class="ident">CachingCodemapView</span>};
+<span class="kw">use</span> <span class="ident">ich</span>::{<span class="self">self</span>, <span class="ident">CachingCodemapView</span>, <span class="ident">Fingerprint</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">cstore</span>::<span class="ident">CrateStore</span>;
 <span class="kw">use</span> <span class="ident">ty</span>::{<span class="ident">TyCtxt</span>, <span class="ident">fast_reject</span>};
 <span class="kw">use</span> <span class="ident">session</span>::<span class="ident">Session</span>;
@@ -475,12 +503,13 @@
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ext</span>::<span class="ident">hygiene</span>::<span class="ident">SyntaxContext</span>;
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">symbol</span>::<span class="ident">Symbol</span>;
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">hygiene</span>;
 
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">stable_hasher</span>::{<span class="ident">HashStable</span>, <span class="ident">StableHashingContextProvider</span>,
                                            <span class="ident">StableHasher</span>, <span class="ident">StableHasherResult</span>,
                                            <span class="ident">ToStableHashKey</span>};
 <span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">accumulate_vec</span>::<span class="ident">AccumulateVec</span>;
-<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::<span class="ident">FxHashSet</span>;
+<span class="kw">use</span> <span class="ident">rustc_data_structures</span>::<span class="ident">fx</span>::{<span class="ident">FxHashSet</span>, <span class="ident">FxHashMap</span>};
 
 <span class="macro">thread_local</span><span class="macro">!</span>(<span class="kw">static</span> <span class="ident">IGNORED_ATTR_NAMES</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashSet</span><span class="op">&lt;</span><span class="ident">Symbol</span><span class="op">&gt;&gt;</span> <span class="op">=</span>
     <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashSet</span>()));
@@ -784,19 +813,46 @@
             <span class="kw">return</span> <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">TAG_INVALID_SPAN</span>, <span class="ident">hasher</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">span</span>.<span class="ident">hi</span> <span class="op">-</span> <span class="ident">span</span>.<span class="ident">lo</span>;
-
         <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">TAG_VALID_SPAN</span>, <span class="ident">hasher</span>);
-        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">file_lo</span>.<span class="ident">name</span>, <span class="ident">hasher</span>);
-        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">line_lo</span>, <span class="ident">hasher</span>);
-        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">col_lo</span>, <span class="ident">hasher</span>);
-        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">len</span>, <span class="ident">hasher</span>);
+        <span class="comment">// We truncate the stable_id hash and line and col numbers. The chances</span>
+        <span class="comment">// of causing a collision this way should be minimal.</span>
+        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span>(<span class="ident">file_lo</span>.<span class="ident">stable_id</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">u64</span>), <span class="ident">hasher</span>);
+
+        <span class="kw">let</span> <span class="ident">col</span> <span class="op">=</span> (<span class="ident">col_lo</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&amp;</span> <span class="number">0xFF</span>;
+        <span class="kw">let</span> <span class="ident">line</span> <span class="op">=</span> ((<span class="ident">line_lo</span> <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&amp;</span> <span class="number">0xFF_FF_FF</span>) <span class="op">&lt;&lt;</span> <span class="number">8</span>;
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> ((<span class="ident">span</span>.<span class="ident">hi</span> <span class="op">-</span> <span class="ident">span</span>.<span class="ident">lo</span>).<span class="number">0</span> <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&lt;&lt;</span> <span class="number">32</span>;
+        <span class="kw">let</span> <span class="ident">line_col_len</span> <span class="op">=</span> <span class="ident">col</span> <span class="op">|</span> <span class="ident">line</span> <span class="op">|</span> <span class="ident">len</span>;
+        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">line_col_len</span>, <span class="ident">hasher</span>);
 
         <span class="kw">if</span> <span class="ident">span</span>.<span class="ident">ctxt</span> <span class="op">==</span> <span class="ident">SyntaxContext</span>::<span class="ident">empty</span>() {
             <span class="ident">TAG_NO_EXPANSION</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
         } <span class="kw">else</span> {
             <span class="ident">TAG_EXPANSION</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
-            <span class="ident">span</span>.<span class="ident">ctxt</span>.<span class="ident">outer</span>().<span class="ident">expn_info</span>().<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
+
+            <span class="comment">// Since the same expansion context is usually referenced many</span>
+            <span class="comment">// times, we cache a stable hash of it and hash that instead of</span>
+            <span class="comment">// recursing every time.</span>
+            <span class="macro">thread_local</span><span class="macro">!</span> {
+                <span class="kw">static</span> <span class="ident">CACHE</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">hygiene</span>::<span class="ident">Mark</span>, <span class="ident">u64</span><span class="op">&gt;&gt;</span> <span class="op">=</span>
+                    <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">FxHashMap</span>());
+            }
+
+            <span class="kw">let</span> <span class="ident">sub_hash</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">CACHE</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">cache</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">mark</span> <span class="op">=</span> <span class="ident">span</span>.<span class="ident">ctxt</span>.<span class="ident">outer</span>();
+
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">sub_hash</span>) <span class="op">=</span> <span class="ident">cache</span>.<span class="ident">borrow</span>().<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">mark</span>) {
+                    <span class="kw">return</span> <span class="ident">sub_hash</span>;
+                }
+
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">hasher</span> <span class="op">=</span> <span class="ident">StableHasher</span>::<span class="ident">new</span>();
+                <span class="ident">mark</span>.<span class="ident">expn_info</span>().<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">hasher</span>);
+                <span class="kw">let</span> <span class="ident">sub_hash</span>: <span class="ident">Fingerprint</span> <span class="op">=</span> <span class="ident">hasher</span>.<span class="ident">finish</span>();
+                <span class="kw">let</span> <span class="ident">sub_hash</span> <span class="op">=</span> <span class="ident">sub_hash</span>.<span class="ident">to_smaller_hash</span>();
+                <span class="ident">cache</span>.<span class="ident">borrow_mut</span>().<span class="ident">insert</span>(<span class="ident">mark</span>, <span class="ident">sub_hash</span>);
+                <span class="ident">sub_hash</span>
+            });
+
+            <span class="ident">sub_hash</span>.<span class="ident">hash_stable</span>(<span class="ident">hcx</span>, <span class="ident">hasher</span>);
         }
     }
 }

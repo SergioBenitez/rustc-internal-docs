@@ -218,6 +218,11 @@
 <span id="172">172</span>
 <span id="173">173</span>
 <span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -285,6 +290,7 @@
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">unboxed_closures</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">underscore_lifetimes</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">trace_macros</span>)]</span>
+<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">catch_expr</span>)]</span>
 <span class="attribute">#![<span class="ident">feature</span>(<span class="ident">test</span>)]</span>
 
 <span class="attribute">#![<span class="ident">recursion_limit</span><span class="op">=</span><span class="string">&quot;512&quot;</span>]</span>
@@ -309,6 +315,10 @@
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">jobserver</span>;
 
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serialize</span> <span class="kw">as</span> <span class="ident">rustc_serialize</span>; <span class="comment">// used by deriving</span>
+
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_apfloat</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">byteorder</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">backtrace</span>;
 
 <span class="comment">// Note that librustc doesn&#39;t actually depend on these crates, see the note in</span>
 <span class="comment">// `Cargo.toml` for this crate about why these are here.</span>

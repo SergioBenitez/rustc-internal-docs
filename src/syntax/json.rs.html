@@ -707,7 +707,7 @@
             })
         });
         <span class="ident">DiagnosticSpan</span> {
-            <span class="ident">file_name</span>: <span class="ident">start</span>.<span class="ident">file</span>.<span class="ident">name</span>.<span class="ident">clone</span>(),
+            <span class="ident">file_name</span>: <span class="ident">start</span>.<span class="ident">file</span>.<span class="ident">name</span>.<span class="ident">to_string</span>(),
             <span class="ident">byte_start</span>: <span class="ident">span</span>.<span class="ident">lo</span>().<span class="number">0</span> <span class="op">-</span> <span class="ident">start</span>.<span class="ident">file</span>.<span class="ident">start_pos</span>.<span class="number">0</span>,
             <span class="ident">byte_end</span>: <span class="ident">span</span>.<span class="ident">hi</span>().<span class="number">0</span> <span class="op">-</span> <span class="ident">start</span>.<span class="ident">file</span>.<span class="ident">start_pos</span>.<span class="number">0</span>,
             <span class="ident">line_start</span>: <span class="ident">start</span>.<span class="ident">line</span>,

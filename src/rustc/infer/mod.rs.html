@@ -1718,6 +1718,10 @@
 <span id="1672">1672</span>
 <span id="1673">1673</span>
 <span id="1674">1674</span>
+<span id="1675">1675</span>
+<span id="1676">1676</span>
+<span id="1677">1677</span>
+<span id="1678">1678</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2922,6 +2926,10 @@
     <span class="doccomment">/// translate them into the form that the NLL solver</span>
     <span class="doccomment">/// understands. See the NLL module for mode details.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">take_and_reset_region_constraints</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">RegionConstraintData</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">region_obligations</span>.<span class="ident">borrow</span>().<span class="ident">is_empty</span>(),
+                <span class="string">&quot;region_obligations not empty: {:#?}&quot;</span>,
+                <span class="self">self</span>.<span class="ident">region_obligations</span>.<span class="ident">borrow</span>());
+
         <span class="self">self</span>.<span class="ident">borrow_region_constraints</span>().<span class="ident">take_and_reset_data</span>()
     }
 

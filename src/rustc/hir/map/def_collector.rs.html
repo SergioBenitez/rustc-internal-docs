@@ -339,6 +339,7 @@
 <span id="293">293</span>
 <span id="294">294</span>
 <span id="295">295</span>
+<span id="296">296</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -448,7 +449,8 @@
         <span class="kw">let</span> <span class="ident">def_data</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">i</span>.<span class="ident">node</span> {
             <span class="ident">ItemKind</span>::<span class="ident">AutoImpl</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Impl</span>(..) <span class="op">=&gt;</span>
                 <span class="ident">DefPathData</span>::<span class="ident">Impl</span>,
-            <span class="ident">ItemKind</span>::<span class="ident">Enum</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Struct</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Union</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(..) <span class="op">|</span>
+            <span class="ident">ItemKind</span>::<span class="ident">Enum</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Struct</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Union</span>(..) <span class="op">|</span>
+            <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">TraitAlias</span>(..) <span class="op">|</span>
             <span class="ident">ItemKind</span>::<span class="ident">ExternCrate</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">ForeignMod</span>(..) <span class="op">|</span> <span class="ident">ItemKind</span>::<span class="ident">Ty</span>(..) <span class="op">=&gt;</span>
                 <span class="ident">DefPathData</span>::<span class="ident">TypeNs</span>(<span class="ident">i</span>.<span class="ident">ident</span>.<span class="ident">name</span>.<span class="ident">as_str</span>()),
             <span class="ident">ItemKind</span>::<span class="ident">Mod</span>(..) <span class="kw">if</span> <span class="ident">i</span>.<span class="ident">ident</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">Invalid</span>.<span class="ident">ident</span>() <span class="op">=&gt;</span> {

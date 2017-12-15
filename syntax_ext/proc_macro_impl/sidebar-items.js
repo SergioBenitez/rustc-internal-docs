@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["AttrProcMacro",""],["BangProcMacro",""]]});
+initSidebarItems({"macro":[["panic","The entry point for panic of Rust threads."]],"struct":[["AttrProcMacro",""],["BangProcMacro",""]]});

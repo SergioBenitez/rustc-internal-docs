@@ -926,7 +926,6 @@
 <span id="880">880</span>
 <span id="881">881</span>
 <span id="882">882</span>
-<span id="883">883</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2015 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -948,7 +947,6 @@
 <span class="kw">use</span> <span class="ident">ptr</span>::<span class="ident">P</span>;
 <span class="kw">use</span> <span class="ident">tokenstream</span>::{<span class="ident">TokenStream</span>, <span class="ident">TokenTree</span>};
 
-
 <span class="doccomment">/// Quasiquoting works via token trees.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This is registered as a set of expression syntax extension called quote!</span>
@@ -968,7 +966,7 @@
     <span class="kw">use</span> <span class="ident">tokenstream</span>::{<span class="self">self</span>, <span class="ident">TokenTree</span>, <span class="ident">TokenStream</span>};
 
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">parse</span>::<span class="ident">new_parser_from_tts</span>;
-    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">BytePos</span>, <span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>};
+    <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">BytePos</span>, <span class="ident">Span</span>, <span class="ident">DUMMY_SP</span>, <span class="ident">FileName</span>};
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">codemap</span>::{<span class="ident">dummy_spanned</span>};
 
     <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ToTokens</span> {
@@ -1273,27 +1271,27 @@
     <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ExtParseUtils</span> <span class="kw">for</span> <span class="ident">ExtCtxt</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
         <span class="kw">fn</span> <span class="ident">parse_item</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">s</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
             <span class="macro">panictry</span><span class="macro">!</span>(<span class="ident">parse</span>::<span class="ident">parse_item_from_source_str</span>(
-                <span class="string">&quot;&lt;quote expansion&gt;&quot;</span>.<span class="ident">to_string</span>(),
+                <span class="ident">FileName</span>::<span class="ident">QuoteExpansion</span>,
                 <span class="ident">s</span>,
                 <span class="self">self</span>.<span class="ident">parse_sess</span>())).<span class="ident">expect</span>(<span class="string">&quot;parse error&quot;</span>)
         }
 
         <span class="kw">fn</span> <span class="ident">parse_stmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">s</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">Stmt</span> {
             <span class="macro">panictry</span><span class="macro">!</span>(<span class="ident">parse</span>::<span class="ident">parse_stmt_from_source_str</span>(
-                <span class="string">&quot;&lt;quote expansion&gt;&quot;</span>.<span class="ident">to_string</span>(),
+                <span class="ident">FileName</span>::<span class="ident">QuoteExpansion</span>,
                 <span class="ident">s</span>,
                 <span class="self">self</span>.<span class="ident">parse_sess</span>())).<span class="ident">expect</span>(<span class="string">&quot;parse error&quot;</span>)
         }
 
         <span class="kw">fn</span> <span class="ident">parse_expr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">s</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span> {
             <span class="macro">panictry</span><span class="macro">!</span>(<span class="ident">parse</span>::<span class="ident">parse_expr_from_source_str</span>(
-                <span class="string">&quot;&lt;quote expansion&gt;&quot;</span>.<span class="ident">to_string</span>(),
+                <span class="ident">FileName</span>::<span class="ident">QuoteExpansion</span>,
                 <span class="ident">s</span>,
                 <span class="self">self</span>.<span class="ident">parse_sess</span>()))
         }
 
         <span class="kw">fn</span> <span class="ident">parse_tts</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">s</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TokenTree</span><span class="op">&gt;</span> {
-            <span class="kw">let</span> <span class="ident">source_name</span> <span class="op">=</span> <span class="string">&quot;&lt;quote expansion&gt;&quot;</span>.<span class="ident">to_owned</span>();
+            <span class="kw">let</span> <span class="ident">source_name</span> <span class="op">=</span> <span class="ident">FileName</span>::<span class="ident">QuoteExpansion</span>;
             <span class="ident">parse</span>::<span class="ident">parse_stream_from_source_str</span>(<span class="ident">source_name</span>, <span class="ident">s</span>, <span class="self">self</span>.<span class="ident">parse_sess</span>(), <span class="prelude-val">None</span>)
                 .<span class="ident">into_trees</span>().<span class="ident">collect</span>()
         }

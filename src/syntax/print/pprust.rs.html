@@ -3224,6 +3224,45 @@
 <span id="3178">3178</span>
 <span id="3179">3179</span>
 <span id="3180">3180</span>
+<span id="3181">3181</span>
+<span id="3182">3182</span>
+<span id="3183">3183</span>
+<span id="3184">3184</span>
+<span id="3185">3185</span>
+<span id="3186">3186</span>
+<span id="3187">3187</span>
+<span id="3188">3188</span>
+<span id="3189">3189</span>
+<span id="3190">3190</span>
+<span id="3191">3191</span>
+<span id="3192">3192</span>
+<span id="3193">3193</span>
+<span id="3194">3194</span>
+<span id="3195">3195</span>
+<span id="3196">3196</span>
+<span id="3197">3197</span>
+<span id="3198">3198</span>
+<span id="3199">3199</span>
+<span id="3200">3200</span>
+<span id="3201">3201</span>
+<span id="3202">3202</span>
+<span id="3203">3203</span>
+<span id="3204">3204</span>
+<span id="3205">3205</span>
+<span id="3206">3206</span>
+<span id="3207">3207</span>
+<span id="3208">3208</span>
+<span id="3209">3209</span>
+<span id="3210">3210</span>
+<span id="3211">3211</span>
+<span id="3212">3212</span>
+<span id="3213">3213</span>
+<span id="3214">3214</span>
+<span id="3215">3215</span>
+<span id="3216">3216</span>
+<span id="3217">3217</span>
+<span id="3218">3218</span>
+<span id="3219">3219</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3245,6 +3284,7 @@
 <span class="kw">use</span> <span class="ident">attr</span>;
 <span class="kw">use</span> <span class="ident">codemap</span>::{<span class="self">self</span>, <span class="ident">CodeMap</span>};
 <span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="self">self</span>, <span class="ident">BytePos</span>};
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">hygiene</span>::{<span class="ident">Mark</span>, <span class="ident">MarkKind</span>, <span class="ident">SyntaxContext</span>};
 <span class="kw">use</span> <span class="ident">parse</span>::<span class="ident">token</span>::{<span class="self">self</span>, <span class="ident">BinOpToken</span>, <span class="ident">Token</span>};
 <span class="kw">use</span> <span class="ident">parse</span>::<span class="ident">lexer</span>::<span class="ident">comments</span>;
 <span class="kw">use</span> <span class="ident">parse</span>::{<span class="self">self</span>, <span class="ident">ParseSess</span>};
@@ -3253,7 +3293,7 @@
 <span class="kw">use</span> <span class="ident">ptr</span>::<span class="ident">P</span>;
 <span class="kw">use</span> <span class="ident">std_inject</span>;
 <span class="kw">use</span> <span class="ident">symbol</span>::{<span class="ident">Symbol</span>, <span class="ident">keywords</span>};
-<span class="kw">use</span> <span class="ident">syntax_pos</span>::<span class="ident">DUMMY_SP</span>;
+<span class="kw">use</span> <span class="ident">syntax_pos</span>::{<span class="ident">DUMMY_SP</span>, <span class="ident">FileName</span>};
 <span class="kw">use</span> <span class="ident">tokenstream</span>::{<span class="self">self</span>, <span class="ident">TokenStream</span>, <span class="ident">TokenTree</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ascii</span>;
@@ -3313,14 +3353,14 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">print_crate</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">cm</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">CodeMap</span>,
                        <span class="ident">sess</span>: <span class="kw-2">&amp;</span><span class="ident">ParseSess</span>,
                        <span class="ident">krate</span>: <span class="kw-2">&amp;</span><span class="ident">ast</span>::<span class="ident">Crate</span>,
-                       <span class="ident">filename</span>: <span class="ident">String</span>,
+                       <span class="ident">filename</span>: <span class="ident">FileName</span>,
                        <span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Read</span>,
                        <span class="ident">out</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Write</span><span class="op">+</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
                        <span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">PpAnn</span>,
                        <span class="ident">is_expanded</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">new_from_input</span>(<span class="ident">cm</span>, <span class="ident">sess</span>, <span class="ident">filename</span>, <span class="ident">input</span>, <span class="ident">out</span>, <span class="ident">ann</span>, <span class="ident">is_expanded</span>);
 
-    <span class="kw">if</span> <span class="ident">is_expanded</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">std_inject</span>::<span class="ident">injected_crate_name</span>(<span class="ident">krate</span>).<span class="ident">is_none</span>() {
+    <span class="kw">if</span> <span class="ident">is_expanded</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">std_inject</span>::<span class="ident">injected_crate_name</span>().<span class="ident">is_none</span>() {
         <span class="comment">// We need to print `#![no_std]` (and its feature gate) so that</span>
         <span class="comment">// compiling pretty-printed source won&#39;t inject libstd again.</span>
         <span class="comment">// However we don&#39;t want these attributes in the AST because</span>
@@ -3346,7 +3386,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">State</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_from_input</span>(<span class="ident">cm</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">CodeMap</span>,
                           <span class="ident">sess</span>: <span class="kw-2">&amp;</span><span class="ident">ParseSess</span>,
-                          <span class="ident">filename</span>: <span class="ident">String</span>,
+                          <span class="ident">filename</span>: <span class="ident">FileName</span>,
                           <span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Read</span>,
                           <span class="ident">out</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Write</span><span class="op">+</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
                           <span class="ident">ann</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">PpAnn</span>,
@@ -3961,6 +4001,8 @@
                     <span class="kw">if</span> <span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">!=</span> <span class="ident">keywords</span>::<span class="ident">CrateRoot</span>.<span class="ident">name</span>() <span class="op">&amp;&amp;</span>
                        <span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">!=</span> <span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">name</span>() {
                         <span class="self">self</span>.<span class="ident">writer</span>().<span class="ident">word</span>(<span class="kw-2">&amp;</span><span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span>.<span class="ident">as_str</span>())<span class="question-mark">?</span>;
+                    } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">name</span>() {
+                        <span class="self">self</span>.<span class="ident">print_dollar_crate</span>(<span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">ctxt</span>)<span class="question-mark">?</span>;
                     }
                 }
                 <span class="self">self</span>.<span class="ident">writer</span>().<span class="ident">space</span>()<span class="question-mark">?</span>;
@@ -4049,6 +4091,19 @@
     }
 
     <span class="kw">fn</span> <span class="ident">nbsp</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> { <span class="self">self</span>.<span class="ident">writer</span>().<span class="ident">word</span>(<span class="string">&quot; &quot;</span>) }
+
+    <span class="kw">fn</span> <span class="ident">print_dollar_crate</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">ctxt</span>: <span class="ident">SyntaxContext</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">mark</span>) <span class="op">=</span> <span class="ident">ctxt</span>.<span class="ident">adjust</span>(<span class="ident">Mark</span>::<span class="ident">root</span>()) {
+            <span class="comment">// Make a best effort to print something that complies</span>
+            <span class="kw">if</span> <span class="ident">mark</span>.<span class="ident">kind</span>() <span class="op">==</span> <span class="ident">MarkKind</span>::<span class="ident">Builtin</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">name</span>) <span class="op">=</span> <span class="ident">std_inject</span>::<span class="ident">injected_crate_name</span>() {
+                    <span class="self">self</span>.<span class="ident">writer</span>().<span class="ident">word</span>(<span class="string">&quot;::&quot;</span>)<span class="question-mark">?</span>;
+                    <span class="self">self</span>.<span class="ident">writer</span>().<span class="ident">word</span>(<span class="ident">name</span>)<span class="question-mark">?</span>;
+                }
+            }
+        }
+        <span class="prelude-val">Ok</span>(())
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">PrintState</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">State</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
@@ -4591,6 +4646,27 @@
                     <span class="self">self</span>.<span class="ident">print_trait_item</span>(<span class="ident">trait_item</span>)<span class="question-mark">?</span>;
                 }
                 <span class="self">self</span>.<span class="ident">bclose</span>(<span class="ident">item</span>.<span class="ident">span</span>)<span class="question-mark">?</span>;
+            }
+            <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">TraitAlias</span>(<span class="kw-2">ref</span> <span class="ident">generics</span>, <span class="kw-2">ref</span> <span class="ident">bounds</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">head</span>(<span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">print_visibility</span>(<span class="kw-2">&amp;</span><span class="ident">item</span>.<span class="ident">vis</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">word_nbsp</span>(<span class="string">&quot;trait&quot;</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">print_ident</span>(<span class="ident">item</span>.<span class="ident">ident</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">print_generics</span>(<span class="ident">generics</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">real_bounds</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">bounds</span>.<span class="ident">len</span>());
+                <span class="comment">// FIXME(durka) this seems to be some quite outdated syntax</span>
+                <span class="kw">for</span> <span class="ident">b</span> <span class="kw">in</span> <span class="ident">bounds</span>.<span class="ident">iter</span>() {
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TraitTyParamBound</span>(<span class="kw-2">ref</span> <span class="ident">ptr</span>, <span class="ident">ast</span>::<span class="ident">TraitBoundModifier</span>::<span class="ident">Maybe</span>) <span class="op">=</span> <span class="kw-2">*</span><span class="ident">b</span> {
+                        <span class="self">self</span>.<span class="ident">s</span>.<span class="ident">space</span>()<span class="question-mark">?</span>;
+                        <span class="self">self</span>.<span class="ident">word_space</span>(<span class="string">&quot;for ?&quot;</span>)<span class="question-mark">?</span>;
+                        <span class="self">self</span>.<span class="ident">print_trait_ref</span>(<span class="kw-2">&amp;</span><span class="ident">ptr</span>.<span class="ident">trait_ref</span>)<span class="question-mark">?</span>;
+                    } <span class="kw">else</span> {
+                        <span class="ident">real_bounds</span>.<span class="ident">push</span>(<span class="ident">b</span>.<span class="ident">clone</span>());
+                    }
+                }
+                <span class="self">self</span>.<span class="ident">print_bounds</span>(<span class="string">&quot; = &quot;</span>, <span class="kw-2">&amp;</span><span class="ident">real_bounds</span>[..])<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">print_where_clause</span>(<span class="kw-2">&amp;</span><span class="ident">generics</span>.<span class="ident">where_clause</span>)<span class="question-mark">?</span>;
+                <span class="self">self</span>.<span class="ident">s</span>.<span class="ident">word</span>(<span class="string">&quot;;&quot;</span>)<span class="question-mark">?</span>;
             }
             <span class="ident">ast</span>::<span class="ident">ItemKind</span>::<span class="ident">Mac</span>(<span class="ident">codemap</span>::<span class="ident">Spanned</span> { <span class="kw-2">ref</span> <span class="ident">node</span>, .. }) <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">print_path</span>(<span class="kw-2">&amp;</span><span class="ident">node</span>.<span class="ident">path</span>, <span class="bool-val">false</span>, <span class="number">0</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
@@ -5638,6 +5714,8 @@
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">parameters</span>) <span class="op">=</span> <span class="ident">segment</span>.<span class="ident">parameters</span> {
                 <span class="self">self</span>.<span class="ident">print_path_parameters</span>(<span class="ident">parameters</span>, <span class="ident">colons_before_params</span>)<span class="question-mark">?</span>;
             }
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">keywords</span>::<span class="ident">DollarCrate</span>.<span class="ident">name</span>() {
+            <span class="self">self</span>.<span class="ident">print_dollar_crate</span>(<span class="ident">segment</span>.<span class="ident">identifier</span>.<span class="ident">ctxt</span>)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }

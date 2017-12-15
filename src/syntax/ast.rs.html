@@ -2066,6 +2066,11 @@
 <span id="2020">2020</span>
 <span id="2021">2021</span>
 <span id="2022">2022</span>
+<span id="2023">2023</span>
+<span id="2024">2024</span>
+<span id="2025">2025</span>
+<span id="2026">2026</span>
+<span id="2027">2027</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3998,6 +4003,10 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `trait Foo { .. }`, `trait Foo&lt;T&gt; { .. }` or `auto trait Foo {}`</span>
     <span class="ident">Trait</span>(<span class="ident">IsAuto</span>, <span class="ident">Unsafety</span>, <span class="ident">Generics</span>, <span class="ident">TyParamBounds</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TraitItem</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// Trait alias</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// E.g. `trait Foo = Bar + Quux;`</span>
+    <span class="ident">TraitAlias</span>(<span class="ident">Generics</span>, <span class="ident">TyParamBounds</span>),
     <span class="doccomment">/// Auto trait implementation.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// E.g. `impl Trait for .. {}` or `impl&lt;T&gt; Trait&lt;T&gt; for .. {}`</span>
@@ -4037,6 +4046,7 @@
             <span class="ident">ItemKind</span>::<span class="ident">Struct</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;struct&quot;</span>,
             <span class="ident">ItemKind</span>::<span class="ident">Union</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;union&quot;</span>,
             <span class="ident">ItemKind</span>::<span class="ident">Trait</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;trait&quot;</span>,
+            <span class="ident">ItemKind</span>::<span class="ident">TraitAlias</span>(..) <span class="op">=&gt;</span> <span class="string">&quot;trait alias&quot;</span>,
             <span class="ident">ItemKind</span>::<span class="ident">Mac</span>(..) <span class="op">|</span>
             <span class="ident">ItemKind</span>::<span class="ident">MacroDef</span>(..) <span class="op">|</span>
             <span class="ident">ItemKind</span>::<span class="ident">Impl</span>(..) <span class="op">|</span>
