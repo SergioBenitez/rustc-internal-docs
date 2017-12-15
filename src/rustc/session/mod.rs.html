@@ -1120,6 +1120,10 @@
 <span id="1074">1074</span>
 <span id="1075">1075</span>
 <span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1758,9 +1762,13 @@
                  <span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">incr_comp_hashes_count</span>.<span class="ident">get</span>());
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Total number of bytes hashed for incr. comp.:  {}&quot;</span>,
                  <span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">incr_comp_bytes_hashed</span>.<span class="ident">get</span>());
-        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Average bytes hashed per incr. comp. HIR node: {}&quot;</span>,
-                 <span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">incr_comp_bytes_hashed</span>.<span class="ident">get</span>() <span class="op">/</span>
-                 <span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">incr_comp_hashes_count</span>.<span class="ident">get</span>());
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">incr_comp_hashes_count</span>.<span class="ident">get</span>() <span class="op">!=</span> <span class="number">0</span> {
+            <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Average bytes hashed per incr. comp. HIR node: {}&quot;</span>,
+                    <span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">incr_comp_bytes_hashed</span>.<span class="ident">get</span>() <span class="op">/</span>
+                    <span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">incr_comp_hashes_count</span>.<span class="ident">get</span>());
+        } <span class="kw">else</span> {
+            <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Average bytes hashed per incr. comp. HIR node: N/A&quot;</span>);
+        }
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Total time spent computing symbol hashes:      {}&quot;</span>,
                  <span class="ident">duration_to_secs_str</span>(<span class="self">self</span>.<span class="ident">perf_stats</span>.<span class="ident">symbol_hash_time</span>.<span class="ident">get</span>()));
         <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Total time spent decoding DefPath tables:      {}&quot;</span>,

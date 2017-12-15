@@ -2429,9 +2429,6 @@
 <span id="2383">2383</span>
 <span id="2384">2384</span>
 <span id="2385">2385</span>
-<span id="2386">2386</span>
-<span id="2387">2387</span>
-<span id="2388">2388</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2016 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3056,27 +3053,24 @@
     <span class="doccomment">/// Basic usage:</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// let a = [&quot;1&quot;, &quot;2&quot;, &quot;lol&quot;];</span>
+    <span class="doccomment">/// let a = [&quot;1&quot;, &quot;lol&quot;, &quot;3&quot;, &quot;NaN&quot;, &quot;5&quot;];</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// let mut iter = a.iter().filter_map(|s| s.parse().ok());</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// assert_eq!(iter.next(), Some(1));</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some(2));</span>
+    <span class="doccomment">/// assert_eq!(iter.next(), Some(3));</span>
+    <span class="doccomment">/// assert_eq!(iter.next(), Some(5));</span>
     <span class="doccomment">/// assert_eq!(iter.next(), None);</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Here&#39;s the same example, but with [`filter`] and [`map`]:</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// let a = [&quot;1&quot;, &quot;2&quot;, &quot;lol&quot;];</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// let mut iter = a.iter()</span>
-    <span class="doccomment">///                 .map(|s| s.parse())</span>
-    <span class="doccomment">///                 .filter(|s| s.is_ok())</span>
-    <span class="doccomment">///                 .map(|s| s.unwrap());</span>
-    <span class="doccomment">///</span>
+    <span class="doccomment">/// let a = [&quot;1&quot;, &quot;lol&quot;, &quot;3&quot;, &quot;NaN&quot;, &quot;5&quot;];</span>
+    <span class="doccomment">/// let mut iter = a.iter().map(|s| s.parse()).filter(|s| s.is_ok()).map(|s| s.unwrap());</span>
     <span class="doccomment">/// assert_eq!(iter.next(), Some(1));</span>
-    <span class="doccomment">/// assert_eq!(iter.next(), Some(2));</span>
+    <span class="doccomment">/// assert_eq!(iter.next(), Some(3));</span>
+    <span class="doccomment">/// assert_eq!(iter.next(), Some(5));</span>
     <span class="doccomment">/// assert_eq!(iter.next(), None);</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">///</span>
