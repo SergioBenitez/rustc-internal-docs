@@ -816,7 +816,7 @@
         <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">TAG_VALID_SPAN</span>, <span class="ident">hasher</span>);
         <span class="comment">// We truncate the stable_id hash and line and col numbers. The chances</span>
         <span class="comment">// of causing a collision this way should be minimal.</span>
-        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span>(<span class="ident">file_lo</span>.<span class="ident">stable_id</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">u64</span>), <span class="ident">hasher</span>);
+        <span class="ident">std_hash</span>::<span class="ident">Hash</span>::<span class="ident">hash</span>(<span class="kw-2">&amp;</span><span class="ident">file_lo</span>.<span class="ident">name</span>, <span class="ident">hasher</span>);
 
         <span class="kw">let</span> <span class="ident">col</span> <span class="op">=</span> (<span class="ident">col_lo</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&amp;</span> <span class="number">0xFF</span>;
         <span class="kw">let</span> <span class="ident">line</span> <span class="op">=</span> ((<span class="ident">line_lo</span> <span class="kw">as</span> <span class="ident">u64</span>) <span class="op">&amp;</span> <span class="number">0xFF_FF_FF</span>) <span class="op">&lt;&lt;</span> <span class="number">8</span>;
