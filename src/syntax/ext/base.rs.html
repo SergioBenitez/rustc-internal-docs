@@ -1051,14 +1051,14 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expect_trait_item</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">TraitItem</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Annotatable</span>::<span class="ident">TraitItem</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">unwrap</span>(),
+            <span class="ident">Annotatable</span>::<span class="ident">TraitItem</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">into_inner</span>(),
             _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;expected Item&quot;</span>)
         }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expect_impl_item</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">ast</span>::<span class="ident">ImplItem</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Annotatable</span>::<span class="ident">ImplItem</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">unwrap</span>(),
+            <span class="ident">Annotatable</span>::<span class="ident">ImplItem</span>(<span class="ident">i</span>) <span class="op">=&gt;</span> <span class="ident">i</span>.<span class="ident">into_inner</span>(),
             _ <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;expected Item&quot;</span>)
         }
     }

@@ -49,7 +49,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/syntax/lib.rs.html#152' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/syntax/lib.rs.html#153' title='goto source code'>[src]</a></span></h1>
 <pre class='rust const'>pub const DIAGNOSTICS: <a class="primitive" href="../std/primitive.array.html">[</a><a class="primitive" href="../std/primitive.tuple.html">(</a>&amp;'static <a class="primitive" href="../std/primitive.str.html">str</a>, &amp;'static <a class="primitive" href="../std/primitive.str.html">str</a><a class="primitive" href="../std/primitive.tuple.html">)</a><a class="primitive" href="../std/primitive.array.html">; 12]</a><code> = </code><code>[(&quot;E0178&quot;,
   &quot;\nIn types, the `+` type operator has low precedence, so it is often necessary\nto use parentheses.\n\nFor example:\n\n```compile_fail,E0178\ntrait Foo {}\n\nstruct Bar&lt;\&#39;a&gt; {\n    w: &amp;\&#39;a Foo + Copy,   // error, use &amp;\&#39;a (Foo + Copy)\n    x: &amp;\&#39;a Foo + \&#39;a,     // error, use &amp;\&#39;a (Foo + \&#39;a)\n    y: &amp;\&#39;a mut Foo + \&#39;a, // error, use &amp;\&#39;a mut (Foo + \&#39;a)\n    z: fn() -&gt; Foo + \&#39;a, // error, use fn() -&gt; (Foo + \&#39;a)\n}\n```\n\nMore details can be found in [RFC 438].\n\n[RFC 438]: https://github.com/rust-lang/rfcs/pull/438\n&quot;),
  (&quot;E0534&quot;,

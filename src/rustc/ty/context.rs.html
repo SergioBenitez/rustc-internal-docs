@@ -3331,7 +3331,7 @@
     <span class="doccomment">/// Allows checking whether a constant already has an allocation</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The pointers are to the beginning of an `alloc_by_id` allocation</span>
-    <span class="ident">alloc_cache</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">interpret</span>::<span class="ident">GlobalId</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">interpret</span>::<span class="ident">PtrAndAlign</span><span class="op">&gt;</span>,
+    <span class="ident">alloc_cache</span>: <span class="ident">FxHashMap</span><span class="op">&lt;</span><span class="ident">interpret</span>::<span class="ident">GlobalId</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>, <span class="ident">interpret</span>::<span class="ident">Pointer</span><span class="op">&gt;</span>,
 
     <span class="doccomment">/// A cache for basic byte allocations keyed by their contents. This is used to deduplicate</span>
     <span class="doccomment">/// allocations for string and bytestring literals.</span>
@@ -3367,14 +3367,14 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_cached</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">global_id</span>: <span class="ident">interpret</span>::<span class="ident">GlobalId</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-    ) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">interpret</span>::<span class="ident">PtrAndAlign</span><span class="op">&gt;</span> {
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">interpret</span>::<span class="ident">Pointer</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">alloc_cache</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">global_id</span>).<span class="ident">cloned</span>()
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">cache</span>(
         <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
         <span class="ident">global_id</span>: <span class="ident">interpret</span>::<span class="ident">GlobalId</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>,
-        <span class="ident">ptr</span>: <span class="ident">interpret</span>::<span class="ident">PtrAndAlign</span>,
+        <span class="ident">ptr</span>: <span class="ident">interpret</span>::<span class="ident">Pointer</span>,
     ) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">old</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">alloc_cache</span>.<span class="ident">insert</span>(<span class="ident">global_id</span>, <span class="ident">ptr</span>) {
             <span class="macro">bug</span><span class="macro">!</span>(<span class="string">&quot;tried to cache {:?}, but was already existing as {:#?}&quot;</span>, <span class="ident">global_id</span>, <span class="ident">old</span>);

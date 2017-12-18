@@ -368,59 +368,14 @@
 <span id="322">322</span>
 <span id="323">323</span>
 <span id="324">324</span>
-<span id="325">325</span>
-<span id="326">326</span>
-<span id="327">327</span>
-<span id="328">328</span>
-<span id="329">329</span>
-<span id="330">330</span>
-<span id="331">331</span>
-<span id="332">332</span>
-<span id="333">333</span>
-<span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
-<span id="340">340</span>
-<span id="341">341</span>
-<span id="342">342</span>
-<span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
-<span id="348">348</span>
-<span id="349">349</span>
-<span id="350">350</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">unknown_lints</span>)]</span>
 
-<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::<span class="ident">HasDataLayout</span>;
+<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="ident">Align</span>, <span class="ident">HasDataLayout</span>};
 
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">EvalResult</span>, <span class="ident">MemoryPointer</span>, <span class="ident">PointerArithmetic</span>};
 <span class="kw">use</span> <span class="ident">syntax</span>::<span class="ident">ast</span>::<span class="ident">FloatTy</span>;
 <span class="kw">use</span> <span class="ident">rustc_const_math</span>::<span class="ident">ConstFloat</span>;
-
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PtrAndAlign</span> {
-    <span class="kw">pub</span> <span class="ident">ptr</span>: <span class="ident">Pointer</span>,
-    <span class="doccomment">/// Remember whether this place is *supposed* to be aligned.</span>
-    <span class="kw">pub</span> <span class="ident">aligned</span>: <span class="ident">bool</span>,
-}
-
-<span class="kw">impl</span> <span class="ident">PtrAndAlign</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_ptr</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">EvalResult</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">MemoryPointer</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">ptr</span>.<span class="ident">to_ptr</span>()
-    }
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">offset</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="ident">C</span>: <span class="ident">HasDataLayout</span><span class="op">&gt;</span>(<span class="self">self</span>, <span class="ident">i</span>: <span class="ident">u64</span>, <span class="ident">cx</span>: <span class="ident">C</span>) <span class="op">-&gt;</span> <span class="ident">EvalResult</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span>, <span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">PtrAndAlign</span> {
-            <span class="ident">ptr</span>: <span class="self">self</span>.<span class="ident">ptr</span>.<span class="ident">offset</span>(<span class="ident">i</span>, <span class="ident">cx</span>)<span class="question-mark">?</span>,
-            <span class="ident">aligned</span>: <span class="self">self</span>.<span class="ident">aligned</span>,
-        })
-    }
-}
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bytes_to_f32</span>(<span class="ident">bits</span>: <span class="ident">u128</span>) <span class="op">-&gt;</span> <span class="ident">ConstFloat</span> {
     <span class="ident">ConstFloat</span> {
@@ -447,7 +402,7 @@
 <span class="doccomment">/// operations and fat pointers. This idea was taken from rustc&#39;s trans.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Value</span> {
-    <span class="ident">ByRef</span>(<span class="ident">PtrAndAlign</span>),
+    <span class="ident">ByRef</span>(<span class="ident">Pointer</span>, <span class="ident">Align</span>),
     <span class="ident">ByVal</span>(<span class="ident">PrimVal</span>),
     <span class="ident">ByValPair</span>(<span class="ident">PrimVal</span>, <span class="ident">PrimVal</span>),
 }
@@ -577,13 +532,6 @@
     <span class="ident">Ptr</span>, <span class="ident">FnPtr</span>,
     <span class="ident">Bool</span>,
     <span class="ident">Char</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="lifetime">&#39;tcx</span>: <span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">Value</span> {
-    <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">by_ref</span>(<span class="ident">ptr</span>: <span class="ident">Pointer</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Value</span>::<span class="ident">ByRef</span>(<span class="ident">PtrAndAlign</span> { <span class="ident">ptr</span>, <span class="ident">aligned</span>: <span class="bool-val">true</span> })
-    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> <span class="ident">PrimVal</span> {

@@ -49,7 +49,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/rustc_data_structures/lib.rs.html#11-73' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/rustc_data_structures/lib.rs.html#11-82' title='goto source code'>[src]</a></span></h1>
 <div class='stability'><div class='stab unstable'><details><summary><span class=microscope>🔬</span> This is a nightly-only experimental API.  (<code>rustc_private</code>)</summary><p>this crate is being loaded from the sysroot, an unstable location; did you mean to load this crate from crates.io via <code>Cargo.toml</code> instead?</p>
 </details></div></div><div class='docblock'><p>Various data structures used by the Rust compiler. The intention
 is that code in here should be not be <em>specific</em> to rustc, so that
@@ -156,6 +156,16 @@ to use this class.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
+                           <td><a class="mod" href="owning_ref/index.html"
+                                  title='mod rustc_data_structures::owning_ref'>owning_ref</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <h1 id='an-owning-reference' class='section-header'><a href='#an-owning-reference'>An owning reference.</a></h1>
+<p>This crate provides the <em>owning reference</em> types <code>OwningRef</code> and <code>OwningRefMut</code>
+that enables it to bundle a reference together with the owner of the data it points to.
+This allows moving and dropping of a <code>OwningRef</code> without needing to recreate the reference.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
                            <td><a class="mod" href="sip128/index.html"
                                   title='mod rustc_data_structures::sip128'>sip128</a></td>
                            <td class='docblock-short'>
@@ -193,6 +203,13 @@ to rollback to the start of the snapshot or commit those changes.</p>
                            </td>
                        </tr>
                        <tr class='unstable module-item'>
+                           <td><a class="mod" href="sync/index.html"
+                                  title='mod rustc_data_structures::sync'>sync</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] <p>This mdoule defines types which are thread safe if cfg!(parallel_queries) is true.</p>
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
                            <td><a class="mod" href="transitive_relation/index.html"
                                   title='mod rustc_data_structures::transitive_relation'>transitive_relation</a></td>
                            <td class='docblock-short'>
@@ -224,6 +241,27 @@ to rollback to the start of the snapshot or commit those changes.</p>
                        <tr class='unstable module-item'>
                            <td><a class="macro" href="macro.newtype_index.html"
                                   title='macro rustc_data_structures::newtype_index'>newtype_index</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="macro" href="macro.rustc_access_global.html"
+                                  title='macro rustc_data_structures::rustc_access_global'>rustc_access_global</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="macro" href="macro.rustc_erase_owner.html"
+                                  title='macro rustc_data_structures::rustc_erase_owner'>rustc_erase_owner</a></td>
+                           <td class='docblock-short'>
+                               [<div class='stab unstable'>Experimental</div>] 
+                           </td>
+                       </tr>
+                       <tr class='unstable module-item'>
+                           <td><a class="macro" href="macro.rustc_global.html"
+                                  title='macro rustc_data_structures::rustc_global'>rustc_global</a></td>
                            <td class='docblock-short'>
                                [<div class='stab unstable'>Experimental</div>] 
                            </td>

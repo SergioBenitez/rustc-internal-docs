@@ -313,7 +313,6 @@
 <span id="267">267</span>
 <span id="268">268</span>
 <span id="269">269</span>
-<span id="270">270</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! An interpreter for MIR used in CTFE and by miri</span>
 
@@ -327,14 +326,13 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::{<span class="ident">EvalError</span>, <span class="ident">EvalResult</span>, <span class="ident">EvalErrorKind</span>};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">value</span>::{<span class="ident">PrimVal</span>, <span class="ident">PrimValKind</span>, <span class="ident">Value</span>, <span class="ident">Pointer</span>, <span class="ident">PtrAndAlign</span>, <span class="ident">bytes_to_f32</span>, <span class="ident">bytes_to_f64</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">value</span>::{<span class="ident">PrimVal</span>, <span class="ident">PrimValKind</span>, <span class="ident">Value</span>, <span class="ident">Pointer</span>, <span class="ident">bytes_to_f32</span>, <span class="ident">bytes_to_f64</span>};
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">BTreeMap</span>;
-<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::<span class="ident">HasDataLayout</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
-<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>;
 <span class="kw">use</span> <span class="ident">mir</span>;
 <span class="kw">use</span> <span class="ident">ty</span>;
+<span class="kw">use</span> <span class="ident">ty</span>::<span class="ident">layout</span>::{<span class="self">self</span>, <span class="ident">Align</span>, <span class="ident">HasDataLayout</span>};
 <span class="kw">use</span> <span class="ident">middle</span>::<span class="ident">region</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">iter</span>;
 
@@ -483,7 +481,7 @@
     <span class="doccomment">/// Denotes undefined memory. Reading from undefined memory is forbidden in miri</span>
     <span class="kw">pub</span> <span class="ident">undef_mask</span>: <span class="ident">UndefMask</span>,
     <span class="doccomment">/// The alignment of the allocation to detect unaligned reads.</span>
-    <span class="kw">pub</span> <span class="ident">align</span>: <span class="ident">u64</span>,
+    <span class="kw">pub</span> <span class="ident">align</span>: <span class="ident">Align</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">Allocation</span> {
@@ -494,7 +492,7 @@
             <span class="ident">bytes</span>: <span class="ident">slice</span>.<span class="ident">to_owned</span>(),
             <span class="ident">relocations</span>: <span class="ident">BTreeMap</span>::<span class="ident">new</span>(),
             <span class="ident">undef_mask</span>,
-            <span class="ident">align</span>: <span class="number">1</span>,
+            <span class="ident">align</span>: <span class="ident">Align</span>::<span class="ident">from_bytes</span>(<span class="number">1</span>, <span class="number">1</span>).<span class="ident">unwrap</span>(),
         }
     }
 }

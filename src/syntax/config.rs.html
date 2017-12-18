@@ -665,13 +665,13 @@
     }
 
     <span class="kw">fn</span> <span class="ident">fold_expr</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">expr</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">configure_expr</span>(<span class="ident">expr</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expr</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">configure_expr</span>(<span class="ident">expr</span>).<span class="ident">into_inner</span>();
         <span class="ident">expr</span>.<span class="ident">node</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">configure_expr_kind</span>(<span class="ident">expr</span>.<span class="ident">node</span>);
         <span class="ident">P</span>(<span class="ident">fold</span>::<span class="ident">noop_fold_expr</span>(<span class="ident">expr</span>, <span class="self">self</span>))
     }
 
     <span class="kw">fn</span> <span class="ident">fold_opt_expr</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">expr</span>: <span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">P</span><span class="op">&lt;</span><span class="ident">ast</span>::<span class="ident">Expr</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expr</span> <span class="op">=</span> <span class="macro">configure</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">expr</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">expr</span> <span class="op">=</span> <span class="macro">configure</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">expr</span>).<span class="ident">into_inner</span>();
         <span class="ident">expr</span>.<span class="ident">node</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">configure_expr_kind</span>(<span class="ident">expr</span>.<span class="ident">node</span>);
         <span class="prelude-val">Some</span>(<span class="ident">P</span>(<span class="ident">fold</span>::<span class="ident">noop_fold_expr</span>(<span class="ident">expr</span>, <span class="self">self</span>)))
     }
