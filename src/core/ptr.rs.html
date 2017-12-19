@@ -2632,17 +2632,6 @@
 <span id="2586">2586</span>
 <span id="2587">2587</span>
 <span id="2588">2588</span>
-<span id="2589">2589</span>
-<span id="2590">2590</span>
-<span id="2591">2591</span>
-<span id="2592">2592</span>
-<span id="2593">2593</span>
-<span id="2594">2594</span>
-<span id="2595">2595</span>
-<span id="2596">2596</span>
-<span id="2597">2597</span>
-<span id="2598">2598</span>
-<span id="2599">2599</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -5096,16 +5085,11 @@
     }
 }
 
-<span class="doccomment">/// A wrapper around a raw `*mut T` that indicates that the possessor</span>
-<span class="doccomment">/// of this wrapper has shared ownership of the referent. Useful for</span>
-<span class="doccomment">/// building abstractions like `Rc&lt;T&gt;`, `Arc&lt;T&gt;`, or doubly-linked lists, which</span>
-<span class="doccomment">/// internally use aliased raw pointers to manage the memory that they own.</span>
+<span class="doccomment">/// `*mut T` but non-zero and covariant.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This is similar to `Unique`, except that it doesn&#39;t make any aliasing</span>
-<span class="doccomment">/// guarantees, and doesn&#39;t derive Send and Sync. Note that unlike `&amp;T`,</span>
-<span class="doccomment">/// Shared has no special mutability requirements. Shared may mutate data</span>
-<span class="doccomment">/// aliased by other Shared pointers. More precise rules require Rust to</span>
-<span class="doccomment">/// develop an actual aliasing model.</span>
+<span class="doccomment">/// This is often the correct thing to use when building data structures using</span>
+<span class="doccomment">/// raw pointers, but is ultimately more dangerous to use because of its additional</span>
+<span class="doccomment">/// properties. If you&#39;re not sure if you should use `Shared&lt;T&gt;`, just use `*mut T`!</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Unlike `*mut T`, the pointer must always be non-null, even if the pointer</span>
 <span class="doccomment">/// is never dereferenced. This is so that enums may use this forbidden value</span>
@@ -5115,20 +5099,14 @@
 <span class="doccomment">/// Unlike `*mut T`, `Shared&lt;T&gt;` is covariant over `T`. If this is incorrect</span>
 <span class="doccomment">/// for your use case, you should include some PhantomData in your type to</span>
 <span class="doccomment">/// provide invariance, such as `PhantomData&lt;Cell&lt;T&gt;&gt;` or `PhantomData&lt;&amp;&#39;a mut T&gt;`.</span>
-<span class="doccomment">/// Usually this won&#39;t be necessary; covariance is correct for Rc, Arc, and LinkedList</span>
-<span class="doccomment">/// because they provide a public API that follows the normal shared XOR mutable</span>
-<span class="doccomment">/// rules of Rust.</span>
+<span class="doccomment">/// Usually this won&#39;t be necessary; covariance is correct for most safe abstractions,</span>
+<span class="doccomment">/// such as Box, Rc, Arc, Vec, and LinkedList. This is the case because they</span>
+<span class="doccomment">/// provide a public API that follows the normal shared XOR mutable rules of Rust.</span>
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;shared&quot;</span>, <span class="ident">reason</span> <span class="op">=</span> <span class="string">&quot;needs an RFC to flesh out design&quot;</span>,
            <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Shared</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> {
     <span class="ident">pointer</span>: <span class="ident">NonZero</span><span class="op">&lt;</span><span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span><span class="op">&gt;</span>,
-    <span class="comment">// NOTE: this marker has no consequences for variance, but is necessary</span>
-    <span class="comment">// for dropck to understand that we logically own a `T`.</span>
-    <span class="comment">//</span>
-    <span class="comment">// For details, see:</span>
-    <span class="comment">// https://github.com/rust-lang/rfcs/blob/master/text/0769-sound-generic-drop.md#phantom-data</span>
-    <span class="ident">_marker</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// `Shared` pointers are not `Send` because the data they reference may be aliased.</span>
@@ -5164,12 +5142,12 @@
     <span class="doccomment">/// `ptr` must be non-null.</span>
     <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;shared&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="kw">const</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_unchecked</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>), <span class="ident">_marker</span>: <span class="ident">PhantomData</span> }
+        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>) }
     }
 
     <span class="doccomment">/// Creates a new `Shared` if `ptr` is non-null.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
-        <span class="ident">NonZero</span>::<span class="ident">new</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">nz</span><span class="op">|</span> <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">nz</span>, <span class="ident">_marker</span>: <span class="ident">PhantomData</span> })
+        <span class="ident">NonZero</span>::<span class="ident">new</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">nz</span><span class="op">|</span> <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">nz</span> })
     }
 
     <span class="doccomment">/// Acquires the underlying `*mut` pointer.</span>
@@ -5226,21 +5204,21 @@
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;shared&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Unique</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">Shared</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">unique</span>: <span class="ident">Unique</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">unique</span>.<span class="ident">pointer</span>, <span class="ident">_marker</span>: <span class="ident">PhantomData</span> }
+        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">unique</span>.<span class="ident">pointer</span> }
     }
 }
 
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;shared&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Shared</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">reference</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">from</span>(<span class="ident">reference</span>), <span class="ident">_marker</span>: <span class="ident">PhantomData</span> }
+        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">from</span>(<span class="ident">reference</span>) }
     }
 }
 
 <span class="attribute">#[<span class="ident">unstable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;shared&quot;</span>, <span class="ident">issue</span> <span class="op">=</span> <span class="string">&quot;27730&quot;</span>)]</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Shared</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">reference</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">T</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">from</span>(<span class="ident">reference</span>), <span class="ident">_marker</span>: <span class="ident">PhantomData</span> }
+        <span class="ident">Shared</span> { <span class="ident">pointer</span>: <span class="ident">NonZero</span>::<span class="ident">from</span>(<span class="ident">reference</span>) }
     }
 }
 </pre>

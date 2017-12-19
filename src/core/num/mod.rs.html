@@ -3632,6 +3632,12 @@
 <span id="3586">3586</span>
 <span id="3587">3587</span>
 <span id="3588">3588</span>
+<span id="3589">3589</span>
+<span id="3590">3590</span>
+<span id="3591">3591</span>
+<span id="3592">3592</span>
+<span id="3593">3593</span>
+<span id="3594">3594</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3908,10 +3914,13 @@
         <span class="doccomment">/// Basic usage:</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// ```</span>
-        <span class="doccomment">/// let n =  0x0123456789ABCDEFi64;</span>
-        <span class="doccomment">/// let m = -0x1032547698BADCFFi64;</span>
+        <span class="doccomment">/// let n: i16 = 0b0000000_01010101;</span>
+        <span class="doccomment">/// assert_eq!(n, 85);</span>
         <span class="doccomment">///</span>
-        <span class="doccomment">/// assert_eq!(n.swap_bytes(), m);</span>
+        <span class="doccomment">/// let m = n.swap_bytes();</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// assert_eq!(m, 0b01010101_00000000);</span>
+        <span class="doccomment">/// assert_eq!(m, 21760);</span>
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
@@ -5101,10 +5110,13 @@
         <span class="doccomment">/// Basic usage:</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// ```</span>
-        <span class="doccomment">/// let n = 0x0123456789ABCDEFu64;</span>
-        <span class="doccomment">/// let m = 0xEFCDAB8967452301u64;</span>
+        <span class="doccomment">/// let n: u16 = 0b0000000_01010101;</span>
+        <span class="doccomment">/// assert_eq!(n, 85);</span>
         <span class="doccomment">///</span>
-        <span class="doccomment">/// assert_eq!(n.swap_bytes(), m);</span>
+        <span class="doccomment">/// let m = n.swap_bytes();</span>
+        <span class="doccomment">///</span>
+        <span class="doccomment">/// assert_eq!(m, 0b01010101_00000000);</span>
+        <span class="doccomment">/// assert_eq!(m, 21760);</span>
         <span class="doccomment">/// ```</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>

@@ -439,8 +439,6 @@
 <span id="393">393</span>
 <span id="394">394</span>
 <span id="395">395</span>
-<span id="396">396</span>
-<span id="397">397</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -503,9 +501,7 @@
             <span class="ident">ObjectSafetyViolation</span>::<span class="ident">Method</span>(<span class="ident">name</span>, <span class="ident">MethodViolationCode</span>::<span class="ident">Generic</span>) <span class="op">=&gt;</span>
                 <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;method `{}` has generic type parameters&quot;</span>, <span class="ident">name</span>).<span class="ident">into</span>(),
             <span class="ident">ObjectSafetyViolation</span>::<span class="ident">Method</span>(<span class="ident">name</span>, <span class="ident">MethodViolationCode</span>::<span class="ident">NonStandardSelfType</span>) <span class="op">=&gt;</span>
-                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;method `{}` has a non-standard `self` type. Only `&amp;self`, \
-                        `&amp;mut self`, and `Box&lt;Self&gt;` are currently supported \
-                        for trait objects&quot;</span>, <span class="ident">name</span>).<span class="ident">into</span>(),
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;method `{}` has a non-standard `self` type&quot;</span>, <span class="ident">name</span>).<span class="ident">into</span>(),
             <span class="ident">ObjectSafetyViolation</span>::<span class="ident">AssociatedConst</span>(<span class="ident">name</span>) <span class="op">=&gt;</span>
                 <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the trait cannot contain associated consts like `{}`&quot;</span>, <span class="ident">name</span>).<span class="ident">into</span>(),
         }

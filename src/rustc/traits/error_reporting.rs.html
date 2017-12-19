@@ -1370,6 +1370,7 @@
 <span id="1324">1324</span>
 <span id="1325">1325</span>
 <span id="1326">1326</span>
+<span id="1327">1327</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -1857,19 +1858,16 @@
                                         <span class="op">-&gt;</span> <span class="ident">DiagnosticBuilder</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span>
     {
         <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="string">&quot;impl has stricter requirements than trait&quot;</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>,
-                                       <span class="ident">error_span</span>,
-                                       <span class="ident">E0276</span>,
-                                       <span class="string">&quot;{}&quot;</span>, <span class="ident">msg</span>);
+        <span class="kw">let</span> <span class="ident">sp</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">def_span</span>(<span class="ident">error_span</span>);
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">sp</span>, <span class="ident">E0276</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">msg</span>);
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">trait_item_span</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span_if_local</span>(<span class="ident">trait_item_def_id</span>) {
             <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">def_span</span>(<span class="ident">trait_item_span</span>);
             <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;definition of `{}` from trait&quot;</span>, <span class="ident">item_name</span>));
         }
 
-        <span class="ident">err</span>.<span class="ident">span_label</span>(
-            <span class="ident">error_span</span>,
-            <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;impl has extra requirement {}&quot;</span>, <span class="ident">requirement</span>));
+        <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="ident">sp</span>, <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;impl has extra requirement {}&quot;</span>, <span class="ident">requirement</span>));
 
         <span class="ident">err</span>
     }
@@ -2020,7 +2018,8 @@
 
                     <span class="ident">ty</span>::<span class="ident">Predicate</span>::<span class="ident">ClosureKind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>, <span class="ident">kind</span>) <span class="op">=&gt;</span> {
                         <span class="kw">let</span> <span class="ident">found_kind</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">closure_kind</span>(<span class="ident">closure_def_id</span>, <span class="ident">closure_substs</span>).<span class="ident">unwrap</span>();
-                        <span class="kw">let</span> <span class="ident">closure_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span_if_local</span>(<span class="ident">closure_def_id</span>).<span class="ident">unwrap</span>();
+                        <span class="kw">let</span> <span class="ident">closure_span</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>()
+                            .<span class="ident">def_span</span>(<span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">span_if_local</span>(<span class="ident">closure_def_id</span>).<span class="ident">unwrap</span>());
                         <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="ident">closure_def_id</span>).<span class="ident">unwrap</span>();
                         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">err</span> <span class="op">=</span> <span class="macro">struct_span_err</span><span class="macro">!</span>(
                             <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>, <span class="ident">closure_span</span>, <span class="ident">E0525</span>,
@@ -2029,6 +2028,9 @@
                             <span class="ident">kind</span>,
                             <span class="ident">found_kind</span>);
 
+                        <span class="ident">err</span>.<span class="ident">span_label</span>(
+                            <span class="ident">closure_span</span>,
+                            <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;this closure implements `{}`, not `{}`&quot;</span>, <span class="ident">found_kind</span>, <span class="ident">kind</span>));
                         <span class="ident">err</span>.<span class="ident">span_label</span>(
                             <span class="ident">obligation</span>.<span class="ident">cause</span>.<span class="ident">span</span>,
                             <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;the requirement to implement `{}` derives from here&quot;</span>, <span class="ident">kind</span>));
@@ -2040,12 +2042,12 @@
                             <span class="kw">let</span> <span class="ident">closure_hir_id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">node_to_hir_id</span>(<span class="ident">node_id</span>);
                             <span class="kw">match</span> (<span class="ident">found_kind</span>, <span class="ident">tables</span>.<span class="ident">closure_kind_origins</span>().<span class="ident">get</span>(<span class="ident">closure_hir_id</span>)) {
                                 (<span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">FnOnce</span>, <span class="prelude-val">Some</span>((<span class="ident">span</span>, <span class="ident">name</span>))) <span class="op">=&gt;</span> {
-                                    <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="kw-2">*</span><span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(
+                                    <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="kw-2">*</span><span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(
                                         <span class="string">&quot;closure is `FnOnce` because it moves the \
                                          variable `{}` out of its environment&quot;</span>, <span class="ident">name</span>));
                                 },
                                 (<span class="ident">ty</span>::<span class="ident">ClosureKind</span>::<span class="ident">FnMut</span>, <span class="prelude-val">Some</span>((<span class="ident">span</span>, <span class="ident">name</span>))) <span class="op">=&gt;</span> {
-                                    <span class="ident">err</span>.<span class="ident">span_note</span>(<span class="kw-2">*</span><span class="ident">span</span>, <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(
+                                    <span class="ident">err</span>.<span class="ident">span_label</span>(<span class="kw-2">*</span><span class="ident">span</span>, <span class="macro">format</span><span class="macro">!</span>(
                                         <span class="string">&quot;closure is `FnMut` because it mutates the \
                                          variable `{}` here&quot;</span>, <span class="ident">name</span>));
                                 },

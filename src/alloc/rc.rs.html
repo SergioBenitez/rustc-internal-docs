@@ -1846,6 +1846,10 @@
 <span id="1800">1800</span>
 <span id="1801">1801</span>
 <span id="1802">1802</span>
+<span id="1803">1803</span>
+<span id="1804">1804</span>
+<span id="1805">1805</span>
+<span id="1806">1806</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2013-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2101,7 +2105,7 @@
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">hash</span>::{<span class="ident">Hash</span>, <span class="ident">Hasher</span>};
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">intrinsics</span>::<span class="ident">abort</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">marker</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">marker</span>::<span class="ident">Unsize</span>;
+<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">marker</span>::{<span class="ident">Unsize</span>, <span class="ident">PhantomData</span>};
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::{<span class="self">self</span>, <span class="ident">align_of_val</span>, <span class="ident">forget</span>, <span class="ident">size_of_val</span>, <span class="ident">uninitialized</span>};
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">Deref</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">ops</span>::<span class="ident">CoerceUnsized</span>;
@@ -2132,6 +2136,7 @@
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span> {
     <span class="ident">ptr</span>: <span class="ident">Shared</span><span class="op">&lt;</span><span class="ident">RcBox</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;&gt;</span>,
+    <span class="ident">phantom</span>: <span class="ident">PhantomData</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
@@ -2164,6 +2169,7 @@
                 <span class="ident">weak</span>: <span class="ident">Cell</span>::<span class="ident">new</span>(<span class="number">1</span>),
                 <span class="ident">value</span>,
             })),
+            <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
         }
     }
 
@@ -2276,6 +2282,7 @@
 
         <span class="ident">Rc</span> {
             <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">rc_ptr</span>),
+            <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
         }
     }
 
@@ -2496,6 +2503,7 @@
                 <span class="ident">forget</span>(<span class="self">self</span>);
                 <span class="prelude-val">Ok</span>(<span class="ident">Rc</span> {
                     <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">raw</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">RcBox</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> _),
+                    <span class="ident">phantom</span>: <span class="ident">PhantomData</span>,
                 })
             }
         } <span class="kw">else</span> {
@@ -2540,7 +2548,7 @@
             <span class="comment">// Free the allocation without dropping its contents</span>
             <span class="ident">box_free</span>(<span class="ident">bptr</span>);
 
-            <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>) }
+            <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>), <span class="ident">phantom</span>: <span class="ident">PhantomData</span> }
         }
     }
 }
@@ -2567,7 +2575,7 @@
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> (<span class="kw-2">*</span><span class="ident">ptr</span>).<span class="ident">value</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> [<span class="ident">T</span>] <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>,
             <span class="ident">v</span>.<span class="ident">len</span>());
 
-        <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>) }
+        <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>), <span class="ident">phantom</span>: <span class="ident">PhantomData</span> }
     }
 }
 
@@ -2626,7 +2634,7 @@
             <span class="comment">// All clear. Forget the guard so it doesn&#39;t free the new RcBox.</span>
             <span class="ident">forget</span>(<span class="ident">guard</span>);
 
-            <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>) }
+            <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="ident">Shared</span>::<span class="ident">new_unchecked</span>(<span class="ident">ptr</span>), <span class="ident">phantom</span>: <span class="ident">PhantomData</span> }
         }
     }
 }
@@ -2717,7 +2725,7 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">inc_strong</span>();
-        <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="self">self</span>.<span class="ident">ptr</span> }
+        <span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="self">self</span>.<span class="ident">ptr</span>, <span class="ident">phantom</span>: <span class="ident">PhantomData</span> }
     }
 }
 
@@ -3077,7 +3085,7 @@
             <span class="prelude-val">None</span>
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">inc_strong</span>();
-            <span class="prelude-val">Some</span>(<span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="self">self</span>.<span class="ident">ptr</span> })
+            <span class="prelude-val">Some</span>(<span class="ident">Rc</span> { <span class="ident">ptr</span>: <span class="self">self</span>.<span class="ident">ptr</span>, <span class="ident">phantom</span>: <span class="ident">PhantomData</span> })
         }
     }
 }
