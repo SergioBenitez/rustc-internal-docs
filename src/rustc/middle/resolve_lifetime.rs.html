@@ -2307,6 +2307,72 @@
 <span id="2261">2261</span>
 <span id="2262">2262</span>
 <span id="2263">2263</span>
+<span id="2264">2264</span>
+<span id="2265">2265</span>
+<span id="2266">2266</span>
+<span id="2267">2267</span>
+<span id="2268">2268</span>
+<span id="2269">2269</span>
+<span id="2270">2270</span>
+<span id="2271">2271</span>
+<span id="2272">2272</span>
+<span id="2273">2273</span>
+<span id="2274">2274</span>
+<span id="2275">2275</span>
+<span id="2276">2276</span>
+<span id="2277">2277</span>
+<span id="2278">2278</span>
+<span id="2279">2279</span>
+<span id="2280">2280</span>
+<span id="2281">2281</span>
+<span id="2282">2282</span>
+<span id="2283">2283</span>
+<span id="2284">2284</span>
+<span id="2285">2285</span>
+<span id="2286">2286</span>
+<span id="2287">2287</span>
+<span id="2288">2288</span>
+<span id="2289">2289</span>
+<span id="2290">2290</span>
+<span id="2291">2291</span>
+<span id="2292">2292</span>
+<span id="2293">2293</span>
+<span id="2294">2294</span>
+<span id="2295">2295</span>
+<span id="2296">2296</span>
+<span id="2297">2297</span>
+<span id="2298">2298</span>
+<span id="2299">2299</span>
+<span id="2300">2300</span>
+<span id="2301">2301</span>
+<span id="2302">2302</span>
+<span id="2303">2303</span>
+<span id="2304">2304</span>
+<span id="2305">2305</span>
+<span id="2306">2306</span>
+<span id="2307">2307</span>
+<span id="2308">2308</span>
+<span id="2309">2309</span>
+<span id="2310">2310</span>
+<span id="2311">2311</span>
+<span id="2312">2312</span>
+<span id="2313">2313</span>
+<span id="2314">2314</span>
+<span id="2315">2315</span>
+<span id="2316">2316</span>
+<span id="2317">2317</span>
+<span id="2318">2318</span>
+<span id="2319">2319</span>
+<span id="2320">2320</span>
+<span id="2321">2321</span>
+<span id="2322">2322</span>
+<span id="2323">2323</span>
+<span id="2324">2324</span>
+<span id="2325">2325</span>
+<span id="2326">2326</span>
+<span id="2327">2327</span>
+<span id="2328">2328</span>
+<span id="2329">2329</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2013 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -2341,6 +2407,7 @@
 <span class="kw">use</span> <span class="ident">errors</span>::<span class="ident">DiagnosticBuilder</span>;
 <span class="kw">use</span> <span class="ident">util</span>::<span class="ident">nodemap</span>::{<span class="ident">DefIdMap</span>, <span class="ident">FxHashMap</span>, <span class="ident">FxHashSet</span>, <span class="ident">NodeMap</span>, <span class="ident">NodeSet</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">slice</span>;
+<span class="kw">use</span> <span class="ident">rustc</span>::<span class="ident">lint</span>;
 
 <span class="kw">use</span> <span class="ident">hir</span>;
 <span class="kw">use</span> <span class="ident">hir</span>::<span class="ident">intravisit</span>::{<span class="self">self</span>, <span class="ident">NestedVisitorMap</span>, <span class="ident">Visitor</span>};
@@ -2364,6 +2431,13 @@
             <span class="ident">LifetimeDefOrigin</span>::<span class="ident">Explicit</span>
         }
     }
+}
+
+<span class="comment">// This counts the no of times a lifetime is used</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">LifetimeUseSet</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;</span> {
+    <span class="ident">One</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Lifetime</span>),
+    <span class="ident">Many</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>, <span class="ident">RustcEncodable</span>, <span class="ident">RustcDecodable</span>, <span class="ident">Debug</span>)]</span>
@@ -2555,6 +2629,8 @@
 
     <span class="comment">// Cache for cross-crate per-definition object lifetime defaults.</span>
     <span class="ident">xcrate_object_lifetime_defaults</span>: <span class="ident">DefIdMap</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">ObjectLifetimeDefault</span><span class="op">&gt;&gt;</span>,
+
+    <span class="ident">lifetime_uses</span>: <span class="ident">DefIdMap</span><span class="op">&lt;</span><span class="ident">LifetimeUseSet</span><span class="op">&lt;</span><span class="lifetime">&#39;tcx</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
@@ -2717,6 +2793,7 @@
             <span class="ident">is_in_fn_syntax</span>: <span class="bool-val">false</span>,
             <span class="ident">labels_in_fn</span>: <span class="macro">vec</span><span class="macro">!</span>[],
             <span class="ident">xcrate_object_lifetime_defaults</span>: <span class="ident">DefIdMap</span>(),
+            <span class="ident">lifetime_uses</span>: <span class="ident">DefIdMap</span>(),
         };
         <span class="kw">for</span> (_, <span class="ident">item</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">krate</span>.<span class="ident">items</span> {
             <span class="ident">visitor</span>.<span class="ident">visit_item</span>(<span class="ident">item</span>);
@@ -2753,8 +2830,11 @@
     <span class="kw">fn</span> <span class="ident">visit_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Item</span>) {
         <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
             <span class="ident">hir</span>::<span class="ident">ItemFn</span>(<span class="kw-2">ref</span> <span class="ident">decl</span>, _, _, _, <span class="kw-2">ref</span> <span class="ident">generics</span>, _) <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">visit_early_late</span>(<span class="prelude-val">None</span>, <span class="ident">decl</span>, <span class="ident">generics</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
-                    <span class="ident">intravisit</span>::<span class="ident">walk_item</span>(<span class="ident">this</span>, <span class="ident">item</span>);
+                <span class="self">self</span>.<span class="ident">visit_early_late</span>(<span class="prelude-val">None</span>,
+                                      <span class="ident">decl</span>,
+                                      <span class="ident">generics</span>,
+                                      <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
+                                          <span class="ident">intravisit</span>::<span class="ident">walk_item</span>(<span class="ident">this</span>, <span class="ident">item</span>);
                 });
             }
             <span class="ident">hir</span>::<span class="ident">ItemExternCrate</span>(_)
@@ -2809,9 +2889,12 @@
     <span class="kw">fn</span> <span class="ident">visit_foreign_item</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">ForeignItem</span>) {
         <span class="kw">match</span> <span class="ident">item</span>.<span class="ident">node</span> {
             <span class="ident">hir</span>::<span class="ident">ForeignItemFn</span>(<span class="kw-2">ref</span> <span class="ident">decl</span>, _, <span class="kw-2">ref</span> <span class="ident">generics</span>) <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">visit_early_late</span>(<span class="prelude-val">None</span>, <span class="ident">decl</span>, <span class="ident">generics</span>, <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
-                    <span class="ident">intravisit</span>::<span class="ident">walk_foreign_item</span>(<span class="ident">this</span>, <span class="ident">item</span>);
-                })
+                <span class="self">self</span>.<span class="ident">visit_early_late</span>(<span class="prelude-val">None</span>,
+                                      <span class="ident">decl</span>,
+                                      <span class="ident">generics</span>,
+                                      <span class="op">|</span><span class="ident">this</span><span class="op">|</span> {
+                                          <span class="ident">intravisit</span>::<span class="ident">walk_foreign_item</span>(<span class="ident">this</span>, <span class="ident">item</span>);
+                                      })
             }
             <span class="ident">hir</span>::<span class="ident">ForeignItemStatic</span>(..) <span class="op">=&gt;</span> {
                 <span class="ident">intravisit</span>::<span class="ident">walk_foreign_item</span>(<span class="self">self</span>, <span class="ident">item</span>);
@@ -3500,12 +3583,41 @@
             <span class="ident">is_in_fn_syntax</span>: <span class="self">self</span>.<span class="ident">is_in_fn_syntax</span>,
             <span class="ident">labels_in_fn</span>,
             <span class="ident">xcrate_object_lifetime_defaults</span>,
+            <span class="ident">lifetime_uses</span>: <span class="ident">DefIdMap</span>(),
         };
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;entering scope {:?}&quot;</span>, <span class="ident">this</span>.<span class="ident">scope</span>);
         <span class="ident">f</span>(<span class="self">self</span>.<span class="ident">scope</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">this</span>);
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;exiting scope {:?}&quot;</span>, <span class="ident">this</span>.<span class="ident">scope</span>);
         <span class="self">self</span>.<span class="ident">labels_in_fn</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">labels_in_fn</span>;
         <span class="self">self</span>.<span class="ident">xcrate_object_lifetime_defaults</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">xcrate_object_lifetime_defaults</span>;
+
+        <span class="kw">for</span> (<span class="ident">def_id</span>, <span class="ident">lifetimeuseset</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">this</span>.<span class="ident">lifetime_uses</span> {
+            <span class="kw">match</span> <span class="ident">lifetimeuseset</span> {
+                <span class="kw-2">&amp;</span><span class="ident">LifetimeUseSet</span>::<span class="ident">One</span>(_) <span class="op">=&gt;</span> {
+                    <span class="kw">let</span> <span class="ident">node_id</span> <span class="op">=</span> <span class="ident">this</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">as_local_node_id</span>(<span class="kw-2">*</span><span class="ident">def_id</span>).<span class="ident">unwrap</span>();
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;node id first={:?}&quot;</span>, <span class="ident">node_id</span>);
+                    <span class="kw">if</span> <span class="kw">let</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">NodeLifetime</span>(<span class="ident">hir_lifetime</span>) <span class="op">=</span> <span class="ident">this</span>.<span class="ident">tcx</span>.<span class="ident">hir</span>.<span class="ident">get</span>(<span class="ident">node_id</span>) {
+                        <span class="kw">let</span> <span class="ident">span</span> <span class="op">=</span> <span class="ident">hir_lifetime</span>.<span class="ident">span</span>;
+                        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">hir_lifetime</span>.<span class="ident">id</span>;
+                        <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;id ={:?} span = {:?} hir_lifetime = {:?}&quot;</span>,
+                            <span class="ident">node_id</span>,
+                            <span class="ident">span</span>,
+                            <span class="ident">hir_lifetime</span>);
+
+                        <span class="ident">this</span>.<span class="ident">tcx</span>
+                            .<span class="ident">struct_span_lint_node</span>(<span class="ident">lint</span>::<span class="ident">builtin</span>::<span class="ident">SINGLE_USE_LIFETIME</span>,
+                                                   <span class="ident">id</span>,
+                                                   <span class="ident">span</span>,
+                                                   <span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;lifetime name `{}` only used once&quot;</span>,
+                                                   <span class="ident">hir_lifetime</span>.<span class="ident">name</span>.<span class="ident">name</span>()))
+                            .<span class="ident">emit</span>();
+                    }
+                }
+                _ <span class="op">=&gt;</span> {
+                    <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;Not one use lifetime&quot;</span>);
+                }
+            }
+        }
     }
 
     <span class="doccomment">/// Visits self by adding a scope and handling recursive walk over the contents with `walk`.</span>
@@ -3597,9 +3709,8 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">resolve_lifetime_ref</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_ref</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Lifetime</span>) {
+    <span class="kw">fn</span> <span class="ident">resolve_lifetime_ref</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_ref</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Lifetime</span>) {
         <span class="macro">debug</span><span class="macro">!</span>(<span class="string">&quot;resolve_lifetime_ref(lifetime_ref={:?})&quot;</span>, <span class="ident">lifetime_ref</span>);
-
         <span class="comment">// Walk up the scope chain, tracking the number of fn scopes</span>
         <span class="comment">// that we pass through, until we find a lifetime with the</span>
         <span class="comment">// given name or we run out of scopes.</span>
@@ -3891,8 +4002,8 @@
             }
 
             <span class="comment">// Foreign functions, `fn(...) -&gt; R` and `Trait(...) -&gt; R` (both types and bounds).</span>
-            <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">NodeForeignItem</span>(_) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">NodeTy</span>(_) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">NodeTraitRef</span>(_) <span class="op">=&gt;</span> <span class="prelude-val">None</span>,
-
+            <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">NodeForeignItem</span>(_) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">NodeTy</span>(_) <span class="op">|</span> <span class="ident">hir</span>::<span class="ident">map</span>::<span class="ident">NodeTraitRef</span>(_) <span class="op">=&gt;</span>
+                <span class="prelude-val">None</span>,
             <span class="comment">// Everything else (only closures?) doesn&#39;t</span>
             <span class="comment">// actually enjoy elision in return types.</span>
             _ <span class="op">=&gt;</span> {
@@ -4068,7 +4179,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">resolve_elided_lifetimes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_refs</span>: <span class="kw-2">&amp;</span>[<span class="ident">hir</span>::<span class="ident">Lifetime</span>]) {
+    <span class="kw">fn</span> <span class="ident">resolve_elided_lifetimes</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_refs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> [<span class="ident">hir</span>::<span class="ident">Lifetime</span>]) {
         <span class="kw">if</span> <span class="ident">lifetime_refs</span>.<span class="ident">is_empty</span>() {
             <span class="kw">return</span>;
         }
@@ -4223,7 +4334,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">resolve_object_lifetime_default</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_ref</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Lifetime</span>) {
+    <span class="kw">fn</span> <span class="ident">resolve_object_lifetime_default</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_ref</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Lifetime</span>) {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">late_depth</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">scope</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">scope</span>;
         <span class="kw">let</span> <span class="ident">lifetime</span> <span class="op">=</span> <span class="kw">loop</span> {
@@ -4245,7 +4356,7 @@
         <span class="self">self</span>.<span class="ident">insert_lifetime</span>(<span class="ident">lifetime_ref</span>, <span class="ident">lifetime</span>.<span class="ident">shifted</span>(<span class="ident">late_depth</span>));
     }
 
-    <span class="kw">fn</span> <span class="ident">check_lifetime_defs</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">old_scope</span>: <span class="ident">ScopeRef</span>, <span class="ident">lifetimes</span>: <span class="kw-2">&amp;</span>[<span class="ident">hir</span>::<span class="ident">LifetimeDef</span>]) {
+    <span class="kw">fn</span> <span class="ident">check_lifetime_defs</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">old_scope</span>: <span class="ident">ScopeRef</span>, <span class="ident">lifetimes</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> [<span class="ident">hir</span>::<span class="ident">LifetimeDef</span>]) {
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">lifetimes</span>.<span class="ident">len</span>() {
             <span class="kw">let</span> <span class="ident">lifetime_i</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">lifetimes</span>[<span class="ident">i</span>];
 
@@ -4329,7 +4440,9 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">check_lifetime_def_for_shadowing</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">old_scope</span>: <span class="ident">ScopeRef</span>, <span class="ident">lifetime</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Lifetime</span>) {
+    <span class="kw">fn</span> <span class="ident">check_lifetime_def_for_shadowing</span>(<span class="kw-2">&amp;</span><span class="self">self</span>,
+                                        <span class="kw-2">mut</span> <span class="ident">old_scope</span>: <span class="ident">ScopeRef</span>,
+                                        <span class="ident">lifetime</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Lifetime</span>) {
         <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">label</span>, <span class="ident">label_span</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">labels_in_fn</span> {
             <span class="comment">// FIXME (#24278): non-hygienic comparison</span>
             <span class="kw">if</span> <span class="ident">lifetime</span>.<span class="ident">name</span>.<span class="ident">name</span>() <span class="op">==</span> <span class="ident">label</span> {
@@ -4378,7 +4491,7 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">insert_lifetime</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_ref</span>: <span class="kw-2">&amp;</span><span class="ident">hir</span>::<span class="ident">Lifetime</span>, <span class="ident">def</span>: <span class="ident">Region</span>) {
+    <span class="kw">fn</span> <span class="ident">insert_lifetime</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">lifetime_ref</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;tcx</span> <span class="ident">hir</span>::<span class="ident">Lifetime</span>, <span class="ident">def</span>: <span class="ident">Region</span>) {
         <span class="kw">if</span> <span class="ident">lifetime_ref</span>.<span class="ident">id</span> <span class="op">==</span> <span class="ident">ast</span>::<span class="ident">DUMMY_NODE_ID</span> {
             <span class="macro">span_bug</span><span class="macro">!</span>(
                 <span class="ident">lifetime_ref</span>.<span class="ident">span</span>,
@@ -4394,6 +4507,25 @@
             <span class="self">self</span>.<span class="ident">tcx</span>.<span class="ident">sess</span>.<span class="ident">codemap</span>().<span class="ident">span_to_string</span>(<span class="ident">lifetime_ref</span>.<span class="ident">span</span>)
         );
         <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">defs</span>.<span class="ident">insert</span>(<span class="ident">lifetime_ref</span>.<span class="ident">id</span>, <span class="ident">def</span>);
+
+        <span class="kw">match</span> <span class="ident">def</span> {
+            <span class="ident">Region</span>::<span class="ident">LateBoundAnon</span>(..) <span class="op">|</span>
+            <span class="ident">Region</span>::<span class="ident">Static</span> <span class="op">=&gt;</span> {
+                <span class="comment">// These are anonymous lifetimes or lifetimes that are not declared.</span>
+            }
+
+            <span class="ident">Region</span>::<span class="ident">Free</span>(_, <span class="ident">def_id</span>) <span class="op">|</span>
+            <span class="ident">Region</span>::<span class="ident">LateBound</span>(_, <span class="ident">def_id</span>, _) <span class="op">|</span>
+            <span class="ident">Region</span>::<span class="ident">EarlyBound</span>(_, <span class="ident">def_id</span>, _) <span class="op">=&gt;</span> {
+                <span class="comment">// A lifetime declared by the user.</span>
+                <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">lifetime_uses</span>.<span class="ident">contains_key</span>(<span class="kw-2">&amp;</span><span class="ident">def_id</span>) {
+                    <span class="self">self</span>.<span class="ident">lifetime_uses</span>
+                        .<span class="ident">insert</span>(<span class="ident">def_id</span>, <span class="ident">LifetimeUseSet</span>::<span class="ident">One</span>(<span class="ident">lifetime_ref</span>));
+                } <span class="kw">else</span> {
+                    <span class="self">self</span>.<span class="ident">lifetime_uses</span>.<span class="ident">insert</span>(<span class="ident">def_id</span>, <span class="ident">LifetimeUseSet</span>::<span class="ident">Many</span>);
+                }
+            }
+        }
     }
 }
 
