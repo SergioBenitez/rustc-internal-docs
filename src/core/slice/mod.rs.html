@@ -3063,7 +3063,7 @@
         <span class="kw">while</span> <span class="ident">size</span> <span class="op">&gt;</span> <span class="number">1</span> {
             <span class="kw">let</span> <span class="ident">half</span> <span class="op">=</span> <span class="ident">size</span> <span class="op">/</span> <span class="number">2</span>;
             <span class="kw">let</span> <span class="ident">mid</span> <span class="op">=</span> <span class="ident">base</span> <span class="op">+</span> <span class="ident">half</span>;
-            <span class="comment">// mid is always in [0, size).</span>
+            <span class="comment">// mid is always in [0, size), that means mid is &gt;= 0 and &lt; size.</span>
             <span class="comment">// mid &gt;= 0: by definition</span>
             <span class="comment">// mid &lt; size: mid = size / 2 + size / 4 + size / 8 ...</span>
             <span class="kw">let</span> <span class="ident">cmp</span> <span class="op">=</span> <span class="ident">f</span>(<span class="kw">unsafe</span> { <span class="ident">s</span>.<span class="ident">get_unchecked</span>(<span class="ident">mid</span>) });

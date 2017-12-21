@@ -200,6 +200,7 @@
 <span id="154">154</span>
 <span id="155">155</span>
 <span id="156">156</span>
+<span id="157">157</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2017 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -235,22 +236,23 @@
 <span class="comment">// Don&#39;t inline this so callers that call both this and the above won&#39;t wind</span>
 <span class="comment">// up using the combined stack space of both functions in some cases.</span>
 <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">never</span>)]</span>
-<span class="kw">fn</span> <span class="ident">float_to_decimal_common_shortest</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>,
-                                       <span class="ident">num</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="ident">sign</span>: <span class="ident">flt2dec</span>::<span class="ident">Sign</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span>
+<span class="kw">fn</span> <span class="ident">float_to_decimal_common_shortest</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>, <span class="ident">num</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>,
+                                       <span class="ident">sign</span>: <span class="ident">flt2dec</span>::<span class="ident">Sign</span>, <span class="ident">precision</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span>
     <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">flt2dec</span>::<span class="ident">DecodableFloat</span>
 {
     <span class="kw">unsafe</span> {
         <span class="comment">// enough for f32 and f64</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span>: [<span class="ident">u8</span>; <span class="ident">flt2dec</span>::<span class="ident">MAX_SIG_DIGITS</span>] <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">uninitialized</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parts</span>: [<span class="ident">flt2dec</span>::<span class="ident">Part</span>; <span class="number">4</span>] <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">uninitialized</span>();
-        <span class="kw">let</span> <span class="ident">formatted</span> <span class="op">=</span> <span class="ident">flt2dec</span>::<span class="ident">to_shortest_str</span>(<span class="ident">flt2dec</span>::<span class="ident">strategy</span>::<span class="ident">grisu</span>::<span class="ident">format_shortest</span>,
-                                                 <span class="kw-2">*</span><span class="ident">num</span>, <span class="ident">sign</span>, <span class="number">0</span>, <span class="bool-val">false</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parts</span>);
+        <span class="kw">let</span> <span class="ident">formatted</span> <span class="op">=</span> <span class="ident">flt2dec</span>::<span class="ident">to_shortest_str</span>(<span class="ident">flt2dec</span>::<span class="ident">strategy</span>::<span class="ident">grisu</span>::<span class="ident">format_shortest</span>, <span class="kw-2">*</span><span class="ident">num</span>,
+                                                 <span class="ident">sign</span>, <span class="ident">precision</span>, <span class="bool-val">false</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">parts</span>);
         <span class="ident">fmt</span>.<span class="ident">pad_formatted_parts</span>(<span class="kw-2">&amp;</span><span class="ident">formatted</span>)
     }
 }
 
 <span class="comment">// Common code of floating point Debug and Display.</span>
-<span class="kw">fn</span> <span class="ident">float_to_decimal_common</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>, <span class="ident">num</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>, <span class="ident">negative_zero</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span>
+<span class="kw">fn</span> <span class="ident">float_to_decimal_common</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>, <span class="ident">num</span>: <span class="kw-2">&amp;</span><span class="ident">T</span>,
+                              <span class="ident">negative_zero</span>: <span class="ident">bool</span>, <span class="ident">min_precision</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span>
     <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">flt2dec</span>::<span class="ident">DecodableFloat</span>
 {
     <span class="kw">let</span> <span class="ident">force_sign</span> <span class="op">=</span> <span class="ident">fmt</span>.<span class="ident">sign_plus</span>();
@@ -264,7 +266,7 @@
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">precision</span>) <span class="op">=</span> <span class="ident">fmt</span>.<span class="ident">precision</span> {
         <span class="ident">float_to_decimal_common_exact</span>(<span class="ident">fmt</span>, <span class="ident">num</span>, <span class="ident">sign</span>, <span class="ident">precision</span>)
     } <span class="kw">else</span> {
-        <span class="ident">float_to_decimal_common_shortest</span>(<span class="ident">fmt</span>, <span class="ident">num</span>, <span class="ident">sign</span>)
+        <span class="ident">float_to_decimal_common_shortest</span>(<span class="ident">fmt</span>, <span class="ident">num</span>, <span class="ident">sign</span>, <span class="ident">min_precision</span>)
     }
 }
 
@@ -328,14 +330,14 @@
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
             <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
-                <span class="ident">float_to_decimal_common</span>(<span class="ident">fmt</span>, <span class="self">self</span>, <span class="bool-val">true</span>)
+                <span class="ident">float_to_decimal_common</span>(<span class="ident">fmt</span>, <span class="self">self</span>, <span class="bool-val">true</span>, <span class="number">1</span>)
             }
         }
 
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ty</span> {
             <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span> {
-                <span class="ident">float_to_decimal_common</span>(<span class="ident">fmt</span>, <span class="self">self</span>, <span class="bool-val">false</span>)
+                <span class="ident">float_to_decimal_common</span>(<span class="ident">fmt</span>, <span class="self">self</span>, <span class="bool-val">false</span>, <span class="number">0</span>)
             }
         }
 
