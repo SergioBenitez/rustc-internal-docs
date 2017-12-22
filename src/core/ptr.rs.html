@@ -2628,10 +2628,6 @@
 <span id="2582">2582</span>
 <span id="2583">2583</span>
 <span id="2584">2584</span>
-<span id="2585">2585</span>
-<span id="2586">2586</span>
-<span id="2587">2587</span>
-<span id="2588">2588</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3216,8 +3212,7 @@
     <span class="doccomment">/// * Both the starting and resulting pointer must be either in bounds or one</span>
     <span class="doccomment">///   byte past the end of an allocated object.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow or underflow an</span>
-    <span class="doccomment">///   `isize`.</span>
+    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow an `isize`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * The offset being in bounds cannot rely on &quot;wrapping around&quot; the address</span>
     <span class="doccomment">///   space. That is, the infinite-precision sum, **in bytes** must fit in a usize.</span>
@@ -3349,8 +3344,7 @@
     <span class="doccomment">/// * Both the starting and resulting pointer must be either in bounds or one</span>
     <span class="doccomment">///   byte past the end of an allocated object.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow or underflow an</span>
-    <span class="doccomment">///   `isize`.</span>
+    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow an `isize`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * The offset being in bounds cannot rely on &quot;wrapping around&quot; the address</span>
     <span class="doccomment">///   space. That is, the infinite-precision sum must fit in a `usize`.</span>
@@ -3854,8 +3848,7 @@
     <span class="doccomment">/// * Both the starting and resulting pointer must be either in bounds or one</span>
     <span class="doccomment">///   byte past the end of an allocated object.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow or underflow an</span>
-    <span class="doccomment">///   `isize`.</span>
+    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow an `isize`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * The offset being in bounds cannot rely on &quot;wrapping around&quot; the address</span>
     <span class="doccomment">///   space. That is, the infinite-precision sum, **in bytes** must fit in a usize.</span>
@@ -4054,8 +4047,7 @@
     <span class="doccomment">/// * Both the starting and resulting pointer must be either in bounds or one</span>
     <span class="doccomment">///   byte past the end of an allocated object.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow or underflow an</span>
-    <span class="doccomment">///   `isize`.</span>
+    <span class="doccomment">/// * The computed offset, **in bytes**, cannot overflow an `isize`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// * The offset being in bounds cannot rely on &quot;wrapping around&quot; the address</span>
     <span class="doccomment">///   space. That is, the infinite-precision sum must fit in a `usize`.</span>

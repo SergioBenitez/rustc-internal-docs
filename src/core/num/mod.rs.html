@@ -3539,105 +3539,6 @@
 <span id="3493">3493</span>
 <span id="3494">3494</span>
 <span id="3495">3495</span>
-<span id="3496">3496</span>
-<span id="3497">3497</span>
-<span id="3498">3498</span>
-<span id="3499">3499</span>
-<span id="3500">3500</span>
-<span id="3501">3501</span>
-<span id="3502">3502</span>
-<span id="3503">3503</span>
-<span id="3504">3504</span>
-<span id="3505">3505</span>
-<span id="3506">3506</span>
-<span id="3507">3507</span>
-<span id="3508">3508</span>
-<span id="3509">3509</span>
-<span id="3510">3510</span>
-<span id="3511">3511</span>
-<span id="3512">3512</span>
-<span id="3513">3513</span>
-<span id="3514">3514</span>
-<span id="3515">3515</span>
-<span id="3516">3516</span>
-<span id="3517">3517</span>
-<span id="3518">3518</span>
-<span id="3519">3519</span>
-<span id="3520">3520</span>
-<span id="3521">3521</span>
-<span id="3522">3522</span>
-<span id="3523">3523</span>
-<span id="3524">3524</span>
-<span id="3525">3525</span>
-<span id="3526">3526</span>
-<span id="3527">3527</span>
-<span id="3528">3528</span>
-<span id="3529">3529</span>
-<span id="3530">3530</span>
-<span id="3531">3531</span>
-<span id="3532">3532</span>
-<span id="3533">3533</span>
-<span id="3534">3534</span>
-<span id="3535">3535</span>
-<span id="3536">3536</span>
-<span id="3537">3537</span>
-<span id="3538">3538</span>
-<span id="3539">3539</span>
-<span id="3540">3540</span>
-<span id="3541">3541</span>
-<span id="3542">3542</span>
-<span id="3543">3543</span>
-<span id="3544">3544</span>
-<span id="3545">3545</span>
-<span id="3546">3546</span>
-<span id="3547">3547</span>
-<span id="3548">3548</span>
-<span id="3549">3549</span>
-<span id="3550">3550</span>
-<span id="3551">3551</span>
-<span id="3552">3552</span>
-<span id="3553">3553</span>
-<span id="3554">3554</span>
-<span id="3555">3555</span>
-<span id="3556">3556</span>
-<span id="3557">3557</span>
-<span id="3558">3558</span>
-<span id="3559">3559</span>
-<span id="3560">3560</span>
-<span id="3561">3561</span>
-<span id="3562">3562</span>
-<span id="3563">3563</span>
-<span id="3564">3564</span>
-<span id="3565">3565</span>
-<span id="3566">3566</span>
-<span id="3567">3567</span>
-<span id="3568">3568</span>
-<span id="3569">3569</span>
-<span id="3570">3570</span>
-<span id="3571">3571</span>
-<span id="3572">3572</span>
-<span id="3573">3573</span>
-<span id="3574">3574</span>
-<span id="3575">3575</span>
-<span id="3576">3576</span>
-<span id="3577">3577</span>
-<span id="3578">3578</span>
-<span id="3579">3579</span>
-<span id="3580">3580</span>
-<span id="3581">3581</span>
-<span id="3582">3582</span>
-<span id="3583">3583</span>
-<span id="3584">3584</span>
-<span id="3585">3585</span>
-<span id="3586">3586</span>
-<span id="3587">3587</span>
-<span id="3588">3588</span>
-<span id="3589">3589</span>
-<span id="3590">3590</span>
-<span id="3591">3591</span>
-<span id="3592">3592</span>
-<span id="3593">3593</span>
-<span id="3594">3594</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3739,10 +3640,7 @@
 
 <span class="comment">// `Int` + `SignedInt` implemented for signed integers</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">int_impl</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">SelfT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">UnsignedT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">BITS</span>:<span class="ident">expr</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">add_with_overflow</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sub_with_overflow</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mul_with_overflow</span>:<span class="ident">path</span>) <span class="op">=&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">SelfT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">UnsignedT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">BITS</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
         <span class="doccomment">/// Returns the smallest value that can be represented by this integer type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4043,7 +3941,7 @@
         }
 
         <span class="doccomment">/// Checked integer subtraction. Computes `self - rhs`, returning</span>
-        <span class="doccomment">/// `None` if underflow occurred.</span>
+        <span class="doccomment">/// `None` if overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -4061,7 +3959,7 @@
         }
 
         <span class="doccomment">/// Checked integer multiplication. Computes `self * rhs`, returning</span>
-        <span class="doccomment">/// `None` if underflow or overflow occurred.</span>
+        <span class="doccomment">/// `None` if overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -4079,7 +3977,7 @@
         }
 
         <span class="doccomment">/// Checked integer division. Computes `self / rhs`, returning `None`</span>
-        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -4101,7 +3999,7 @@
         }
 
         <span class="doccomment">/// Checked integer remainder. Computes `self % rhs`, returning `None`</span>
-        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -4506,11 +4404,11 @@
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">overflowing_add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">add_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
-                                                <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>);
-                (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
-            }
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
+                                              <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>)
+            };
+            (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
         }
 
         <span class="doccomment">/// Calculates `self` - `rhs`</span>
@@ -4532,11 +4430,11 @@
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">overflowing_sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sub_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
-                                                <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>);
-                (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
-            }
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
+                                              <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>)
+            };
+            (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
         }
 
         <span class="doccomment">/// Calculates the multiplication of `self` and `rhs`.</span>
@@ -4556,11 +4454,11 @@
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">overflowing_mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mul_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
-                                                <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>);
-                (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
-            }
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
+                                              <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>)
+            };
+            (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
         }
 
         <span class="doccomment">/// Calculates the divisor when `self` is divided by `rhs`.</span>
@@ -4848,82 +4746,50 @@
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;i8&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">i8</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i8</span>, <span class="ident">i8</span>, <span class="ident">u8</span>, <span class="number">8</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i8</span>, <span class="ident">i8</span>, <span class="ident">u8</span>, <span class="number">8</span> }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;i16&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">i16</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i16</span>, <span class="ident">i16</span>, <span class="ident">u16</span>, <span class="number">16</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i16</span>, <span class="ident">i16</span>, <span class="ident">u16</span>, <span class="number">16</span> }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;i32&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">i32</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i32</span>, <span class="ident">i32</span>, <span class="ident">u32</span>, <span class="number">32</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i32</span>, <span class="ident">i32</span>, <span class="ident">u32</span>, <span class="number">32</span> }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;i64&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">i64</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i64</span>, <span class="ident">i64</span>, <span class="ident">u64</span>, <span class="number">64</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i64</span>, <span class="ident">i64</span>, <span class="ident">u64</span>, <span class="number">64</span> }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;i128&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">i128</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i128</span>, <span class="ident">i128</span>, <span class="ident">u128</span>, <span class="number">128</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">i128</span>, <span class="ident">i128</span>, <span class="ident">u128</span>, <span class="number">128</span> }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;16&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;isize&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">isize</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">isize</span>, <span class="ident">i16</span>, <span class="ident">u16</span>, <span class="number">16</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">isize</span>, <span class="ident">i16</span>, <span class="ident">u16</span>, <span class="number">16</span> }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;isize&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">isize</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">isize</span>, <span class="ident">i32</span>, <span class="ident">u32</span>, <span class="number">32</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">isize</span>, <span class="ident">i32</span>, <span class="ident">u32</span>, <span class="number">32</span> }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;isize&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">isize</span> {
-    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">isize</span>, <span class="ident">i64</span>, <span class="ident">u64</span>, <span class="number">64</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">int_impl</span><span class="macro">!</span> { <span class="ident">isize</span>, <span class="ident">i64</span>, <span class="ident">u64</span>, <span class="number">64</span> }
 }
 
 <span class="comment">// `Int` + `UnsignedInt` implemented for unsigned integers</span>
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">uint_impl</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">SelfT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">BITS</span>:<span class="ident">expr</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ctpop</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ctlz</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ctlz_nonzero</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">cttz</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bswap</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">add_with_overflow</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sub_with_overflow</span>:<span class="ident">path</span>,
-     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mul_with_overflow</span>:<span class="ident">path</span>) <span class="op">=&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">SelfT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>:<span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">BITS</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
         <span class="doccomment">/// Returns the smallest value that can be represented by this integer type.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
@@ -4987,7 +4853,7 @@
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">count_ones</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
-            <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ctpop</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>) <span class="kw">as</span> <span class="ident">u32</span> }
+            <span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>) <span class="kw">as</span> <span class="ident">u32</span> }
         }
 
         <span class="doccomment">/// Returns the number of zeros in the binary representation of `self`.</span>
@@ -5022,7 +4888,7 @@
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">leading_zeros</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">u32</span> {
-            <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ctlz</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>) <span class="kw">as</span> <span class="ident">u32</span> }
+            <span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>) <span class="kw">as</span> <span class="ident">u32</span> }
         }
 
         <span class="doccomment">/// Returns the number of trailing zeros in the binary representation</span>
@@ -5121,7 +4987,7 @@
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;rust1&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.0.0&quot;</span>)]</span>
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">swap_bytes</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-            <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">bswap</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>) <span class="kw">as</span> <span class="self">Self</span> }
+            <span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">bswap</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>) <span class="kw">as</span> <span class="self">Self</span> }
         }
 
         <span class="doccomment">/// Converts an integer from big endian to the target&#39;s endianness.</span>
@@ -5239,7 +5105,7 @@
         }
 
         <span class="doccomment">/// Checked integer subtraction. Computes `self - rhs`, returning</span>
-        <span class="doccomment">/// `None` if underflow occurred.</span>
+        <span class="doccomment">/// `None` if overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -5257,7 +5123,7 @@
         }
 
         <span class="doccomment">/// Checked integer multiplication. Computes `self * rhs`, returning</span>
-        <span class="doccomment">/// `None` if underflow or overflow occurred.</span>
+        <span class="doccomment">/// `None` if overflow occurred.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -5275,7 +5141,7 @@
         }
 
         <span class="doccomment">/// Checked integer division. Computes `self / rhs`, returning `None`</span>
-        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -5295,7 +5161,7 @@
         }
 
         <span class="doccomment">/// Checked integer remainder. Computes `self % rhs`, returning `None`</span>
-        <span class="doccomment">/// if `rhs == 0` or the operation results in underflow or overflow.</span>
+        <span class="doccomment">/// if `rhs == 0` or the operation results in overflow.</span>
         <span class="doccomment">///</span>
         <span class="doccomment">/// # Examples</span>
         <span class="doccomment">///</span>
@@ -5625,11 +5491,11 @@
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">overflowing_add</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">add_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
-                                                <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>);
-                (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
-            }
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
+                                              <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>)
+            };
+            (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
         }
 
         <span class="doccomment">/// Calculates `self` - `rhs`</span>
@@ -5651,11 +5517,11 @@
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">overflowing_sub</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">sub_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
-                                                <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>);
-                (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
-            }
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
+                                              <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>)
+            };
+            (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
         }
 
         <span class="doccomment">/// Calculates the multiplication of `self` and `rhs`.</span>
@@ -5675,11 +5541,11 @@
         <span class="attribute">#[<span class="ident">inline</span>]</span>
         <span class="attribute">#[<span class="ident">stable</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;wrapping&quot;</span>, <span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;1.7.0&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">overflowing_mul</span>(<span class="self">self</span>, <span class="ident">rhs</span>: <span class="self">Self</span>) <span class="op">-&gt;</span> (<span class="self">Self</span>, <span class="ident">bool</span>) {
-            <span class="kw">unsafe</span> {
-                <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mul_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
-                                                <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>);
-                (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
-            }
+            <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">=</span> <span class="kw">unsafe</span> {
+                <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span>(<span class="self">self</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>,
+                                              <span class="ident">rhs</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ActualT</span>)
+            };
+            (<span class="ident">a</span> <span class="kw">as</span> <span class="self">Self</span>, <span class="ident">b</span>)
         }
 
         <span class="doccomment">/// Calculates the divisor when `self` is divided by `rhs`.</span>
@@ -5864,7 +5730,7 @@
             <span class="comment">// (such as intel pre-haswell) have more efficient ctlz</span>
             <span class="comment">// intrinsics when the argument is non-zero.</span>
             <span class="kw">let</span> <span class="ident">p</span> <span class="op">=</span> <span class="self">self</span> <span class="op">-</span> <span class="number">1</span>;
-            <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">ctlz_nonzero</span>(<span class="ident">p</span>) };
+            <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>(<span class="ident">p</span>) };
             <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">SelfT</span><span class="op">&gt;</span>::<span class="ident">max_value</span>() <span class="op">&gt;&gt;</span> <span class="ident">z</span>
         }
 
@@ -5911,15 +5777,7 @@
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;u8&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">u8</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u8</span>, <span class="ident">u8</span>, <span class="number">8</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u8</span>, <span class="ident">u8</span>, <span class="number">8</span> }
 
 
     <span class="doccomment">/// Checks if the value is within the ASCII range.</span>
@@ -6465,95 +6323,39 @@
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;u16&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">u16</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u16</span>, <span class="ident">u16</span>, <span class="number">16</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u16</span>, <span class="ident">u16</span>, <span class="number">16</span> }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;u32&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">u32</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u32</span>, <span class="ident">u32</span>, <span class="number">32</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u32</span>, <span class="ident">u32</span>, <span class="number">32</span> }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;u64&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">u64</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u64</span>, <span class="ident">u64</span>, <span class="number">64</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u64</span>, <span class="ident">u64</span>, <span class="number">64</span> }
 }
 
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;u128&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">u128</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u128</span>, <span class="ident">u128</span>, <span class="number">128</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">u128</span>, <span class="ident">u128</span>, <span class="number">128</span> }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;16&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;usize&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">usize</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">usize</span>, <span class="ident">u16</span>, <span class="number">16</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">usize</span>, <span class="ident">u16</span>, <span class="number">16</span> }
 }
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;32&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;usize&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">usize</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">usize</span>, <span class="ident">u32</span>, <span class="number">32</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">usize</span>, <span class="ident">u32</span>, <span class="number">32</span> }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_pointer_width</span> <span class="op">=</span> <span class="string">&quot;64&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">lang</span> <span class="op">=</span> <span class="string">&quot;usize&quot;</span>]</span>
 <span class="kw">impl</span> <span class="ident">usize</span> {
-    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">usize</span>, <span class="ident">u64</span>, <span class="number">64</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctpop</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">ctlz_nonzero</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">cttz</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">bswap</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">add_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">sub_with_overflow</span>,
-        <span class="ident">intrinsics</span>::<span class="ident">mul_with_overflow</span> }
+    <span class="macro">uint_impl</span><span class="macro">!</span> { <span class="ident">usize</span>, <span class="ident">u64</span>, <span class="number">64</span> }
 }
 
 <span class="doccomment">/// A classification of floating point numbers.</span>

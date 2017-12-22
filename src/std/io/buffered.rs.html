@@ -1579,7 +1579,7 @@
     <span class="doccomment">/// See `std::io::Seek` for more details.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note: In the edge case where you&#39;re seeking with `SeekFrom::Current(n)`</span>
-    <span class="doccomment">/// where `n` minus the internal buffer length underflows an `i64`, two</span>
+    <span class="doccomment">/// where `n` minus the internal buffer length overflows an `i64`, two</span>
     <span class="doccomment">/// seeks will be performed instead of one. If the second seek returns</span>
     <span class="doccomment">/// `Err`, the underlying reader will be left at the same position it would</span>
     <span class="doccomment">/// have if you seeked to `SeekFrom::Current(0)`.</span>

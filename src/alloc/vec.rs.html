@@ -2787,6 +2787,8 @@
 <span id="2741">2741</span>
 <span id="2742">2742</span>
 <span id="2743">2743</span>
+<span id="2744">2744</span>
+<span id="2745">2745</span>
 </pre><pre class="rust ">
 <span class="comment">// Copyright 2014 The Rust Project Developers. See the COPYRIGHT</span>
 <span class="comment">// file at the top-level directory of this distribution and at</span>
@@ -3014,8 +3016,10 @@
 <span class="doccomment">/// types inside a `Vec`, it will not allocate space for them. *Note that in this case</span>
 <span class="doccomment">/// the `Vec` may not report a [`capacity`] of 0*. `Vec` will allocate if and only</span>
 <span class="doccomment">/// if [`mem::size_of::&lt;T&gt;`]`() * capacity() &gt; 0`. In general, `Vec`&#39;s allocation</span>
-<span class="doccomment">/// details are subtle enough that it is strongly recommended that you only</span>
-<span class="doccomment">/// free memory allocated by a `Vec` by creating a new `Vec` and dropping it.</span>
+<span class="doccomment">/// details are very subtle &amp;mdash; if you intend to allocate memory using a `Vec`</span>
+<span class="doccomment">/// and use it for something else (either to pass to unsafe code, or to build your</span>
+<span class="doccomment">/// own memory-backed collection), be sure to deallocate this memory by using</span>
+<span class="doccomment">/// `from_raw_parts` to recover the `Vec` and then dropping it.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// If a `Vec` *has* allocated memory, then the memory it points to is on the heap</span>
 <span class="doccomment">/// (as defined by the allocator Rust is configured to use by default), and its</span>
